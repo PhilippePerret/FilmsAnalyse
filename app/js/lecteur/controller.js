@@ -32,6 +32,8 @@ const VideoController = {
 
       $('#btn-rewind-1-sec').on('click', my.rewind.bind(my, 1))
       $('#btn-rewind-5-sec').on('click', my.rewind.bind(my, 5))
+      $('#btn-forward-1-sec').on('click', my.forward.bind(my, 1))
+      $('#btn-forward-5-sec').on('click', my.forward.bind(my, 5))
       $('#btn-set-video-path').on('click', current_analyse.setVideoPath.bind(current_analyse))
 
       // Si l'analyse courante définit une vidéo, on la charge et on prépare
@@ -62,8 +64,10 @@ const VideoController = {
      * on jouait, ou alors on remet en route)
      */
   , rewind: function(secs){
-      this.controller.currentTime = this.controller.currentTime - secs
-      if(this.controller.paused) this.onTogglePlay()
+      this.setTime(this.controller.currentTime - secs, true)
+    }
+  , forward: function(secs){
+      this.setTime(this.controller.currentTime + secs, true)
     }
 
     /**
@@ -82,15 +86,30 @@ const VideoController = {
           this.horloge_rectif = 0
         }
         this.intervalTimer = setInterval(my.actualizeHorloge.bind(my), 1000/40)
+        // Toutes les secondes, on essaie d'actualiser l'affichage des
+        // évènements
+        // this.intervalReader = setInterval(my.actualizeReader.bind(my), 1000)
       }
     }
   , desactivateHorloge: function(){
-      clearInterval(this.intervalTimer)
-      this.intervalTimer = null
+      if(this.intervalTimer){
+        clearInterval(this.intervalTimer)
+        this.intervalTimer = null
+      }
+      if(this.intervalReader){
+        clearInterval(this.intervalReader)
+        this.intervalReader = null
+      }
     }
   , actualizeHorloge: function(){
       this._horloge.innerHTML = this.getRealTime(this.controller.currentTime - this.horloge_rectif)
   }
+
+  , actualizeReader: function(){
+      console.log('-> actualizeReader')
+      current_analyse.showEventsAt(this.controller.currentTime - this.horloge_rectif)
+  }
+
   , getRealTime: function(s){
       var negative = s < 0
       if(negative){s = -s}
@@ -134,8 +153,11 @@ const VideoController = {
      *
      * +time+ doit être un nombre de secondes
      */
-  , setTime: function(time){
+  , setTime: function(time, andPlay){
       this.controller.currentTime = time
+      if(andPlay === true){
+        if(this.controller.paused) this.onTogglePlay()
+      }
     }
     /**
      * Méthode appelée pour se rendre au temps voulu.
@@ -169,6 +191,7 @@ const VideoController = {
       this.toggleVisible('#div-nav-video-buttons', visible)
       this.toggleVisible('#fs-get-times', visible)
       this.toggleVisible('#fs-new-event', visible)
+      this.toggleVisible('#btn-time-as-film-start', !current_analyse.filmStartTime)
     }
   , toggleVisible: function(jqId, v){
       $(jqId).css('visibility', v ? 'visible' : 'hidden')

@@ -10,8 +10,8 @@ class FAnalyse {
    * Instanciation de l'analyse à partir du path de son dossier
    */
   constructor(pathFolder){
-    this.events = [] // pour le moment
-    this.folder = path.resolve(pathFolder)
+    this._events = [] // au départ
+    this._folder = path.resolve(pathFolder)
   }
 
   get folder()  { return this._folder }
@@ -22,6 +22,13 @@ class FAnalyse {
     this._modified = v
     $('#btn-save-analyse').css('visibility', v === true ? 'visible' : 'hidden')
   }
+
+  set events(v){
+    this._events = []
+    for(var d of v){this._events.push(new FAEvent(d))}
+    console.log("<- définition de events", this.events)
+  }
+  get events()  {return this._events}
 
   get eventsFilePath(){
     if(undefined===this._events_file_path){
@@ -51,12 +58,51 @@ class FAnalyse {
   }
 
   /**
+   * Retourne une table de hashage avec en clé un temps et en valeur
+   * la liste des évènements se trouvant après ce temps et avant le prochain
+   */
+  get times(){
+    if (undefined === this._times){
+      this._times = {}
+      var i = 0, len = this.events.length, devent
+      for(i;i<len;++i){
+        devent = this.events[i]
+        if(undefined === this._times[devent.time]){
+          this._times[devent.time] = []
+        }
+        this._times[devent.item].push(devent)
+      }
+      devent = null
+      len = null
+    }
+    return this._times
+  }
+
+  /**
+   * Méthode qui affiche les évènements qui se trouvent à +time+
+   * (avec une marge de plus ou moins 10 secondes)
+   */
+  showEventsAt(time){
+    var start_time = time - 10
+    var end_time   = time + 10
+    for(var t in this.times){
+      if(t > end_time){break /* fini */}
+      if(t >= start_time){
+        showEvents(this.times[t])
+      }
+    }
+  }
+  /**
+   * Afficher les évènements de la liste +a_events+
+   */
+  showEvents(a_events){
+    for(var e of a_events){e.show()}
+  }
+  /**
    * Méthode qui permet de (re)définir la vidéo de l'analyse
    */
   setVideoPath(ev, p){
-    console.log("p avant = ", p)
     if(undefined === p){ p = $('#video-path').val() }
-    console.log("p après = ", p)
     this._videoPath = p
     this.modified   = true
     VideoController.load(p)
@@ -85,9 +131,30 @@ class FAnalyse {
 
     }
     var data = {type: type, time: VideoController.getRTime(), content: content}
-    this.events.push(new FAEvent(data))
+    var nevent = new FAEvent(data)
+    if (this.events.length){
+      // On place l'event à l'endroit voulu dans le film
+      var idx_event_before = this.getIndexOfEventAfter(nevent.time)
+      this.events.splice(idx_event_before, 0, nevent)
+    } else {
+      this.events.push(nevent)
+    }
     this.modified = true
-    console.log("Nouvel event ajouté")
+    nevent = null
+    idx_event_before = null
+    // console.log("Nouvel event ajouté")
+  }
+
+  /**
+   * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
+   *
+   * La méthode permet principalement de placer les nouveaux évènements
+   */
+  getIndexOfEventAfter(time){
+    var i = 0
+      , len = this.events.length ;
+    for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
+    return len
   }
 
   get SAVED_FILES(){
@@ -144,8 +211,9 @@ class FAnalyse {
    */
   load(){
     var my = this
-    this.loaders = [this.eventsFilePath, this.dataFilePath]
-    for(var path of this.loaders){my.loadFile(path, my.PROP_PER_FILE[path])}
+      , fpath ;
+    my.loaders = [my.eventsFilePath, my.dataFilePath]
+    while(fpath = my.loaders.shift()){my.loadFile(fpath, my.PROP_PER_FILE[fpath])}
   }
 
   /**
@@ -157,29 +225,26 @@ class FAnalyse {
     VideoController.init()
   }
 
-  onLoaded(path){
-    this.loaders.splice(this.loaders.indexOf(path), 1)
+  onLoaded(fpath){
     if(this.loaders.length == 0){
       this.ready = true
       this.onReady()
-      // L'analyse est prêt. On pourrait par exemple lancer la lecture
-      // si c'est l'analyseur qui est chargé.
     }
   }
 
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
-  loadFile(path, prop){
+  loadFile(fpath, prop){
     var my = this
-    if(fs.existsSync(path)){
-      fs.readFile(path, 'utf8', (err, data) => {
+    if(fs.existsSync(fpath)){
+      fs.readFile(fpath, 'utf8', (err, data) => {
         if (err) throw(err)
         my[prop] = JSON.parse(data)
-        this.onLoaded(path)
+        my.onLoaded(fpath)
       })
     } else {
       // Si le fichier n'existe pas
-      this.onLoaded(path)
+      this.onLoaded(fpath)
     }
   }
 

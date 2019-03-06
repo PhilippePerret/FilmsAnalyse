@@ -41,13 +41,15 @@
     <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
     <div id="div-nav-video-buttons">
       <div style="text-align: right;">
-        <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
         <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
+        <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
         <button type="button" id="btn-real-play">Lancer</button>
+        <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
+        <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
       </div>
       <div>
-        <input type="text" id="time" name="time" value="0,0,0,0" placeholder="[heure,[minute,[seconde,]]]frame">
         <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
+        <input type="text" id="time" name="time" value="0,0,0,0" style="width:80px;" placeholder="[heure,[minute,[seconde,]]]frame">
         <button type="button" id="btn-go-to-film-start" class="small">Aller au début du film</button>
       </div>
     </div>
