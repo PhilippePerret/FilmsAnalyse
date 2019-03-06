@@ -1,16 +1,24 @@
 {
-    "name": "filmsanalyse"
-  , "version": "0.1.0"
-  , "description": "Application pour l'analyse de films"
-  , "main": "main.js"
-  , "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+    "name": "filmsanalyse",
+    "productName": "Films Analyse",
+    "version": "0.1.0",
+    "description": "Application pour l'analyse de films",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "Films",
+        "Analyse"
+    ],
+    "author": "Philippe Perret",
+    "mail": "philippe.perret@yahoo.fr",
+    "license": "GNU",
+    "devDependencies": {
+        "electron": "^4.0.7"
+    },
+    "dependencies": {
+        "jquery": "^3.3.1"
     }
-  , "keywords": [
-      "Films"
-    , "Analyse"
-  ]
-  , "author": "Philippe Perret"
-  , "mail":   "philippe.perret@yahoo.fr"
-  , "license": "ISC"
 }
