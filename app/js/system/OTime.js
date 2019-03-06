@@ -28,13 +28,14 @@ class OTime {
   }
 
   set horloge(v)  { this._horloge = v }
-
   get horloge()   {
     if(undefined === this._horloge){
       this._horloge = this.s2h()
     }
     return this._horloge
   }
+  set duration(v) { this.duration = v }
+  get duration()  { return this.duration || 1 }
 
   h2s(h){
     h = h.split(',').reverse()
@@ -55,5 +56,15 @@ class OTime {
     scs = Math.floor(r)
     frm = parseInt((r - scs) * 1000 / 40,10)
     return `${hrs}:${mns}:${scs}:${frm}`
+  }
+
+  /**
+   * Permet d'actualiser le nombre de seconds de l'instance
+   * Cette méthode est utile par exemple pour régler l'horloge de la vidéo,
+   * pour ne pas créer intensivement des instances à chaque millisecondes
+   */
+  updateSeconds(s){
+    this.seconds = s
+    this.horloge = this.s2h(s)
   }
 }

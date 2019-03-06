@@ -1,0 +1,26 @@
+#analyse-reader {
+  float: right;
+  width: 33%;
+  border: 1px dashed green;
+  min-height: 600px;
+  padding: 1em;
+}
+#horloge {
+  font-family: Courier;
+  background-color: black;
+  color: white;
+  padding: 0.2em 0.5em;
+  display: inline-block;
+}
+#horloge.vignette {
+  font-size: 12pt;
+  width: 100px;
+}
+#horloge.medium {
+  font-size: 18pt;
+  width: 150px;
+}
+#horloge.large {
+  font-size: 24pt;
+  width: 190px;
+}

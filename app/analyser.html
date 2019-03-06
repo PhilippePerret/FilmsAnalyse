@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Analyse</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/analyzer.css">
+  </head>
+  <body>
+
+    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
+    <div id="analyse-reader">
+    </div>
+
+    <!-- Pour définir la vidéo courante -->
+    <div id="div-video-path">
+      <span class="small">Video : </span>
+      <input type="text" id="video-path" style="width:50%;" value="" class="small">
+      <button type="button" id="btn-set-video-path" class="small">Définir</button>
+    </div>
+
+    <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
+    <div id="div-video-top-tools">
+      <span id="horloge" class="vignette">0:0:0:0</span>
+      <span class="small">Taille de la vidéo : </span>
+      <select onchange="$.proxy(VideoController,'setSize')(this.value)" class="small">
+        <option value="vignette">Vignette</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </div>
+
+    <!-- VIDÉO -->
+    <video id="video" width="450" style="visibility: hidden">
+      <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
+      <source id="video-src" src="" type="video/mp4">
+      <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
+      <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
+    </video>
+
+    <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
+    <div id="div-nav-video-buttons">
+      <div style="text-align: right;">
+        <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
+        <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
+        <button type="button" id="btn-real-play">Lancer</button>
+      </div>
+      <div>
+        <input type="text" id="time" name="time" value="0,0,0,0" placeholder="[heure,[minute,[seconde,]]]frame">
+        <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
+        <button type="button" id="btn-go-to-film-start" class="small">Aller au début du film</button>
+      </div>
+    </div>
+    <!-- / Fin des boutons de navigation -->
+
+    <div>
+      <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
+    </div>
+
+    <fieldset id="fs-get-times" style="float:right;width:200px;padding:1em;">
+      <button type="button" id="btn-time-as-film-start" class="small">Prendre temps courant comme début du film</button>
+      <button type="button" id="btn-get-time" class="small">Obtenir le temps courant</button>
+    </fieldset>
+
+    <!-- Section pour ajouter un nouvel évènement -->
+    <fieldset id="fs-new-event">
+      <div>
+        <button type="button" id="btn-new-event" class="small">Nouvel évènement</button>
+        <button type="button" id="btn-new-scene" class="small">Nouvelle scène</button>
+      </div>
+      <textarea id="event-content" rows="8" cols="80" placeholder="Description de l'évènement"></textarea>
+      <!-- TODO Ici, on pourra ajouter des éléments comme le type de l'évènement etc. -->
+    </fieldset>
+    <div id="message"></div>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script type="text/javascript" src="./js/common/requirements.js"></script>
+    <script type="text/javascript" src="./js/system/Flash.js"></script>
+    <script type="text/javascript" src="./js/system/OTime.js"></script>
+    <script type="text/javascript" src="./js/lecteur/controller.js"></script>
+    <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvent.js"></script>
+  </body>
+</html>
