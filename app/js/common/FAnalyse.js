@@ -26,7 +26,7 @@ class FAnalyse {
   set events(v){
     this._events = []
     for(var d of v){this._events.push(new FAEvent(d))}
-    console.log("<- définition de events", this.events)
+    // console.log("<- définition de events", this.events)
   }
   get events()  {return this._events}
 
@@ -50,54 +50,49 @@ class FAnalyse {
     return {
         filmStartTime:  this.filmStartTime.seconds
       , videoPath:      this.videoPath
+      , diminutifs:     this.diminutifs
     }
   }
   set data(v){
-    this.filmStartTime = new OTime(v["filmStartTime"])
-    this._videoPath    = v.videoPath
-  }
-
-  /**
-   * Retourne une table de hashage avec en clé un temps et en valeur
-   * la liste des évènements se trouvant après ce temps et avant le prochain
-   */
-  get times(){
-    if (undefined === this._times){
-      this._times = {}
-      var i = 0, len = this.events.length, devent
-      for(i;i<len;++i){
-        devent = this.events[i]
-        if(undefined === this._times[devent.time]){
-          this._times[devent.time] = []
-        }
-        this._times[devent.item].push(devent)
-      }
-      devent = null
-      len = null
-    }
-    return this._times
+    this.filmStartTime  = new OTime(v["filmStartTime"])
+    this._videoPath     = v.videoPath
+    this.diminutifs     = v.diminutifs
   }
 
   /**
    * Méthode qui affiche les évènements qui se trouvent à +time+
    * (avec une marge de plus ou moins 10 secondes)
+   * Note : la méthode est appelée toutes les 3 secondes
    */
   showEventsAt(time){
-    var start_time = time - 10
-    var end_time   = time + 10
-    for(var t in this.times){
-      if(t > end_time){break /* fini */}
-      if(t >= start_time){
-        showEvents(this.times[t])
-      }
+    var evs = this.locator.eventsAt(time)
+    // console.log("evs:", evs)
+    for(var ev of evs){
+      ev.showDiffere()
     }
   }
   /**
-   * Afficher les évènements de la liste +a_events+
+   * Formate le texte +txt+ en fonction de l'évènement
    */
-  showEvents(a_events){
-    for(var e of a_events){e.show()}
+  formateTexte(ev){
+    var txt = ev.content
+    for(var dim in this.diminutifs){
+      var reg = new RegExp(`@${dim}`,'g')
+      txt = txt.replace(reg,this.diminutifs[dim])
+    }
+    switch (ev.type) {
+      case 'scene':
+        txt = `<span class="scene-heading">INT. JOUR - ${ev.decor || 'DÉCOR'}</span><span class="scene-resume">${txt}</span>`
+        break;
+    }
+    return txt
   }
+  // /**
+  //  * Afficher les évènements de la liste +a_events+
+  //  */
+  // showEvents(a_events){
+  //   for(var e of a_events){e.show()}
+  // }
   /**
    * Méthode qui permet de (re)définir la vidéo de l'analyse
    */
@@ -110,6 +105,7 @@ class FAnalyse {
     $('#div-video-path').hide();
   }
   get videoPath(){ return this._videoPath }
+
 
   /**
    * Création d'un nouvel évènement avec les données +data+
@@ -156,6 +152,8 @@ class FAnalyse {
     for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
     return len
   }
+
+  // --- FONCTIONS I/O ----------------------------------------------
 
   get SAVED_FILES(){
     if(undefined === this._saved_files){
@@ -204,16 +202,21 @@ class FAnalyse {
   /**
    * Méthode pour charger l'analyse (courante ou pas)
    *
-   * Plus tard, il y aura plusieurs fichiers à charger pour une application,
-   * avec tous les éléments, il faudra donc procéder à un chargement asynchrone
+   * Il y aura plusieurs fichiers à charger pour une application,
+   * avec tous les éléments, il faut donc procéder à un chargement asynchrone
    * correct (en lançant tous les chargements et en attendant que l'application
    * soit prête.)
    */
   load(){
     var my = this
       , fpath ;
-    my.loaders = [my.eventsFilePath, my.dataFilePath]
-    while(fpath = my.loaders.shift()){my.loadFile(fpath, my.PROP_PER_FILE[fpath])}
+    // Les fichiers à charger
+    var loadables = my.SAVED_FILES
+    // Pour comptabiliser le nombre de fichiers chargés
+    this.loaders = 0
+    my.loadables_count = loadables.length
+    // console.log("loadables:",loadables)
+    while(fpath = loadables.shift()){my.loadFile(fpath, my.PROP_PER_FILE[fpath])}
   }
 
   /**
@@ -223,10 +226,13 @@ class FAnalyse {
    */
   onReady(){
     VideoController.init()
+    EventForm.init()
+    this.locator = new Locator(this)
   }
 
   onLoaded(fpath){
-    if(this.loaders.length == 0){
+    this.loaders += 1
+    if(this.loaders === this.loadables_count){
       this.ready = true
       this.onReady()
     }
@@ -263,8 +269,7 @@ class FAnalyse {
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    var btnGoToStart = $('#btn-go-to-film-start')
-    btnGoToStart.css('visibility',(this.filmStartTime === undefined)?'hidden':'visible')
+    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime === undefined)?'hidden':'visible')
   }
 
   /**

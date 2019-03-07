@@ -1,26 +1,19 @@
-#analyse-reader {
-  float: right;
-  width: 33%;
-  border: 1px dashed green;
-  min-height: 600px;
-  padding: 1em;
+#section-video {
+  width: 66%;
 }
-#horloge {
-  font-family: Courier;
-  background-color: black;
-  color: white;
-  padding: 0.2em 0.5em;
-  display: inline-block;
+#section-video .horloge.mini {
+  font-size: 10.2pt;
+  width: 80px;
 }
-#horloge.vignette {
+#section-video .horloge.vignette {
   font-size: 12pt;
-  width: 100px;
+  width: 110px;
 }
-#horloge.medium {
+#section-video .horloge.medium {
   font-size: 18pt;
-  width: 150px;
+  width: 160px;
 }
-#horloge.large {
+#section-video .horloge.large {
   font-size: 24pt;
-  width: 190px;
+  width: 210px;
 }

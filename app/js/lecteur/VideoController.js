@@ -4,27 +4,40 @@ function affiche(msg){
   $('div#message').html(msg)
 }
 
+// Pour écouter un objet
+// p.e. listen(btnPlay, 'click', Controller, 'start')
+function listen(cible, ename, objet, method){
+  cible.addEventListener(ename, objet[method].bind(objet))
+}
+
+
 window.current_analyse = null // définie au ready
 
 const VideoController = {
     class: 'VideoController'
   , controller: null
+  , inited: false
 
     /**
      * Initialisation du controller
      */
   , init: function(){
       var my = this
+      if (this.inited){throw("Le vidéocontroller ne devrait pas être initié deux fois…")}
       this.controller = document.getElementById('video')
-      $('#btn-get-time').on('click', my.getTime.bind(my))
+      $('#btn-get-time').on('click', my.getAndShowTime.bind(my))
       $('#btn-go-to-time').on('click', my.goToTime.bind(my))
-      $('#btn-new-event').on('click', current_analyse.newThing.bind(current_analyse, 'event'))
-      $('#btn-new-scene').on('click', current_analyse.newThing.bind(current_analyse, 'scene'))
       $('#btn-save-analyse').on('click', current_analyse.save.bind(current_analyse))
       $('#btn-time-as-film-start').on('click', () => {
         current_analyse.setFilmStartTimeAt.bind(current_analyse)(this.getTime())
       })
-      $('#btn-real-play').on('click', my.onTogglePlay.bind(my))
+
+      listen(this.btnPlay, 'click', my, 'onTogglePlay')
+      this.btnPlay.innerHTML = this.imgPlay
+
+      listen(this.btnRewindStart,'click',my,'rewindStart')
+      this.btnRewindStart.innerHTML = this.imgRewindStart
+
       // Le bouton pour rejoindre le début du film. Il n'est défini que si
       // ce temps est défini pour l'analyse courante
       current_analyse.setButtonGoToStart()
@@ -43,19 +56,43 @@ const VideoController = {
       }else{
         this.setVideoUI(false)
       }
+
+      // Tous les champs input-text, on selectionne tout quand on focusse
+      // dedant
+      $('input[type="text"]').on('focus', function(){$(this).select()})
+
+      this.inited = true
     }
     /**
      * Méthode appelée quand on presse le bouton Play (pas ceuli du contrôleur)
      */
-  , onTogglePlay: function(){
-      var btn = $('#btn-real-play')
-      btn.html(this.controller.paused?'Pauser':'Reprendre')
-      if(this.controller.paused){
-        this.controller.play()
-        this.activateHorloge()
-      }else{
+  , onTogglePlay: function(ev){
+      // console.log("-> onTogglePlay")
+      var pauser = !this.controller.paused
+      this.btnPlay.innerHTML = pauser ? this.imgPlay : this.imgPauser
+      if(pauser){
         this.controller.pause()
         this.desactivateHorloge()
+      } else {
+        this.controller.play()
+        this.activateHorloge()
+      }
+      // console.log("<- onTogglePlay")
+    }
+
+    /**
+     * Méthode pour rembobiner au début du film (si on est après et qu'il est
+     * défini) ou au début de la vidéo
+     *
+     * Note : le +5 ci-dessous permet de cliquer deux fois sur le bouton pour
+     * revenir tout au début (sinon, on revient toujours au début défini du
+     * film)
+     */
+  , rewindStart: function(){
+      if(current_analyse.filmStartTime && current_analyse.filmStartTime.seconds < (this.controller.currentTime + 5)){
+        this.setTime(current_analyse.filmStartTime.seconds)
+      } else {
+        this.setTime(0)
       }
     }
 
@@ -64,10 +101,10 @@ const VideoController = {
      * on jouait, ou alors on remet en route)
      */
   , rewind: function(secs){
-      this.setTime(this.controller.currentTime - secs, true)
+      this.setTime(this.controller.currentTime - secs)
     }
   , forward: function(secs){
-      this.setTime(this.controller.currentTime + secs, true)
+      this.setTime(this.controller.currentTime + secs)
     }
 
     /**
@@ -80,15 +117,17 @@ const VideoController = {
         this.desactivateHorloge()
       } else {
         this._horloge = document.getElementById('horloge')
+        this._horloge_real = document.getElementById('horloge_real')
         if(current_analyse && current_analyse.filmStartTime){
           this.horloge_rectif = current_analyse.filmStartTime.seconds
         } else {
           this.horloge_rectif = 0
+          this._horloge_real.style.visibility = 'hidden'
         }
         this.intervalTimer = setInterval(my.actualizeHorloge.bind(my), 1000/40)
-        // Toutes les secondes, on essaie d'actualiser l'affichage des
-        // évènements
-        // this.intervalReader = setInterval(my.actualizeReader.bind(my), 1000)
+        // Toutes les x secondes, on essaie d'actualiser l'affichage des
+        // évènements autour du temps courant
+        this.intervalReader = setInterval(my.actualizeReader.bind(my), 3000)
       }
     }
   , desactivateHorloge: function(){
@@ -103,10 +142,10 @@ const VideoController = {
     }
   , actualizeHorloge: function(){
       this._horloge.innerHTML = this.getRealTime(this.controller.currentTime - this.horloge_rectif)
+      this._horloge_real.innerHTML = this.getRealTime(this.controller.currentTime)
   }
 
   , actualizeReader: function(){
-      console.log('-> actualizeReader')
       current_analyse.showEventsAt(this.controller.currentTime - this.horloge_rectif)
   }
 
@@ -119,7 +158,7 @@ const VideoController = {
       } else {
         this._horloger.updateSeconds(s)
       }
-      return `${negative?'-':''}${this._horloger.horloge}`
+      return `${negative?'-':' '}${this._horloger.horloge}`
   }
     /**
      * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
@@ -130,13 +169,11 @@ const VideoController = {
     }
   , setSize: function(v){
       this.controller.width = this.VIDEO_SIZES[v]
-      document.getElementById('horloge').className = v
+      document.getElementById('horloge').className = `horloge ${v}`
     }
     /**
      * Méthode qui récupère le temps courant du film
      *
-     * Note : cette méthode est appelée intensément quand on joue le film,
-     * puisque c'est elle qui permet d'afficher l'horloge.
      */
   , getTime: function(){
       return new OTime(this.controller.currentTime)
@@ -145,17 +182,46 @@ const VideoController = {
      * (Number) Retourne le temps rectifié. Il peut être négatif.
      */
   , getRTime: function(){
-      return this.controller.currentTime - current_analyse.filmStartTime.seconds
+      if(undefined === current_analyse.filmStartTime){
+        return this.controller.currentTime
+      } else {
+        return this.controller.currentTime - current_analyse.filmStartTime.seconds
+      }
     }
 
+    /**
+     * Méthode appelée par le bouton "Temps courant" pour obtenir le temps
+     * courant.
+     * Plusieurs données sont données :
+     *  - temps courant de la vidéo en horloge
+     *  - temps courant de la vidéo en seconde
+     *  - temps courant du film en horloge
+     *  - temps courant du film en secondes
+     */
+  , getAndShowTime: function(){
+      var videoTC = this.getTime()
+      $('#temps-courant-video-horloge').val(videoTC.horloge)
+      $('#temps-courant-video-seconds').val(videoTC.secondsInt)
+      if(this.hasStartTime){
+        var filmTC  = new OTime(this.getRTime())
+        $('#temps-courant-film-horloge').val(filmTC.horloge)
+        $('#temps-courant-film-seconds').val(filmTC.secondsInt)
+      }
+      $('#div-temps-courants').show();
+      $('#span-temps-courants-film')[this.hasStartTime?'show':'hide']()
+    }
+    // Méthode qui cache les champs précédents
+  , hideCurrentTime: function(){
+      $('#div-temps-courants').hide();
+    }
     /**
      * Méthode qui définit le temps du film
      *
      * +time+ doit être un nombre de secondes
      */
-  , setTime: function(time, andPlay){
+  , setTime: function(time, dontPlay){
       this.controller.currentTime = time
-      if(andPlay === true){
+      if(this.playAfterSettingTime === true && !dontPlay){
         if(this.controller.paused) this.onTogglePlay()
       }
     }
@@ -191,22 +257,46 @@ const VideoController = {
       this.toggleVisible('#div-nav-video-buttons', visible)
       this.toggleVisible('#fs-get-times', visible)
       this.toggleVisible('#fs-new-event', visible)
-      this.toggleVisible('#btn-time-as-film-start', !current_analyse.filmStartTime)
+      this.toggleVisible('#btn-time-as-film-start', !this.hasStartTime)
     }
   , toggleVisible: function(jqId, v){
       $(jqId).css('visibility', v ? 'visible' : 'hidden')
     }
 }
-// /VideoController
+Object.defineProperties(VideoController,{
 
-
-$(document).ready(()=>{
-  // On met l'analyse de HER en analyse courante
-  window.current_analyse = new FAnalyse('./analyses/her')
-  // Et on la charge
-  current_analyse.load()
-  // Note : si le chargement est réussi, l'analyse appelle
-  // l'initialisation de l'interface, ce qui charge par exemple
-  // la vidéo.
-
+    hasStartTime:{
+      get:function(){return undefined!==current_analyse.filmStartTime}
+    }
+  , playAfterSettingTime: {
+        get:function(){return this._play_after_setting_time || true /* pour le moment */}
+      , set:function(v){this._play_after_setting_time = v}
+    }
+  // --- ÉLÉMENTS DOM ---
+  , btnPlay: {
+      get: function(){
+        if(undefined === this._btn_play){
+          this._btn_play = document.getElementById('btn-real-play')
+        }
+        return this._btn_play
+      }
+    }
+  , btnRewindStart: {
+      get: function(){
+        if(undefined===this._btn_rewind_start){
+          this._btn_rewind_start = document.getElementById('btn-rewind-start')
+        }
+        return this._btn_rewind_start
+      }
+    }
+  , imgPauser:{
+      get:function(){return '<img src="./img/btn-pause.jpg" />'}
+    }
+  , imgPlay:{
+      get:function(){return '<img src="./img/btn-play.jpg" />'}
+    }
+  , imgRewindStart:{
+    get:function(){return '<img src="./img/btn-rewind.jpg" />'}
+  }
 })
+// /VideoController

@@ -5,3 +5,26 @@ body, body * {
 .small {
   font-size: 0.75em;
 }
+.controller {border:0; padding:0;vertical-align:middle;}
+button.controller img {width:40px;}
+
+.fleft {float:left;}
+
+
+span.horloge {
+  font-family: Courier;
+  background-color: black;
+  color: white;
+  padding: 0.2em 0.5em;
+  display: inline-block;
+  text-align: center;
+}
+input.horloge, input.temps-secondes {
+  text-align:center;
+}
+input.temps-secondes {
+  width: 80px;
+}
+input.horloge.small {
+  width: 100px;
+}

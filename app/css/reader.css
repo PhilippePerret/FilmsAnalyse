@@ -1,0 +1,38 @@
+#section-reader {
+  width: 33%;
+  float: right;
+  border: 1px dashed green;
+  min-height: 600px;
+  display:block;
+  padding:0;
+}
+#reader {
+  width: 100%;
+  max-height: 600px;
+  overflow: auto;
+  padding:0;
+}
+#reader .event {
+  border: 1px solid green;
+  clear:both;
+}
+
+.event span.scene-heading{
+  display:block;
+  font-weight: bold;
+  margin-top: 1em;
+  text-decoration: underline;
+}
+.event span.scene-resume {
+  display:block;
+  font-style:italic;
+  margin-left:1em;
+}
+
+#reader .horloge {
+  float:right;
+  clear:right;
+  margin-left:1em;margin-bottom:1em;
+  font-size: 9.1pt;
+  background-color:grey;
+}

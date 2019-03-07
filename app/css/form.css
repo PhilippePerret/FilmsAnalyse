@@ -1,0 +1,14 @@
+div#event-form-buttons {
+  margin-top:1em;
+  text-align:right;
+}
+
+div#buttons-new-event button {
+  text-align:center;
+  width:64px;
+  padding:4px;
+}
+
+textarea#event-content {
+  resize:none;
+}

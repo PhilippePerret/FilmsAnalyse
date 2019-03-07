@@ -5,12 +5,11 @@
     <title>Analyse</title>
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="./css/analyzer.css">
+    <link rel="stylesheet" href="./css/reader.css">
+    <link rel="stylesheet" href="./css/form.css">
   </head>
   <body>
 
-    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
-    <div id="analyse-reader">
-    </div>
 
     <!-- Pour définir la vidéo courante -->
     <div id="div-video-path">
@@ -19,67 +18,182 @@
       <button type="button" id="btn-set-video-path" class="small">Définir</button>
     </div>
 
-    <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
-    <div id="div-video-top-tools">
-      <span id="horloge" class="vignette">0:0:0:0</span>
-      <span class="small">Taille de la vidéo : </span>
-      <select onchange="$.proxy(VideoController,'setSize')(this.value)" class="small">
-        <option value="vignette">Vignette</option>
-        <option value="medium">Medium</option>
-        <option value="large">Large</option>
-      </select>
-    </div>
+    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
+    <section id="section-reader">
+      <div id="reader"></div>
+    </section>
 
-    <!-- VIDÉO -->
-    <video id="video" width="450" style="visibility: hidden">
-      <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
-      <source id="video-src" src="" type="video/mp4">
-      <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
-      <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
-    </video>
+    <section id="section-video">
 
-    <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
-    <div id="div-nav-video-buttons">
-      <div style="text-align: right;">
-        <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
-        <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
-        <button type="button" id="btn-real-play">Lancer</button>
-        <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
-        <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
+      <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
+      <div id="div-video-top-tools">
+        <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
+        <span class="small">Taille de la vidéo : </span>
+        <select onchange="$.proxy(VideoController,'setSize')(this.value)" class="small">
+          <option value="vignette">Vignette</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
       </div>
-      <div>
-        <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
-        <input type="text" id="time" name="time" value="0,0,0,0" style="width:80px;" placeholder="[heure,[minute,[seconde,]]]frame">
-        <button type="button" id="btn-go-to-film-start" class="small">Aller au début du film</button>
+
+      <!-- VIDÉO -->
+      <video id="video" width="450" style="visibility: hidden">
+        <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
+        <source id="video-src" src="" type="video/mp4">
+        <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
+        <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
+      </video>
+
+      <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
+      <div id="div-nav-video-buttons">
+        <span id="horloge_real" class="horloge mini fleft">0:00:00:00</span>
+        <div style="text-align: right;height:40px">
+          <button type="button" id="btn-go-to-film-start" class="small">Début du film</button>
+          <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
+          <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
+          <button type="button" id="btn-rewind-start" class="controller">...</button>
+          <button type="button" id="btn-real-play" class="controller">...</button>
+          <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
+          <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
+        </div>
+        <div>
+          <button type="button" id="btn-get-time" class="small">Temps courant…</button>
+          <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
+          <input type="text" id="time" name="time" class="horloge small" value="0,0,0,0" />
+          <button type="button" id="btn-time-as-film-start" class="small">Temps courant comme début du film</button>
+        </div>
+        <div id="div-temps-courants" style="display:none;">
+          <span id="span-temps-courants-video">
+            <span class="small">Vidéo : </span>
+            <input type="text" class="horloge small" id="temps-courant-video-horloge" />
+            <input type="text" class="temps-secondes small" id="temps-courant-video-seconds" />
+          </span>
+          <span id="span-temps-courants-film" style="display:none;">
+            <span class="small">Film : </span>
+            <input type="text" class="horloge small" id="temps-courant-film-horloge" />
+            <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
+          </span>
+          <button type="button" class="small" onclick="VideoController.hideCurrentTime()">OK</button>
+        </div>
       </div>
-    </div>
-    <!-- / Fin des boutons de navigation -->
+      <!-- / Fin des boutons de navigation -->
+
+
+    </section>
+    <!-- /fin section vidéo -->
 
     <div>
       <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
     </div>
 
-    <fieldset id="fs-get-times" style="float:right;width:200px;padding:1em;">
-      <button type="button" id="btn-time-as-film-start" class="small">Prendre temps courant comme début du film</button>
-      <button type="button" id="btn-get-time" class="small">Obtenir le temps courant</button>
-    </fieldset>
 
     <!-- Section pour ajouter un nouvel évènement -->
+
     <fieldset id="fs-new-event">
-      <div>
-        <button type="button" id="btn-new-event" class="small">Nouvel évènement</button>
-        <button type="button" id="btn-new-scene" class="small">Nouvelle scène</button>
+
+      <div id="buttons-new-event">
+        <span>Créer</span>
+        <button type="button" id="btn-new-event" data-type="event" class="small">Ev.</button>
+        <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
+        <button type="button" id="btn-new-dial" data-type="dialog" class="small">Dial.</button>
+        <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
+        <button type="button" id="btn-new-qd" data-type="qd" class="small">QD</button>
+        <button type="button" id="btn-new-dim" data-type="dim" class="small">Dim.</button>
+        <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
+        <button type="button" id="btn-new-pp" data-type="pp" class="small">P/P</button>
+        <button type="button" id="btn-new-info" data-type="info" class="small">Info</button>
       </div>
-      <textarea id="event-content" rows="8" cols="80" placeholder="Description de l'évènement"></textarea>
-      <!-- TODO Ici, on pourra ajouter des éléments comme le type de l'évènement etc. -->
+
+      <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
+      <form id="form-edit-event">
+
+        <input type="hidden" name="id" id="id" />
+
+        <span class="ff finfo fpp">Type :</span>
+
+        <select class="ff finfo" id="infoType">
+          <option value="n/d">(sans type)</option>
+          <option value="pers">Personnage</option>
+          <option value="intr">Intrigue</option>
+          <option value="them">Thème</option>
+        </select>
+
+        <select class="ff fpp" id="ppType">
+          <option value="prep">Préparation</option>
+          <option value="expl">Exploitation</option>
+          <option value="paie">Paiement/Résolution</option>
+          <option value="canc">Annulation</option>
+        </select>
+
+        <div class="div-form">
+
+          <!-- Menu pour l'effet de la scène -->
+          <select class="ff fscene" id="lieu">
+            <option value="int">INT.</option>
+            <option value="ext">EXT.</option>
+            <option value="extint">INT. & EXT.</option>
+          </select>
+
+          <select class="ff fscene" id="effet">
+            <option value="jour">JOUR</option>
+            <option value="nuit">NUIT</option>
+            <option value="noir">NOIR</option>
+            <option value="n/d">N.D.</option>
+          </select>
+
+          <span class="ff fscene">Décor :</span>
+          <span class="ff fdim">Diminutif :</span>
+          <span class="ff fbrin">Titre :</span>
+          <span class="ff fdim">@</span><input type="text" class="ff fscene fdim" id="input-type-1" />
+        </div>
+
+        <div class="div-form">
+          <span class="ff fscene">Sous-décor :</span>
+          <span class="ff fdim">Signification :</span>
+          <input type="text" class="ff fscene fdim" id="input-type-2" />
+        </div>
+
+        <div class="div-form">
+          <div>
+            <span class="ff fscene fbrin">Résumé</span>
+            <span class="ff finfo">Information</span>
+            <span class="ff fevent faction fqd fpp">Description</span>
+            <span class="ff fdial">Commentaire</span>
+          </div>
+          <textarea id="event-content" class="ff fevent fscene fnote finfo fpp" rows="4" cols="60"></textarea>
+        </div>
+
+        <div class="div-form">
+          <div>Note</div>
+          <textarea id="event-note" rows="3" cols="60"></textarea>
+        </div>
+
+        <div id="event-form-buttons">
+          <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
+          <button id="btn-form-submit" type="button">Enregistrer</button>
+        </div>
+
+      </form>
+      <!-- /fin du formulaire en fonction des éléments à ajouter -->
     </fieldset>
+
+
+
     <div id="message"></div>
+
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
     <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
-    <script type="text/javascript" src="./js/lecteur/controller.js"></script>
+    <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
+    <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
+    <script type="text/javascript" src="./js/lecteur/Reader.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
     <script type="text/javascript" src="./js/common/FAEvent.js"></script>
+    <script type="text/javascript" src="./js/common/Locator.js"></script>
+    <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
+    <!-- Pour être sûr que FAEvent est chargé (suffit ?) -->
+    <script type="text/javascript" src="./js/common/FAEvents/FAEscene.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEinfo.js"></script>
   </body>
 </html>

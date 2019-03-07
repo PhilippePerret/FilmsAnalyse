@@ -37,6 +37,9 @@ class OTime {
   set duration(v) { this.duration = v }
   get duration()  { return this.duration || 1 }
 
+  get secondsInt() {
+    return parseInt(this.seconds,10)
+  }
   h2s(h){
     h = h.split(',').reverse()
     var tps = 0
@@ -52,9 +55,12 @@ class OTime {
     hrs = Math.floor(s / 3600)
     r = s - (hrs * 3600)
     mns = Math.floor(r / 60)
+    mns = mns > 9 ? mns : `0${mns}`
     r = r - (mns * 60)
     scs = Math.floor(r)
+    scs = scs > 9 ? scs : `0${scs}`
     frm = parseInt((r - scs) * 1000 / 40,10)
+    frm = frm > 9 ? frm : `0${frm}`
     return `${hrs}:${mns}:${scs}:${frm}`
   }
 
