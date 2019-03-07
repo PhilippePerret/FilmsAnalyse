@@ -1,19 +1,20 @@
 #section-reader {
-  width: 33%;
-  float: right;
+  position:absolute;
+  top:0;
+  display:block;
   border: 1px dashed green;
   min-height: 600px;
-  display:block;
   padding:0;
 }
 #reader {
-  width: 100%;
+  width: 95%;
   max-height: 600px;
   overflow: auto;
   padding:0;
 }
 #reader .event {
   border: 1px solid green;
+  padding: 0.2em 0.5em;
   clear:both;
 }
 

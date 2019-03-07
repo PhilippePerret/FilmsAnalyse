@@ -11,25 +11,21 @@
   <body>
 
 
-    <!-- Pour définir la vidéo courante -->
-    <div id="div-video-path">
-      <span class="small">Video : </span>
-      <input type="text" id="video-path" style="width:50%;" value="" class="small">
-      <button type="button" id="btn-set-video-path" class="small">Définir</button>
-    </div>
-
-    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
-    <section id="section-reader">
-      <div id="reader"></div>
-    </section>
 
     <section id="section-video">
+
+      <!-- Pour définir la vidéo courante -->
+      <div id="div-video-path">
+        <span class="small">Video : </span>
+        <input type="text" id="video-path" style="width:50%;" value="" class="small">
+        <button type="button" id="btn-set-video-path" class="small">Définir</button>
+      </div>
 
       <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
       <div id="div-video-top-tools">
         <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
         <span class="small">Taille de la vidéo : </span>
-        <select onchange="$.proxy(VideoController,'setSize')(this.value)" class="small">
+        <select id="video-size" onchange="$.proxy(VideoController,'setSize')(this.value,true)" class="small">
           <option value="vignette">Vignette</option>
           <option value="medium">Medium</option>
           <option value="large">Large</option>
@@ -37,7 +33,7 @@
       </div>
 
       <!-- VIDÉO -->
-      <video id="video" width="450" style="visibility: hidden">
+      <video id="video">
         <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
         <source id="video-src" src="" type="video/mp4">
         <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
@@ -78,108 +74,120 @@
       </div>
       <!-- / Fin des boutons de navigation -->
 
-
     </section>
     <!-- /fin section vidéo -->
 
-    <div>
-      <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
-    </div>
+    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
+    <section id="section-reader">
+      <div id="reader"></div>
+    </section>
 
 
-    <!-- Section pour ajouter un nouvel évènement -->
+    <!-- Pour la partie basse, dont le formulaire d'édition des events -->
+    <section id="section-footer">
 
-    <fieldset id="fs-new-event">
-
-      <div id="buttons-new-event">
-        <span>Créer</span>
-        <button type="button" id="btn-new-event" data-type="event" class="small">Ev.</button>
-        <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
-        <button type="button" id="btn-new-dial" data-type="dialog" class="small">Dial.</button>
-        <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
-        <button type="button" id="btn-new-qd" data-type="qd" class="small">QD</button>
-        <button type="button" id="btn-new-dim" data-type="dim" class="small">Dim.</button>
-        <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
-        <button type="button" id="btn-new-pp" data-type="pp" class="small">P/P</button>
-        <button type="button" id="btn-new-info" data-type="info" class="small">Info</button>
+      <div>
+        <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
       </div>
 
-      <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
-      <form id="form-edit-event">
 
-        <input type="hidden" name="id" id="id" />
+      <!-- Section pour ajouter un nouvel évènement -->
 
-        <span class="ff finfo fpp">Type :</span>
+      <fieldset id="fs-new-event">
 
-        <select class="ff finfo" id="infoType">
-          <option value="n/d">(sans type)</option>
-          <option value="pers">Personnage</option>
-          <option value="intr">Intrigue</option>
-          <option value="them">Thème</option>
-        </select>
-
-        <select class="ff fpp" id="ppType">
-          <option value="prep">Préparation</option>
-          <option value="expl">Exploitation</option>
-          <option value="paie">Paiement/Résolution</option>
-          <option value="canc">Annulation</option>
-        </select>
-
-        <div class="div-form">
-
-          <!-- Menu pour l'effet de la scène -->
-          <select class="ff fscene" id="lieu">
-            <option value="int">INT.</option>
-            <option value="ext">EXT.</option>
-            <option value="extint">INT. & EXT.</option>
-          </select>
-
-          <select class="ff fscene" id="effet">
-            <option value="jour">JOUR</option>
-            <option value="nuit">NUIT</option>
-            <option value="noir">NOIR</option>
-            <option value="n/d">N.D.</option>
-          </select>
-
-          <span class="ff fscene">Décor :</span>
-          <span class="ff fdim">Diminutif :</span>
-          <span class="ff fbrin">Titre :</span>
-          <span class="ff fdim">@</span><input type="text" class="ff fscene fdim" id="input-type-1" />
+        <div id="buttons-new-event">
+          <button type="button" id="btn-new-event" data-type="event" class="small">Ev.</button>
+          <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
+          <button type="button" id="btn-new-dial" data-type="dialog" class="small">Dial.</button>
+          <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
+          <button type="button" id="btn-new-qd" data-type="qd" class="small">QD</button>
+          <button type="button" id="btn-new-dim" data-type="dim" class="small">Dim.</button>
+          <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
+          <button type="button" id="btn-new-pp" data-type="pp" class="small">P/P</button>
+          <button type="button" id="btn-new-info" data-type="info" class="small">Info</button>
         </div>
 
-        <div class="div-form">
-          <span class="ff fscene">Sous-décor :</span>
-          <span class="ff fdim">Signification :</span>
-          <input type="text" class="ff fscene fdim" id="input-type-2" />
-        </div>
+        <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
+        <form id="form-edit-event">
 
-        <div class="div-form">
-          <div>
-            <span class="ff fscene fbrin">Résumé</span>
-            <span class="ff finfo">Information</span>
-            <span class="ff fevent faction fqd fpp">Description</span>
-            <span class="ff fdial">Commentaire</span>
+          <input type="hidden" id="event-id" />
+          <input type="hidden" id="event-type" />
+
+          <span class="ff finfo fpp">Type :</span>
+
+          <select class="ff finfo" id="infoType">
+            <option value="n/d">(sans type)</option>
+            <option value="pers">Personnage</option>
+            <option value="intr">Intrigue</option>
+            <option value="them">Thème</option>
+          </select>
+
+          <select class="ff fpp" id="ppType">
+            <option value="prep">Préparation</option>
+            <option value="expl">Exploitation</option>
+            <option value="paie">Paiement/Résolution</option>
+            <option value="canc">Annulation</option>
+          </select>
+
+          <div class="div-form">
+
+            <!-- Menu pour l'effet de la scène -->
+            <select class="ff fscene" id="lieu">
+              <option value="int">INT.</option>
+              <option value="ext">EXT.</option>
+              <option value="extint">INT. & EXT.</option>
+            </select>
+
+            <select class="ff fscene" id="effet">
+              <option value="jour">JOUR</option>
+              <option value="nuit">NUIT</option>
+              <option value="noir">NOIR</option>
+              <option value="n/d">N.D.</option>
+            </select>
+
+            <span class="ff fscene">Décor :</span>
+            <span class="ff fdim">Diminutif :</span>
+            <span class="ff fbrin">Titre :</span>
+            <span class="ff fdim">@</span><input type="text" class="ff fscene fdim" id="input-type-1" />
           </div>
-          <textarea id="event-content" class="ff fevent fscene fnote finfo fpp" rows="4" cols="60"></textarea>
-        </div>
 
-        <div class="div-form">
-          <div>Note</div>
-          <textarea id="event-note" rows="3" cols="60"></textarea>
-        </div>
+          <div class="div-form">
+            <span class="ff fscene">Sous-décor :</span>
+            <span class="ff fdim">Signification :</span>
+            <input type="text" class="ff fscene fdim" id="input-type-2" />
+          </div>
 
-        <div id="event-form-buttons">
-          <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
-          <button id="btn-form-submit" type="button">Enregistrer</button>
-        </div>
+          <div class="div-form">
+            <div>
+              <span class="ff fscene fbrin">Résumé</span>
+              <span class="ff finfo">Information</span>
+              <span class="ff fevent faction fqd fpp">Description</span>
+              <span class="ff fdial">Commentaire</span>
+            </div>
+            <textarea id="event-content" class="ff fevent fscene fnote finfo fpp" rows="4" cols="60"></textarea>
+          </div>
 
-      </form>
-      <!-- /fin du formulaire en fonction des éléments à ajouter -->
-    </fieldset>
+          <div class="div-form">
+            <div>Note</div>
+            <textarea id="event-note" rows="3" cols="60"></textarea>
+          </div>
+
+          <div id="event-form-buttons">
+            <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
+            <button id="btn-form-submit" type="button">Enregistrer</button>
+          </div>
+
+        </form>
+        <!-- /fin du formulaire en fonction des éléments à ajouter -->
+      </fieldset>
 
 
 
-    <div id="message"></div>
+      <div id="message"></div>
+
+    </section>
+    <!-- /section#section-footer -->
+
 
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>

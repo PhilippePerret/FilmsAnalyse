@@ -51,14 +51,21 @@ const EventForm = {
 
       this.jqForm.find('.ff').hide()
       this.jqForm.find(`.f${eType}`).show()
+      $('#event-id').val('')
+      $('#event-type').val(eType)
     }
 
   , submit: function(){
       console.log("Soumission du formulaire")
       // TODO On doit récupérer toutes les données
       var data = {}
-      data.id   = $('event-id').val()
-      data.note = $('event-note').val()
+      data.id   = $('#event-id').val()
+      data.type = $('#event-type').val()
+      data.note = $('#event-note').val()
+      // On récupère toutes les données (ça consiste à passer en revue tous
+      // les éléments de formulaire qui ont la classe "f<type>")
+      $('select, input[type="text"], textarea, input[type="checkbox"]')
+
       // On crée ou on update l'évènement
       if(data.id){
         // ÉDITION

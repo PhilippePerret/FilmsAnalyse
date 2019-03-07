@@ -1,5 +1,7 @@
 'use strict'
 
-const { ipc }  = require('electron')
-const path = require('path')
-const fs   = require('fs')
+const electron  = require('electron')
+const remote    = electron.remote
+const ipc       = electron.ipcRenderer
+const path      = require('path')
+const fs        = require('fs')

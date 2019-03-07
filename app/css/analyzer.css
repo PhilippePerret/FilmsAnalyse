@@ -1,5 +1,9 @@
 #section-video {
-  width: 66%;
+  position: absolute;
+  top:0;
+  display:block;
+  clear:both;
+  border:1px dashed red;
 }
 #section-video .horloge.mini {
   font-size: 10.2pt;
@@ -16,4 +20,11 @@
 #section-video .horloge.large {
   font-size: 24pt;
   width: 210px;
+}
+
+#section-footer {
+  position:absolute;
+  bottom:0;
+  background-color:white;
+  padding:1em;
 }

@@ -15,6 +15,9 @@ window.current_analyse = null // définie au ready
 
 const VideoController = {
     class: 'VideoController'
+  , VIDEO_SIZES: {
+      vignette: 450, medium: 650, large: 1000
+    }
   , controller: null
   , inited: false
 
@@ -24,13 +27,22 @@ const VideoController = {
   , init: function(){
       var my = this
       if (this.inited){throw("Le vidéocontroller ne devrait pas être initié deux fois…")}
+
+      // Le contrôleur vidéo
       this.controller = document.getElementById('video')
+
+      this.setReadersDimentions()
+
       $('#btn-get-time').on('click', my.getAndShowTime.bind(my))
       $('#btn-go-to-time').on('click', my.goToTime.bind(my))
-      $('#btn-save-analyse').on('click', current_analyse.save.bind(current_analyse))
       $('#btn-time-as-film-start').on('click', () => {
         current_analyse.setFilmStartTimeAt.bind(current_analyse)(this.getTime())
       })
+
+      // Bouton pour sauver l'analyse
+      var btnSaveAnalyse = document.getElementById('btn-save-analyse')
+      listen(btnSaveAnalyse,'click', current_analyse, 'save')
+      this.toggleVisible(btnSaveAnalyse,false)
 
       listen(this.btnPlay, 'click', my, 'onTogglePlay')
       this.btnPlay.innerHTML = this.imgPlay
@@ -57,12 +69,44 @@ const VideoController = {
         this.setVideoUI(false)
       }
 
+      // Si l'analyse a enregistré une taille de vidéo, on la règle
+      this.setSize(current_analyse.videoSize||'medium', false)
+      $('#video-size').val(current_analyse.videoSize||'medium')
+
       // Tous les champs input-text, on selectionne tout quand on focusse
       // dedant
       $('input[type="text"]').on('focus', function(){$(this).select()})
 
       this.inited = true
     }
+
+    /**
+     * À l'initialisation, on définit les dimensions de la partie vidéo
+     * (video-reader), de la partie lecteur d'analyse (analyse reader) et
+     * le bas de page (TODO)
+     */
+  , setReadersDimentions:function(){
+      // On calcule les dimensions du lecteur vidéo et du reader d'analyse
+      // en fonction de la taille de l'écran
+      const { width, height } = ipc.sendSync('get-screen-dimensions')
+
+      var videoReaderWidth    = parseInt((width * 60) / 100,10)
+      var analyseReaderWidth  = parseInt((width * 39) / 100,10)
+      var analyseReaderHeight = parseInt((height * 50)/100,10)
+
+      $('#section-video').css('width',`${videoReaderWidth}px`)
+      $('#section-reader').css({
+          "width": `${analyseReaderWidth}px`
+        , "height":`${analyseReaderHeight}px`
+        , "margin-left": `${1 + videoReaderWidth}px`
+      })
+
+      // Redéfinition de la taille large de la vidéo en fonction de
+      // l'écran.
+      this.redefineVideoSizes(videoReaderWidth)
+
+    }
+
     /**
      * Méthode appelée quand on presse le bouton Play (pas ceuli du contrôleur)
      */
@@ -163,14 +207,30 @@ const VideoController = {
     /**
      * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
      * le moment)
+     *
+     * Si +save+ est true, la taille doit être enregistrée dans les préférences
+     * de l'analyse courante.
      */
-  , VIDEO_SIZES: {
-      vignette: 450, medium: 650, large: 1000
-    }
-  , setSize: function(v){
+  , setSize: function(v, save){
       this.controller.width = this.VIDEO_SIZES[v]
       document.getElementById('horloge').className = `horloge ${v}`
+      if (save === true) current_analyse.videoSize = v
     }
+
+    /**
+     * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
+     * de l'écran.
+     */
+  , redefineVideoSizes:function(w){
+      this.VIDEO_SIZES['large']   = w - 10
+      if(w < 650){
+        this.VIDEO_SIZES['medium']    = parseInt((w / 3) * 2, 10)
+        this.VIDEO_SIZES['vignette']  = parseInt(w / 2.2, 10)
+      }
+
+    }
+
+
     /**
      * Méthode qui récupère le temps courant du film
      *

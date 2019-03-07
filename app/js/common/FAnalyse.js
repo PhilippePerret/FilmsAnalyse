@@ -51,14 +51,18 @@ class FAnalyse {
         filmStartTime:  this.filmStartTime.seconds
       , videoPath:      this.videoPath
       , diminutifs:     this.diminutifs
+      , videoSize:      this.videoSize
     }
   }
   set data(v){
     this.filmStartTime  = new OTime(v["filmStartTime"])
     this._videoPath     = v.videoPath
     this.diminutifs     = v.diminutifs
+    this.videoSize      = v.videoSize
   }
 
+  set videoSize(v)  { this._videoSize = v; this.modified = true }
+  get videoSize()   { return this._videoSize}
   /**
    * Méthode qui affiche les évènements qui se trouvent à +time+
    * (avec une marge de plus ou moins 10 secondes)
@@ -176,24 +180,22 @@ class FAnalyse {
    * Méthode appelée pour sauver l'analyse courante
    */
   save() {
-    this.savers = []
-    for(var path of this.SAVED_FILES){
-      this.savers.push(path)
-    }
-    for(path of this.SAVED_FILES){
-      this.saveFile(path, this.PROP_PER_FILE[path])
+    this.savers = 0
+    this.savables_count = this.SAVED_FILES.length
+    for(var fpath of this.SAVED_FILES){
+      this.saveFile(fpath, this.PROP_PER_FILE[fpath])
     }
   }
-  saveFile(path, prop){
+  saveFile(fpath, prop){
     var my = this
-    fs.writeFile(path, JSON.stringify(this[prop]),'utf8', (err)=>{
+    fs.writeFile(fpath, JSON.stringify(this[prop]),'utf8', (err)=>{
       if(err) throw(err)
-      my.setSaved(path)
+      my.setSaved(fpath)
     })
   }
   setSaved(path){
-    this.savers.splice(this.savers.indexOf(path),1)
-    if(this.savers.length === 0){
+    this.savers += 1
+    if(this.savers === this.savables_count){
       this.modified = false
       F.notify("Analyse enregistrée avec succès.")
     }
@@ -211,7 +213,7 @@ class FAnalyse {
     var my = this
       , fpath ;
     // Les fichiers à charger
-    var loadables = my.SAVED_FILES
+    var loadables = Object.assign([], my.SAVED_FILES)
     // Pour comptabiliser le nombre de fichiers chargés
     this.loaders = 0
     my.loadables_count = loadables.length
