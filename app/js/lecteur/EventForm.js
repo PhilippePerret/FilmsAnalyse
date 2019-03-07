@@ -41,42 +41,84 @@ const EventForm = {
     }
 
   , onClickNewEvent(ev, o){
+      VideoController.onTogglePlay()
       ev.stopPropagation()
       var cible = o
       var eType = o.attr('data-type')
-      // var eClass = eval(`FAE${eType}`)
-      // var e = new eClass({})
-      // console.log(e)
       this.toggleForm()
 
       this.jqForm.find('.ff').hide()
       this.jqForm.find(`.f${eType}`).show()
       $('#event-id').val('')
       $('#event-type').val(eType)
+      $('#event-time').val(parseInt(VideoController.getRTime(),10))
     }
 
   , submit: function(){
-      console.log("Soumission du formulaire")
+
+
       // TODO On doit récupérer toutes les données
-      var data = {}
-      data.id   = $('#event-id').val()
-      data.type = $('#event-type').val()
-      data.note = $('#event-note').val()
+      var data_min = {}
+      data_min.id       = getValOrNull('event-id')
+      data_min.type     = getValOrNull('event-type')  // p.e. 'scene'
+
+      // Création d'objet particulier, qui ne sont pas des sous-classes
+      // de FAEvent
+      switch (data_min.type) {
+        case 'dim':
+          // TODO Création d'un diminutif
+          return
+        case 'brin':
+          // TODO Création d'un brin
+          return
+      }
+
+      data_min.time     = parseInt(getValOrNull('event-time'),10)
+      data_min.note     = getValOrNull('event-note')
+      data_min.duration = getValOrNull('event-duration')
+      data_min.content  = getValOrNull('event-content')
+
       // On récupère toutes les données (ça consiste à passer en revue tous
       // les éléments de formulaire qui ont la classe "f<type>")
-      $('select, input[type="text"], textarea, input[type="checkbox"]')
+      var ftype = `f${data_min.type}`
+      var fields = []
+      var other_data = {}
+      $('select,input[type="text"],textarea,input[type="checkbox"]')
+        .filter(function(){
+          return $(this).hasClass(ftype)
+        })
+        .each(function(){
+          other_data[this.id] = getValOrNull(this.id)
+          // Pour vérification
+          fields.push(this.id)
+        })
+
+      console.log("Champs trouvés:", fields)
+      console.log("Data finale:", data_min)
+      console.log("Data finale:", other_data)
 
       // On crée ou on update l'évènement
-      if(data.id){
+      if(data_min.id){
         // ÉDITION
       } else {
         // CRÉATION
+        // On crée l'évènement du type voulu
+        var eClass = eval(`FAE${data_min.type}`)
+        var e = new eClass(data_min)
+        // Et on lui dispatch les autres données
+        e.dispatch(other_data)
+        // On ajoute l'évènement à l'analyse
+        current_analyse.newEvent(e)
       }
-      this.toggleForm()
+      this.endEdition()
     }
   , cancel: function(){
       console.log("Je renonce à l'édition de l'event")
+      this.endEdition()
+    }
+  , endEdition: function(){
       this.toggleForm()
+      VideoController.onTogglePlay()
     }
 }
 Object.defineProperties(EventForm,{

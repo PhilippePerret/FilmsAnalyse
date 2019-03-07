@@ -41,7 +41,7 @@ class OTime {
     return parseInt(this.seconds,10)
   }
   h2s(h){
-    h = h.split(',').reverse()
+    h = h.split(/,\:/).reverse()
     var tps = 0
     tps += parseInt(h[0]||0,10) * 40
     tps += parseInt(h[1]||0,10) * 1000

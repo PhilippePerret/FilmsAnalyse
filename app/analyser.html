@@ -93,27 +93,55 @@
 
       <!-- Section pour ajouter un nouvel évènement -->
 
-      <fieldset id="fs-new-event">
+      <div id="buttons-new-event">
+        <button type="button" id="btn-new-event" data-type="event" class="small" title="Évènement">Ev.</button>
+        <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
+        <button type="button" id="btn-new-dial" data-type="dialog" class="small" title="Dialogue">Dial.</button>
+        <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
+        <button type="button" id="btn-new-pp" data-type="pp" class="small" title="Préparation/Paiement">P/P</button>
+        <button type="button" id="btn-new-qrd" data-type="qrd" class="small" title="Question et Réponse Dramatique">QRD</button>
+        <button type="button" id="btn-new-proc" data-type="proc" class="small" title="Procédé">Proc.</button>
+        <button type="button" id="btn-new-dim" data-type="dim" class="small" title="Diminutif">Dim.</button>
+        <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
+        <button type="button" id="btn-new-info" data-type="info" class="small" title="Information">Info</button>
+      </div>
 
-        <div id="buttons-new-event">
-          <button type="button" id="btn-new-event" data-type="event" class="small">Ev.</button>
-          <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
-          <button type="button" id="btn-new-dial" data-type="dialog" class="small">Dial.</button>
-          <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
-          <button type="button" id="btn-new-qd" data-type="qd" class="small">QD</button>
-          <button type="button" id="btn-new-dim" data-type="dim" class="small">Dim.</button>
-          <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
-          <button type="button" id="btn-new-pp" data-type="pp" class="small">P/P</button>
-          <button type="button" id="btn-new-info" data-type="info" class="small">Info</button>
+      <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
+      <form id="form-edit-event">
+
+        <input type="hidden" id="event-id" />
+        <input type="hidden" id="event-type" />
+        <input type="hidden" id="event-time" />
+
+        <!-- Un div flottant pour définir la durée (pour tous) -->
+        <div id="div-duration" class="fright">
+          <label for="event-duration">Durée</label>
+          <input type="text" id="event-duration" class="temps-secondes" placeholder="[[h,]m,]secs">
         </div>
 
-        <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
-        <form id="form-edit-event">
+        <div class="div-form">
+          <label class="ff finfo fpp fdial fscene">Type :</label>
 
-          <input type="hidden" id="event-id" />
-          <input type="hidden" id="event-type" />
+          <select class="ff fscene" id="sceneType">
+            <option value="generic">Générique</option>
+            <option value="expo">Expositionnelle</option>
+            <option value="action">Action</option>
+            <option value="dialogue">Dialogue</option>
+            <option value="rencontre">Rencontre</option>
+          </select>
 
-          <span class="ff finfo fpp">Type :</span>
+          <select class="ff faction" id="actionType">
+            <option value="n/d">(sans type)</option>
+            <option value="inner">Physique</option>
+            <option value="conflit">Intellectuelle</option>
+            <option value="conflit">Artistique</option>
+          </select>
+
+          <select class="ff fdial" id="dialType">
+            <option value="n/d">(sans type)</option>
+            <option value="inner">Intérieur</option>
+            <option value="conflit">Conflict</option>
+          </select>
 
           <select class="ff finfo" id="infoType">
             <option value="n/d">(sans type)</option>
@@ -128,60 +156,56 @@
             <option value="paie">Paiement/Résolution</option>
             <option value="canc">Annulation</option>
           </select>
+        </div>
 
-          <div class="div-form">
+        <div class="div-form">
 
-            <!-- Menu pour l'effet de la scène -->
-            <select class="ff fscene" id="lieu">
-              <option value="int">INT.</option>
-              <option value="ext">EXT.</option>
-              <option value="extint">INT. & EXT.</option>
-            </select>
+          <!-- Menu pour l'effet de la scène -->
+          <select class="ff fscene" id="lieu">
+            <option value="int">INT.</option>
+            <option value="ext">EXT.</option>
+            <option value="extint">INT. & EXT.</option>
+          </select>
 
-            <select class="ff fscene" id="effet">
-              <option value="jour">JOUR</option>
-              <option value="nuit">NUIT</option>
-              <option value="noir">NOIR</option>
-              <option value="n/d">N.D.</option>
-            </select>
+          <select class="ff fscene" id="effet">
+            <option value="jour">JOUR</option>
+            <option value="nuit">NUIT</option>
+            <option value="noir">NOIR</option>
+            <option value="n/d">N.D.</option>
+          </select>
 
-            <span class="ff fscene">Décor :</span>
-            <span class="ff fdim">Diminutif :</span>
-            <span class="ff fbrin">Titre :</span>
-            <span class="ff fdim">@</span><input type="text" class="ff fscene fdim" id="input-type-1" />
+          <label class="ff fscene">Décor</label>
+          <label class="ff fdim">Diminutif</label>
+          <label class="ff fbrin">Titre</label>
+          <label class="ff fdim">@</label><input type="text" class="ff fscene fdim" id="input-text-1" />
+
+          <label class="ff fscene">Sous-décor</label>
+          <label class="ff fdim">Signification</label>
+          <input type="text" class="ff fscene fdim" id="input-text-2" />
+        </div>
+
+        <div class="div-form">
+          <div>
+            <label class="ff fscene fbrin">Résumé</label>
+            <label class="ff finfo">Information</label>
+            <label class="ff fevent faction fqd fpp">Description</label>
+            <label class="ff fdial">Commentaire</label>
           </div>
+          <textarea id="event-content" rows="4"></textarea>
+        </div>
 
-          <div class="div-form">
-            <span class="ff fscene">Sous-décor :</span>
-            <span class="ff fdim">Signification :</span>
-            <input type="text" class="ff fscene fdim" id="input-type-2" />
-          </div>
+        <div class="div-form">
+          <label class="block">Note</label>
+          <textarea id="event-note" rows="3"></textarea>
+        </div>
 
-          <div class="div-form">
-            <div>
-              <span class="ff fscene fbrin">Résumé</span>
-              <span class="ff finfo">Information</span>
-              <span class="ff fevent faction fqd fpp">Description</span>
-              <span class="ff fdial">Commentaire</span>
-            </div>
-            <textarea id="event-content" class="ff fevent fscene fnote finfo fpp" rows="4" cols="60"></textarea>
-          </div>
+        <div id="event-form-buttons">
+          <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
+          <button id="btn-form-submit" type="button">Enregistrer</button>
+        </div>
 
-          <div class="div-form">
-            <div>Note</div>
-            <textarea id="event-note" rows="3" cols="60"></textarea>
-          </div>
-
-          <div id="event-form-buttons">
-            <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
-            <button id="btn-form-submit" type="button">Enregistrer</button>
-          </div>
-
-        </form>
-        <!-- /fin du formulaire en fonction des éléments à ajouter -->
-      </fieldset>
-
-
+      </form>
+      <!-- /fin du formulaire en fonction des éléments à ajouter -->
 
       <div id="message"></div>
 
@@ -193,6 +217,7 @@
     <script type="text/javascript" src="./js/common/requirements.js"></script>
     <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
+    <script type="text/javascript" src="./js/system/utils.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
     <script type="text/javascript" src="./js/lecteur/Reader.js"></script>
@@ -203,5 +228,10 @@
     <!-- Pour être sûr que FAEvent est chargé (suffit ?) -->
     <script type="text/javascript" src="./js/common/FAEvents/FAEscene.js"></script>
     <script type="text/javascript" src="./js/common/FAEvents/FAEinfo.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEaction.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEdialog.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEqrd.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEproc.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEpp.js"></script>
   </body>
 </html>

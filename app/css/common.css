@@ -10,7 +10,9 @@ body, body * {
 button.controller img {width:40px;}
 
 .fleft {float:left;}
+.fright {float:right;}
 
+.block {display:block;}
 .inline {display:inline-block;}
 .inline90 {
   display:inline-block;

@@ -79,15 +79,28 @@ class FAnalyse {
    * Formate le texte +txt+ en fonction de l'évènement
    */
   formateTexte(ev){
-    var txt = ev.content
+    var txt = this.deDim(ev.content)
+    var h
+    switch (ev.type) {
+      case 'scene':
+        if(ev.sceneType == 'generic'){ h = "GÉNÉRIQUE" }
+        else {
+          var decor  = ev.decor ? ` — ${this.deDim(ev.decor)}` : ''
+          var sdecor = ev.sous_decor ? ` : ${this.deDim(ev.sous_decor)}` : ''
+          h = `${(ev.lieu || 'INT').toUpperCase()}. ${(ev.effet || 'jour').toUpperCase()}${decor}${sdecor}`}
+        txt = `<span class="scene-heading">${h}</span><span class="scene-resume">${txt}</span>`
+        break;
+    }
+    return txt
+  }
+
+  /**
+   * Remplace les diminutifs de +txt+ par leur vraie valeur
+   */
+  deDim(txt){
     for(var dim in this.diminutifs){
       var reg = new RegExp(`@${dim}`,'g')
       txt = txt.replace(reg,this.diminutifs[dim])
-    }
-    switch (ev.type) {
-      case 'scene':
-        txt = `<span class="scene-heading">INT. JOUR - ${ev.decor || 'DÉCOR'}</span><span class="scene-resume">${txt}</span>`
-        break;
     }
     return txt
   }
@@ -114,33 +127,21 @@ class FAnalyse {
   /**
    * Création d'un nouvel évènement avec les données +data+
    */
-  newThing(type, data){
-    var content = $('textarea#event-content').val().trim()
+  newEvent(nev){
 
-    if(content === ''){
-      VideoController.onTogglePlay()
-      F.notify("Définir le texte puis taper à nouveau sur le bouton.")
-      return null
-    } else {
-      $('textarea#event-content').val('')
-      if(VideoController.controller.paused) VideoController.onTogglePlay()
-    }
-    if(type == 'scene'){
-      // TODO Si c'est une scène, il faut compter son index (en fonction du
-      // dernier par rapport aux temps)
-
-    }
-    var data = {type: type, time: VideoController.getRTime(), content: content}
-    var nevent = new FAEvent(data)
     if (this.events.length){
       // On place l'event à l'endroit voulu dans le film
-      var idx_event_before = this.getIndexOfEventAfter(nevent.time)
-      this.events.splice(idx_event_before, 0, nevent)
+      var idx_event_before = this.getIndexOfEventAfter(nev.time)
+      this.events.splice(idx_event_before, 0, nev)
     } else {
-      this.events.push(nevent)
+      this.events.push(nev)
     }
+    // TODO On place l'évènement dans la donnée Time
+    // On place tout de suite l'évènement sur le lecteur
+    nev.show()
+
     this.modified = true
-    nevent = null
+    nev = null
     idx_event_before = null
     // console.log("Nouvel event ajouté")
   }
@@ -171,7 +172,7 @@ class FAnalyse {
   get PROP_PER_FILE(){
     if(undefined === this._prop_per_path){
       this._prop_per_path = {}
-      this._prop_per_path[this.eventsFilePath]  = 'events'
+      this._prop_per_path[this.eventsFilePath]  = 'eventsSaved'
       this._prop_per_path[this.dataFilePath]    = 'data'
     }
     return this._prop_per_path
@@ -201,6 +202,21 @@ class FAnalyse {
     }
   }
 
+  /**
+   * Retourne les évènements sous forme de données simplifiées
+   */
+  get eventsSaved(){
+    var eSaveds = []
+    for(var e of this.events){eSaveds.push(e.data)}
+    return eSaveds
+  }
+  set eventsSaved(v){
+    this.events = []
+    for(var d of v){
+      var eClass = eval(`FAE${d.type}`)
+      this.events.push(new eClass(d))
+    }
+  }
   /**
    * Méthode pour charger l'analyse (courante ou pas)
    *
@@ -247,6 +263,7 @@ class FAnalyse {
     if(fs.existsSync(fpath)){
       fs.readFile(fpath, 'utf8', (err, data) => {
         if (err) throw(err)
+        // console.log("data:",data)
         my[prop] = JSON.parse(data)
         my.onLoaded(fpath)
       })

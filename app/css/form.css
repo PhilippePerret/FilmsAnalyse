@@ -1,6 +1,10 @@
-div#event-form-buttons {
-  margin-top:1em;
-  text-align:right;
+
+div#buttons-new-event {
+  width:300px;
+  border:1px solid grey;
+  border-radius:1em;
+  padding:1em;
+  line-height:1.8em;
 }
 
 div#buttons-new-event button {
@@ -9,6 +13,29 @@ div#buttons-new-event button {
   padding:4px;
 }
 
+form#form-edit-event {
+  width: 60%;
+  margin-left:2em;
+  border:1px solid;
+  border-radius:0.3em;
+  padding:0.5em;
+}
+
+div#event-form-buttons {
+  margin-top:1em;
+  text-align:right;
+}
+
+form#form-edit-event textarea {
+  width:96%;
+  resize:none;
+}
+form#form-edit-event label {
+  font-size:0.85em;
+  color:#555555;
+  font-style:italic;
+  margin-right:0.5em;
+}
 textarea#event-content {
   resize:none;
 }
