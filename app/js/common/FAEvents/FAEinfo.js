@@ -5,6 +5,14 @@ class FAEinfo extends FAEvent {
     super(data)
   }
 
-  get resume(){return this.content}
+  get isValid(){
+    var errors = []
+
+    // Définir ici les validité
+    this.content || errors.push({msg: "Le contenu de l'information est requis.", prop: 'content'})
+
+    if(errors.length){super.onErrors(this, errors)}
+    return errors.length == 0
+  }
 
 }

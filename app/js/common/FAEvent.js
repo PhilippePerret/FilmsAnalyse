@@ -5,6 +5,7 @@ class FAEvent {
 
   constructor(data){
     // this.type     = data.type  // Sera défini par la sous-classe
+    this.id       = parseInt(data.id,10)
     this.titre    = data.titre    // String
     this.time     = data.time     // Number
     this.duration = data.duration // Number (seconds)
@@ -34,6 +35,22 @@ class FAEvent {
   }
   get duration(){return this._duration}
 
+  /**
+   * Méthode appelée en cas d'erreur.
+   * +evt+ FAEvent concerné
+   * +errors+ est une liste de tables qui doivent contenir :
+   * :msg     Le message d'erreur
+   * :prop    Le nom de la propriété, qui permettra de montrer le champ
+   */
+  onErrors(evt, errors){
+    var focusPrefix  = `#event-${evt.id}-`
+    var focusFieldId = `${focusPrefix}${errors[0].prop}`
+    F.notify(errors.map(function(d){
+      $(`${focusPrefix}${d.prop}`).addClass('error')
+      return d.msg
+    }).join(RC), {error: true, duration: 'auto'})
+    evt.firstErroredFieldId = focusFieldId
+  }
   /**
    * Méthode qui affiche l'évènement de manière différée, en tenant compte du
    * temps courant

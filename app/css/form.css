@@ -13,6 +13,9 @@ form.form-edit-event .div-form {
   display:block;
   margin-top:8px;
 }
+form.form-edit-event .error {
+  background-color:#FFCCCC;
+}
 form.form-edit-event textarea {
   width:96%;
   resize:none;

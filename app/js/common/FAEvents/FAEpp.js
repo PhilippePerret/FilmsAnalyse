@@ -11,6 +11,16 @@ class FAEpp extends FAEvent {
 
   static get OWN_PROPS(){return ['setup', 'payoff','exploitation']}
 
+  get isValid(){
+    var errors = []
+
+    // Définir ici les validité
+    this.content || errors.push({msg: "La description de la préparation/paiement est requise.", prop: 'content'})
+
+    if(errors.length){super.onErrors(this, errors)}
+    return errors.length == 0
+  }
+
   /**
    * On dispatch les valeurs depuis le formulaire
    */

@@ -131,8 +131,13 @@ class EventForm {
     document.body.appendChild(f)
     f.innerHTML = EVENT_FORM_TEMP.replace(/__EID__/g, this.id).replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
     // document.body.appendChild(EVENT_FORM_TEMP.replace(/__EID__/g, this.id))
+    // --- Champs à voir et à masquer --
     this.jqForm.find('.ff').hide()
     this.jqForm.find(`.f${this.type}`).show()
+    this.jqForm.find(`.fall`).show()
+    this.jqForm.find(`.-f${this.type}`).hide()
+
+    // --- Valeurs définies ---
     $(this.fieldID('id')).val(this.id)
     $(this.fieldID('type')).val(this.type)
     $(this.fieldID('is_new')).val(this.isNew?'1':'0')
@@ -226,10 +231,15 @@ class EventForm {
       var e = new eClass(data_min)
       // Et on lui dispatch les autres données
       e.dispatch(other_data)
-      // On ajoute l'évènement à l'analyse
-      current_analyse.newEvent(e)
+      // On ajoute l'évènement à l'analyse, mais seulement s'il est valide
+      if (e.isValid) current_analyse.newEvent(e)
     }
-    this.endEdition()
+    if (e.isValid){
+      this.endEdition()
+    } else {
+      // En cas d'erreur, on focus dans le premier champ erroné
+      $(e.firstErroredFieldId).focus().select()
+    }
   }
 
   /**
@@ -266,13 +276,13 @@ const EVENT_FORM_TEMP = `
   <section class="form">
 
     <!-- Un div flottant pour définir la durée (pour tous) -->
-    <div id="div-duration" class="fright">
+    <div id="div-duration" class="ff fall -fscene fright">
       <label for="event-__EID__-duration">Durée</label>
       <input type="text" id="event-__EID__-duration" class="temps-secondes" placeholder="[[h,]m,]secs">
     </div>
 
     <div class="div-form">
-      <label class="ff finfo fpp fdial fscene">Type :</label>
+      <label class="ff finfo fpp fdialog fscene fproc">Type</label>
 
       <select class="ff fscene" id="event-__EID__-sceneType">
         <option value="generic">Générique</option>
@@ -289,10 +299,12 @@ const EVENT_FORM_TEMP = `
         <option value="conflit">Artistique</option>
       </select>
 
-      <select class="ff fdial" id="event-__EID__-dialType">
+      <select class="ff fdialog" id="event-__EID__-dialType">
         <option value="n/d">(sans type)</option>
         <option value="inner">Intérieur</option>
-        <option value="conflit">Conflict</option>
+        <option value="conflit">Conflictuel</option>
+        <option value="conflit">Confident</option>
+        <option value="conflit">informatif</option>
       </select>
 
       <select class="ff finfo" id="event-__EID__-infoType">
@@ -300,6 +312,15 @@ const EVENT_FORM_TEMP = `
         <option value="pers">Personnage</option>
         <option value="intr">Intrigue</option>
         <option value="them">Thème</option>
+      </select>
+
+      <select class="ff fproc" id="event-__EID__-procType">
+        <option value="n/d">...</option>
+        <option value="pp">Préparation/paiement</option>
+        <option value="irdr">Ironie dramatique</option>
+        <option value="revc">Révélateur de changement</option>
+        <option value="idea">Idéalisation</option>
+        <option value="autre">Autre…</option>
       </select>
 
       <select class="ff fpp" id="event-__EID__-ppType">
@@ -329,7 +350,8 @@ const EVENT_FORM_TEMP = `
     </div>
 
     <div class="div-form">
-      <label for="event-__EID__-titre">Titre générique (optionnel)</label>
+      <label for="event-__EID__-titre" class="-fscene">Titre générique (optionnel)</label>
+      <label for="event-__EID__-titre" class="ff fscene">Pitch</label>
       <input type="text" id="event-__EID__-titre" class="bold" />
     </div>
 
@@ -337,13 +359,19 @@ const EVENT_FORM_TEMP = `
       <label class="ff fscene">Décor</label>
       <label class="ff fdim">Diminutif</label>
       <label class="ff fdim">@</label>
-      <input type="text" class="ff fscene fdim" id="event-__EID__-inputtext-1" />
+      <label class="ff fqrd">Question</label>
+      <input type="text" class="ff fscene fdim fqrd" id="event-__EID__-inputtext-1" />
     </div>
 
     <div class="div-form">
       <label class="ff fscene">Sous-décor</label>
       <label class="ff fdim">Signification</label>
-      <input type="text" class="ff fscene fdim" id="event-__EID__-inputtext-2" />
+      <label class="ff fqrd">Réponse</label>
+      <input type="text" class="ff fscene fdim fqrd" id="event-__EID__-inputtext-2" />
+      <div class="ff fqrd">
+        <label>Temps</label>
+        <input type="text" class="small horloge fqrd" id="event-__EID__-tps_reponse" />
+      </div>
     </div>
 
     <div class="div-form">

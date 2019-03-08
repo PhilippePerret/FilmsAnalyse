@@ -98,6 +98,7 @@ class FAnalyse {
    * Remplace les diminutifs de +txt+ par leur vraie valeur
    */
   deDim(txt){
+    if(!txt) return ''
     for(var dim in this.diminutifs){
       var reg = new RegExp(`@${dim}`,'g')
       txt = txt.replace(reg,this.diminutifs[dim])

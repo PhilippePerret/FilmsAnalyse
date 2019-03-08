@@ -1,3 +1,9 @@
+* Pouvoir "draguer" le temps courant dans un champ (peut-être, tout simple : quand on clique sur le bouton 'temps courant', on met l'horloge dans le clipboard)
+* Pour les QRD, il faudrait enregistrer le temps de la réponse.
+* Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
+  Il faut aussi proposer d'éditer la scène en question.
+
+* Définir (dans la classe) les champs absolument requis en fonction du type de l'évènement
 * Création de l'évènement
   L'ajouter à la liste des FAnalyse.times
   L'ajouter à la table de hashage par ID (id => event)

@@ -32,7 +32,7 @@ const VideoController = {
       // Le contrôleur vidéo
       this.controller = document.getElementById('video')
 
-      this.setReadersDimentions()
+      this.setReadersDimensions()
 
       $('#btn-get-time').on('click', my.getAndShowTime.bind(my))
       $('#btn-go-to-time').on('click', my.goToTime.bind(my))
@@ -86,7 +86,7 @@ const VideoController = {
      * (video-reader), de la partie lecteur d'analyse (analyse reader) et
      * le bas de page (TODO)
      */
-  , setReadersDimentions:function(){
+  , setReadersDimensions:function(){
       // On calcule les dimensions du lecteur vidéo et du reader d'analyse
       // en fonction de la taille de l'écran
       const { width, height } = ipc.sendSync('get-screen-dimensions')
@@ -260,6 +260,8 @@ const VideoController = {
      *  - temps courant de la vidéo en seconde
      *  - temps courant du film en horloge
      *  - temps courant du film en secondes
+     *
+     * Note : le temps est également mis dans le clipboard
      */
   , getAndShowTime: function(){
       var videoTC = this.getTime()
@@ -269,6 +271,9 @@ const VideoController = {
         var filmTC  = new OTime(this.getRTime())
         $('#temps-courant-film-horloge').val(filmTC.horloge)
         $('#temps-courant-film-seconds').val(filmTC.secondsInt)
+        clip(filmTC.horloge)
+      } else {
+        clip(videoTC.horloge)
       }
       $('#div-temps-courants').show();
       $('#span-temps-courants-film')[this.hasStartTime?'show':'hide']()

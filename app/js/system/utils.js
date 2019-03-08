@@ -1,5 +1,11 @@
 'use strict'
 
+// Pour mettre dans le presse-papier
+const { clipboard } = electron.remote
+function clip(str){
+  clipboard.writeText(str) ;
+  F.notify(`${str} -> presse-papier`)
+};
 /**
  * Méthode qui reçoit l'identifiant d'un élément DOM et retourne sa valeur
  * ou null s'il est vide.

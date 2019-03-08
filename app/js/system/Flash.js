@@ -1,11 +1,15 @@
 /**
  * Pour la gestion des messages affichés à l'écran
  *
- * Version 1.0.1
+ * Version 1.0.2
  * Date    jan. 2019
  * Author  Philippe Perret <philippe.perret@yahoo.fr>
  *
  * Alias : F
+ *
+ * ### 1.0.2
+ *    Notify peut recevoir duration:'auto' pour régler la longueur en fonction
+ *    du contenu.
  */
 
 const RC = `
@@ -28,14 +32,15 @@ const Flash = {
      * Une notification, donc un message qui se ferme tout seul
      *
      * +options+ peut définir :duration, la durée en secondes d'ouverture
-     * du message (5 secondes par défaut)
+     * du message (5 secondes par défaut). La valeur par défaut est 'auto',
+     * qui permet de calculer le temps d'affichage en fonction de la longueur
      */
   , notify: function(str, options){
       if(!options){options={}}
-      if(!options.duration){options.duration = 5}
+      if(!options.duration){options.duration = 'auto'}
+      if(options.duration == 'auto'){options.duration = str.length * 0.08}
       else { options.duration -= 0.5 } // laps ouverture/fermeture
-      this.display(str, 'jqNotice', {no_buttons: true});
-      console.log(options.duration);
+      this.display(str, (options.error?'jqWarning':'jqNotice'), {no_buttons: true});
       this.timer = setTimeout($.proxy(Flash,'denotify'), options.duration*1000);
     }
   , denotify: function(){

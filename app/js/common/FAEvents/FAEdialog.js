@@ -7,7 +7,17 @@ class FAEdialog extends FAEvent {
     this.dialType   = data.dialType
 }
 
-  get resume(){return this.content}
+get isValid(){
+  var errors = []
+
+  // Définir ici les validité
+  this.content || errors.push({msg: "La description du dialogue est indispensable.", prop: 'content'})
+  this.dialType || errors.push({msg: "Le type de dialogue est à définir.", prop: 'dialType'})
+  
+  if(errors.length){super.onErrors(this, errors)}
+  return errors.length == 0
+}
+
 
   /**
    * On dispatch les valeurs depuis le formulaire
