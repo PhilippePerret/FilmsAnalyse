@@ -17,3 +17,10 @@ function getValOrNull(domId){
   if ( v === "" ) return null
   return v
 }
+
+// Pour écouter un objet
+// p.e. listen(btnPlay, 'click', Controller, 'start')
+function listen(cible, ename, objet, method){
+  cible.addEventListener(ename, objet[method].bind(objet))
+}
+function listenClick(cible, objet, method){listen(cible,'click',objet,method)}

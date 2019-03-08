@@ -74,7 +74,7 @@ class Locator {
         }
         this._events_by_tranche_time[t].push(parseInt(i,10))
       }
-      console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
+      // console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
     }
     return this._events_by_tranche_time
   }

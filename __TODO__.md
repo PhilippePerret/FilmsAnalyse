@@ -1,5 +1,3 @@
-* "Aller au temps" doit tenir compte du temps de début du film
-* Quand on blure du champ "aller au temps", ça doit provoquer le bouton correspondant
 * Quand on clique sur l'évènement dans le reader, il doit s'éditer et s'actualiser en retour dans le reader
 
 * À la création d'une scène, trouver son numéro (en fonction de son temps) et l'indiquer dans le formulaire

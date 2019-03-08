@@ -4,11 +4,6 @@ function affiche(msg){
   $('div#message').html(msg)
 }
 
-// Pour écouter un objet
-// p.e. listen(btnPlay, 'click', Controller, 'start')
-function listen(cible, ename, objet, method){
-  cible.addEventListener(ename, objet[method].bind(objet))
-}
 
 
 window.current_analyse = null // définie au ready
@@ -34,8 +29,13 @@ const VideoController = {
 
       this.setReadersDimensions()
 
-      $('#btn-get-time').on('click', my.getAndShowTime.bind(my))
-      $('#btn-go-to-time').on('click', my.goToTime.bind(my))
+      listenClick($('#btn-get-time')[0],my,'getAndShowTime')
+      listenClick($('#btn-go-to-time')[0],my,'goToTime')
+      $('#requested_time').on('blur', my.goToTime.bind(my))
+      $('#requested_time').on('keypress', (ev)=>{
+        if(ev.keyCode == 13){my.goToTime.bind(my)();$(ev).stop()}
+      })
+
       $('#btn-time-as-film-start').on('click', () => {
         current_analyse.setFilmStartTimeAt.bind(current_analyse)(this.getTime())
       })
@@ -106,7 +106,11 @@ const VideoController = {
       // l'écran.
       this.redefineVideoSizes(videoReaderWidth)
 
+      this._horloge = document.getElementById('horloge')
+      this._horloge_real = document.getElementById('horloge_real')
+
     }
+    // /fin init
 
     /**
      * Méthode appelée quand on presse le bouton Play (pas ceuli du contrôleur)
@@ -163,12 +167,7 @@ const VideoController = {
       if (this.intervalTimer){
         this.desactivateHorloge()
       } else {
-        this._horloge = document.getElementById('horloge')
-        this._horloge_real = document.getElementById('horloge_real')
-        if(current_analyse && current_analyse.filmStartTime){
-          this.horloge_rectif = current_analyse.filmStartTime.seconds
-        } else {
-          this.horloge_rectif = 0
+        if(!(current_analyse && current_analyse.filmStartTime)){
           this._horloge_real.style.visibility = 'hidden'
         }
         this.intervalTimer = setInterval(my.actualizeHorloge.bind(my), 1000/40)
@@ -243,12 +242,16 @@ const VideoController = {
     }
     /**
      * (Number) Retourne le temps rectifié. Il peut être négatif.
+     *
+     * Si +t+ est fourni, on renvoie le temps réel de ce temps, sinon on
+     * prend le temps courant
      */
-  , getRTime: function(){
+  , getRTime: function(t){
+      if(undefined === t){t = this.controller.currentTime }
       if(undefined === current_analyse.filmStartTime){
-        return this.controller.currentTime
+        return t
       } else {
-        return this.controller.currentTime - current_analyse.filmStartTime.seconds
+        return t - current_analyse.filmStartTime.seconds
       }
     }
 
@@ -295,14 +298,16 @@ const VideoController = {
     }
     /**
      * Méthode appelée pour se rendre au temps voulu.
-     * Le temps est défini comme une horloge avec des virgules
+     * Le temps peut être défini comme on veut, en seconds, en horloge, etc.,
+     * et il tient compte d'un début défini (puisqu'il utilise la méthode
+     * `getRTime`).
      */
   , goToTime: function(ev){
-      var otime = new OTime($('#time').val())
-      this.setTime(otime.seconds)
-      // TODO Vérifier que ce temps soit possible
-      // console.log("Time en seconds:", otime.seconds)
-      // console.log("Horloge recalculée:", otime.s2h())
+      var t = new OTime($('#requested_time').val()).seconds
+      if(this.hasStartTime){ t += current_analyse.filmStartTime.seconds }
+      var en_pause = this.controller.paused
+      this.setTime(t, en_pause)
+      if(en_pause) this.actualizeHorloge()
     }
 
     /**
@@ -334,7 +339,15 @@ const VideoController = {
 Object.defineProperties(VideoController,{
 
     hasStartTime:{
-      get:function(){return undefined!==current_analyse.filmStartTime}
+      get:function(){return current_analyse && undefined!==current_analyse.filmStartTime}
+    }
+  , horloge_rectif:{
+      get:function(){
+        if(undefined===this._horloge_rectif){
+          this._horloge_rectif = this.hasStartTime ? current_analyse.filmStartTime.seconds : 0
+        }
+        return this._horloge_rectif
+      }
     }
   , playAfterSettingTime: {
         get:function(){return this._play_after_setting_time || true /* pour le moment */}

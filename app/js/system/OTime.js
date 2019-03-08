@@ -8,7 +8,7 @@
 class OTime {
   /**
    * Le temps est donné soit :
-   *  - en nombre de secondes (Number)
+   *  - en nombre de secondes (Number) (ou string, attention)
    *  - en horloge (String)
    *  - en data (Object) avec :seconds, :duration
    *
@@ -19,8 +19,11 @@ class OTime {
         this.seconds = v
         break
       case 'string':
-        this.horloge = v
-        this.seconds = this.h2s(v)
+        if (v.match(/^[0-9]+$/)){this.seconds = parseInt(v,10)}
+        else {
+          this.horloge = v
+          this.seconds = this.h2s(v)
+        }
         break
       case 'object':
         console.log("Le traitement par objet n'est pas encore implémenté")
@@ -41,12 +44,14 @@ class OTime {
     return parseInt(this.seconds,10)
   }
   h2s(h){
-    h = h.split(/,\:/).reverse()
+    var d = h.split(':')
+    var frms = d.splice(1,1)[0] || 0
+    h = d[0].split(/[,\:]/).reverse()
     var tps = 0
-    tps += parseInt(h[0]||0,10) * 40
-    tps += parseInt(h[1]||0,10) * 1000
-    tps += parseInt(h[2]||0,10) * 1000 * 60
-    tps += parseInt(h[3]||0,10) * 1000 * 3600
+    tps =  frms * 40
+    tps += parseInt(h[0]||0,10) * 1000
+    tps += parseInt(h[1]||0,10) * 1000 * 60
+    tps += parseInt(h[2]||0,10) * 1000 * 3600
     return tps / 1000
   }
   s2h(s, format){
