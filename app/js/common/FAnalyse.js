@@ -23,13 +23,6 @@ class FAnalyse {
     $('#btn-save-analyse').css('visibility', v === true ? 'visible' : 'hidden')
   }
 
-  set events(v){
-    this._events = []
-    for(var d of v){this._events.push(new FAEvent(d))}
-    // console.log("<- définition de events", this.events)
-  }
-  get events()  {return this._events}
-
   get eventsFilePath(){
     if(undefined===this._events_file_path){
       this._events_file_path = path.join(this.folder,'events.json')
@@ -63,6 +56,44 @@ class FAnalyse {
 
   set videoSize(v)  { this._videoSize = v; this.modified = true }
   get videoSize()   { return this._videoSize}
+
+  /**
+   * Méthode ajoutant un évènement
+   *
+   * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
+   * l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
+   * donc parfaitement valide ici.
+   *
+   * Attention : la méthode est aussi appelée (en cascade) au chargement
+   * de l'analyse. +whenLoading+ est true, dans ce cas-là
+   */
+  addEvent(nev, whenLoading) {
+    if(undefined === this.ids){
+      this.events = []
+      this.ids    = {}
+    }
+    if (this.events.length){
+      // On place l'event à l'endroit voulu dans le film
+      var idx_event_before = this.getIndexOfEventAfter(nev.time)
+      this.events.splice(idx_event_before, 0, nev)
+    } else {
+      this.events.push(nev)
+    }
+    this.ids[nev.id] = nev
+
+    if (!whenLoading) {
+      this.locator.addEvent(nev)
+      // On place tout de suite l'évènement sur le lecteur
+      nev.show()
+      this.modified = true
+      nev = null
+      idx_event_before = null
+    }
+  }
+
+  getEventById(eid){
+    return this.ids[eid]
+  }
   /**
    * Méthode qui affiche les évènements qui se trouvent à +time+
    * (avec une marge de plus ou moins 10 secondes)
@@ -124,28 +155,6 @@ class FAnalyse {
   }
   get videoPath(){ return this._videoPath }
 
-
-  /**
-   * Création d'un nouvel évènement avec les données +data+
-   */
-  newEvent(nev){
-
-    if (this.events.length){
-      // On place l'event à l'endroit voulu dans le film
-      var idx_event_before = this.getIndexOfEventAfter(nev.time)
-      this.events.splice(idx_event_before, 0, nev)
-    } else {
-      this.events.push(nev)
-    }
-    // TODO On place l'évènement dans la donnée Time
-    // On place tout de suite l'évènement sur le lecteur
-    nev.show()
-
-    this.modified = true
-    nev = null
-    idx_event_before = null
-    // console.log("Nouvel event ajouté")
-  }
 
   /**
    * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
@@ -211,13 +220,22 @@ class FAnalyse {
     for(var e of this.events){eSaveds.push(e.data)}
     return eSaveds
   }
+  // Prend les données dans le fichier events.json et les dispatche dans
+  // l'instance d'analyse (au début du travail, en général)
   set eventsSaved(v){
+    var last_id = -1
     this.events = []
     for(var d of v){
       var eClass = eval(`FAE${d.type}`)
-      this.events.push(new eClass(d))
+      this.addEvent(new eClass(d), true)
+      // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
+      // une création d'évènement.
+      if(d.id > last_id){last_id = parseInt(d.id,10)}
     }
+    // On peut définir le dernier ID dans EventForm (pour le formulaire)
+    EventForm.lastId = last_id
   }
+
   /**
    * Méthode pour charger l'analyse (courante ou pas)
    *

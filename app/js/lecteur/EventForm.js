@@ -29,7 +29,10 @@ class EventForm {
     if (undefined === this._lastId){ this._lastId = -1 }
     return this._lastId
   }
-  static set lastId(v){ this._lastId = v }
+  static set lastId(v){
+    this._lastId = v
+    console.log("Last ID mis à ", this._lastId)
+  }
 
   /**
    * Met le formulaire +form+ (instance EventForm) en formulaire courant (donc
@@ -218,9 +221,9 @@ class EventForm {
         fields.push(this.id)
       })
 
-    console.log("Champs trouvés:", fields)
-    console.log("Data finale min:", data_min)
-    console.log("Data finale autres:", other_data)
+    // console.log("Champs trouvés:", fields)
+    // console.log("Data finale min:", data_min)
+    // console.log("Data finale autres:", other_data)
 
     // On crée ou on update l'évènement
     if(data_min.is_new == '0'){
@@ -232,11 +235,9 @@ class EventForm {
       var eClass = eval(`FAE${data_min.type}`)
       var e = new eClass(data_min)
       // Et on lui dispatch les autres données
-      console.log("e avant:", e)
       e.dispatch(other_data)
-      console.log("e après:", e)
       // On ajoute l'évènement à l'analyse, mais seulement s'il est valide
-      if (e.isValid) current_analyse.newEvent(e)
+      if (e.isValid) current_analyse.addEvent(e)
     }
     if (e.isValid){
       this.endEdition()
@@ -279,10 +280,15 @@ const EVENT_FORM_TEMP = `
 
   <section class="form">
 
-    <!-- Un div flottant pour définir la durée (pour tous) -->
-    <div id="div-duration" class="ff fall -fscene fright">
+    <!-- Un div flottant pour définir la durée (pour tous sauf scène) -->
+    <div id="div-duration" class="fright -fscene">
       <label for="event-__EID__-duration">Durée</label>
-      <input type="text" id="event-__EID__-duration" class="temps-secondes" placeholder="[[h,]m,]secs">
+      <input type="text" id="event-__EID__-duration" class="temps-secondes" placeholder="">
+    </div>
+
+    <div id="div-duration" class="fright ff fscene">
+      <label for="event-__EID__-numero">Numéro</label>
+      <input type="text" id="event-__EID__-numero" class="temps-secondes" placeholder="">
     </div>
 
     <div class="div-form">

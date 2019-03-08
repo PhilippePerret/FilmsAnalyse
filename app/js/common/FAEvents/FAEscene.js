@@ -4,6 +4,7 @@ class FAEscene extends FAEvent {
   constructor(data){
     super(data)
     this.type       = 'scene'
+    this.numero     = data.numero
     this.decor      = data.decor
     this.sous_decor = data.sous_decor
     this.effet      = data.effet
@@ -12,7 +13,7 @@ class FAEscene extends FAEvent {
   }
 
   // Les propriétés propres aux instances (constante de classe)
-  static get OWN_PROPS(){return [['decor', 'inputtext-1'], ['sous_decor', 'inputtext-2'],'lieu','effet','sceneType']}
+  static get OWN_PROPS(){return ['numero', ['decor', 'inputtext-1'], ['sous_decor', 'inputtext-2'],'lieu','effet','sceneType']}
 
   get pitch(){return this.titre}
   get resume(){return this.content}
@@ -24,6 +25,7 @@ class FAEscene extends FAEvent {
   get isValid(){
     var errors = []
 
+    this.numero  || errors.push({msg:"Le numéro de la scène devrait être défini.", prop: 'numero'})
     this.titre   || errors.push({msg:"Le pitch doit être défini.", prop:'titre'})
     this.content || errors.push({msg:"Le résumé de la scène est indispensable.", prop:'content'})
 

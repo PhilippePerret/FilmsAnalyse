@@ -34,6 +34,30 @@ class Locator {
     }
     return evs
   }
+
+  /**
+   * Ajoute l'évènement +ev+ à la liste par tranche (à sa création par exemple)
+   */
+  addEvent(ev){
+    var tranche = parseInt(ev.time - (ev.time % 5),10)
+    if(undefined === this._events_by_tranche_time[tranche]){
+      // <= La tranche n'existe pas encore
+      // => On la crée et on ajoute l'identifiant de l'event
+      this._events_by_tranche_time[tranche] = [ev.id]
+    } else {
+      // <= La tranche existe déjà
+      // => Placer l'évènement pile à l'endroit voulu
+      var len = this._events_by_tranche_time[tranche].length
+      var etested
+      for(var i=0;i<len;++i){
+        etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])
+        if (etested.time > ev.time){
+          this._events_by_tranche_time[tranche].splice(i, 0, ev.id)
+          break
+        }
+      }
+    }
+  }
   /**
    * Propriété qui contient les évènements de l'analyse courante par tranche de
    * temps de 5 secondes.
@@ -61,10 +85,6 @@ class Locator {
    */
   get indexEvent(){
     return 0
-  }
-
-  currentEvent(){
-
   }
 
 

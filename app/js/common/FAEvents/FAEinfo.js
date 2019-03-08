@@ -3,6 +3,7 @@
 class FAEinfo extends FAEvent {
   constructor(data){
     super(data)
+    this.type     = 'info'
     this.infoType = data.infoType
   }
 
