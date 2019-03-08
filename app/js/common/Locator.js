@@ -40,14 +40,14 @@ class Locator {
    */
   addEvent(ev){
     var tranche = parseInt(ev.time - (ev.time % 5),10)
-    if(undefined === this._events_by_tranche_time[tranche]){
+    if(undefined === this.eventsByTrancheTime[tranche]){
       // <= La tranche n'existe pas encore
       // => On la crée et on ajoute l'identifiant de l'event
       this._events_by_tranche_time[tranche] = [ev.id]
     } else {
       // <= La tranche existe déjà
       // => Placer l'évènement pile à l'endroit voulu
-      var len = this._events_by_tranche_time[tranche].length
+      var len = this.eventsByTrancheTime[tranche].length
       var etested
       for(var i=0;i<len;++i){
         etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])

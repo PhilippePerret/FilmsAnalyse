@@ -62,7 +62,6 @@ class EventForm {
    *    - avec l'instance de l'évènement
    */
   constructor(foo){
-    var ev
     this.isNew = false
     switch (typeof foo) {
       case 'string':
@@ -76,13 +75,13 @@ class EventForm {
       case 'number':
         // <= L'ID de l'évènement
         // => Il faut prendre ses données pour édition
-        ev = FAnalyse.getEventById(foo)
+        this._event = FAnalyse.getEventById(foo)
         break
       case 'object':
         // <= Les données ou l'évènement lui-même
         // => Prendre les données si c'est l'évènement
-        if('function'===typeof(foo.showDiffere)){ ev = foo }
-        else { ev = FAnalyse.getEventById(ev.id) }
+        if('function'===typeof(foo.showDiffere)){ this._event = foo }
+        else { this._event = FAnalyse.getEventById(ev.id) }
         break
       default:
         throw("Il faut penser à traiter les autres cas")
@@ -92,25 +91,38 @@ class EventForm {
   get inited(){ return this._initied || false}   // mis à true à l'initialisation
   set inited(v){ this._inited = v }
 
+  get event(){ return this._event }
   /**
    * Initialisation de l'objet, appelée quand l'analyse courante est
    * prête.
    */
   init(){
     if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
-    this.toggleForm(false)
-    this.observeForm()
+    if(!this.built){
+      this.build()
+      this.observeForm()
+    }
+    var numero
+    if(this.type === 'scene' && (this.isNew || !this.event.numero)){
+      // <= C'est une scène et son numéro n'est pas défini
+      // => Il faut définir le numéro de la scène en fonction de son temps
+      numero = 1 + current_analyse.getSceneNumeroAt(this.time)
+    } else {
+      numero = this.event.numero
+    }
+    $(this.fieldID('numero')).val(numero)
+    console.log("type/numero", this.type, numero)
+
     this.inited = true
+    numero = null
+    return true
   }
 
     /**
      * Pour basculer des boutons d'évènements au formulaire
      */
   toggleForm(){
-    if(!this.built){
-      this.build()
-      this.observeForm()
-    }
+    if(!this.inited){this.init()}
     this[this.visible?'hide':'show']()
   }
 
@@ -179,10 +191,12 @@ class EventForm {
 
 
   submit(){
+    var my = this
 
     // TODO On doit récupérer toutes les données
     var data_min = {}
     data_min.id       = getValOrNull(this.fieldID('id'))
+    data_min.titre    = getValOrNull(this.fieldID('titre'))
     data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
     data_min.isNew    = getValOrNull(this.fieldID('is_new'))
 
@@ -199,10 +213,11 @@ class EventForm {
         return
     }
 
+    // Les champs communs à tous les types d'event
     data_min.time     = parseInt(getValOrNull(this.fieldID('time')),10)
+    data_min.content  = getValOrNull(this.fieldID('content'))
     data_min.note     = getValOrNull(this.fieldID('note'))
     data_min.duration = getValOrNull(this.fieldID('duration'))
-    data_min.content  = getValOrNull(this.fieldID('content'))
 
     // On récupère toutes les données (ça consiste à passer en revue tous
     // les éléments de formulaire qui ont la classe "f<type>")
@@ -212,18 +227,18 @@ class EventForm {
     var idSansPref = null
     $('select,input[type="text"],textarea,input[type="checkbox"]')
       .filter(function(){
-        return $(this).hasClass(ftype)
+        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
       })
       .each(function(){
-        idSansPref = this.id.replace(/event\-(?:[0-9]+)\-/,'')
+        idSansPref = this.id.replace(`event-${my.id}-`,'')
         other_data[idSansPref] = getValOrNull(this.id)
         // Pour vérification
         fields.push(this.id)
       })
 
-    // console.log("Champs trouvés:", fields)
-    // console.log("Data finale min:", data_min)
-    // console.log("Data finale autres:", other_data)
+    console.log("Champs trouvés:", fields)
+    console.log("Data finale min:", data_min)
+    console.log("Data finale autres:", other_data)
 
     // On crée ou on update l'évènement
     if(data_min.is_new == '0'){
@@ -245,6 +260,8 @@ class EventForm {
       // En cas d'erreur, on focus dans le premier champ erroné
       $(e.firstErroredFieldId).focus().select()
     }
+
+    my = null
   }
 
   /**
@@ -288,18 +305,20 @@ const EVENT_FORM_TEMP = `
 
     <div id="div-duration" class="fright ff fscene">
       <label for="event-__EID__-numero">Numéro</label>
-      <input type="text" id="event-__EID__-numero" class="temps-secondes" placeholder="">
+      <input type="text" id="event-__EID__-numero" class="temps-secondes fscene" placeholder="">
     </div>
 
     <div class="div-form">
       <label class="ff finfo fpp fdialog fscene fproc">Type</label>
 
       <select class="ff fscene" id="event-__EID__-sceneType">
+        <option value="n/d">N/D</option>
         <option value="generic">Générique</option>
         <option value="expo">Expositionnelle</option>
         <option value="action">Action</option>
         <option value="dialogue">Dialogue</option>
         <option value="rencontre">Rencontre</option>
+        <option value="rencontre">Travail</option>
       </select>
 
       <select class="ff faction" id="event-__EID__-actionType">

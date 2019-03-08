@@ -1,3 +1,6 @@
+* Puisqu'on ne change pas les numéros des scènes suivantes lorsqu'on crée une scène, il faut les changer lorsque la scène est enregistrée.
+  À la modification de la scène, il faut seulement vérifier si son temps a bougé
+  
 * Quand on clique sur l'évènement dans le reader, il doit s'éditer et s'actualiser en retour dans le reader
 
 * À la création d'une scène, trouver son numéro (en fonction de son temps) et l'indiquer dans le formulaire

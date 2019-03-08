@@ -89,7 +89,7 @@ class FAEvent {
     return this._div
   }
 
-  static get OWN_PROPS(){return ['id', 'type', 'time', 'duration', 'content', 'note', 'events']}
+  static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events']}
 
   /**
    * Les données qui seront enregistrées

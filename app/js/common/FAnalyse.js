@@ -14,14 +14,24 @@ class FAnalyse {
     this._folder = path.resolve(pathFolder)
   }
 
-  get folder()  { return this._folder }
-  set folder(v) { this._folder = v}
-
   get modified() { return this._modified }
   set modified(v) {
     this._modified = v
     $('#btn-save-analyse').css('visibility', v === true ? 'visible' : 'hidden')
   }
+
+  forEachEvent(method, options){
+    if(undefined===options){options = {}}
+    var i   = options.from || 0
+      , len = options.to || this.events.length
+      ;
+    for(;i<len;++i){
+      method(this.events[i])
+    }
+  }
+
+  get folder()  { return this._folder }
+  set folder(v) { this._folder = v}
 
   get eventsFilePath(){
     if(undefined===this._events_file_path){
@@ -83,6 +93,18 @@ class FAnalyse {
 
     if (!whenLoading) {
       this.locator.addEvent(nev)
+      // Si le nouvel event est une scène, il faut peut-être numéroter
+      // les suivantes
+      if(nev.type === 'scene'){
+        var num = 0
+        this.forEachEvent(function(ev){
+          if(ev.type === 'scene' && ev.sceneType != 'generic'){
+            ev.numero = ++num
+            console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
+          }
+        })
+
+      }
       // On place tout de suite l'évènement sur le lecteur
       nev.show()
       this.modified = true
@@ -105,6 +127,20 @@ class FAnalyse {
     for(var ev of evs){
       ev.showDiffere()
     }
+  }
+
+  getSceneNumeroAt(time){
+    var current_numero = 0
+    var i = 0, len = this.events.length, ev
+    for(i;i<len;++i){
+      ev = this.events[i]
+      if (ev.time > time) {
+        return current_numero
+      }
+      if (ev.type === 'scene' && ev.sceneType != 'generic') { current_numero += 1 }
+    }
+    // Non trouvé (début)
+    return 0
   }
   /**
    * Formate le texte +txt+ en fonction de l'évènement
