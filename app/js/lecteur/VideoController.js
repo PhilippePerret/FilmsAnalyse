@@ -297,6 +297,14 @@ const VideoController = {
       }
     }
     /**
+     * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
+     * défini pour le film
+     */
+  , setRTime: function(time, dontPlay){
+      if(this.hasStartTime) time += current_analyse.filmStartTime.seconds
+      this.setTime(time, dontPlay)
+    }
+    /**
      * Méthode appelée pour se rendre au temps voulu.
      * Le temps peut être défini comme on veut, en seconds, en horloge, etc.,
      * et il tient compte d'un début défini (puisqu'il utilise la méthode

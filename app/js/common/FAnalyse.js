@@ -95,16 +95,8 @@ class FAnalyse {
       this.locator.addEvent(nev)
       // Si le nouvel event est une scène, il faut peut-être numéroter
       // les suivantes
-      if(nev.type === 'scene'){
-        var num = 0
-        this.forEachEvent(function(ev){
-          if(ev.type === 'scene' && ev.sceneType != 'generic'){
-            ev.numero = ++num
-            console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
-          }
-        })
+      if(nev.type === 'scene'){this.updateNumerosScenes()}
 
-      }
       // On place tout de suite l'évènement sur le lecteur
       nev.show()
       this.modified = true
@@ -113,8 +105,23 @@ class FAnalyse {
     }
   }
 
+  updateEvent(ev){
+    // TODO Peut-être faut-il replacer l'event à un autre endroit
+    if(nev.type === 'scene'){this.updateNumerosScenes()}
+  }
+
   getEventById(eid){
     return this.ids[eid]
+  }
+
+  updateNumerosScenes(){
+    var num = 0
+    this.forEachEvent(function(ev){
+      if(ev.type === 'scene' && ev.sceneType != 'generic'){
+        ev.numero = ++num
+        // console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
+      }
+    })
   }
   /**
    * Méthode qui affiche les évènements qui se trouvent à +time+
@@ -141,24 +148,6 @@ class FAnalyse {
     }
     // Non trouvé (début)
     return 0
-  }
-  /**
-   * Formate le texte +txt+ en fonction de l'évènement
-   */
-  formateTexte(ev){
-    var txt = this.deDim(ev.content)
-    var h
-    switch (ev.type) {
-      case 'scene':
-        if(ev.sceneType == 'generic'){ h = "GÉNÉRIQUE" }
-        else {
-          var decor  = ev.decor ? ` — ${this.deDim(ev.decor)}` : ''
-          var sdecor = ev.sous_decor ? ` : ${this.deDim(ev.sous_decor)}` : ''
-          h = `${(ev.lieu || 'INT').toUpperCase()}. ${(ev.effet || 'jour').toUpperCase()}${decor}${sdecor}`}
-        txt = `<span class="scene-heading">${h}</span><span class="scene-resume">${txt}</span>`
-        break;
-    }
-    return txt
   }
 
   /**

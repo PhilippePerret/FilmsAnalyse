@@ -21,6 +21,12 @@ class EventForm {
     new EventForm(o.attr('data-type')).toggleForm()
   }
 
+  static editEvent(ev){
+    console.log("Je vais éditer l'évènement", ev.id)
+    if(VideoController.playing) VideoController.onTogglePlay()
+    new EventForm(ev).toggleForm()
+  }
+
   // Pour obtenir un nouvel identifiant
   static newId(){
     return ++ this.lastId // est-ce que ça fonctionne ?
@@ -67,10 +73,10 @@ class EventForm {
       case 'string':
         // <= Un type
         // => C'est une création
-        this.id     = EventForm.newId()
-        this.type   = foo
+        this._id    = EventForm.newId()
+        this._type  = foo
         this.isNew  = true
-        this.time   = VideoController.getRTime() || 0
+        this._time  = VideoController.getRTime() || 0
         break
       case 'number':
         // <= L'ID de l'évènement
@@ -92,6 +98,19 @@ class EventForm {
   set inited(v){ this._inited = v }
 
   get event(){ return this._event }
+  get id(){
+    if(undefined === this._id){this._id = this.event.id}
+    return this._id
+  }
+  get type(){
+    if(undefined === this._type){this._type = this.event.type}
+    return this._type
+  }
+  get time(){
+    if(undefined === this._time){this._time = this.event.time}
+    return this._time
+  }
+
   /**
    * Initialisation de l'objet, appelée quand l'analyse courante est
    * prête.
@@ -102,8 +121,47 @@ class EventForm {
       this.build()
       this.observeForm()
     }
+
+    if (this.isNew){
+      if(this.type === 'scene') this.setNumeroScene()
+    } else {
+      this.dispatchData()
+    }
+
+    this.inited = true
+    return true
+  }
+
+  /**
+   * Si c'est une édition, on doit mettre les valeurs courantes dans les
+   * champs.
+   */
+  dispatchData(){
+    var prop, sufProp
+    // Les valeurs communes
+    for(prop of FAEvent.OWN_PROPS){
+      if(null === this.event[prop] || undefined === this.event[prop]) continue
+      $(this.fieldID(prop)).val(this.event[prop])
+      // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
+    }
+    // Les valeurs propres au type d'event
+    for(prop of this.event.constructor.OWN_PROPS){
+      if('string' !== typeof(prop)){ // cf. la définition des OWN_PROPS
+        prop, sufProp = prop
+      } else {
+        sufProp = prop
+      }
+      if(null === this.event[prop] || undefined === this.event[prop]) continue
+      $(this.fieldID(sufProp)).val(this.event[prop])
+      // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
+    }
+  }
+
+  setNumeroScene(){
+    // On ne numérote pas une scène "générique"
+    if(this.event && this.event.sceneType === 'generic') return
     var numero
-    if(this.type === 'scene' && (this.isNew || !this.event.numero)){
+    if (this.isNew || !this.event.numero) {
       // <= C'est une scène et son numéro n'est pas défini
       // => Il faut définir le numéro de la scène en fonction de son temps
       numero = 1 + current_analyse.getSceneNumeroAt(this.time)
@@ -112,10 +170,7 @@ class EventForm {
     }
     $(this.fieldID('numero')).val(numero)
     console.log("type/numero", this.type, numero)
-
-    this.inited = true
     numero = null
-    return true
   }
 
     /**
@@ -193,6 +248,11 @@ class EventForm {
   submit(){
     var my = this
 
+    // Si c'est une modification, on prend le temps initial pour savoir
+    // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
+    // dans l'analyse courante
+    var initTime = this.isNew ? null : parseInt(this.event.time,10)
+
     // TODO On doit récupérer toutes les données
     var data_min = {}
     data_min.id       = getValOrNull(this.fieldID('id'))
@@ -241,24 +301,36 @@ class EventForm {
     console.log("Data finale autres:", other_data)
 
     // On crée ou on update l'évènement
-    if(data_min.is_new == '0'){
-      // ÉDITION
-      throw("Je ne sais pas encore traiter la modification de données")
-    } else {
+    if(this.isNew){
       // CRÉATION
       // On crée l'évènement du type voulu
       var eClass = eval(`FAE${data_min.type}`)
-      var e = new eClass(data_min)
-      // Et on lui dispatch les autres données
-      e.dispatch(other_data)
-      // On ajoute l'évènement à l'analyse, mais seulement s'il est valide
-      if (e.isValid) current_analyse.addEvent(e)
+      this._event = new eClass(data_min)
+    } else {
+      this.event.data = data_min // ça va les dispatcher
     }
-    if (e.isValid){
+    // Et on dispatche les autres données
+    this.event.dispatch(other_data)
+    if (this.event.isValid) {
+      if(this.isNew){
+        // CRÉATION
+        current_analyse.addEvent(this.event)
+      } else {
+        // ÉDITION
+        // En fait, l'updater consister à la replacer ailleurs
+        // si son temps a changé et si c'est une scène
+        // NOTE Pour le moment, on n'actualise que si le temps a changé.
+        if (initTime != this.event.time){
+          current_analyse.updateEvent(this.event)
+        }
+      }
+    }
+
+    if (this.event.isValid){
       this.endEdition()
     } else {
       // En cas d'erreur, on focus dans le premier champ erroné
-      $(e.firstErroredFieldId).focus().select()
+      $(this.event.firstErroredFieldId).focus().select()
     }
 
     my = null

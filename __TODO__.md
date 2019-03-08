@@ -1,6 +1,6 @@
-* Puisqu'on ne change pas les numéros des scènes suivantes lorsqu'on crée une scène, il faut les changer lorsque la scène est enregistrée.
-  À la modification de la scène, il faut seulement vérifier si son temps a bougé
-  
+* Le remplissage du formulaire d'édition d'un event ne fonctionne pas avec la (vraie) première scène (le décor et sous-décor ne s'affiche pas et peut-être qu'il y a d'autres valeurs erronnées)
+
+* Il faut que VideoController soit une instance, car il pourra y en avoir plusieurs en même temps.
 * Quand on clique sur l'évènement dans le reader, il doit s'éditer et s'actualiser en retour dans le reader
 
 * À la création d'une scène, trouver son numéro (en fonction de son temps) et l'indiquer dans le formulaire

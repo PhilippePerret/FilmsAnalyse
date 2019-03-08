@@ -13,6 +13,9 @@ class FAEvent {
     this.note     = data.note     // String
 
     this.events   = data.events
+
+    this.analyse = current_analyse
+
   }
 
   get otime(){
@@ -59,7 +62,7 @@ class FAEvent {
     var my = this
     this.div //pour le construire
     var diff = ((my.time - VideoController.getRTime()) * 1000) - 300
-    if (diff < 0){ // ne devrait jamais arriver
+    if ( diff < 0 ){ // ne devrait jamais arriver
       this.show()
     } else {
       this.timerShow = setTimeout(my.show.bind(my), diff)
@@ -69,20 +72,57 @@ class FAEvent {
    * Pour afficher l'évènement dans le reader de l'analyse
    */
   show(){
-    Reader.append(this.div)
+    if(this.jqReaderObj){
+      this.jqReaderObj.show()
+    } else {
+      Reader.append(this.div)
+      this.observe()
+    }
   }
+
+  get jqReaderObj(){
+    if(undefined === this._jq_reader_obj ){
+      this._jq_reader_obj = $(`#${this.domId}`)
+      if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
+    }
+    return this._jq_reader_obj
+  }
+
+  get domId(){ return `revent-${this.id}`}
 
   get div(){
     if (undefined === this._div){
       var n = document.createElement('DIV')
       n.className = `event ${this.type}`
+      n.id = this.domId
+
+      var etools = document.createElement('DIV')
+      etools.className = 'e-tools'
       var h = document.createElement('SPAN')
-      h.className = 'horloge mini'
+      h.className = "horloge"
       h.innerHTML = this.otime.horloge
-      var c = document.createElement('SPAN')
+      var be = document.createElement('BUTTON')
+      be.className = 'btn-edit'
+      be.innerHTML = '<img src="./img/btn/edit.png" class="btn" />'
+      var br = document.createElement('BUTTON')
+      br.className = 'btn-play'
+      br.innerHTML = '<img src="./img/btn/play.png" class="btn" />'
+      etools.append(br)
+      etools.append(be)
+      etools.append(h)
+
+      var c = document.createElement('DIV')
       c.className = 'content'
-      c.innerHTML = current_analyse.formateTexte(this)
-      n.append(h)
+      var contenu
+      if(undefined === this.formated){
+        // Contenu formaté
+        contenu = current_analyse.deDim(this.content)
+      } else {
+        // Contenu non formaté
+        contenu = this.formated
+      }
+      c.innerHTML = contenu
+      n.append(etools)
       n.append(c)
       this._div = n
     }
@@ -110,10 +150,19 @@ class FAEvent {
     return d
   }
 
+  /**
+   * Dispatch les données communes (autres que celles qui permettent à
+   * l'instanciation et la création)
+   */
+  set data(d){
+    var fieldName ;
+    for(var prop of FAEvent.OWN_PROPS){
+      if(undefined === d[prop] && null === d[prop]) continue
+      this[prop] = d[prop]
+    }
+  }
+
   dispatch(d){
-    // console.log("-> FAEvent.display (meta-class)")
-    // console.log(evt, d)
-    // console.log('OWN_PROPS =', evt.constructor.OWN_PROPS)
     var fieldName ;
     for(var prop of this.constructor.OWN_PROPS){
       if('string' === typeof(prop)){
@@ -133,29 +182,11 @@ class FAEvent {
     }
 
   }
-  // dispatch(evt, d){
-  //   // console.log("-> FAEvent.display (meta-class)")
-  //   // console.log(evt, d)
-  //   // console.log('OWN_PROPS =', evt.constructor.OWN_PROPS)
-  //   var fieldName ;
-  //   for(var prop of evt.constructor.OWN_PROPS){
-  //     if('string' === typeof(prop)){
-  //       // <= Seulement le nom de la propriété donnée
-  //       // => Le champ s'appelle comme la propriété
-  //       fieldName = prop
-  //     } else {
-  //       // <= Own prop donnée sous forme de array avec en première valeur le
-  //       //    nom de la propriété dans l'évènement et en seconde valeur le
-  //       //    nom du champ
-  //       // => On met dans la propriété la valeur du champ
-  //       fieldName = prop[1]
-  //       prop      = prop[0]
-  //     }
-  //     if(undefined === d[fieldName]) continue
-  //     evt[prop] = d[fieldName]
-  //   }
-  //
-  // }
+  observe(){
+    var o = this.jqReaderObj
+    o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
+    o.find('.e-tools button.btn-play').on('click', VideoController.setRTime.bind(VideoController, this.time))
+  }
 }
 
 // Pour la compatibilité avec les autres types

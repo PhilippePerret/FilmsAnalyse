@@ -36,9 +36,19 @@ class FAEscene extends FAEvent {
   /**
    * Div construit pour la scène
    */
-  get div(){
-    var n = super.div
-    return n
+  get formated(){
+    if(undefined === this._formated){
+      var h
+      if(this.isGenerique){ h = "GÉNÉRIQUE" }
+      else {
+        var decor  = this.decor ? ` — ${this.analyse.deDim(this.decor)}` : ''
+        var sdecor = this.sous_decor ? ` : ${this.analyse.deDim(this.sous_decor)}` : ''
+        h = `${this.numero}. ${(this.lieu || 'INT').toUpperCase()}. ${(this.effet || 'jour').toUpperCase()}${decor}${sdecor}`
+      }
+      this._formated = `<div class="scene-heading">${h}</div><span class="scene-resume">${this.analyse.deDim(this.content)}</span>`
+    }
+    return this._formated
   }
 
+  get isGenerique(){return this.sceneType === 'generic'}
 }
