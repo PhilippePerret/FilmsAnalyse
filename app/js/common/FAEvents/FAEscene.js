@@ -12,7 +12,7 @@ class FAEscene extends FAEvent {
   }
 
   // Les propriétés propres aux instances (constante de classe)
-  static get OWN_PROPS(){return ['decor', 'sous_decor','lieu','effet','sceneType']}
+  static get OWN_PROPS(){return [['decor', 'inputtext-1'], ['sous_decor', 'inputtext-2'],'lieu','effet','sceneType']}
 
   get pitch(){return this.titre}
   get resume(){return this.content}
@@ -30,34 +30,13 @@ class FAEscene extends FAEvent {
     if(errors.length){super.onErrors(this, errors)}
     return errors.length == 0
   }
-  
-  /**
-   * On dispatch les valeurs depuis le formulaire
-   */
-  dispatch(d){
-    for(var prop of FAEscene.OWN_PROPS){
-      if(undefined === d[prop]) continue
-      this[prop] = d[prop]
-    }
-    // Valeurs particulières
-    this.decor      = d['inputtext-1'] && d['inputtext-1'].trim()
-    this.sous_decor = d['inputtext-2'] && d['inputtext-2'].trim()
-  }
 
+  /**
+   * Div construit pour la scène
+   */
   get div(){
     var n = super.div
     return n
   }
 
-  /**
-   * Récupérer les données pour les enregistrer
-   */
-  get data(){
-    var d = super.data
-    for(var prop of FAEscene.OWN_PROPS){
-      if(undefined === this[prop]) continue
-      d[prop] = this[prop]
-    }
-    return d
-  }
 }

@@ -13,6 +13,8 @@ button.controller img {width:40px;}
 
 .fleft {float:left;}
 .fright {float:right;}
+.left {text-align:left;}
+.right {text-align:right;}
 
 .block {display:block;}
 .inline {display:inline-block;}

@@ -3,7 +3,11 @@
 class FAEinfo extends FAEvent {
   constructor(data){
     super(data)
+    this.infoType = data.infoType
   }
+
+  // Propriétés propres aux informations
+  static get OWN_PROPS(){return ['infoType']}
 
   get isValid(){
     var errors = []

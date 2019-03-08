@@ -206,12 +206,14 @@ class EventForm {
     var ftype = `f${data_min.type}`
     var fields = []
     var other_data = {}
+    var idSansPref = null
     $('select,input[type="text"],textarea,input[type="checkbox"]')
       .filter(function(){
         return $(this).hasClass(ftype)
       })
       .each(function(){
-        other_data[this.id] = getValOrNull(this.id)
+        idSansPref = this.id.replace(/event\-(?:[0-9]+)\-/,'')
+        other_data[idSansPref] = getValOrNull(this.id)
         // Pour vérification
         fields.push(this.id)
       })
@@ -230,7 +232,9 @@ class EventForm {
       var eClass = eval(`FAE${data_min.type}`)
       var e = new eClass(data_min)
       // Et on lui dispatch les autres données
+      console.log("e avant:", e)
       e.dispatch(other_data)
+      console.log("e après:", e)
       // On ajoute l'évènement à l'analyse, mais seulement s'il est valide
       if (e.isValid) current_analyse.newEvent(e)
     }
@@ -360,17 +364,19 @@ const EVENT_FORM_TEMP = `
       <label class="ff fdim">Diminutif</label>
       <label class="ff fdim">@</label>
       <label class="ff fqrd">Question</label>
-      <input type="text" class="ff fscene fdim fqrd" id="event-__EID__-inputtext-1" />
+      <label class="ff fpp">Préparation</label>
+      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-1" />
     </div>
 
     <div class="div-form">
       <label class="ff fscene">Sous-décor</label>
       <label class="ff fdim">Signification</label>
       <label class="ff fqrd">Réponse</label>
-      <input type="text" class="ff fscene fdim fqrd" id="event-__EID__-inputtext-2" />
-      <div class="ff fqrd">
+      <label class="ff fpp">Paiement/résolution</label>
+      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-2" />
+      <div class="right ff fqrd fpp">
         <label>Temps</label>
-        <input type="text" class="small horloge fqrd" id="event-__EID__-tps_reponse" />
+        <input type="text" class="small horloge fqrd fpp" id="event-__EID__-tps_reponse" />
       </div>
     </div>
 

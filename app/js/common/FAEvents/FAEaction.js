@@ -24,11 +24,7 @@ class FAEaction extends FAEvent {
    * On dispatch les valeurs depuis le formulaire
    */
   dispatch(d){
-    for(var prop of FAEaction.OWN_PROPS){
-      if(undefined === d[prop]) continue
-      this[prop] = d[prop]
-    }
-    // Valeurs particulières
+    super.dispatch(this, d)
   }
 
   /**

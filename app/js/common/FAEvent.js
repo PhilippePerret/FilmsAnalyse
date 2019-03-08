@@ -90,10 +90,9 @@ class FAEvent {
   }
 
   static get OWN_PROPS(){return ['id', 'type', 'time', 'duration', 'content', 'note', 'events']}
+
   /**
    * Les données qui seront enregistrées
-   *
-   * Pour les sous-classes, on utilise `var d = super()`
    */
   get data(){
     var d = {}
@@ -101,8 +100,62 @@ class FAEvent {
       if(null === this[prop] || undefined === this[prop]) continue
       d[prop] = this[prop]
     }
+    for(var prop of this.constructor.OWN_PROPS){
+      if('string' !== typeof(prop)){ // cf. ci-dessous dans `dispatch`
+        prop = prop[0]
+      }
+      if(null === this[prop] || undefined === this[prop]) continue
+      d[prop] = this[prop]
+    }
     return d
   }
+
+  dispatch(d){
+    // console.log("-> FAEvent.display (meta-class)")
+    // console.log(evt, d)
+    // console.log('OWN_PROPS =', evt.constructor.OWN_PROPS)
+    var fieldName ;
+    for(var prop of this.constructor.OWN_PROPS){
+      if('string' === typeof(prop)){
+        // <= Seulement le nom de la propriété donnée
+        // => Le champ s'appelle comme la propriété
+        fieldName = prop
+      } else {
+        // <= Own prop donnée sous forme de array avec en première valeur le
+        //    nom de la propriété dans l'évènement et en seconde valeur le
+        //    nom du champ
+        // => On met dans la propriété la valeur du champ
+        fieldName = prop[1]
+        prop      = prop[0]
+      }
+      if(undefined === d[fieldName]) continue
+      this[prop] = d[fieldName]
+    }
+
+  }
+  // dispatch(evt, d){
+  //   // console.log("-> FAEvent.display (meta-class)")
+  //   // console.log(evt, d)
+  //   // console.log('OWN_PROPS =', evt.constructor.OWN_PROPS)
+  //   var fieldName ;
+  //   for(var prop of evt.constructor.OWN_PROPS){
+  //     if('string' === typeof(prop)){
+  //       // <= Seulement le nom de la propriété donnée
+  //       // => Le champ s'appelle comme la propriété
+  //       fieldName = prop
+  //     } else {
+  //       // <= Own prop donnée sous forme de array avec en première valeur le
+  //       //    nom de la propriété dans l'évènement et en seconde valeur le
+  //       //    nom du champ
+  //       // => On met dans la propriété la valeur du champ
+  //       fieldName = prop[1]
+  //       prop      = prop[0]
+  //     }
+  //     if(undefined === d[fieldName]) continue
+  //     evt[prop] = d[fieldName]
+  //   }
+  //
+  // }
 }
 
 // Pour la compatibilité avec les autres types
