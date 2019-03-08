@@ -1,3 +1,15 @@
+* Création de l'évènement
+  L'ajouter à la liste des FAnalyse.times
+  L'ajouter à la table de hashage par ID (id => event)
+* Modification de l'évènement
+  Voir si sa position (temps) a bougé et le replacer dans les listes de FAnalyse
+* FORMULAIRE D'EVENT
+  * Reprendre le submit
+* Pouvoir définir la durée en cliquant-glissant de droite à gauche (les touches MAJ et CTRL permettent de faire gros ou fin)
+* Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
+* Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)
+* titre
+* Penser à prendre le dernier identifiant en chargeant un film (et le mettre dans `EventForm.lastId = `)
 * Essayer de mettre le traitement particulier avec OWN_PROPS dans la super class FAEvent (dans sa méthode 'data') en essayant de prendre justement la propriété OWN_PROPS de la sous-classe (est-ce possible ?) OU en la lisant dans une autre propriété d'instance OU en la passant à une méthode
 * Revoir la méthode FAnalyse.formateTexte pour que ce ne soit pas elle qui formate l'évènement mais la methode 'div' propre à tous les évènements.
 * Étudier le cas de l'édition de l'évènement

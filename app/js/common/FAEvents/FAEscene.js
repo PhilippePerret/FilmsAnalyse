@@ -26,8 +26,8 @@ class FAEscene extends FAEvent {
       this[prop] = d[prop]
     }
     // Valeurs particulières
-    this.decor      = d['input-text-1'].trim()
-    this.sous_decor = d['input-text-2'].trim()
+    this.decor      = d['inputtext-1'].trim()
+    this.sous_decor = d['inputtext-2'].trim()
   }
 
   get div(){

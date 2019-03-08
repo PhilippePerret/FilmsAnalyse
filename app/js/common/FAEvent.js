@@ -4,11 +4,12 @@
 class FAEvent {
 
   constructor(data){
-    // this.type     = data.type     // (String)
-    this.time     = data.time     // (number)
-    this.duration = data.duration // (number seconds)
-    this.content  = data.content  // (String)
-    this.note     = data.note     // (String)
+    // this.type     = data.type  // Sera défini par la sous-classe
+    this.titre    = data.titre    // String
+    this.time     = data.time     // Number
+    this.duration = data.duration // Number (seconds)
+    this.content  = data.content  // String
+    this.note     = data.note     // String
 
     this.events   = data.events
   }

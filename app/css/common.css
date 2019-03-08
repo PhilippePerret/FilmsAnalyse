@@ -6,6 +6,8 @@ body, body * {
 .small {
   font-size: 0.75em;
 }
+.bold {font-weight:bold;}
+
 .controller {border:0; padding:0;vertical-align:middle;}
 button.controller img {width:40px;}
 

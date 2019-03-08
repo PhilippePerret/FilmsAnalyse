@@ -20,6 +20,7 @@ const VideoController = {
     }
   , controller: null
   , inited: false
+  , playing: false // mis à true quand la vidéo joue
 
     /**
      * Initialisation du controller
@@ -117,9 +118,11 @@ const VideoController = {
       if(pauser){
         this.controller.pause()
         this.desactivateHorloge()
+        this.playing = false
       } else {
         this.controller.play()
         this.activateHorloge()
+        this.playing = true
       }
       // console.log("<- onTogglePlay")
     }

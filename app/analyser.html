@@ -106,106 +106,6 @@
         <button type="button" id="btn-new-info" data-type="info" class="small" title="Information">Info</button>
       </div>
 
-      <!-- FORMULAIRE EN FONCTION DES ÉLÉMENTS À AJOUTER -->
-      <form id="form-edit-event">
-
-        <input type="hidden" id="event-id" />
-        <input type="hidden" id="event-type" />
-        <input type="hidden" id="event-time" />
-
-        <!-- Un div flottant pour définir la durée (pour tous) -->
-        <div id="div-duration" class="fright">
-          <label for="event-duration">Durée</label>
-          <input type="text" id="event-duration" class="temps-secondes" placeholder="[[h,]m,]secs">
-        </div>
-
-        <div class="div-form">
-          <label class="ff finfo fpp fdial fscene">Type :</label>
-
-          <select class="ff fscene" id="sceneType">
-            <option value="generic">Générique</option>
-            <option value="expo">Expositionnelle</option>
-            <option value="action">Action</option>
-            <option value="dialogue">Dialogue</option>
-            <option value="rencontre">Rencontre</option>
-          </select>
-
-          <select class="ff faction" id="actionType">
-            <option value="n/d">(sans type)</option>
-            <option value="inner">Physique</option>
-            <option value="conflit">Intellectuelle</option>
-            <option value="conflit">Artistique</option>
-          </select>
-
-          <select class="ff fdial" id="dialType">
-            <option value="n/d">(sans type)</option>
-            <option value="inner">Intérieur</option>
-            <option value="conflit">Conflict</option>
-          </select>
-
-          <select class="ff finfo" id="infoType">
-            <option value="n/d">(sans type)</option>
-            <option value="pers">Personnage</option>
-            <option value="intr">Intrigue</option>
-            <option value="them">Thème</option>
-          </select>
-
-          <select class="ff fpp" id="ppType">
-            <option value="prep">Préparation</option>
-            <option value="expl">Exploitation</option>
-            <option value="paie">Paiement/Résolution</option>
-            <option value="canc">Annulation</option>
-          </select>
-        </div>
-
-        <div class="div-form">
-
-          <!-- Menu pour l'effet de la scène -->
-          <select class="ff fscene" id="lieu">
-            <option value="int">INT.</option>
-            <option value="ext">EXT.</option>
-            <option value="extint">INT. & EXT.</option>
-          </select>
-
-          <select class="ff fscene" id="effet">
-            <option value="jour">JOUR</option>
-            <option value="nuit">NUIT</option>
-            <option value="noir">NOIR</option>
-            <option value="n/d">N.D.</option>
-          </select>
-
-          <label class="ff fscene">Décor</label>
-          <label class="ff fdim">Diminutif</label>
-          <label class="ff fbrin">Titre</label>
-          <label class="ff fdim">@</label><input type="text" class="ff fscene fdim" id="input-text-1" />
-
-          <label class="ff fscene">Sous-décor</label>
-          <label class="ff fdim">Signification</label>
-          <input type="text" class="ff fscene fdim" id="input-text-2" />
-        </div>
-
-        <div class="div-form">
-          <div>
-            <label class="ff fscene fbrin">Résumé</label>
-            <label class="ff finfo">Information</label>
-            <label class="ff fevent faction fqd fpp">Description</label>
-            <label class="ff fdial">Commentaire</label>
-          </div>
-          <textarea id="event-content" rows="4"></textarea>
-        </div>
-
-        <div class="div-form">
-          <label class="block">Note</label>
-          <textarea id="event-note" rows="3"></textarea>
-        </div>
-
-        <div id="event-form-buttons">
-          <button id="btn-form-cancel" type="button" class="fleft">Renoncer</button>
-          <button id="btn-form-submit" type="button">Enregistrer</button>
-        </div>
-
-      </form>
-      <!-- /fin du formulaire en fonction des éléments à ajouter -->
 
       <div id="message"></div>
 
@@ -214,6 +114,7 @@
 
 
     <script>window.$ = window.jQuery = require('jquery');</script>
+    <script src="./js/system/jquery-ui-min.js"></script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
     <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
