@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEaction extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type         = 'action'
     this.actionType   = data.actionType
   }

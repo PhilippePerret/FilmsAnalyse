@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEinfo extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type     = 'info'
     this.infoType = data.infoType
   }

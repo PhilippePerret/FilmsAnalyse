@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEproc extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type         = 'proc'
     this.procType     = data.procType
     this.setup        = data.setup

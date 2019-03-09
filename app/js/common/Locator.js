@@ -6,12 +6,223 @@
  */
 
 class Locator {
+
   constructor(analyse){
     this.analyse = analyse
-    // console.log("Instanciation de Locator avec :", this.analyse)
   }
 
-  get realTime(){ return VideoController.getRTime }
+  // Pour savoir si la vidéo est en train de jouer
+  get playing(){return this._playing || false}
+  set playing(v){ this._playing = v}
+
+  init(){
+    var my = this
+
+    this.video = this.analyse.videoController.controller
+
+    listenClick('btn-hide-current-time', my, 'hideCurrentTime')
+    listenClick('btn-get-time',my,'getAndShowTime')
+    listenClick('btn-go-to-time',my,'goToTime')
+
+    $('#requested_time').on('keypress', ev => {
+      if(ev.keyCode == 13){this.goToTime.bind(this)();$(ev).stop()}
+    })
+
+    listenClick(DGet('btn-time-as-film-start'), my, 'setFilmStart')
+
+    listen(this.btnPlay, 'click', my, 'togglePlay')
+    this.btnPlay.innerHTML = this.imgPlay
+
+    listen(this.btnRewindStart,'click',my,'rewindStart')
+    this.btnRewindStart.innerHTML = this.imgRewindStart
+
+    // Le bouton pour rejoindre le début du film. Il n'est défini que si
+    // ce temps est défini pour l'analyse courante
+    this.analyse.setButtonGoToStart()
+    listenClick('btn-go-to-film-start', my, 'goToFilmStart')
+
+    listenClick('btn-rewind-1-sec',my,'rewind', 1)
+    listenClick('btn-rewind-5-sec',my,'rewind', 5)
+    listenClick('btn-forward-1-sec',my,'forward', 1)
+    listenClick('btn-forward-5-sec',my,'forward', 5)
+
+    my = null
+  }
+
+  // ---------------------------------------------------------------------
+  //  Méthode de navigation dans la vidéo (play, stop, etc.)
+
+  /**
+   * Méthode appelée quand on presse le bouton Play
+   */
+  togglePlay(ev){
+    // console.log("-> togglePlay")
+    var pauser = this.playing === true
+    this.btnPlay.innerHTML = pauser ? this.imgPlay : this.imgPauser
+    if(pauser){
+      this.video.pause()
+      this.playing = false
+      this.desactivateHorloge()
+    } else {
+      this.video.play()
+      this.playing = true
+      this.activateHorloge()
+    }
+    // console.log("<- togglePlay")
+  }
+
+  /**
+   * Méthode pour rembobiner au début du film (si on est après et qu'il est
+   * défini) ou au début de la vidéo
+   *
+   * Note : le -5 ci-dessous permet de cliquer deux fois sur le bouton pour
+   * revenir tout au début (sinon, on revient toujours au début défini du
+   * film)
+   */
+  rewindStart(){
+    this.setTime(this.getRTime(0) - 5)
+  }
+
+  /**
+   * Méthode pour rembobiner de +secs+ seconds (on continue de jouer si
+   * on jouait, ou alors on remet en route)
+   */
+  rewind(secs){
+    this.setTime(this.video.currentTime - secs)
+  }
+  forward(secs){
+    this.setTime(this.video.currentTime + secs)
+  }
+
+  /**
+   * Méthode qui définit le temps du film
+   *
+   * +time+ doit être un nombre de secondes
+   */
+  setTime(time){
+    // console.log("-> setTime", time)
+    this.video.currentTime = time
+    if(this.playAfterSettingTime === true && !this.playing){
+      this.togglePlay()
+    }
+    // Mettre le temps pour le lecteur d'analyse (afficher les events)
+    // TODO
+  }
+
+  /**
+   * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
+   * défini pour le film
+   */
+  setRTime(time, dontPlay, evt){
+    if(this.hasStartTime) time += this.startTime
+    this.setTime(time, dontPlay)
+  }
+
+  // ---------------------------------------------------------------------
+
+  setFilmStart(){
+    this.analyse.setFilmStartTimeAt.bind(this.analyse)(this.getOTime())
+  }
+
+  /**
+   * Méthode permettant de rejoindre le début du film
+   */
+  goToFilmStart(){
+    if(undefined === this.analyse.filmStartTime){
+      F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
+    }else{
+      this.setTime(this.startTime)
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Méthodes de données
+
+  get startTime(){
+    if(this.analyse.filmStartTime){
+      return this.analyse.filmStartTime.seconds
+    } else { return 0 }
+  }
+  get currentTime(){
+    return this.video.currentTime
+  }
+  get currentRTime(){return this.getRTime()}
+
+  /**
+   * Méthode qui récupère le temps courant du film et retourne une instance
+   * OTime
+   *
+   */
+  getOTime(){
+    return new OTime(this.currentTime)
+  }
+  /**
+   * (Number) Retourne le temps rectifié. Il peut être négatif.
+   *
+   * Si +t+ est fourni, on renvoie le temps réel de ce temps, sinon on
+   * prend le temps courant
+   */
+  getRTime(t){
+    if(undefined === t){ t = this.currentTime }
+    if(this.hasStartTime){ t -= this.startTime }
+    return t
+  }
+
+  // ---------------------------------------------------------------------
+  //  Méthode de formatage
+
+  // Retourne une horloge sous la forme [-]h:mm:ss:ff
+  getRealTime(s){
+    var negative = s < 0
+    if(negative){s = -s}
+    // console.log("s = ",s)
+    if(undefined === this._horloger){
+      this._horloger = new OTime(s)
+    } else {
+      this._horloger.updateSeconds(s)
+    }
+    return `${negative?'-':' '}${this._horloger.horloge}`
+  }
+
+  // ---------------------------------------------------------------------
+
+  /**
+   * Méthode pour activer l'horloge qui dépend du début défini pour le
+   * film (ou le début en cas d'erreur). Elle marche au frame près
+   */
+  activateHorloge(){
+    var my = this
+    if (this.intervalTimer){
+      this.desactivateHorloge()
+    } else {
+      if (!this.hasStartTime){
+        this.horloge_real.style.visibility = 'hidden'
+      }
+      this.intervalTimer = setInterval(my.actualizeHorloge.bind(my), 1000/40)
+      // Toutes les x secondes, on essaie d'actualiser l'affichage des
+      // évènements autour du temps courant
+      this.intervalReader = setInterval(my.actualizeReader.bind(my), 3000)
+    }
+    my = null
+  }
+  desactivateHorloge(){
+    if(this.intervalTimer){
+      clearInterval(this.intervalTimer)
+      this.intervalTimer = null
+    }
+    if(this.intervalReader){
+      clearInterval(this.intervalReader)
+      this.intervalReader = null
+    }
+  }
+  actualizeHorloge(){
+    this.horloge.innerHTML = this.getRealTime(this.currentRTime)
+    this.horloge_real.innerHTML = this.getRealTime(this.video.currentTime)
+  }
+
+  actualizeReader(){
+    this.analyse.showEventsAt(this.currentRTime)
+  }
 
   /**
    * Méthode qui retourne les évènements proches du temps +time+
@@ -28,8 +239,7 @@ class Locator {
       // console.log("Recherche dans la tranche : ", tranche)
       if(undefined === evsBT[tranche]) continue
       for(var i=0, len=evsBT[tranche].length;i<len;++i){
-        var idx = evsBT[tranche][i]
-        evs.push(this.analyse.events[idx])
+        evs.push(this.analyse.ids[evsBT[tranche][i]])
       }
     }
     return evs
@@ -48,6 +258,9 @@ class Locator {
       // <= La tranche existe déjà
       // => Placer l'évènement pile à l'endroit voulu
       var len = this.eventsByTrancheTime[tranche].length
+      console.log("tranche:",tranche)
+      console.log("this.eventsByTrancheTime[tranche]:", this.eventsByTrancheTime[tranche])
+      console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
       var etested
       for(var i=0;i<len;++i){
         etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])
@@ -58,6 +271,56 @@ class Locator {
       }
     }
   }
+
+  // ---------------------------------------------------------------------
+  // Méthodes DOM
+  // Méthode qui cache les champs précédents
+  hideCurrentTime(){
+    $('#div-temps-courants').hide();
+  }
+
+  /**
+   * Méthode appelée par le bouton "Temps courant" pour obtenir le temps
+   * courant.
+   * Plusieurs données sont données :
+   *  - temps courant de la vidéo en horloge
+   *  - temps courant de la vidéo en seconde
+   *  - temps courant du film en horloge
+   *  - temps courant du film en secondes
+   *
+   * Note : le temps est également mis dans le clipboard
+   */
+  getAndShowTime(){
+    var videoTC = this.getOTime()
+    $('#temps-courant-video-horloge').val(videoTC.horloge)
+    $('#temps-courant-video-seconds').val(videoTC.secondsInt)
+    if(this.hasStartTime){
+      var filmTC  = new OTime(this.getRTime())
+      $('#temps-courant-film-horloge').val(filmTC.horloge)
+      $('#temps-courant-film-seconds').val(filmTC.secondsInt)
+      clip(filmTC.horloge)
+    } else {
+      clip(videoTC.horloge)
+    }
+    $('#div-temps-courants').show();
+    $('#span-temps-courants-film')[this.hasStartTime?'show':'hide']()
+  }
+
+  /**
+   * Méthode appelée pour se rendre au temps voulu.
+   * Le temps peut être défini comme on veut, en seconds, en horloge, etc.,
+   * et il tient compte d'un début défini (puisqu'il utilise la méthode
+   * `getRTime`).
+   */
+  goToTime(ev){
+    var t = new OTime($('#requested_time').val()).seconds
+    if(this.hasStartTime){ t += this.startTime }
+    this.setTime(t)
+    // En pause, il faut forcer l'affichage du temps
+    if(this.video.paused) this.actualizeHorloge()
+  }
+
+  // ---------------------------------------------------------------------
   /**
    * Propriété qui contient les évènements de l'analyse courante par tranche de
    * temps de 5 secondes.
@@ -72,7 +335,7 @@ class Locator {
         if(undefined === this._events_by_tranche_time[t]){
           this._events_by_tranche_time[t] = []
         }
-        this._events_by_tranche_time[t].push(parseInt(i,10))
+        this._events_by_tranche_time[t].push(e.id)
       }
       // console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
     }
@@ -87,5 +350,42 @@ class Locator {
     return 0
   }
 
+  // ---------------------------------------------------------------------
+  // Méthodes d'état
+  get hasStartTime(){
+    return undefined!==this.analyse.filmStartTime
+  }
+
+  get playAfterSettingTime(){
+    return this._play_after_setting_time || false /* pour le moment */
+  }
+  set playAfterSettingTime(v){ this._play_after_setting_time = v }
+
+  // --- DOM ÉLÉMENTS ---
+  get horloge(){
+    if(undefined===this._horloge){this._horloge=DGet('horloge')}
+    return this._horloge
+  }
+  get horloge_real(){
+    if(undefined===this._horloge_real){this._horloge_real=DGet('horloge_real')}
+    return this._horloge_real
+  }
+  get btnPlay(){
+    if(undefined === this._btnPl){this._btnPl = DGet('btn-real-play')}
+    return this._btnPl
+  }
+  get btnRewindStart(){
+    if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-rewind-start')}
+    return this._btnRwdSt
+  }
+  get imgPauser(){
+    return '<img src="./img/btn-pause.jpg" />'
+  }
+  get imgPlay(){
+    return '<img src="./img/btn-play.jpg" />'
+  }
+  get imgRewindStart(){
+    return '<img src="./img/btn-rewind.jpg" />'
+  }
 
 }

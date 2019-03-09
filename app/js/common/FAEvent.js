@@ -3,7 +3,9 @@
 
 class FAEvent {
 
-  constructor(data){
+  constructor(analyse, data){
+    this.analyse  = analyse
+
     // this.type     = data.type  // Sera défini par la sous-classe
     this.id       = parseInt(data.id,10)
     this.titre    = data.titre    // String
@@ -14,7 +16,6 @@ class FAEvent {
 
     this.events   = data.events
 
-    this.analyse = current_analyse
 
   }
 
@@ -61,7 +62,7 @@ class FAEvent {
   showDiffere(){
     var my = this
     this.div //pour le construire
-    var diff = ((my.time - VideoController.getRTime()) * 1000) - 300
+    var diff = ((my.time - this.analyse.locator.getRTime()) * 1000) - 300
     if ( diff < 0 ){ // ne devrait jamais arriver
       this.show()
     } else {
@@ -75,7 +76,7 @@ class FAEvent {
     if(this.jqReaderObj){
       this.jqReaderObj.show()
     } else {
-      Reader.append(this.div)
+      this.analyse.reader.append(this.div)
       this.observe()
     }
   }
@@ -185,14 +186,18 @@ class FAEvent {
   observe(){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-    o.find('.e-tools button.btn-play').on('click', VideoController.setRTime.bind(VideoController, this.time))
+    o.find('.e-tools button.btn-play').on('click', () => {
+      this.locator.setRTime.bind(this.locator)(this.time)
+    })
   }
+
+  get locator(){return this.analyse.locator}
 }
 
 // Pour la compatibilité avec les autres types
 class FAEevent extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type = 'event'
   }
   get div(){

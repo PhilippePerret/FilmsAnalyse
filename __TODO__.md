@@ -1,3 +1,5 @@
+* Ouvrir la boite d'édition d'event à droite
+
 * Il faudra vraiment que "le reader suive le film", lorsque je joue avec les boutons pour avancer/reculer, aller à une position.
 
 * Il faut que VideoController soit une instance, car il pourra y en avoir plusieurs en même temps.
@@ -39,3 +41,4 @@
 * Voir comment ajouter les sous-titres avec ffmpeg
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 * Possibilité d'afficher tous les évènements d'un coup, pour pouvoir lire et se déplacer dans le film
+* Pouvoir exporter en PDF le reader

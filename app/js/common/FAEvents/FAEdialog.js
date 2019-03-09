@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEdialog extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type       = 'dialog'
     this.dialType   = data.dialType
 }

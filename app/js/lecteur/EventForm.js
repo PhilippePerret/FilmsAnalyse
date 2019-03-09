@@ -3,6 +3,11 @@
  * Class EventForm
  * ---------------
  * Gère le formulaire d'édition et de création d'un évènement de tout type
+ *
+ * Note : on part du principe qu'il n'y a qu'un EventForm en tant que classe,
+ * qui gère seulement l'analyse courante. Quand il y aura plusieurs analyses
+ * étudiées en même temps, on ne pourra plus utiliser cet objet, il faudra
+ * en créer un par analyse active.
  */
 class EventForm {
 
@@ -14,16 +19,19 @@ class EventForm {
     my = null
   }
 
+  //
   static onClickNewEvent(ev, o){
     ev.stopPropagation()
-    this.videoWasPlaying = !!VideoController.playing
-    if(VideoController.playing) VideoController.onTogglePlay()
+    this.videoWasPlaying = !!this.analyse.locator.playing
+    if(this.analyse.locator.playing) this.analyse.locator.togglePlay()
     new EventForm(o.attr('data-type')).toggleForm()
   }
 
+  static get videoController(){ return current_analyse.videoController }
+
   static editEvent(ev){
     console.log("Je vais éditer l'évènement", ev.id)
-    if(VideoController.playing) VideoController.onTogglePlay()
+    if(this.playing) this.analyse.locator.togglePlay()
     new EventForm(ev).toggleForm()
   }
 
@@ -37,7 +45,7 @@ class EventForm {
   }
   static set lastId(v){
     this._lastId = v
-    console.log("Last ID mis à ", this._lastId)
+    // console.log("Last ID mis à ", this._lastId)
   }
 
   /**
@@ -68,7 +76,8 @@ class EventForm {
    *    - avec l'instance de l'évènement
    */
   constructor(foo){
-    this.isNew = false
+    this.isNew    = false
+    this.analyse  = current_analyse // pourra être redéfini plus tard
     switch (typeof foo) {
       case 'string':
         // <= Un type
@@ -76,18 +85,18 @@ class EventForm {
         this._id    = EventForm.newId()
         this._type  = foo
         this.isNew  = true
-        this._time  = VideoController.getRTime() || 0
+        this._time  = this.analyse.locator.getRTime() || 0
         break
       case 'number':
         // <= L'ID de l'évènement
         // => Il faut prendre ses données pour édition
-        this._event = FAnalyse.getEventById(foo)
+        this._event = current_analyse.getEventById(foo)
         break
       case 'object':
         // <= Les données ou l'évènement lui-même
         // => Prendre les données si c'est l'évènement
         if('function'===typeof(foo.showDiffere)){ this._event = foo }
-        else { this._event = FAnalyse.getEventById(ev.id) }
+        else { this._event = current_analyse.getEventById(ev.id) }
         break
       default:
         throw("Il faut penser à traiter les autres cas")
@@ -169,7 +178,7 @@ class EventForm {
       numero = this.event.numero
     }
     $(this.fieldID('numero')).val(numero)
-    console.log("type/numero", this.type, numero)
+    // console.log("type/numero", this.type, numero)
     numero = null
   }
 
@@ -211,7 +220,7 @@ class EventForm {
     $(this.fieldID('id')).val(this.id)
     $(this.fieldID('type')).val(this.type)
     $(this.fieldID('is_new')).val(this.isNew?'1':'0')
-    $(this.fieldID('time')).val(parseInt(VideoController.getRTime(),10))
+    $(this.fieldID('time')).val(parseInt(this.analyse.locator.getRTime(),10))
     this.jqForm.find('section.footer span.event-type').html(this.type.toUpperCase())
     this.jqForm.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqForm.find('section.footer span.event-time').html(new OTime(this.time).horloge)
@@ -305,7 +314,7 @@ class EventForm {
       // CRÉATION
       // On crée l'évènement du type voulu
       var eClass = eval(`FAE${data_min.type}`)
-      this._event = new eClass(data_min)
+      this._event = new eClass(current_analyse, data_min)
     } else {
       this.event.data = data_min // ça va les dispatcher
     }
@@ -347,11 +356,11 @@ class EventForm {
   endEdition(){
     this.hide()
     // Si la vidéo jouait quand on a créé l'évènement, on la remet en route
-    if(this.videoWasPlaying)VideoController.onTogglePlay()
+    if(this.videoWasPlaying) this.analyse.locator.togglePlay()
   }
 
   get form(){
-    if(undefined===this._form){this._form = document.getElementById(`form-edit-event-${this.id}`)}
+    if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
     return this._form
   }
   get jqForm(){
@@ -483,12 +492,13 @@ const EVENT_FORM_TEMP = `
         <label class="ff finfo">Information</label>
         <label class="ff fevent faction fqd fpp">Description</label>
         <label class="ff fdialog">Commentaire</label>
+        <label class="ff fnote">Contenu de la note</label>
       </div>
       <textarea id="event-__EID__-content" rows="4"></textarea>
     </div>
 
     <div class="div-form">
-      <label class="block">Note</label>
+      <label class="block">Note subsidiaire</label>
       <textarea id="event-__EID__-note" rows="3"></textarea>
     </div>
 

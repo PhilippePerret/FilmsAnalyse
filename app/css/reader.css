@@ -12,22 +12,6 @@
   overflow: auto;
   padding:0;
 }
-#reader .event {
-  padding: 0.2em 0.5em;
-  clear:both;
-}
-
-.event div.scene-heading{
-  display:block;
-  font-weight: bold;
-  margin-top: 1em;
-  text-decoration: underline;
-}
-.event span.scene-resume {
-  display:block;
-  font-style:italic;
-  margin-left:1em;
-}
 
 /* Les petits boutons au-dessus de l'event dans le reader */
 #reader .e-tools {
@@ -58,4 +42,31 @@
   position:absolute;
   top:2px;
   left:2px;
+}
+
+/* ---------------------------------------------------------------------
+    Définition de l'aspect des events dans le reader
+ */
+
+#reader .event {
+  padding: 0.2em 0.5em;
+  clear:both;
+}
+
+#reader .event div.scene-heading{
+  display:block;
+  font-weight: bold;
+  margin-top: 1em;
+  text-decoration: underline;
+}
+#reader .event span.scene-resume {
+  display:block;
+  font-style:italic;
+  margin-left:1em;
+}
+
+#reader .event.note {
+  font-style:italic;
+  margin-left:2em;
+  font-size:0.85em;
 }
