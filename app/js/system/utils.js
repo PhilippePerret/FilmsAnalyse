@@ -18,6 +18,17 @@ function getValOrNull(domId){
   return v
 }
 
+function DGet(DOMId){
+  return document.getElementById(DOMId)
+}
+
+/**
+ * Pour rendre le selecteur +jqId+ visible (visibility)
+ */
+function toggleVisible(jqId, v){
+  $(jqId).css('visibility', v ? 'visible' : 'hidden')
+}
+
 // Pour écouter un objet
 // p.e. listen(btnPlay, 'click', Controller, 'start')
 function listen(cible, ename, objet, method){

@@ -39,3 +39,4 @@
 * Voir comment ajouter les sous-titres avec ffmpeg
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 * Possibilité d'afficher tous les évènements d'un coup, pour pouvoir lire et se déplacer dans le film
+* Pouvoir exporter en PDF le reader

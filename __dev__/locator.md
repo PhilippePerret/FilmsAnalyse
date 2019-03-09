@@ -4,7 +4,7 @@ Le locateur est l'outil, l'objet, la classe qui permet de situer la position dan
 
 En général, il y a seulement un locateur en route, mais on peut imaginer en avoir plusieurs lorsqu'on suit deux endroits dans le film.
 
-On pourrait dire aussi que le locateur est l'interface entre la vidéo-controller (`VideoController`) et l'analyse courante (instance `FAnalyse`).
+On pourrait dire aussi que le locateur est l'interface entre la vidéo-controller (instance `VideoController`) et l'analyse courante (instance `FAnalyse`).
 
 ### Réflexion
 

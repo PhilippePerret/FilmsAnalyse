@@ -14,6 +14,19 @@ class FAnalyse {
     this._folder = path.resolve(pathFolder)
   }
 
+  /**
+   * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
+   * données ont été chargées et traitées. Si un fichier vidéo existe, on le
+   * charge.
+   */
+  onReady(){
+    this.videoController = new VideoController(this)
+    this.locator = new Locator(this)
+    this.reader  = new AReader(this)
+    this.videoController.init()
+    EventForm.init()
+  }
+
   get modified() { return this._modified }
   set modified(v) {
     this._modified = v
@@ -174,7 +187,7 @@ class FAnalyse {
     if(undefined === p){ p = $('#video-path').val() }
     this._videoPath = p
     this.modified   = true
-    VideoController.load(p)
+    this.videoController.load(p)
     // On peut masquer le champ qui permet de définir la vidéo
     $('#div-video-path').hide();
   }
@@ -248,17 +261,19 @@ class FAnalyse {
   // Prend les données dans le fichier events.json et les dispatche dans
   // l'instance d'analyse (au début du travail, en général)
   set eventsSaved(v){
+    var my = this
     var last_id = -1
     this.events = []
     for(var d of v){
       var eClass = eval(`FAE${d.type}`)
-      this.addEvent(new eClass(d), true)
+      this.addEvent(new eClass(my, d), true)
       // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
       // une création d'évènement.
       if(d.id > last_id){last_id = parseInt(d.id,10)}
     }
     // On peut définir le dernier ID dans EventForm (pour le formulaire)
     EventForm.lastId = last_id
+    my = null
   }
 
   /**
@@ -281,20 +296,11 @@ class FAnalyse {
     while(fpath = loadables.shift()){my.loadFile(fpath, my.PROP_PER_FILE[fpath])}
   }
 
-  /**
-   * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
-   * données ont été chargées et traitées. Si un fichier vidéo existe, on le
-   * charge.
-   */
-  onReady(){
-    VideoController.init()
-    EventForm.init()
-    this.locator = new Locator(this)
-  }
-
   onLoaded(fpath){
     this.loaders += 1
     if(this.loaders === this.loadables_count){
+      console.log("Analyse chargée avec succès.")
+      console.log("Event count:",this.events.length)
       this.ready = true
       this.onReady()
     }
@@ -342,7 +348,7 @@ class FAnalyse {
     if(undefined === this.filmStartTime){
       F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
     }else{
-      VideoController.setTime(this.filmStartTime.seconds)
+      this.videoController.setTime(this.filmStartTime.seconds)
     }
   }
 

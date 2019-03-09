@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEpp extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type         = 'pp'
     this.setup        = data.setup
     this.payoff       = data.payoff

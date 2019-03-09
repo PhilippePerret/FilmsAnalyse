@@ -25,7 +25,7 @@
       <div id="div-video-top-tools">
         <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
         <span class="small">Taille de la vidéo : </span>
-        <select id="video-size" onchange="$.proxy(VideoController,'setSize')(this.value,true)" class="small">
+        <select id="video-size" class="small">
           <option value="vignette">Vignette</option>
           <option value="medium">Medium</option>
           <option value="large">Large</option>
@@ -69,7 +69,7 @@
             <input type="text" class="horloge small" id="temps-courant-film-horloge" />
             <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
           </span>
-          <button type="button" class="small" onclick="VideoController.hideCurrentTime()">OK</button>
+          <button id="btn-hide-current-time" type="button" class="small">OK</button>
         </div>
       </div>
       <!-- / Fin des boutons de navigation -->
@@ -104,6 +104,7 @@
         <button type="button" id="btn-new-dim" data-type="dim" class="small" title="Diminutif">Dim.</button>
         <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
         <button type="button" id="btn-new-info" data-type="info" class="small" title="Information">Info</button>
+        <button type="button" id="btn-new-note" data-type="note" class="small" title="Note">note</button>
       </div>
 
 
@@ -121,7 +122,7 @@
     <script type="text/javascript" src="./js/system/utils.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
-    <script type="text/javascript" src="./js/lecteur/Reader.js"></script>
+    <script type="text/javascript" src="./js/lecteur/AReader.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
     <script type="text/javascript" src="./js/common/FAEvent.js"></script>
     <script type="text/javascript" src="./js/common/Locator.js"></script>
@@ -134,5 +135,6 @@
     <script type="text/javascript" src="./js/common/FAEvents/FAEqrd.js"></script>
     <script type="text/javascript" src="./js/common/FAEvents/FAEproc.js"></script>
     <script type="text/javascript" src="./js/common/FAEvents/FAEpp.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEnote.js"></script>
   </body>
 </html>

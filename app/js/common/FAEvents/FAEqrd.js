@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEqrd extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type         = 'qrd'
     this.question     = data.question
     this.reponse      = data.reponse

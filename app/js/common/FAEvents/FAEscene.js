@@ -1,8 +1,8 @@
 'use strict'
 
 class FAEscene extends FAEvent {
-  constructor(data){
-    super(data)
+  constructor(analyse, data){
+    super(analyse, data)
     this.type       = 'scene'
     this.numero     = data.numero
     this.decor      = data.decor

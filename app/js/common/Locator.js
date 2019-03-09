@@ -11,7 +11,8 @@ class Locator {
     // console.log("Instanciation de Locator avec :", this.analyse)
   }
 
-  get realTime(){ return VideoController.getRTime }
+  get videoController(){return this.analyse.videoController}
+  get realTime(){ return this.videoController.getRTime }
 
   /**
    * Méthode qui retourne les évènements proches du temps +time+
@@ -48,6 +49,9 @@ class Locator {
       // <= La tranche existe déjà
       // => Placer l'évènement pile à l'endroit voulu
       var len = this.eventsByTrancheTime[tranche].length
+      console.log("tranche:",tranche)
+      console.log("this.eventsByTrancheTime[tranche]:", this.eventsByTrancheTime[tranche])
+      console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
       var etested
       for(var i=0;i<len;++i){
         etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])
@@ -72,7 +76,7 @@ class Locator {
         if(undefined === this._events_by_tranche_time[t]){
           this._events_by_tranche_time[t] = []
         }
-        this._events_by_tranche_time[t].push(parseInt(i,10))
+        this._events_by_tranche_time[t].push(e.id)
       }
       // console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
     }
