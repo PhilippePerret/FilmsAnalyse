@@ -17,12 +17,12 @@ class VideoController {
   }
 
   // Le contrôleur vidéo lui-même (la balise vidéo)
-  get controller(){ return this._controller }
-  set controller(v){ this._controller = v }
+  get controller(){
+    if(undefined === this._controller){this._controller = DGet('video')}
+    return this._controller
+  }
   get inited(){return this._inited || false }
   set inited(v){this._inited = v}
-  get playing(){return this._playing || false}
-  set playing(v){this._playing = v}
 
   /**
    * Initialisation du controller
@@ -38,7 +38,8 @@ class VideoController {
 
     // --- Éléments DOM ---
     // TODO Tous ceux définis en get pourrait être mis ici, plutôt
-    this.controller = DGet('video')
+    // Attention tout de même à bien mesure l'ordre d'initialisation des éléments
+    // il faut qu'ils soient initialisés ou accessible.
 
     this.setDimensions()
 
@@ -117,10 +118,5 @@ class VideoController {
     toggleVisible('#fs-new-event', visible)
     toggleVisible('#btn-time-as-film-start', !this.hasStartTime)
   }
-
-  get playAfterSettingTime(){
-    return this._play_after_setting_time || true /* pour le moment */
-  }
-  set playAfterSettingTime(v){ this._play_after_setting_time = v }
 
 }

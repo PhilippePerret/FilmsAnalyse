@@ -23,6 +23,7 @@ class FAnalyse {
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new AReader(this)
+    
     this.locator.init()
     this.reader.init()
     this.videoController.init()

@@ -1,3 +1,5 @@
+* Ouvrir la boite d'édition d'event à droite
+
 * Il faudra vraiment que "le reader suive le film", lorsque je joue avec les boutons pour avancer/reculer, aller à une position.
 
 * Il faut que VideoController soit une instance, car il pourra y en avoir plusieurs en même temps.

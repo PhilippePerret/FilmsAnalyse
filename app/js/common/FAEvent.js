@@ -186,10 +186,12 @@ class FAEvent {
   observe(){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-    o.find('.e-tools button.btn-play').on('click', this.videoController.setRTime.bind(this.videoController, this.time))
+    o.find('.e-tools button.btn-play').on('click', () => {
+      this.locator.setRTime.bind(this.locator)(this.time)
+    })
   }
 
-  get videoController(){return this.analyse.videoController}
+  get locator(){return this.analyse.locator}
 }
 
 // Pour la compatibilité avec les autres types

@@ -45,7 +45,7 @@ class EventForm {
   }
   static set lastId(v){
     this._lastId = v
-    console.log("Last ID mis à ", this._lastId)
+    // console.log("Last ID mis à ", this._lastId)
   }
 
   /**
@@ -76,7 +76,8 @@ class EventForm {
    *    - avec l'instance de l'évènement
    */
   constructor(foo){
-    this.isNew = false
+    this.isNew    = false
+    this.analyse  = current_analyse // pourra être redéfini plus tard
     switch (typeof foo) {
       case 'string':
         // <= Un type
@@ -84,7 +85,7 @@ class EventForm {
         this._id    = EventForm.newId()
         this._type  = foo
         this.isNew  = true
-        this._time  = EventForm.videoController.getRTime() || 0
+        this._time  = this.analyse.locator.getRTime() || 0
         break
       case 'number':
         // <= L'ID de l'évènement
@@ -219,7 +220,7 @@ class EventForm {
     $(this.fieldID('id')).val(this.id)
     $(this.fieldID('type')).val(this.type)
     $(this.fieldID('is_new')).val(this.isNew?'1':'0')
-    $(this.fieldID('time')).val(parseInt(EventForm.videoController.getRTime(),10))
+    $(this.fieldID('time')).val(parseInt(this.analyse.locator.getRTime(),10))
     this.jqForm.find('section.footer span.event-type').html(this.type.toUpperCase())
     this.jqForm.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqForm.find('section.footer span.event-time').html(new OTime(this.time).horloge)

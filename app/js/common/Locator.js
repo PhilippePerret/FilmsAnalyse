@@ -15,21 +15,17 @@ class Locator {
   get playing(){return this._playing || false}
   set playing(v){ this._playing = v}
 
-  get video() {
-    if(undefined === this._video){this._video = this.videoController.controller}
-    return this._video
-  }
-  get videoController(){return this.analyse.videoController}
-  get realTime(){ return this.videoController.getRTime }
-
   init(){
     var my = this
-    listenClick(DGet('btn-hide-current-time'), my, 'hideCurrentTime')
-    listenClick(DGet('btn-get-time'),my,'getAndShowTime')
-    listenClick(DGet('btn-go-to-time'),my,'goToTime')
 
-    $('#requested_time').on('keypress', (ev)=>{
-      if(ev.keyCode == 13){my.goToTime.bind(my)();$(ev).stop()}
+    this.video = this.analyse.videoController.controller
+
+    listenClick('btn-hide-current-time', my, 'hideCurrentTime')
+    listenClick('btn-get-time',my,'getAndShowTime')
+    listenClick('btn-go-to-time',my,'goToTime')
+
+    $('#requested_time').on('keypress', ev => {
+      if(ev.keyCode == 13){this.goToTime.bind(this)();$(ev).stop()}
     })
 
     listenClick(DGet('btn-time-as-film-start'), my, 'setFilmStart')
@@ -65,12 +61,12 @@ class Locator {
     this.btnPlay.innerHTML = pauser ? this.imgPlay : this.imgPauser
     if(pauser){
       this.video.pause()
-      this.desactivateHorloge()
       this.playing = false
+      this.desactivateHorloge()
     } else {
       this.video.play()
-      this.activateHorloge()
       this.playing = true
+      this.activateHorloge()
     }
     // console.log("<- togglePlay")
   }
@@ -103,18 +99,21 @@ class Locator {
    *
    * +time+ doit être un nombre de secondes
    */
-  setTime(time, dontPlay){
+  setTime(time){
+    // console.log("-> setTime", time)
     this.video.currentTime = time
-    if(this.playAfterSettingTime === true && !dontPlay){
-      if(this.video.paused) this.togglePlay()
+    if(this.playAfterSettingTime === true && !this.playing){
+      this.togglePlay()
     }
+    // Mettre le temps pour le lecteur d'analyse (afficher les events)
+    // TODO
   }
 
   /**
    * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
    * défini pour le film
    */
-  setRTime(time, dontPlay){
+  setRTime(time, dontPlay, evt){
     if(this.hasStartTime) time += this.startTime
     this.setTime(time, dontPlay)
   }
@@ -123,15 +122,6 @@ class Locator {
 
   setFilmStart(){
     this.analyse.setFilmStartTimeAt.bind(this.analyse)(this.getOTime())
-  }
-
-  setTime(time, en_pause){
-    // Mettre le temps pour le lecteur vidéo
-    this.video.current_time = time
-    if(en_pause) this.video.pause()
-    else if (!this.playing) this.togglePlay()
-    // Mettre le temps pour le lecteur d'analyse (afficher les events)
-    // TODO
   }
 
   /**
@@ -325,9 +315,9 @@ class Locator {
   goToTime(ev){
     var t = new OTime($('#requested_time').val()).seconds
     if(this.hasStartTime){ t += this.startTime }
-    var en_pause = this.video.paused
-    this.setTime(t, en_pause)
-    if(en_pause) this.actualizeHorloge()
+    this.setTime(t)
+    // En pause, il faut forcer l'affichage du temps
+    if(this.video.paused) this.actualizeHorloge()
   }
 
   // ---------------------------------------------------------------------
@@ -365,6 +355,11 @@ class Locator {
   get hasStartTime(){
     return undefined!==this.analyse.filmStartTime
   }
+
+  get playAfterSettingTime(){
+    return this._play_after_setting_time || false /* pour le moment */
+  }
+  set playAfterSettingTime(v){ this._play_after_setting_time = v }
 
   // --- DOM ÉLÉMENTS ---
   get horloge(){
