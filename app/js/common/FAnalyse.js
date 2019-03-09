@@ -23,8 +23,34 @@ class FAnalyse {
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new AReader(this)
+    this.locator.init()
+    this.reader.init()
     this.videoController.init()
     EventForm.init()
+    this.init()
+  }
+
+  init(){
+
+    // Bouton pour sauver l'analyse
+    var btnSaveAnalyse = DGet('btn-save-analyse')
+    listen(btnSaveAnalyse,'click', this, 'save')
+    toggleVisible(btnSaveAnalyse,false)
+
+    // Si l'analyse courante définit une vidéo, on la charge et on prépare
+    // l'interface. Sinon, on masque la plupart des éléments
+    if(this.videoPath){
+      this.videoController.load(this.videoPath)
+    } else {
+      this.videoController.setVideoUI(false)
+    }
+
+    // Extras
+    // ------
+    // Tous les champs input-text, on selectionne tout quand on focusse
+    // dedant
+    $('input[type="text"]').on('focus', function(){$(this).select()})
+
   }
 
   get modified() { return this._modified }
@@ -340,17 +366,5 @@ class FAnalyse {
   setButtonGoToStart(){
     $('#btn-go-to-film-start').css('visibility',(this.filmStartTime === undefined)?'hidden':'visible')
   }
-
-  /**
-   * Méthode permettant de rejoindre le début du film
-   */
-  goToFilmStart(){
-    if(undefined === this.filmStartTime){
-      F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
-    }else{
-      this.videoController.setTime(this.filmStartTime.seconds)
-    }
-  }
-
 
 }

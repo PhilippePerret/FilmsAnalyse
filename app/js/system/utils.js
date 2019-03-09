@@ -31,7 +31,19 @@ function toggleVisible(jqId, v){
 
 // Pour écouter un objet
 // p.e. listen(btnPlay, 'click', Controller, 'start')
-function listen(cible, ename, objet, method){
-  cible.addEventListener(ename, objet[method].bind(objet))
+function listen(cible, ename, objet, method, param){
+  if('string'===typeof(cible)){cible = DGet(cible)}
+  try {
+    if(undefined === param){
+      cible.addEventListener(ename, objet[method].bind(objet))
+    } else {
+      cible.addEventListener(ename, objet[method].bind(objet, param))
+    }
+  } catch (e) {
+    console.error({
+      cible: cible, ename: ename, method: method, objet: objet, param: param
+    })
+    throw("Impossible d'écouter le DOM élément défini ci-dessus :", e)
+  }
 }
-function listenClick(cible, objet, method){listen(cible,'click',objet,method)}
+function listenClick(cible, objet, method, param){listen(cible,'click',objet,method, param)}

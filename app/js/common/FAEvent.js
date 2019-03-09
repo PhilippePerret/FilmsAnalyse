@@ -62,7 +62,7 @@ class FAEvent {
   showDiffere(){
     var my = this
     this.div //pour le construire
-    var diff = ((my.time - this.analyse.videoController.getRTime()) * 1000) - 300
+    var diff = ((my.time - this.analyse.locator.getRTime()) * 1000) - 300
     if ( diff < 0 ){ // ne devrait jamais arriver
       this.show()
     } else {

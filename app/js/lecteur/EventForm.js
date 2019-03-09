@@ -22,8 +22,8 @@ class EventForm {
   //
   static onClickNewEvent(ev, o){
     ev.stopPropagation()
-    this.videoWasPlaying = !!this.videoController.playing
-    if(this.videoController.playing) this.videoController.onTogglePlay()
+    this.videoWasPlaying = !!this.analyse.locator.playing
+    if(this.analyse.locator.playing) this.analyse.locator.togglePlay()
     new EventForm(o.attr('data-type')).toggleForm()
   }
 
@@ -31,7 +31,7 @@ class EventForm {
 
   static editEvent(ev){
     console.log("Je vais éditer l'évènement", ev.id)
-    if(this.videoController.playing) this.videoController.onTogglePlay()
+    if(this.playing) this.analyse.locator.togglePlay()
     new EventForm(ev).toggleForm()
   }
 
@@ -355,11 +355,11 @@ class EventForm {
   endEdition(){
     this.hide()
     // Si la vidéo jouait quand on a créé l'évènement, on la remet en route
-    if(this.videoWasPlaying) EventForm.videoController.onTogglePlay()
+    if(this.videoWasPlaying) this.analyse.locator.togglePlay()
   }
 
   get form(){
-    if(undefined===this._form){this._form = document.getElementById(`form-edit-event-${this.id}`)}
+    if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
     return this._form
   }
   get jqForm(){
