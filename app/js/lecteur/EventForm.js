@@ -20,17 +20,17 @@ class EventForm {
   }
 
   //
-  static onClickNewEvent(ev, o){
-    ev.stopPropagation()
-    this.videoWasPlaying = !!this.analyse.locator.playing
-    if(this.analyse.locator.playing) this.analyse.locator.togglePlay()
-    new EventForm(o.attr('data-type')).toggleForm()
+  static onClickNewEvent(ev, eventType){
+    if (ev) ev.stopPropagation()
+    this.videoWasPlaying = !!current_analyse.locator.playing
+    if(current_analyse.locator.playing) current_analyse.locator.togglePlay()
+    if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
+    new EventForm(eventType).toggleForm()
   }
 
   static get videoController(){ return current_analyse.videoController }
 
   static editEvent(ev){
-    console.log("Je vais éditer l'évènement", ev.id)
     if(this.playing) this.analyse.locator.togglePlay()
     new EventForm(ev).toggleForm()
   }

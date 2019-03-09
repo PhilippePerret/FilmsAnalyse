@@ -1,9 +1,7 @@
-* Quand on utilise les boutons pour se déplacer +/- 1 ou 5 secondes, il faut aussi traiter les évènements à afficher.
-  -> en fait, le faire dans le locator#setTime (qui est prêt pour ça)
-* Un CB pour dire de repartir (play) dès qu'on va sur un temps (ou au contraire de ne rien faire)
-* Ouvrir la boite d'édition d'event à droite
+* Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue.
 
-* Il faudra vraiment que "le reader suive le film", lorsque je joue avec les boutons pour avancer/reculer, aller à une position.
+* Un CB pour dire de repartir (play) dès qu'on va sur un temps (ou au contraire de ne rien faire)
+
 
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
   Il faut aussi proposer d'éditer la scène en question.
@@ -24,6 +22,7 @@
 
 * Faire les menus
   - menu pour choisir une analyse
+  - menu pour créer une nouvelle analyse
   - menu pour définir le film (mp4/webm/ogg) de l'analyse
 * Faire un mode d'emploi interactif
 * Panneaux pour afficher les scènes, les personnages, les brins, etc.

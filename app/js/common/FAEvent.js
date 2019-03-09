@@ -96,6 +96,7 @@ class FAEvent {
       n.className = `event ${this.type}`
       n.id = this.domId
       n.style.opacity = 0
+      n.setAttribute('data-time', this.time)
 
       var etools = document.createElement('DIV')
       etools.className = 'e-tools'
