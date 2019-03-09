@@ -132,6 +132,7 @@ class Locator {
       F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
     }else{
       this.setTime(this.startTime)
+      if(!this.playing) this.togglePlay()
     }
   }
 
