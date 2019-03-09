@@ -1,3 +1,5 @@
+* Des problèmes avec l'édition sont encore à déplorer. Je ne sais pas comment reproduire le problème.
+
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue.
 
 * Un CB pour dire de repartir (play) dès qu'on va sur un temps (ou au contraire de ne rien faire)
