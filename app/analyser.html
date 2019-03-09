@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Analyse</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/analyzer.css">
+    <link rel="stylesheet" href="./css/reader.css">
+    <link rel="stylesheet" href="./css/form.css">
+  </head>
+  <body>
+
+
+
+    <section id="section-video">
+
+      <!-- Pour définir la vidéo courante -->
+      <div id="div-video-path">
+        <span class="small">Video : </span>
+        <input type="text" id="video-path" style="width:50%;" value="" class="small">
+        <button type="button" id="btn-set-video-path" class="small">Définir</button>
+      </div>
+
+      <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
+      <div id="div-video-top-tools">
+        <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
+        <span class="small">Taille de la vidéo : </span>
+        <select id="video-size" onchange="$.proxy(VideoController,'setSize')(this.value,true)" class="small">
+          <option value="vignette">Vignette</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+
+      <!-- VIDÉO -->
+      <video id="video">
+        <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
+        <source id="video-src" src="" type="video/mp4">
+        <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
+        <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
+      </video>
+
+      <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
+      <div id="div-nav-video-buttons">
+        <span id="horloge_real" class="horloge mini fleft">0:00:00:00</span>
+        <div style="text-align: right;height:40px">
+          <button type="button" id="btn-go-to-film-start" class="small">Début du film</button>
+          <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
+          <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
+          <button type="button" id="btn-rewind-start" class="controller">...</button>
+          <button type="button" id="btn-real-play" class="controller">...</button>
+          <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
+          <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
+        </div>
+        <div>
+          <button type="button" id="btn-get-time" class="small">Temps courant…</button>
+          <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
+          <input type="text" id="requested_time" class="horloge small" value="0,0,0:0" />
+          <button type="button" id="btn-time-as-film-start" class="small">Temps courant comme début du film</button>
+        </div>
+        <div id="div-temps-courants" style="display:none;">
+          <span id="span-temps-courants-video">
+            <span class="small">Vidéo : </span>
+            <input type="text" class="horloge small" id="temps-courant-video-horloge" />
+            <input type="text" class="temps-secondes small" id="temps-courant-video-seconds" />
+          </span>
+          <span id="span-temps-courants-film" style="display:none;">
+            <span class="small">Film : </span>
+            <input type="text" class="horloge small" id="temps-courant-film-horloge" />
+            <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
+          </span>
+          <button type="button" class="small" onclick="VideoController.hideCurrentTime()">OK</button>
+        </div>
+      </div>
+      <!-- / Fin des boutons de navigation -->
+
+    </section>
+    <!-- /fin section vidéo -->
+
+    <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
+    <section id="section-reader">
+      <div id="reader"></div>
+    </section>
+
+
+    <!-- Pour la partie basse, dont le formulaire d'édition des events -->
+    <section id="section-footer">
+
+      <div>
+        <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
+      </div>
+
+
+      <!-- Section pour ajouter un nouvel évènement -->
+
+      <div id="buttons-new-event">
+        <button type="button" id="btn-new-event" data-type="event" class="small" title="Évènement">Ev.</button>
+        <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
+        <button type="button" id="btn-new-dial" data-type="dialog" class="small" title="Dialogue">Dial.</button>
+        <button type="button" id="btn-new-act" data-type="action" class="small">Action</button>
+        <button type="button" id="btn-new-pp" data-type="pp" class="small" title="Préparation/Paiement">P/P</button>
+        <button type="button" id="btn-new-qrd" data-type="qrd" class="small" title="Question et Réponse Dramatique">QRD</button>
+        <button type="button" id="btn-new-proc" data-type="proc" class="small" title="Procédé">Proc.</button>
+        <button type="button" id="btn-new-dim" data-type="dim" class="small" title="Diminutif">Dim.</button>
+        <button type="button" id="btn-new-brin" data-type="brin" class="small">Brin</button>
+        <button type="button" id="btn-new-info" data-type="info" class="small" title="Information">Info</button>
+      </div>
+
+
+      <div id="message"></div>
+
+    </section>
+    <!-- /section#section-footer -->
+
+
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script src="./js/system/jquery-ui-min.js"></script>
+    <script type="text/javascript" src="./js/common/requirements.js"></script>
+    <script type="text/javascript" src="./js/system/Flash.js"></script>
+    <script type="text/javascript" src="./js/system/OTime.js"></script>
+    <script type="text/javascript" src="./js/system/utils.js"></script>
+    <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
+    <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
+    <script type="text/javascript" src="./js/lecteur/Reader.js"></script>
+    <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvent.js"></script>
+    <script type="text/javascript" src="./js/common/Locator.js"></script>
+    <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
+    <!-- Pour être sûr que FAEvent est chargé (suffit ?) -->
+    <script type="text/javascript" src="./js/common/FAEvents/FAEscene.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEinfo.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEaction.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEdialog.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEqrd.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEproc.js"></script>
+    <script type="text/javascript" src="./js/common/FAEvents/FAEpp.js"></script>
+  </body>
+</html>

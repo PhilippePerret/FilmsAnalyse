@@ -1,0 +1,61 @@
+#section-reader {
+  position:absolute;
+  top:0;
+  display:block;
+  border: 1px dashed green;
+  min-height: 600px;
+  padding:0;
+}
+#reader {
+  width: 95%;
+  max-height: 600px;
+  overflow: auto;
+  padding:0;
+}
+#reader .event {
+  padding: 0.2em 0.5em;
+  clear:both;
+}
+
+.event div.scene-heading{
+  display:block;
+  font-weight: bold;
+  margin-top: 1em;
+  text-decoration: underline;
+}
+.event span.scene-resume {
+  display:block;
+  font-style:italic;
+  margin-left:1em;
+}
+
+/* Les petits boutons au-dessus de l'event dans le reader */
+#reader .e-tools {
+  text-align:right;
+  clear:right;
+  font-size: 9.1pt;
+  opacity:0.15;
+}
+#reader .e-tools:hover {
+  opacity:1;
+}
+#reader .horloge {
+  background-color:grey;
+  font-size: 9.1pt;
+}
+
+#reader .e-tools button {
+  position:relative;
+  width:22px;
+  height:22px;
+  line-height:22px;
+  text-align:center;
+  vertical-align:middle;
+  margin-right:8px;
+}
+#reader .e-tools .btn { /* peut être une img */
+  width:16px;
+  position:absolute;
+  top:2px;
+  left:2px;
+}

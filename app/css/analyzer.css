@@ -1,0 +1,31 @@
+#section-video {
+  position: absolute;
+  top:0;
+  display:block;
+  clear:both;
+  border:1px dashed red;
+}
+#section-video .horloge.mini {
+  font-size: 10.2pt;
+  width: 80px;
+}
+#section-video .horloge.vignette {
+  font-size: 12pt;
+  width: 110px;
+}
+#section-video .horloge.medium {
+  font-size: 18pt;
+  width: 160px;
+}
+#section-video .horloge.large {
+  font-size: 24pt;
+  width: 210px;
+}
+
+#section-footer {
+  position:absolute;
+  bottom:0;
+  background-color:white;
+  padding:1em;
+  width:100%;
+}

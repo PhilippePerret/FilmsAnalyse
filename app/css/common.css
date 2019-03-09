@@ -1,3 +1,42 @@
 body, body * {
-  font-size: 16.1pt;
+  font-size: 15.1pt;
+  font-family:Avenir;
+}
+
+.small {
+  font-size: 0.75em;
+}
+.bold {font-weight:bold;}
+
+.controller {border:0; padding:0;vertical-align:middle;}
+button.controller img {width:40px;}
+
+.fleft {float:left;}
+.fright {float:right;}
+.left {text-align:left;}
+.right {text-align:right;}
+
+.block {display:block;}
+.inline {display:inline-block;}
+.inline90 {
+  display:inline-block;
+  width: 90;
+}
+
+span.horloge, input.horloge {
+  font-family: Courier;
+  background-color: black;
+  color: white;
+  padding: 0.2em 0.5em;
+  display: inline-block;
+  text-align: center;
+}
+input.horloge, input.temps-secondes {
+  text-align:center;
+}
+input.temps-secondes {
+  width: 80px;
+}
+input.horloge.small {
+  width: 100px !important;
 }
