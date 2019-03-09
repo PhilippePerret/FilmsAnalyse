@@ -146,10 +146,10 @@ class EventForm {
     }
     // Les valeurs propres au type d'event
     for(prop of this.event.constructor.OWN_PROPS){
-      if('string' !== typeof(prop)){ // cf. la définition des OWN_PROPS
-        prop, sufProp = prop
-      } else {
+      if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
         sufProp = prop
+      } else {
+        [prop, sufProp] = prop
       }
       if(null === this.event[prop] || undefined === this.event[prop]) continue
       $(this.fieldID(sufProp)).val(this.event[prop])

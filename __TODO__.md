@@ -1,4 +1,4 @@
-* Le remplissage du formulaire d'édition d'un event ne fonctionne pas avec la (vraie) première scène (le décor et sous-décor ne s'affiche pas et peut-être qu'il y a d'autres valeurs erronnées)
+* Il faudra vraiment que "le reader suive le film", lorsque je joue avec les boutons pour avancer/reculer, aller à une position.
 
 * Il faut que VideoController soit une instance, car il pourra y en avoir plusieurs en même temps.
 * Quand on clique sur l'évènement dans le reader, il doit s'éditer et s'actualiser en retour dans le reader
@@ -27,6 +27,9 @@
 * En cas de nouvelle scène, updater les numéros des scènes existantes
 * Quand on utilise les boutons pour se déplacer +/- 1 ou 5 secondes, il faut aussi traiter les évènements à afficher.
 
+* Faire les menus
+  - menu pour choisir une analyse
+  - menu pour définir le film (mp4/webm/ogg) de l'analyse
 * Faire un mode d'emploi interactif
 * Panneaux pour afficher les scènes, les personnages, les brins, etc.
 * Proposer la liste des décors/sous-décors quand on focusse dans ces champs
@@ -35,3 +38,4 @@
 * Avant le load de la vidéo, il faut vérifier que le fichier existe toujours.
 * Voir comment ajouter les sous-titres avec ffmpeg
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
+* Possibilité d'afficher tous les évènements d'un coup, pour pouvoir lire et se déplacer dans le film
