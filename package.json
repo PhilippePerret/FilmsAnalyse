@@ -1,12 +1,17 @@
 {
-    "name": "filmsanalyse",
-    "productName": "Films Analyse",
-    "version": "0.1.2",
+    "name": "filmsanalyse"
+  , "productName": "Films Analyse"
+  , "version": "0.1.2",
     "description": "Application pour l'analyse de films",
     "main": "main.js",
     "scripts": {
-        "start": "electron .",
-        "test": "echo \"Error: no test specified\" && exit 1"
+          "start": "electron ."
+        , "test": "mocha ./test/tests"
+        , "test:special": "mocha ./test/tests/ts_essai.js"
+        , "test:other": "mocha --timeout 20000 \"./test/tests/**/ts_*.js\""
+        , "test:one": "mocha --watch --timeout 20000 \"./tests/tests/**/ts_*.js\""
+        , "pack:osx": "electron-packager . $npm_package_productName --overwrite --out=dist/osx --platform=darwin --arch=x64 --prune=true"
+
     },
     "keywords": [
         "Films",
@@ -16,7 +21,13 @@
     "mail": "philippe.perret@yahoo.fr",
     "license": "GNU",
     "devDependencies": {
-        "electron": "^4.0.7"
+        "@types/mocha": "^5.2.6",
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
+        "electron": "^4.0.7",
+        "electron-chromedriver": "^5.0.0-beta.1",
+        "mocha": "^6.0.2",
+        "spectron": "^5.0.0"
     },
     "dependencies": {
         "jquery": "^3.3.1"
