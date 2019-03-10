@@ -23,7 +23,7 @@ class FAnalyse {
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new AReader(this)
-    
+
     this.locator.init()
     this.reader.init()
     this.videoController.init()
@@ -32,11 +32,6 @@ class FAnalyse {
   }
 
   init(){
-
-    // Bouton pour sauver l'analyse
-    var btnSaveAnalyse = DGet('btn-save-analyse')
-    listen(btnSaveAnalyse,'click', this, 'save')
-    toggleVisible(btnSaveAnalyse,false)
 
     // Si l'analyse courante définit une vidéo, on la charge et on prépare
     // l'interface. Sinon, on masque la plupart des éléments
@@ -57,7 +52,6 @@ class FAnalyse {
   get modified() { return this._modified }
   set modified(v) {
     this._modified = v
-    $('#btn-save-analyse').css('visibility', v === true ? 'visible' : 'hidden')
   }
 
   forEachEvent(method, options){
@@ -162,18 +156,6 @@ class FAnalyse {
         // console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
       }
     })
-  }
-  /**
-   * Méthode qui affiche les évènements qui se trouvent à +time+
-   * (avec une marge de plus ou moins 10 secondes)
-   * Note : la méthode est appelée toutes les 3 secondes
-   */
-  showEventsAt(time){
-    var evs = this.locator.eventsAt(time)
-    // console.log("evs:", evs)
-    for(var ev of evs){
-      ev.showDiffere()
-    }
   }
 
   getSceneNumeroAt(time){
@@ -354,10 +336,11 @@ class FAnalyse {
    * Méthode qui définit le départ réel du film. Permettra de prendre un
    * bon départ
    */
-  setFilmStartTimeAt(otime){
-    this.filmStartTime = otime
+  setFilmStartTimeAt(){
+    this.filmStartTime = this.locator.getOTime()
     this.modified = true
     this.setButtonGoToStart()
+    F.notify(`J'ai pris le temps ${this.filmStartTime.horloge} comme début du film.`)
   }
 
   /**

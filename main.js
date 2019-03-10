@@ -1,17 +1,31 @@
 const electron = require('electron')
 const { app, BrowserWindow } = require('electron')
+const { Menu, MenuItem } = require('electron')
 const path = require('path')
 const ipc = electron.ipcMain
 
 var screenWidth   = null
 var screenHeight  = null
 
-app.on('ready', ()=>{
+const DATA_MENUS = require('./app/js/main-process/menu.js')
+
+let mainMenuBar = null
+
+global.mainW = null
+
+app.on('ready', () => {
+
+  // Construction des menus
+  // Note : on a besoin de `mainMenuBar` pour retrouver les menus par
+  // leur identifiant (cf. le modules modules/menus.js)
+  mainMenuBar = Menu.buildFromTemplate(DATA_MENUS)
+  Menu.setApplicationMenu(mainMenuBar);
+
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   screenWidth   = width
   screenHeight  = height
 
-  const mainW = new BrowserWindow({
+  mainW = new BrowserWindow({
       height: screenHeight - 40
     , width:  screenWidth - 40,
   })

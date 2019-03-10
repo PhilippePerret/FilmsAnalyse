@@ -21,14 +21,11 @@ class Locator {
     this.video = this.analyse.videoController.controller
 
     listenClick('btn-hide-current-time', my, 'hideCurrentTime')
-    listenClick('btn-get-time',my,'getAndShowTime')
     listenClick('btn-go-to-time',my,'goToTime')
 
     $('#requested_time').on('keypress', ev => {
       if(ev.keyCode == 13){this.goToTime.bind(this)();$(ev).stop()}
     })
-
-    listenClick(DGet('btn-time-as-film-start'), my, 'setFilmStart')
 
     listen(this.btnPlay, 'click', my, 'togglePlay')
     this.btnPlay.innerHTML = this.imgPlay
@@ -61,10 +58,12 @@ class Locator {
     this.btnPlay.innerHTML = pauser ? this.imgPlay : this.imgPauser
     if(pauser){
       this.video.pause()
+      $(this.btnPlay).removeClass('actived')
       this.playing = false
       this.desactivateHorloge()
     } else {
       this.video.play()
+      $(this.btnPlay).addClass('actived')
       this.playing = true
       this.activateHorloge()
     }
@@ -104,9 +103,25 @@ class Locator {
     this.video.currentTime = time
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
-    }
+    } else if(this.video.paused){ this.actualizeHorloge() }
+
     // Mettre le temps pour le lecteur d'analyse (afficher les events)
-    // TODO
+    var rtime = this.getRTime(time)
+    this.analyse.reader.resetBeyond(rtime - 60, rtime + 60)
+    this.showEventsAt(rtime)
+  }
+
+  /**
+   * Méthode qui affiche les évènements qui se trouvent à +time+
+   * (avec une marge de plus ou moins 10 secondes)
+   * Note : la méthode est appelée toutes les 3 secondes
+   */
+  showEventsAt(time){
+    var evs = this.eventsAt(time)
+    // console.log("evs:", evs)
+    for(var ev of evs){
+      ev.showDiffere()
+    }
   }
 
   /**
@@ -120,10 +135,6 @@ class Locator {
 
   // ---------------------------------------------------------------------
 
-  setFilmStart(){
-    this.analyse.setFilmStartTimeAt.bind(this.analyse)(this.getOTime())
-  }
-
   /**
    * Méthode permettant de rejoindre le début du film
    */
@@ -132,6 +143,7 @@ class Locator {
       F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
     }else{
       this.setTime(this.startTime)
+      if(!this.playing) this.togglePlay()
     }
   }
 
@@ -221,7 +233,7 @@ class Locator {
   }
 
   actualizeReader(){
-    this.analyse.showEventsAt(this.currentRTime)
+    this.showEventsAt(this.currentRTime)
   }
 
   /**
@@ -290,7 +302,7 @@ class Locator {
    *
    * Note : le temps est également mis dans le clipboard
    */
-  getAndShowTime(){
+  getAndShowCurrentTime(){
     var videoTC = this.getOTime()
     $('#temps-courant-video-horloge').val(videoTC.horloge)
     $('#temps-courant-video-seconds').val(videoTC.secondsInt)
@@ -340,14 +352,6 @@ class Locator {
       // console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
     }
     return this._events_by_tranche_time
-  }
-
-  /**
-   * Retourne l'index courant dans la liste (Array) `events` de l'analyse
-   * courante
-   */
-  get indexEvent(){
-    return 0
   }
 
   // ---------------------------------------------------------------------

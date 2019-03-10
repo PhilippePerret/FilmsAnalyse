@@ -24,12 +24,6 @@
       <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
       <div id="div-video-top-tools">
         <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
-        <span class="small">Taille de la vidéo : </span>
-        <select id="video-size" class="small">
-          <option value="vignette">Vignette</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
-        </select>
       </div>
 
       <!-- VIDÉO -->
@@ -43,34 +37,54 @@
       <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
       <div id="div-nav-video-buttons">
         <span id="horloge_real" class="horloge mini fleft">0:00:00:00</span>
-        <div style="text-align: right;height:40px">
-          <button type="button" id="btn-go-to-film-start" class="small">Début du film</button>
-          <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
-          <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
-          <button type="button" id="btn-rewind-start" class="controller">...</button>
-          <button type="button" id="btn-real-play" class="controller">...</button>
-          <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
-          <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
-        </div>
-        <div>
-          <button type="button" id="btn-get-time" class="small">Temps courant…</button>
-          <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
-          <input type="text" id="requested_time" class="horloge small" value="0,0,0:0" />
-          <button type="button" id="btn-time-as-film-start" class="small">Temps courant comme début du film</button>
-        </div>
-        <div id="div-temps-courants" style="display:none;">
-          <span id="span-temps-courants-video">
-            <span class="small">Vidéo : </span>
-            <input type="text" class="horloge small" id="temps-courant-video-horloge" />
-            <input type="text" class="temps-secondes small" id="temps-courant-video-seconds" />
-          </span>
-          <span id="span-temps-courants-film" style="display:none;">
-            <span class="small">Film : </span>
-            <input type="text" class="horloge small" id="temps-courant-film-horloge" />
-            <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
-          </span>
-          <button id="btn-hide-current-time" type="button" class="small">OK</button>
-        </div>
+
+        <table class="controls">
+          <tr>
+            <td>
+              <button type="button" id="btn-go-to-film-start" class="small">Début du film</button>
+            </td>
+            <td rowspan="3">
+              <button type="button" id="btn-rewind-start" class="controller">...</button>
+              <button type="button" id="btn-real-play" class="controller">...</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
+              <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
+              <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
+            </td>
+          </tr>
+        </table>
+
+        <fieldset class="time-tools">
+          <div>
+            <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
+            <input type="text" id="requested_time" class="horloge small" value="0,0,0:0" />
+          </div>
+          <div id="div-temps-courants" style="display:none;">
+            <div>
+              <span id="span-temps-courants-video">
+                <span class="small">Vidéo : </span>
+                <input type="text" class="horloge small" id="temps-courant-video-horloge" />
+                <input type="text" class="temps-secondes small" id="temps-courant-video-seconds" />
+              </span>
+              <button id="btn-hide-current-time" type="button" class="small">OK</button>
+            </div>
+            <div>
+              <span id="span-temps-courants-film" style="display:none;">
+                <span class="small">Film : </span>
+                <input type="text" class="horloge small" id="temps-courant-film-horloge" />
+                <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
+              </span>
+            </div>
+          </div>
+        </fieldset>
       </div>
       <!-- / Fin des boutons de navigation -->
 
@@ -85,11 +99,6 @@
 
     <!-- Pour la partie basse, dont le formulaire d'édition des events -->
     <section id="section-footer">
-
-      <div>
-        <button type="button" id="btn-save-analyse" style="visibility:hidden;">Enregistrer l'analyse</button>
-      </div>
-
 
       <!-- Section pour ajouter un nouvel évènement -->
 
@@ -120,6 +129,8 @@
     <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
     <script type="text/javascript" src="./js/system/utils.js"></script>
+    <script type="text/javascript" src="./js/system/ipc.js"></script>
+    <script type="text/javascript" src="./js/system/Tests.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
     <script type="text/javascript" src="./js/lecteur/AReader.js"></script>

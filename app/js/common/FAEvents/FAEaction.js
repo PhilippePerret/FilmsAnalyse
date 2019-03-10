@@ -27,18 +27,6 @@ class FAEaction extends FAEvent {
     super.dispatch(this, d)
   }
 
-  /**
-   * Récupérer les données pour les enregistrer
-   */
-  get data(){
-    var d = super.data
-    for(var prop of FAEaction.OWN_PROPS){
-      if(undefined === this[prop]) continue
-      d[prop] = this[prop]
-    }
-    return d
-  }
-
   get div(){
     var n = super.div
 

@@ -22,6 +22,34 @@
   width: 210px;
 }
 
+#section-video table.controls {
+  float:right;
+  text-align:right;
+  height:64px;
+  background-color:#BBBBBB;
+  width:240px;
+  border:1px solid black;
+}
+#section-video table.controls button {
+  background-color:inherit;
+  color:white;
+  border:1px solid grey;
+}
+#section-video table.controls button:focus {
+  outline:none;
+}
+#section-video table.controls button:active {
+  background:green;
+  transition-duration:0.4s;
+}
+#section-video table.controls button.actived {
+  background:green;
+}
+
+#section-video fieldset.time-tools {
+  width:500px;
+}
+
 #section-footer {
   position:absolute;
   bottom:0;

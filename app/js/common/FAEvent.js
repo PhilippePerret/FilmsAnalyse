@@ -73,12 +73,11 @@ class FAEvent {
    * Pour afficher l'évènement dans le reader de l'analyse
    */
   show(){
-    if(this.jqReaderObj){
-      this.jqReaderObj.show()
-    } else {
+    if(!this.jqReaderObj){
       this.analyse.reader.append(this.div)
       this.observe()
     }
+    this.jqReaderObj.animate({opacity:1}, 600)
   }
 
   get jqReaderObj(){
@@ -96,6 +95,8 @@ class FAEvent {
       var n = document.createElement('DIV')
       n.className = `event ${this.type}`
       n.id = this.domId
+      n.style.opacity = 0
+      n.setAttribute('data-time', this.time)
 
       var etools = document.createElement('DIV')
       etools.className = 'e-tools'

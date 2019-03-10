@@ -5,5 +5,6 @@ const remote    = electron.remote
 const ipc       = electron.ipcRenderer
 const path      = require('path')
 const fs        = require('fs')
+const glob      = require('glob')
 
 let ScreenWidth, ScreenHeight

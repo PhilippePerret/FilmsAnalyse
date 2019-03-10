@@ -48,8 +48,9 @@
     Définition de l'aspect des events dans le reader
  */
 
-#reader .event {
+#reader > .event {
   padding: 0.2em 0.5em;
+  width: 98%;
   clear:both;
 }
 

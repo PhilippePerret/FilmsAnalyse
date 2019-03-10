@@ -30,6 +30,30 @@ class AReader {
     })
 
   }
+
+  /**
+   * Vide tout le reader
+   * Ne pas la confondre avec la méthode `resetBeyond` suivante
+   */
+  reset(){
+    this.container.innerHTML = ""
+  }
+
+  /**
+   * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
+   * avant +from_time+ et après +to_time+
+   *
+   * Note : les temps sont exprimés en temps par rapport au film, pas par
+   * rapport à la vidéo (comme tous les temps normalement)
+   */
+  resetBeyond(from_time, to_time){
+    var t
+    this.container.querySelectorAll('.event').forEach(function(o){
+      t = parseInt(o.getAttribute('data-time'),10)
+      if ( t < from_time || t > to_time) $(o).hide() 
+    })
+  }
+
   // Pour ajouter
   append(node){
     this.container.append(node)

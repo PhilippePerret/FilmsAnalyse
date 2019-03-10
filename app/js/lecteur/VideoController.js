@@ -13,7 +13,7 @@ class VideoController {
   }
 
   static get VIDEO_SIZES(){
-      return {vignette: 450, medium: 650, large: 1000}
+      return {small: 450, medium: 650, large: 1000}
   }
 
   // Le contrôleur vidéo lui-même (la balise vidéo)
@@ -43,17 +43,14 @@ class VideoController {
 
     this.setDimensions()
 
-    // Menu pour changer la taille de la vidéo
-    this.menuVideoSize = DGet('video-size')
-    listen(this.menuVideoSize,'change',my,'setSize')
-
     // Pour définir le path de la vidéo
     listenClick('btn-set-video-path',this.analyse, 'setVideoPath')
 
     // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
     // met la taille médium.
     this.setSize(null, this.analyse.videoSize||'medium', false)
-    this.menuVideoSize.value = this.analyse.videoSize||'medium'
+    // TODO Si la taille est définie par l'analyse, il faut la reporter
+    // dans le menu principal (Vidéo > Taille > <diminutif taille>)
 
     this.inited = true
   }
@@ -116,7 +113,6 @@ class VideoController {
     toggleVisible('#div-nav-video-buttons', visible)
     toggleVisible('#fs-get-times', visible)
     toggleVisible('#fs-new-event', visible)
-    toggleVisible('#btn-time-as-film-start', !this.hasStartTime)
   }
 
 }
