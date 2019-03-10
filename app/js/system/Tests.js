@@ -1,5 +1,8 @@
 'use strict'
 
+const MODE_TEST = process.env.MODE_TEST == "true"
+console.log("MODE_TEST:", MODE_TEST)
+
 const Tests = {
     tests: []
   , nombre_failures:  0

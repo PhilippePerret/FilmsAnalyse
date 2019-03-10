@@ -16,21 +16,31 @@
 Pour utiliser les tests (persos) comme ici, on doit :
 
 * copier-coller le fichier `app/js/system/Tests.js` dans l'application,
-* le charger dans la page principale
+* le charger dans la page principale (balise script à la fin du body)
 * copier coller tout le contenu du dossier `app/js/tests` (on peut supprimer les tests du dossier `tests/tests`, qui sont propres à l'application, ou les mettre de côté pour s'en inspirer)
-* dans la page HTML principale, on doit ajouter :
-    ```html
-      <script type="text/javascript">
-        const MODE_TEST = true
-      </script>
-    ```
 * dans le onready de l'application (`$(document).ready` ou autre), on doit ajouter :
     ```javascript
       ...
-      if(MODE_TEST){Tests.initAndRun()}
+      MODE_TEST && Tests.initAndRun()
     ```
-
+* Dans `package.json` de l'application, on ajoute :
+  ```javascript
+  "scripts":{
+    //...
+    "test": "MODE_TEST=true npm start"
+    //...
+  }
+  ```
 Tout le reste se passe automatiquement en lançant les scripts du dossier `./app/js/tests/tests/`.
+
+Pour lancer les tests :
+
+```bash
+
+  > npm test
+  
+```
+
 
 ## Définition d'une feuille de test {#define_test_sheet}
 
