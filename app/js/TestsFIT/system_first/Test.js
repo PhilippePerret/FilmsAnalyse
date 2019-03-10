@@ -6,7 +6,7 @@ class Test {
       pourObtenirPathTest // produit l'error pour récupérer le path
     } catch (e) {
       var src = e.stack.split("\n").reverse()[0].split(':')[1]
-      var reg = new RegExp(`\/\/${Tests.appPath}\/app\/js\/tests`)
+      var reg = new RegExp(`\/\/${Tests.appPath}\/${Tests.MAINFOLDER}`)
       src = src.replace(reg,'.').trim()
       this.srcRelPath = src
     }

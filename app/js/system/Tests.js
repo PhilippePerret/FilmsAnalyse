@@ -5,6 +5,7 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 
 const Tests = {
     tests: []
+  , MAINFOLDER: path.join('.','app','js','TestsFIT')
   , nombre_failures:  0
   , nombre_success:   0
   , nombre_pendings:  0
@@ -20,7 +21,7 @@ const Tests = {
       this.appPath = path.resolve('.')
 
       // On charge tous les fichiers système
-      var sysFirstRequired = glob.sync('./app/js/tests/system_first/**/*.js')
+      var sysFirstRequired = this.JsFilesOf('system_first')
 
       // Nombre de chargements attendus
       this.expected_loadings = 0
@@ -39,11 +40,10 @@ const Tests = {
     }
 
   , loadSysAndTestsFiles:function(){
-      console.log("-> loadSysAndTestsFiles")
 
-      var sysFiles  = glob.sync('./app/js/tests/system/**/*.js')
-      var testFiles = glob.sync('./app/js/tests/tests/**/*.js')
-      var supFiles  = glob.sync('./app/js/tests/support/**/*.js')
+      var sysFiles  = this.JsFilesOf('systeme')
+      var testFiles = this.JsFilesOf('tests')
+      var supFiles  = this.JsFilesOf('support')
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length
@@ -77,7 +77,7 @@ const Tests = {
     }
   , createScript: function(fpath){
       let script = document.createElement('script')
-      script.src = fpath.replace(/\.\/app/,'.')
+      script.src = fpath.replace(/app/,'.')
       document.head.append(script)
       script.onload = function(){
         Tests.addNewLoading()
@@ -86,6 +86,13 @@ const Tests = {
       script.onerror = function(err){
         throw(`Une erreur est malheureusement survenue en chargement le script ${fpath} : ${err}`)
       }
+    }
+
+    /**
+     * Retourne tous les fichiers javascript du dossier FITest +relPath+
+     */
+  , JsFilesOf:function(relPath){
+      return glob.sync(path.join(this.MAINFOLDER,relPath,'**','*.js'))
     }
 
 }
