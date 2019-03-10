@@ -1,5 +1,13 @@
 'use strict'
 
+beforeTests(() => {
+  FITAnalyse.setCurrent('tests/simple')
+})
+afterTests(()=>{
+  console.log("Après les tests, je jouerai ça")
+})
+
+
 var t = new Test("Test du formulaire d'édition de l'event")//, document.currentScript.src
 
 t.case("On peut l'ouvrir en cliquant sur un bouton d'event", function(){
@@ -23,12 +31,17 @@ t.case("On peut l'ouvrir en cliquant sur un bouton d'event", function(){
   cliqueBoutonNewNote()
   return assert_DomExists(jqId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
   .then(() => {
-    var data = {
-        titre:    "Le titre de la note"
-      , content:  "Contenu de la note"
-      , note:     "La note subsidiaire de la note"
-    }
-    fillEventFormWith(newEventId, data, {submit: true})
+
+    action('Je remplis le formulaire avec les données de la note', ()=>{
+      var data = {
+          titre:    "Le titre de la note"
+        , content:  "Contenu de la note"
+        , note:     "La note subsidiaire de la note"
+      }
+      fillEventFormWith(newEventId, data, {submit: true})
+    })
+
+
   })
   .catch((err) => {
     if(err) throw(err)

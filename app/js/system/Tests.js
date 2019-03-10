@@ -14,6 +14,7 @@ const Tests = {
   // ---------------------------------------------------------------------
 
   , initAndRun:function(){
+      this.sys_errors = []
       this.init()
     }
   , init:function(){
@@ -32,11 +33,6 @@ const Tests = {
       for(var relpath of sysFirstRequired){
         this.createScript(relpath)
       }
-
-      this.nombre_success   = 0
-      this.nombre_failures  = 0
-      this.nombre_pendings  = 0
-      this.sys_errors       = []
     }
 
   , loadSysAndTestsFiles:function(){
@@ -51,7 +47,7 @@ const Tests = {
       this.expected_loadings += supFiles.length
 
       // La méthode qui devra être appelée après le chargement
-      this.methode_suite_loading = this.run.bind(this)
+      this.methode_suite_loading = this.initBeforeRun.bind(this)
 
       for(var filesFolder of [sysFiles, testFiles, supFiles]){
         // console.log("Fichiers du dossier :", filesFolder, sysFiles)
@@ -60,10 +56,7 @@ const Tests = {
         }
       }
     }
-  , run:function(){
-      this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
-      this.nextTest()
-    }
+
     /**
      * Méthode appelée lorsqu'un nouveau chargement de script est terminé
      */

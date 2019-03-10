@@ -296,6 +296,8 @@ class FAnalyse {
   load(){
     var my = this
       , fpath ;
+    // Dans le cas où le fichier events.json n'existe pas
+    this.events = []
     // Les fichiers à charger
     var loadables = Object.assign([], my.SAVED_FILES)
     // Pour comptabiliser le nombre de fichiers chargés
