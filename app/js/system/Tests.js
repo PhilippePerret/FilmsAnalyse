@@ -37,25 +37,27 @@ const Tests = {
       this.nombre_pendings  = 0
       this.sys_errors       = []
     }
-    
+
   , loadSysAndTestsFiles:function(){
       console.log("-> loadSysAndTestsFiles")
 
-      var sysFiles = glob.sync('./app/js/tests/system/**/*.js')
+      var sysFiles  = glob.sync('./app/js/tests/system/**/*.js')
       var testFiles = glob.sync('./app/js/tests/tests/**/*.js')
+      var supFiles  = glob.sync('./app/js/tests/support/**/*.js')
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length
       this.expected_loadings += testFiles.length
+      this.expected_loadings += supFiles.length
 
+      // La méthode qui devra être appelée après le chargement
       this.methode_suite_loading = this.run.bind(this)
-      // console.log("sysFiles:", sysFiles)
-      for(var relpath of sysFiles){
-        this.createScript(relpath)
-      }
-      // console.log("testFiles:", testFiles)
-      for(relpath of testFiles){
-        this.createScript(relpath)
+
+      for(var filesFolder of [sysFiles, testFiles, supFiles]){
+        // console.log("Fichiers du dossier :", filesFolder, sysFiles)
+        for(var relpath of filesFolder){
+          this.createScript(relpath)
+        }
       }
     }
   , run:function(){

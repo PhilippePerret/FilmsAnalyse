@@ -32,6 +32,8 @@ Pour utiliser les tests (persos) comme ici, on doit :
     //...
   }
   ```
+* On peut définir dans `./app/js/tests/support/` les fichiers et méthodes utiles aux tests de l'application courante.
+
 Tout le reste se passe automatiquement en lançant les scripts du dossier `./app/js/tests/tests/`.
 
 Pour lancer les tests :

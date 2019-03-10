@@ -10,29 +10,29 @@ t.case("On peut l'ouvrir en cliquant sur un bouton d'event", function(){
   var domId = `form-edit-event-${newEventId}`
   var jqId = `#${domId}`
 
-  // assert(
-  //     $(jqId).length == 0
-  //   , "Pas de formulaire pour le nouvel évènement"
-  //   , "Le formulaire d'édition de l'event ne devrait pas exister"
-  // )
+  assert(
+      $(jqId).length == 0
+    , "Pas de formulaire pour le nouvel évènement"
+    , "Le formulaire d'édition de l'event ne devrait pas exister"
+  )
 
   var cliqueBoutonNewNote = action.bind(null, 'On clique sur le bouton pour un nouvel event de type note', () => {
-    // $('#btn-new-note').click()
-    $('#btn-new-note').trigger('click')
+    $('#btn-new-note').click()
   })
 
-  var dexiste = {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"}
-
-
-  return wait(4000, "J'attends 2 secondes avant de cliquer le bouton")
-  .then(cliqueBoutonNewNote)
-  .then(wait.bind(null, 2000, "J'attends 2 secondes avant de voir si le formulaire existe"))
-  .then(assert_DomExists.bind(null, jqId, dexiste))
-  .then(()=>{
-    tester("On remplit le formulaire")
+  cliqueBoutonNewNote()
+  return assert_DomExists(jqId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
+  .then(() => {
+    var data = {
+        titre: "Le titre de la note"
+      , content: "Contenu de la note"
+      , note: "La note subsidiaire de la note"
+    }
+    fillEventFormWith(newEventId, data, {submit: true})
   })
-  .catch(()=>{
-    console.log("On doit arrêter le test ici.")
+  .catch((err) => {
+    if(err) throw(err)
+    // console.log("On doit arrêter le test ici.", err)
   })
 
 })

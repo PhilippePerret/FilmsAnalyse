@@ -21,10 +21,10 @@ class EventForm {
 
   //
   static onClickNewEvent(ev, eventType){
+    if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
     if (ev) ev.stopPropagation()
     this.videoWasPlaying = !!current_analyse.locator.playing
     if(current_analyse.locator.playing) current_analyse.locator.togglePlay()
-    if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
     new EventForm(eventType).toggleForm()
   }
 
@@ -125,6 +125,7 @@ class EventForm {
    * prête.
    */
   init(){
+    // console.log("-> EventForm#init")
     if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
     if(!this.built){
       this.build()
@@ -138,6 +139,7 @@ class EventForm {
     }
 
     this.inited = true
+    // console.log("<- EventForm#init")
     return true
   }
 

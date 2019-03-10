@@ -26,10 +26,10 @@ Tests.nextTest = function(){
 Tests.assert = function(trueValue, msg_success, msg_failure, options){
   if(undefined === options){options = {}}
   if (trueValue === true){
-    if(!options.onlyFailure) this.onSuccess(msg_success)
+    if(!options.onlyFailure) this.onSuccess(options.success || msg_success)
   } else {
     // En cas d'échec de l'assertion
-    if(!options.onlySuccess) this.onFailure(msg_failure)
+    if(!options.onlySuccess) this.onFailure(options.failure || msg_failure)
   }
 }
 
