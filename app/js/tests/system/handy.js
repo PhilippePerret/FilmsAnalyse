@@ -15,3 +15,9 @@ window.msg_failure = function(sujet, expected, actual){
 window.push_failure = function(arr, sujet, expected, actual){
   arr.push(msg_failure(sujet, expected, actual));
 };
+
+
+window.wait = function(wTime, wMsg){
+  if(undefined !== wMsg) Tests.log(wMsg)
+  return new Promise(ok => {setTimeout(ok, wTime)})
+}

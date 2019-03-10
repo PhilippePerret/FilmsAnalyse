@@ -1,7 +1,7 @@
 'use strict'
 
 const MODE_TEST = process.env.MODE_TEST == "true"
-console.log("MODE_TEST:", MODE_TEST)
+// console.log("MODE_TEST:", MODE_TEST)
 
 const Tests = {
     tests: []
@@ -19,34 +19,44 @@ const Tests = {
       // Base de l'application (sert notamment pour les paths des tests)
       this.appPath = path.resolve('.')
 
-      this.expected_loadings = 0
-
       // On charge tous les fichiers système
-      // var sysFiles = [
-      //   './js/tests/system/Test.js',
-      //   './js/tests/system/handy.js'
-      // ]
-      var sysFiles = fs.readdirSync('./app/js/tests/system', {withFileTypes: ['.js']})
-      // On lit tous les tests et on charge les balises
-      var testFiles = fs.readdirSync('./app/js/tests/tests', {withFileTypes: ['.js']})
+      var sysFirstRequired = glob.sync('./app/js/tests/system_first/**/*.js')
 
       // Nombre de chargements attendus
-      this.expected_loadings += sysFiles.length
-      this.expected_loadings += testFiles.length
+      this.expected_loadings = 0
+      this.expected_loadings += sysFirstRequired.length
+      // console.log("Nombre de scripts requis :", this.expected_loadings)
 
-      // console.log("sysFiles:", sysFiles)
-      for(var sysFile of sysFiles){
-        this.createScript(sysFile.name, './js/tests/system')
-      }
-
-      // console.log("testFiles:", testFiles)
-      for(var testFile of testFiles){
-        this.createScript(testFile.name, './js/tests/tests')
+      this.methode_suite_loading = this.loadSysAndTestsFiles.bind(this)
+      for(var relpath of sysFirstRequired){
+        this.createScript(relpath)
       }
 
       this.nombre_success   = 0
       this.nombre_failures  = 0
       this.nombre_pendings  = 0
+      this.sys_errors       = []
+    }
+    
+  , loadSysAndTestsFiles:function(){
+      console.log("-> loadSysAndTestsFiles")
+
+      var sysFiles = glob.sync('./app/js/tests/system/**/*.js')
+      var testFiles = glob.sync('./app/js/tests/tests/**/*.js')
+
+      this.expected_loadings = 0
+      this.expected_loadings += sysFiles.length
+      this.expected_loadings += testFiles.length
+
+      this.methode_suite_loading = this.run.bind(this)
+      // console.log("sysFiles:", sysFiles)
+      for(var relpath of sysFiles){
+        this.createScript(relpath)
+      }
+      // console.log("testFiles:", testFiles)
+      for(relpath of testFiles){
+        this.createScript(relpath)
+      }
     }
   , run:function(){
       this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
@@ -57,23 +67,22 @@ const Tests = {
      */
   , addNewLoading:function(){
       -- this.expected_loadings
-      console.log("this.expected_loadings:", this.expected_loadings)
       if (this.expected_loadings === 0){
         // <= Tous les chargements ont été effectués
-        // => On peut commencer les tests
-        this.run()
+        // => On peut passer à la suite les tests
+        this.methode_suite_loading()
       }
     }
-  , createScript: function(fpath, inFolder){
+  , createScript: function(fpath){
       let script = document.createElement('script')
-      script.src = path.join(inFolder,fpath)
+      script.src = fpath.replace(/\.\/app/,'.')
       document.head.append(script)
       script.onload = function(){
         Tests.addNewLoading()
         script = null
       }
       script.onerror = function(err){
-        throw(`Une erreur est malheureusement survenue en chargement le script ${inFolder}/${fpath} : ${err}`)
+        throw(`Une erreur est malheureusement survenue en chargement le script ${fpath} : ${err}`)
       }
     }
 

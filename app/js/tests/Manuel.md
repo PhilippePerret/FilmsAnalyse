@@ -6,6 +6,7 @@
 * [Les Assertions](#les_assertions)
   * [Création d'assertions](#create_new_assertions)
     * [Options des assertions](#options_of_assert_function)
+* [Méthodes pratiques](#les_methodes_pratiques)
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Cas entièrement à implémenter (`pending`)](#pending)
   * [Test à implémenter plus tard (`tester`)](#test_to_define)
@@ -38,7 +39,7 @@ Pour lancer les tests :
 ```bash
 
   > npm test
-  
+
 ```
 
 
@@ -57,13 +58,32 @@ t.case("Un cas particulier du test", () => {
   // ici les tests et assertions
 })
 
-t.case("Un autre cas particulier du test", () => {
+t.case("Un autre cas particulier du test, asynchrone", () => {
   // Ici les tests des autres cas
+
+  // Pour gérer l'asynchronicité
+  return assert_DomExists(domId, {success: "Le truc existe", failure: "Le truc devrait exister"})
+  .then(function(){
+    // ... on poursuit les tests avec ça.
+  })
+  .catch(()=>{
+    // On s'arrête ici
+  })
+})
+
+t.case("Un cas avec une attente", ()=>{
+
+  return wait(2000)
+  .then(()=>{
+    // Le code à exécuter 2 secondes plus tard
+  })
 })
 
 // etc.
 
 ```
+
+Noter, dans le deuxième et le troisième cas, comment on retourne le dernier cas asynchrone pour pouvoir attendre avant de passer au test suivant.
 
 ## Les Assertions {#les_assertions}
 
@@ -128,8 +148,8 @@ window.assert_equal = function(expected, actual, options){
 
   assert(
       conditionTrue
-    , options.success_message || `${actual} est bien égal à ${expected}`
-    , options.failure_message || `${actual} devrait être égal à ${expected}`
+    , options.success || `${actual} est bien égal à ${expected}`
+    , options.failure || `${actual} devrait être égal à ${expected}`
     , options
   )
 }
@@ -142,6 +162,26 @@ onlyFailure
 
 onlySuccess
 : si `true`, la failure reste silencieuse, seul le succès écrit un message.
+
+
+## Méthodes pratiques {#les_methodes_pratiques}
+
+### wait(`<durée>`, `<message>`)
+
+Permet d'attendre avant de poursuite.
+
+```javascript
+
+t.case("Un cas d'attente", function(){
+  // ...
+
+  return wait(3000, "J'attends 3 secondes")
+  .then(()=>{
+    //... on peut poursuivre 3 secondes plus tard
+  })
+})
+
+```
 
 ## Textes écrits dans le suivi {#textes_suivis}
 

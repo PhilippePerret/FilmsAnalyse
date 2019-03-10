@@ -93,6 +93,11 @@ Tests.addTest = function(itest){
   this.tests.push(itest)
 }
 
+Tests.add_sys_error = function(tcase, err) {
+  this.sys_errors.push([tcase, err]);
+}
+
+
 
 // Raccourci
 window.assert   = Tests.assert.bind(Tests)
