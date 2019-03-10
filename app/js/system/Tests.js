@@ -5,7 +5,7 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 
 const Tests = {
     tests: []
-  , MAINFOLDER: path.join('.','app','js','TestsFIT')
+  , MAINFOLDER: './app/js/TestsFIT'
   , nombre_failures:  0
   , nombre_success:   0
   , nombre_pendings:  0
@@ -41,7 +41,7 @@ const Tests = {
 
   , loadSysAndTestsFiles:function(){
 
-      var sysFiles  = this.JsFilesOf('systeme')
+      var sysFiles  = this.JsFilesOf('system')
       var testFiles = this.JsFilesOf('tests')
       var supFiles  = this.JsFilesOf('support')
 
@@ -77,7 +77,7 @@ const Tests = {
     }
   , createScript: function(fpath){
       let script = document.createElement('script')
-      script.src = fpath.replace(/app/,'.')
+      script.src = fpath.replace(/\.\/app/,'.')
       document.head.append(script)
       script.onload = function(){
         Tests.addNewLoading()
@@ -92,7 +92,7 @@ const Tests = {
      * Retourne tous les fichiers javascript du dossier FITest +relPath+
      */
   , JsFilesOf:function(relPath){
-      return glob.sync(path.join(this.MAINFOLDER,relPath,'**','*.js'))
+      return glob.sync(`${this.MAINFOLDER}/${relPath}/**/*.js`)
     }
 
 }

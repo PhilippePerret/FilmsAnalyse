@@ -24,9 +24,9 @@ t.case("On peut l'ouvrir en cliquant sur un bouton d'event", function(){
   return assert_DomExists(jqId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
   .then(() => {
     var data = {
-        titre: "Le titre de la note"
-      , content: "Contenu de la note"
-      , note: "La note subsidiaire de la note"
+        titre:    "Le titre de la note"
+      , content:  "Contenu de la note"
+      , note:     "La note subsidiaire de la note"
     }
     fillEventFormWith(newEventId, data, {submit: true})
   })
