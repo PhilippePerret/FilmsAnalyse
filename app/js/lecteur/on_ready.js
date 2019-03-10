@@ -16,7 +16,8 @@ $(document).ready(() => {
   // l'initialisation de l'interface, ce qui charge par exemple
   // la vidéo.
 
-  MODE_TEST && setTimeout(Tests.initAndRun.bind(Tests),2000)
+  // MODE_TEST && setTimeout(Tests.initAndRun.bind(Tests),2000)
+  MODE_TEST && Tests.initAndRun()
 
 
 })

@@ -2,6 +2,14 @@
 
 class Test {
   constructor(testName){
+    try {
+      pourObtenirPathTest // produit l'error pour récupérer le path
+    } catch (e) {
+      var src = e.stack.split("\n").reverse()[0].split(':')[1]
+      var reg = new RegExp(`\/\/${Tests.appPath}\/app\/js\/tests`)
+      src = src.replace(reg,'.').trim()
+      this.srcRelPath = src
+    }
     this.title = testName
     this.cases = []
     Tests.addTest(this)
@@ -17,9 +25,7 @@ class Test {
   nextCase(){
     var fn_test = this.cases.shift()
     // console.log(fn_test, typeof(fn_test))
-    if(!fn_test){
-      return Tests.next()
-    }
+    if (!fn_test) return Tests.nextTest()
     try {
       fn_test()
     } catch (e) {
@@ -33,13 +39,7 @@ class Test {
    * Pour jouer le test
    */
   run(){
-    console.log(`%c${this.title}`, 'font-weight:bold;font-size:1.2"m;color:blue;')
-    try {
-      this.nextCase()
-    } catch (e) {
-      console.error(e)
-    } finally {
-      Tests.next()
-    }
+    Tests.showTestTitle(this.title, this.srcRelPath)
+    this.nextCase()
   }
 }
