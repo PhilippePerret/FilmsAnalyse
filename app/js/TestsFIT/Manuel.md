@@ -186,6 +186,14 @@ t.case("Un cas d'attente", function(){
 
 ```
 
+### Méthodes pratiques sur les fichiers/dossier {#handy_method_on_files}
+
+`removeFile(<fpath>[, <humanName>])`
+: Permet de détruire le fichier `fpath` désigné par `humanName`.
+: Par exemple : `removeFile('./mon/fichier.js', "Mon fichier")`
+: Note : la fonction produit une erreur fatale si le fichier n'a pas pu être détruit.
+
+
 ## Exécutions avant et après les tests {#before_and_after_tests}
 
 Pour définir le code à jouer avant ou après l'ensemble de la suite de **tous les tests**, on utilise, *dans n'importe quel fichier test*, la méthode `beforeTests` et `afterTests`.
