@@ -21,11 +21,7 @@ Tests.relativePathOf = function(fpath){
 }
 Tests.nextTest = function(){
   if (this.tests.length){
-    try {
-      this.tests.shift().run()
-    } catch (e) {
-      console.error(e)
-    }
+    this.tests.shift().run()
   } else {
     this.termine()
   }
@@ -38,6 +34,7 @@ Tests.assert = function(trueValue, msg_success, msg_failure, options){
   } else {
     // En cas d'échec de l'assertion
     if(!options.onlySuccess) this.onFailure(options.failure || msg_failure)
+    throw('TEST FAILURE')
   }
 }
 
@@ -63,7 +60,7 @@ Tests.action  = function(msg, fn_action){
     this.log(INDENT+'%cACTION: '+msg, GREENBOLD)
   } catch (e) {
     this.onFailure("Problème en exécutant l'action « " + msg + ' » : ' + e.message)
-    throw e
+    throw(e)
   }
 }
 
@@ -168,10 +165,10 @@ Tests.afterTests = function(fn) {
 }
 
 // Raccourci
-window.assert   = Tests.assert.bind(Tests)
-window.given    = Tests.given.bind(Tests)
-window.pending  = Tests.pending.bind(Tests)
-window.tester   = Tests.tester.bind(Tests)
-window.action   = Tests.action.bind(Tests)
+window.assert       = Tests.assert.bind(Tests)
+window.given        = Tests.given.bind(Tests)
+window.pending      = Tests.pending.bind(Tests)
+window.tester       = Tests.tester.bind(Tests)
+window.action       = Tests.action.bind(Tests)
 window.beforeTests  = Tests.beforeTests.bind(Tests)
 window.afterTests   = Tests.afterTests.bind(Tests)

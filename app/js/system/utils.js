@@ -10,11 +10,19 @@ function clip(str){
  * Méthode qui reçoit l'identifiant d'un élément DOM et retourne sa valeur
  * ou null s'il est vide.
  * Note : il faut impérativement passer un ID, avec ou sans le dièse.
+ * +options+
+ *  :type   Peut définir le format précis de retour, quand la donnée existe
+ *          'number'  => retourne un Int
+ *          'float'   => retourne un flottant
  */
-function getValOrNull(domId){
+function getValOrNull(domId, options){
   if(domId.substr(0,1)!='#') domId = `#${domId}`
   var v = $(`${domId}`).val().trim()
   if ( v === "" ) return null
+  else if ('object' === typeof options){
+    if(options.type === 'number') v = parseInt(v,10)
+    if(options.type === 'float') v = parseFloat(v)
+  }
   return v
 }
 

@@ -150,9 +150,17 @@ class FAnalyse {
     }
   }
 
-  updateEvent(ev){
+  updateEvent(ev, options){
     // TODO Peut-être faut-il replacer l'event à un autre endroit
-    if(nev.type === 'scene'){this.updateNumerosScenes()}
+    if (options && options.initTime != ev.time){
+      console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
+    }
+    if(ev.type === 'scene'){this.updateNumerosScenes()}
+    // On marque l'analyse modifiée
+    this.modified = true
+  // Enfin, s'il est affiché, il faut updater son affichage dans le
+    // reader
+    ev.updateInReader()
   }
 
   getEventById(eid){

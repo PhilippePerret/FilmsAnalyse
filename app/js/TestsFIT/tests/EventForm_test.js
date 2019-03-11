@@ -22,10 +22,10 @@ t.case("Création, enregistrement et modification d'un event de type note", func
   // identifiant d'un nouvel event
   var newEventId = 1 + EventForm.lastId
   var domId = `form-edit-event-${newEventId}`
-  var jqId = `#${domId}`
+  var jqFormId = `#${domId}`
 
   assert(
-      $(jqId).length == 0
+      $(jqFormId).length == 0
     , "Pas de formulaire pour le nouvel évènement"
     , "Le formulaire d'édition de l'event ne devrait pas exister"
   )
@@ -38,7 +38,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
     current_analyse.locator.setTime(300)
   })
   cliqueBoutonNewNote()
-  return assert_DomExists(jqId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
+  return assert_DomExists(jqFormId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
   .then(() => {
 
     action('Je remplis le formulaire avec les données de la note', ()=>{
@@ -47,7 +47,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
         , content:  "Contenu de la note"
         , note:     "La note subsidiaire de la note"
       }
-      fillEventFormWith(newEventId, data, {submit: true})
+      fillEventFormWith(newEventId, data)
     })
 
     assert_equal(0, current_analyse.events.length,
@@ -56,14 +56,14 @@ t.case("Création, enregistrement et modification d'un event de type note", func
     )
 
     action("Je crée la note en cliquant le bouton « Créer »", ()=>{
-      $(`${jqId} .btn-form-submit`).click()
+      $(`${jqFormId} .btn-form-submit`).click()
     })
 
     assert_equal(1, current_analyse.events.length, {success:"L'analyse possède maintenant 1 event", failure:"L'analyse devrait maintenant posséder un event"})
 
     // NOTE : Ne pas tester la disparition du formulaire, car il est encore
     // dans le code, mais masqué (pour pouvoir le ré-éditer plus facilement)
-    assert_notVisible(jqId, {success: 'Le formulaire n’est plus visible'})
+    assert_notVisible(jqFormId, {success: 'Le formulaire n’est plus visible'})
 
     var e = current_analyse.events[0]
     var expected = {
@@ -114,6 +114,92 @@ t.case("Création, enregistrement et modification d'un event de type note", func
           delete data_note.duration // car null donc pas enregistré
           assert_match(data_note, firste, {values_strict: true, success: "L'event sauvé contient les bonnes valeurs", failure:"L'event sauvé ne contient pas les bonnes valeurs…"})
 
+
+          // ---------------------------------------------------------------------
+          given("On peut modifier l'event enregistré")
+
+          action("On clique sur le bouton d'édition de l'event dans le reader", ()=>{
+            $('#reader #revent-0.event.note .e-tools .btn-edit').click()
+          })
+
+          assert_visible(jqFormId, {success: "Le formulaire d'édition est à nouveau visible."})
+
+          // Il ne doit y avoir qu'un seul formulaire (bug existant)
+          assert(
+              $('form.form-edit-event').length === 1
+            , `Il y a un seul formulaire d'event '.form-edit-event' dans le DOM`
+            , `Hum… il ne devrait y avoir qu'un seul formulaire '.form-edit-event' dans le DOM. Il y en a ${$('form.form-edit-event').length}…`
+          )
+
+          var new_data = {
+              titre:    "Le NOUVEAU titre de la note"
+            , content:  "Nouveau contenu de la note"
+            , note:     ""
+          }
+          action('Je modifie la donnée de la note et je soumets le formulaire', ()=>{
+            fillEventFormWith(newEventId, new_data, {submit: true})
+          })
+
+          // La donnée doit avoir changée
+          assert(
+              current_analyse.modified === true
+            , "L'analyse courante a été marquée modifiée"
+            , "L'analyse courante devrait être marquée modifiée"
+          )
+
+          assert(
+              current_analyse.events.length === 1
+            , "L'analyse a toujours un seul event"
+            , `L'analyse devrait avoir un seul event. Elle en a ${current_analyse.events.length}…`
+          )
+
+          delete new_data.note
+          assert_match(new_data, current_analyse.ids[0].data,
+            {success:"Les données de l'event #0 ont été correctement modifiées"}
+          )
+          assert(
+              current_analyse.ids[0].note === null
+            , "L'event n'a plus de note."
+            , `L'event ne devrait plus avoir de note… (note vaut ${current_analyse.ids[0].note})`
+          )
+
+          var n = document.querySelector('#reader #revent-0.event.note .content')
+          assert(
+              n.innerHTML.match(/Nouveau contenu de la note/) !== null
+            , "OK, le texte de la note a été actualisé dans le reader"
+            , "Hum… le texte de la note n'a pas été actualisé…"
+          )
+
+          return action("On sauve à nouveau l'analyse courante avec succès", ()=>{
+
+            return FITAnalyse.save()
+              .then(()=>{
+                assert(
+                    current_analyse.modified === false
+                  , "L'analyse n'est plus marquée modifiée"
+                  , "Hum… L'analyse ne devrait plus être marquée modifiée…"
+                )
+                assert_fileExists(FITAnalyse.analyse.eventsFilePath)
+                // Si on le require à nouveau, il ne sera pas actualisé, on doit
+                // le lire, cette fois
+                var contenu = JSON.parse(fs.readFileSync(FITAnalyse.analyse.eventsFilePath, 'utf8'))
+                assert_isArray(contenu, {success: "Le fichier des events contient bien une liste."})
+                assert(
+                    contenu.length === 1
+                  , "La liste des event contient toujours un seul event"
+                  , `La liste ne devrait contenir qu'un seul event, elle en contient ${contenu.length}…`
+                )
+                var firste = contenu[0]
+                assert_isObject(firste, {success: "Le premier élément est bien une table"})
+                var new_data = {
+                    id:       0
+                  , time:     300
+                  , titre:    "Le NOUVEAU titre de la note"
+                  , content:  "Nouveau contenu de la note"
+                }
+                assert_match(new_data, firste, {values_strict: true, success: "L'event sauvé contient les nouvelles valeurs", failure:"L'event sauvé ne contient pas les nouvelles valeurs…"})
+            })//then
+          })//then
       }) // then
     }) // then
   })

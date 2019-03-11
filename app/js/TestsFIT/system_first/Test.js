@@ -31,7 +31,8 @@ class Test {
       tcase.run().then(my.nextCase.bind(my));
     } catch (e) {
       console.log(`ERROR TEST: ${e}`)
-      return Tests.nextTest()
+      return my.nextCase.bind(my)()
+      // return Tests.nextTest()
     } finally {
       my = null
     }
@@ -62,6 +63,7 @@ TCase.prototype.run = function(){
         ok()
       };
     } catch(err){
+      ok()
       Tests.add_sys_error(my, err)
     }
   })
