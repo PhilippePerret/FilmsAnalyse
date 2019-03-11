@@ -269,7 +269,7 @@ class EventForm {
     data_min.id       = getValOrNull(this.fieldID('id'))
     data_min.titre    = getValOrNull(this.fieldID('titre'))
     data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-    data_min.isNew    = getValOrNull(this.fieldID('is_new'))
+    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
 
     // Création d'objet particulier, qui ne sont pas des sous-classes
     // de FAEvent
@@ -307,9 +307,9 @@ class EventForm {
         fields.push(this.id)
       })
 
-    console.log("Champs trouvés:", fields)
-    console.log("Data finale min:", data_min)
-    console.log("Data finale autres:", other_data)
+    // console.log("Champs trouvés:", fields)
+    // console.log("Data finale min:", data_min)
+    // console.log("Data finale autres:", other_data)
 
     // On crée ou on update l'évènement
     if(this.isNew){

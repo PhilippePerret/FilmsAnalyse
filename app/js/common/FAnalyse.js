@@ -57,10 +57,13 @@ class FAnalyse {
     this._modified = v
   }
 
-  // Méthode à lancer après le chargement des données
+  // Méthode à lancer après le chargement des données ou après la
+  // sauvegarde
   // Pour le moment, ne sert que pour les tests.
   get methodeAfterLoading(){return this._methodeAfterLoading}
   set methodeAfterLoading(v){this._methodeAfterLoading = v}
+  get methodAfterSaving(){return this._methodAfterSaving}
+  set methodAfterSaving(v){this._methodAfterSaving = v}
 
   forEachEvent(method, options){
     if(undefined===options){options = {}}
@@ -264,6 +267,7 @@ class FAnalyse {
     if(this.savers === this.savables_count){
       this.modified = false
       F.notify("Analyse enregistrée avec succès.")
+      if(this.methodAfterSaving) this.methodAfterSaving()
     }
   }
 
@@ -318,8 +322,8 @@ class FAnalyse {
   onLoaded(fpath){
     this.loaders += 1
     if(this.loaders === this.loadables_count){
-      console.log("Analyse chargée avec succès.")
-      console.log("Event count:",this.events.length)
+      // console.log("Analyse chargée avec succès.")
+      // console.log("Event count:",this.events.length)
       this.ready = true
       this.onReady()
     }

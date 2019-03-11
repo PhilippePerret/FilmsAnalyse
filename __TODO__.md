@@ -1,9 +1,5 @@
-* [TEST] Au chargement de l'analyse, il faut attendre qu'elle soit chargée pour commencer les tests
-
-* [TEST] Alléger Tests.js chargé tout le temps (charger les autres méthodes dans un autre fichier)
-* [TEST] Surveiller le chargement des modules avec un 'onload'
-
 * Des problèmes avec l'édition sont encore à déplorer. Je ne sais pas comment reproduire le problème.
+  => voir les tests (possibles maintenant)
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue.
 

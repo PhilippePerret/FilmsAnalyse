@@ -87,7 +87,6 @@ Tests.initBeforeRun = function(){
     ret = this.beforeTestsFunction()
   }
   if (ret && ret.constructor.name == 'Promise'){
-    console.log("Le beforeTests est une promesse")
     ret.then(this.run.bind(this))
   } else {
     this.run()
