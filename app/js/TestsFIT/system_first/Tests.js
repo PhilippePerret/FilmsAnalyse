@@ -79,13 +79,22 @@ Tests.initBeforeRun = function(){
   this.nombre_failures  = 0
   this.nombre_pendings  = 0
 
-  this.run()
+  // Le code à jouer avant le début des tests
+  // Si c'est une promesse, on attend qu'il lance
+  // lui-même la suite du programme
+  var ret = null
+  if(undefined !== this.beforeTestsFunction){
+    ret = this.beforeTestsFunction()
+  }
+  if (ret && ret.constructor.name == 'Promise'){
+    console.log("Le beforeTests est une promesse")
+    ret.then(this.run.bind(this))
+  } else {
+    this.run()
+  }
 }
 
 Tests.run = function(){
-  if(undefined !== this.beforeTestsFunction){
-    this.beforeTestsFunction()
-  }
   this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
   this.nextTest()
 }

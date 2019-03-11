@@ -29,6 +29,9 @@ class FAnalyse {
     this.videoController.init()
     EventForm.init()
     this.init()
+    if ('function' == typeof this.methodeAfterLoading){
+      this.methodeAfterLoading()
+    }
   }
 
   init(){
@@ -53,6 +56,11 @@ class FAnalyse {
   set modified(v) {
     this._modified = v
   }
+
+  // Méthode à lancer après le chargement des données
+  // Pour le moment, ne sert que pour les tests.
+  get methodeAfterLoading(){return this._methodeAfterLoading}
+  set methodeAfterLoading(v){this._methodeAfterLoading = v}
 
   forEachEvent(method, options){
     if(undefined===options){options = {}}

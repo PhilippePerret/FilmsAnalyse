@@ -207,6 +207,8 @@ afterTests(()=>{
 
 Noter que si la méthode est appelée à deux endroits différents, une exception sera levée pour prévenir les comportements inattendus.
 
+Si la méthode `beforeTests` retourne une promesse, les tests ne seront lancés qu'à l'exécution de ce code beforeTests. Cela permet, par exemple, de charger de grosses données avant de commencer (un film par exemple).
+
 ## Textes écrits dans le suivi {#textes_suivis}
 
 En dehors des messages des assertions elles-mêmes, on peut trouver ces textes dans le suivi du tests :

@@ -1,7 +1,9 @@
 'use strict'
 
 beforeTests(() => {
-  FITAnalyse.setCurrent('tests/simple')
+  return new Promise(ok => {
+    FITAnalyse.setCurrent('tests/simple', {remove_events: true}, ok)
+  })
 })
 afterTests(()=>{
   console.log("Après les tests, je jouerai ça")
@@ -28,6 +30,9 @@ t.case("On peut l'ouvrir en cliquant sur un bouton d'event", function(){
     $('#btn-new-note').click()
   })
 
+  action("On se rend au temps voulu où mettre une note", ()=>{
+    current_analyse.locator.setTime(300)
+  })
   cliqueBoutonNewNote()
   return assert_DomExists(jqId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})
   .then(() => {
