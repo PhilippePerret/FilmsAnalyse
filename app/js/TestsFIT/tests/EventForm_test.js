@@ -1,15 +1,5 @@
 'use strict'
 
-beforeTests(() => {
-  return new Promise(ok => {
-    FITAnalyse.setCurrent('tests/simple', {remove_events: true}, ok)
-  })
-})
-afterTests(()=>{
-  // console.log("Après les tests, je jouerai ça")
-})
-
-
 var t = new Test("Test du formulaire d'édition de l'event")//, document.currentScript.src
 
 t.case("Création, enregistrement et modification d'un event de type note", function(){

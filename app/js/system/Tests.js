@@ -75,8 +75,7 @@ const Tests = {
       var sysFiles  = this.JsFilesOf('system')
       var supFiles  = this.JsFilesOf('support')
       var testFiles = this.getTestFileList()
-      console.log("testFiles:", testFiles)
-      return
+      // console.log("testFiles:", testFiles)
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length

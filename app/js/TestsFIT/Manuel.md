@@ -253,6 +253,10 @@ Noter que si la méthode est appelée à deux endroits différents, une exceptio
 
 Si la méthode `beforeTests` retourne une promesse, les tests ne seront lancés qu'à l'exécution de ce code beforeTests. Cela permet, par exemple, de charger de grosses données avant de commencer (un film par exemple).
 
+> Noter que si le fichier définissant ces codes n'est pas chargé car filtré, les méthodes ne seront pas invoquées. Cf. l'astuce ci-dessous pour palier cet inconvénient.
+
+Astuce : le plus simple est de définir ces méthodes dans un fichier du dossier `TestsFIT/support`, car ces fichiers sont toujours chargés.
+
 ## Textes écrits dans le suivi {#textes_suivis}
 
 En dehors des messages des assertions elles-mêmes, on peut trouver ces textes dans le suivi du tests :
