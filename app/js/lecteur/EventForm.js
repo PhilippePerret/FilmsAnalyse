@@ -19,20 +19,34 @@ class EventForm {
     my = null
   }
 
+  // Les formulaires déjà initiés (et donc cachés dans le DOM)
+  static get eventForms(){
+    if(undefined===this._eventForms){this._eventForms = {}}
+    return this._eventForms
+  }
+  // static set eventForms(v){this._eventForms = v}
+
+  static get videoController(){ return current_analyse.videoController }
+
   //
   static onClickNewEvent(ev, eventType){
     if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
     if (ev) ev.stopPropagation()
     this.videoWasPlaying = !!current_analyse.locator.playing
     if(current_analyse.locator.playing) current_analyse.locator.togglePlay()
-    new EventForm(eventType).toggleForm()
+    var eForm = new EventForm(eventType)
+    this.eventForms[eForm.id] = eForm
+    eForm.toggleForm()
   }
 
-  static get videoController(){ return current_analyse.videoController }
 
   static editEvent(ev){
+    var eForm
     if(this.playing) this.analyse.locator.togglePlay()
-    new EventForm(ev).toggleForm()
+    if(undefined === this.eventForms[ev.id]){
+      this.eventForms[ev.id] = new EventForm(ev)
+    }
+    this.eventForms[ev.id].toggleForm()
   }
 
   // Pour obtenir un nouvel identifiant
@@ -101,6 +115,7 @@ class EventForm {
       default:
         throw("Il faut penser à traiter les autres cas")
     }
+    return this
   }
 
   get inited(){ return this._initied || false}   // mis à true à l'initialisation
@@ -266,10 +281,10 @@ class EventForm {
 
     // TODO On doit récupérer toutes les données
     var data_min = {}
-    data_min.id       = getValOrNull(this.fieldID('id'))
+    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
     data_min.titre    = getValOrNull(this.fieldID('titre'))
     data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-    data_min.isNew    = getValOrNull(this.fieldID('is_new'))
+    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
 
     // Création d'objet particulier, qui ne sont pas des sous-classes
     // de FAEvent
@@ -285,7 +300,7 @@ class EventForm {
     }
 
     // Les champs communs à tous les types d'event
-    data_min.time     = parseInt(getValOrNull(this.fieldID('time')),10)
+    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
     data_min.content  = getValOrNull(this.fieldID('content'))
     data_min.note     = getValOrNull(this.fieldID('note'))
     data_min.duration = getValOrNull(this.fieldID('duration'))
@@ -307,9 +322,9 @@ class EventForm {
         fields.push(this.id)
       })
 
-    console.log("Champs trouvés:", fields)
-    console.log("Data finale min:", data_min)
-    console.log("Data finale autres:", other_data)
+    // console.log("Champs trouvés:", fields)
+    // console.log("Data finale min:", data_min)
+    // console.log("Data finale autres:", other_data)
 
     // On crée ou on update l'évènement
     if(this.isNew){
@@ -328,16 +343,12 @@ class EventForm {
         current_analyse.addEvent(this.event)
       } else {
         // ÉDITION
-        // En fait, l'updater consister à la replacer ailleurs
-        // si son temps a changé et si c'est une scène
-        // NOTE Pour le moment, on n'actualise que si le temps a changé.
-        if (initTime != this.event.time){
-          current_analyse.updateEvent(this.event)
-        }
+        current_analyse.updateEvent(this.event, {initTime: initTime})
       }
     }
 
     if (this.event.isValid){
+      this.isNew = false // il a été enregistré, maintenant
       this.endEdition()
     } else {
       // En cas d'erreur, on focus dans le premier champ erroné

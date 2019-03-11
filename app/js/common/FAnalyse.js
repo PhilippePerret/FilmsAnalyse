@@ -29,6 +29,9 @@ class FAnalyse {
     this.videoController.init()
     EventForm.init()
     this.init()
+    if ('function' == typeof this.methodeAfterLoading){
+      this.methodeAfterLoading()
+    }
   }
 
   init(){
@@ -53,6 +56,14 @@ class FAnalyse {
   set modified(v) {
     this._modified = v
   }
+
+  // Méthode à lancer après le chargement des données ou après la
+  // sauvegarde
+  // Pour le moment, ne sert que pour les tests.
+  get methodeAfterLoading(){return this._methodeAfterLoading}
+  set methodeAfterLoading(v){this._methodeAfterLoading = v}
+  get methodAfterSaving(){return this._methodAfterSaving}
+  set methodAfterSaving(v){this._methodAfterSaving = v}
 
   forEachEvent(method, options){
     if(undefined===options){options = {}}
@@ -139,9 +150,17 @@ class FAnalyse {
     }
   }
 
-  updateEvent(ev){
+  updateEvent(ev, options){
     // TODO Peut-être faut-il replacer l'event à un autre endroit
-    if(nev.type === 'scene'){this.updateNumerosScenes()}
+    if (options && options.initTime != ev.time){
+      console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
+    }
+    if(ev.type === 'scene'){this.updateNumerosScenes()}
+    // On marque l'analyse modifiée
+    this.modified = true
+  // Enfin, s'il est affiché, il faut updater son affichage dans le
+    // reader
+    ev.updateInReader()
   }
 
   getEventById(eid){
@@ -256,6 +275,7 @@ class FAnalyse {
     if(this.savers === this.savables_count){
       this.modified = false
       F.notify("Analyse enregistrée avec succès.")
+      if(this.methodAfterSaving) this.methodAfterSaving()
     }
   }
 
@@ -296,6 +316,8 @@ class FAnalyse {
   load(){
     var my = this
       , fpath ;
+    // Dans le cas où le fichier events.json n'existe pas
+    this.events = []
     // Les fichiers à charger
     var loadables = Object.assign([], my.SAVED_FILES)
     // Pour comptabiliser le nombre de fichiers chargés
@@ -308,8 +330,8 @@ class FAnalyse {
   onLoaded(fpath){
     this.loaders += 1
     if(this.loaders === this.loadables_count){
-      console.log("Analyse chargée avec succès.")
-      console.log("Event count:",this.events.length)
+      // console.log("Analyse chargée avec succès.")
+      // console.log("Event count:",this.events.length)
       this.ready = true
       this.onReady()
     }

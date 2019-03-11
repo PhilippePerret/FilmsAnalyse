@@ -1,13 +1,12 @@
-* [TEST] Alléger Tests.js chargé tout le temps (charger les autres méthodes dans un autre fichier)
-* [TEST] Surveiller le chargement des modules avec un 'onload'
-
 * Des problèmes avec l'édition sont encore à déplorer. Je ne sais pas comment reproduire le problème.
+  => voir les tests (possibles maintenant)
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue.
 
 * Un CB pour dire de repartir (play) dès qu'on va sur un temps (ou au contraire de ne rien faire)
 
 
+* Pouvoir tirer un screenshot vignette du film (toujours dans la même taille)
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
   Il faut aussi proposer d'éditer la scène en question.
 

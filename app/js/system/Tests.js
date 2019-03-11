@@ -5,6 +5,7 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 
 const Tests = {
     tests: []
+  , MAINFOLDER: './app/js/TestsFIT'
   , nombre_failures:  0
   , nombre_success:   0
   , nombre_pendings:  0
@@ -13,6 +14,7 @@ const Tests = {
   // ---------------------------------------------------------------------
 
   , initAndRun:function(){
+      this.sys_errors = []
       this.init()
     }
   , init:function(){
@@ -20,7 +22,7 @@ const Tests = {
       this.appPath = path.resolve('.')
 
       // On charge tous les fichiers système
-      var sysFirstRequired = glob.sync('./app/js/tests/system_first/**/*.js')
+      var sysFirstRequired = this.JsFilesOf('system_first')
 
       // Nombre de chargements attendus
       this.expected_loadings = 0
@@ -31,19 +33,13 @@ const Tests = {
       for(var relpath of sysFirstRequired){
         this.createScript(relpath)
       }
-
-      this.nombre_success   = 0
-      this.nombre_failures  = 0
-      this.nombre_pendings  = 0
-      this.sys_errors       = []
     }
 
   , loadSysAndTestsFiles:function(){
-      console.log("-> loadSysAndTestsFiles")
 
-      var sysFiles  = glob.sync('./app/js/tests/system/**/*.js')
-      var testFiles = glob.sync('./app/js/tests/tests/**/*.js')
-      var supFiles  = glob.sync('./app/js/tests/support/**/*.js')
+      var sysFiles  = this.JsFilesOf('system')
+      var testFiles = this.JsFilesOf('tests')
+      var supFiles  = this.JsFilesOf('support')
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length
@@ -51,7 +47,7 @@ const Tests = {
       this.expected_loadings += supFiles.length
 
       // La méthode qui devra être appelée après le chargement
-      this.methode_suite_loading = this.run.bind(this)
+      this.methode_suite_loading = this.initBeforeRun.bind(this)
 
       for(var filesFolder of [sysFiles, testFiles, supFiles]){
         // console.log("Fichiers du dossier :", filesFolder, sysFiles)
@@ -60,10 +56,7 @@ const Tests = {
         }
       }
     }
-  , run:function(){
-      this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
-      this.nextTest()
-    }
+
     /**
      * Méthode appelée lorsqu'un nouveau chargement de script est terminé
      */
@@ -86,6 +79,13 @@ const Tests = {
       script.onerror = function(err){
         throw(`Une erreur est malheureusement survenue en chargement le script ${fpath} : ${err}`)
       }
+    }
+
+    /**
+     * Retourne tous les fichiers javascript du dossier FITest +relPath+
+     */
+  , JsFilesOf:function(relPath){
+      return glob.sync(`${this.MAINFOLDER}/${relPath}/**/*.js`)
     }
 
 }

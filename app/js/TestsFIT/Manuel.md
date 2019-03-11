@@ -2,6 +2,7 @@
 
 * [Introduction](#introduction)
 * [Définition d'une feuille de test](#define_test_sheet)
+* [Exécutions avant et après les tests](#before_and_after_tests)
 * [Textes écrits dans le suivi](#textes_suivis)
 * [Les Assertions](#les_assertions)
   * [Création d'assertions](#create_new_assertions)
@@ -184,6 +185,37 @@ t.case("Un cas d'attente", function(){
 })
 
 ```
+
+### Méthodes pratiques sur les fichiers/dossier {#handy_method_on_files}
+
+`removeFile(<fpath>[, <humanName>])`
+: Permet de détruire le fichier `fpath` désigné par `humanName`.
+: Par exemple : `removeFile('./mon/fichier.js', "Mon fichier")`
+: Note : la fonction produit une erreur fatale si le fichier n'a pas pu être détruit.
+
+
+## Exécutions avant et après les tests {#before_and_after_tests}
+
+Pour définir le code à jouer avant ou après l'ensemble de la suite de **tous les tests**, on utilise, *dans n'importe quel fichier test*, la méthode `beforeTests` et `afterTests`.
+
+Par exemple :
+
+```javascript
+'use strict'
+
+// Mon premier test
+
+beforeTests(function(){
+  // ... ici le code à exécuter avant tous les tests
+})
+afterTests(()=>{
+  // ... ici le code à exécuter après la suite de tous les tests
+})
+```
+
+Noter que si la méthode est appelée à deux endroits différents, une exception sera levée pour prévenir les comportements inattendus.
+
+Si la méthode `beforeTests` retourne une promesse, les tests ne seront lancés qu'à l'exécution de ce code beforeTests. Cela permet, par exemple, de charger de grosses données avant de commencer (un film par exemple).
 
 ## Textes écrits dans le suivi {#textes_suivis}
 

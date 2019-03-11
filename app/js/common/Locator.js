@@ -270,9 +270,9 @@ class Locator {
       // <= La tranche existe déjà
       // => Placer l'évènement pile à l'endroit voulu
       var len = this.eventsByTrancheTime[tranche].length
-      console.log("tranche:",tranche)
-      console.log("this.eventsByTrancheTime[tranche]:", this.eventsByTrancheTime[tranche])
-      console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
+      // console.log("tranche:",tranche)
+      // console.log("this.eventsByTrancheTime[tranche]:", this.eventsByTrancheTime[tranche])
+      // console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
       var etested
       for(var i=0;i<len;++i){
         etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])

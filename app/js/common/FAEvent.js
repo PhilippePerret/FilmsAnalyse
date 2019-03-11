@@ -77,14 +77,30 @@ class FAEvent {
       this.analyse.reader.append(this.div)
       this.observe()
     }
+    this.makeAppear() // c'est l'opacité qui masque l'event affiché
+  }
+
+  /**
+   * Après édition de l'event, on peut avoir à updater son affichage dans
+   * le reader. On va faire simplement un remplacement de div.
+   */
+  updateInReader(){
+    if(undefined === this.jqReaderObj) return // il n'existe pas
+    this._div = undefined
+    this.jqReaderObj.replaceWith(this.div)
+    this.div.style.opacity = 1
+    this.observe()
+  }
+
+  makeAppear(){
     this.jqReaderObj.animate({opacity:1}, 600)
   }
 
   get jqReaderObj(){
     if(undefined === this._jq_reader_obj ){
       this._jq_reader_obj = $(`#${this.domId}`)
-      if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
     }
+    if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
     return this._jq_reader_obj
   }
 

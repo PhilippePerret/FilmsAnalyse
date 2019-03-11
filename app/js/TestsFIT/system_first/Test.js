@@ -6,8 +6,7 @@ class Test {
       pourObtenirPathTest // produit l'error pour récupérer le path
     } catch (e) {
       var src = e.stack.split("\n").reverse()[0].split(':')[1]
-      var reg = new RegExp(`\/\/${Tests.appPath}\/app\/js\/tests`)
-      src = src.replace(reg,'.').trim()
+      src = Tests.relativePathOf(src)
       this.srcRelPath = src
     }
     this.title = testName
@@ -32,7 +31,8 @@ class Test {
       tcase.run().then(my.nextCase.bind(my));
     } catch (e) {
       console.log(`ERROR TEST: ${e}`)
-      return Tests.nextTest()
+      return my.nextCase.bind(my)()
+      // return Tests.nextTest()
     } finally {
       my = null
     }
@@ -63,6 +63,7 @@ TCase.prototype.run = function(){
         ok()
       };
     } catch(err){
+      ok()
       Tests.add_sys_error(my, err)
     }
   })

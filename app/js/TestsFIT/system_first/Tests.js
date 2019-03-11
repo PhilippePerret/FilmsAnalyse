@@ -11,13 +11,17 @@ window.REDBOLD = 'font-weight:bold;color:red;'
 window.BLUEBOLD = 'color:blue;font-weight:bold;'
 window.GREENBOLD = 'color:darkgreen;font-weight:bold;'
 
+// Pour définir les méthodes à appeler avant et après tous les tests
+Tests.beforeTestsFunction = undefined
+Tests.afterTestsFunction  = undefined
+
+Tests.relativePathOf = function(fpath){
+  var reg = new RegExp(`\/?\/\/${Tests.appPath}\/`)
+  return fpath.replace(reg,'./').trim()
+}
 Tests.nextTest = function(){
   if (this.tests.length){
-    try {
-      this.tests.shift().run()
-    } catch (e) {
-      console.error(e)
-    }
+    this.tests.shift().run()
   } else {
     this.termine()
   }
@@ -30,6 +34,7 @@ Tests.assert = function(trueValue, msg_success, msg_failure, options){
   } else {
     // En cas d'échec de l'assertion
     if(!options.onlySuccess) this.onFailure(options.failure || msg_failure)
+    throw('TEST FAILURE')
   }
 }
 
@@ -55,7 +60,7 @@ Tests.action  = function(msg, fn_action){
     this.log(INDENT+'%cACTION: '+msg, GREENBOLD)
   } catch (e) {
     this.onFailure("Problème en exécutant l'action « " + msg + ' » : ' + e.message)
-    throw e
+    throw(e)
   }
 }
 
@@ -66,20 +71,46 @@ Tests.showTestTitle = function(str, relPath){
   this.log('%c'+relPath, PATHSTYLE)
 }
 
+Tests.initBeforeRun = function(){
+  this.nombre_success   = 0
+  this.nombre_failures  = 0
+  this.nombre_pendings  = 0
+
+  // Le code à jouer avant le début des tests
+  // Si c'est une promesse, on attend qu'il lance
+  // lui-même la suite du programme
+  var ret = null
+  if(undefined !== this.beforeTestsFunction){
+    ret = this.beforeTestsFunction()
+  }
+  if (ret && ret.constructor.name == 'Promise'){
+    ret.then(this.run.bind(this))
+  } else {
+    this.run()
+  }
+}
+
+Tests.run = function(){
+  this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
+  this.nextTest()
+}
 /**
  * Méthode pour "terminer" les tests, c'est-à-dire pour afficher les
  * résultats.
  */
 Tests.termine = function(){
+  if(undefined !== this.afterTestsFunction){
+    this.afterTestsFunction()
+  }
   var color = this.nombre_failures > 0 ? 'red' : (this.nombre_pendings > 0 ? 'orange' : '#00BB00') ;
   var str = `${this.nombre_success} success ${this.nombre_failures} failures ${this.nombre_pendings} pendings`
   $('#tags').html(`<div style="color:${color};font-weight:bold;padding:1em;">${str}</div><div style="padding:1em;font-style:italic;">Open the console to see the details.</div>`);
   console.log(RC+RC+RC+'%c' + str, `color:${color};font-weight:bold;font-size:1.2em;`);
-  // if(this.sys_errors.length){
-  //   console.log(RC+RC+'Des erreurs systèmes se sont produites aussi :');
-  //   console.log(this.sys_errors);
-  // };
   this.log(RC+RC+RC+'%c============ FIN DES TESTS ==============', STYLE1)
+  if(this.sys_errors.length){
+    console.log(RC+RC+'%cDes erreurs systèmes se sont produites :', REDBOLD+'font-size:1.1em;');
+    console.log('%c'+this.sys_errors[0], REDBOLD+'font-size:1.1em;');
+  };
 }
 
 // ---------------------------------------------------------------------
@@ -97,11 +128,47 @@ Tests.add_sys_error = function(tcase, err) {
   this.sys_errors.push([tcase, err]);
 }
 
+Tests.beforeTests = function(fn) {
+  var curMod
+  try {
+    pourObtenirPathTest // produit l'error pour récupérer le path
+  } catch (e) {
+    var src = e.stack.split("\n").reverse()[0].split(':')[1]
+    curMod = Tests.relativePathOf(src)
+  }
+  if( undefined === Tests.beforeTestsFunction){
+    Tests.module_defining_before_tests = curMod
+    Tests.beforeTestsFunction = fn
+  } else {
+    var err_msg = `La méthode beforeTests() est déjà définie dans "${Tests.module_defining_before_tests}", on ne peut pas la redéfinir dans "${curMod}"`
+    Tests.add_sys_error(err_msg)
+    throw(err_msg)
+  }
 
+}
+Tests.afterTests = function(fn) {
+  var curMod
+  try {
+    pourObtenirPathTest // produit l'error pour récupérer le path
+  } catch (e) {
+    var src = e.stack.split("\n").reverse()[0].split(':')[1]
+    curMod = Tests.relativePathOf(src)
+  }
+  if( undefined === Tests.afterTestsFunction){
+    Tests.module_defining_after_tests = curMod
+    Tests.afterTestsFunction = fn
+  } else {
+    var err_msg = `La méthode afterTests() est déjà définie dans "${Tests.module_defining_after_tests}", on ne peut pas la redéfinir dans "${curMod}"`
+    Tests.add_sys_error(err_msg)
+    throw(err_msg)
+  }
+}
 
 // Raccourci
-window.assert   = Tests.assert.bind(Tests)
-window.given    = Tests.given.bind(Tests)
-window.pending  = Tests.pending.bind(Tests)
-window.tester   = Tests.tester.bind(Tests)
-window.action   = Tests.action.bind(Tests)
+window.assert       = Tests.assert.bind(Tests)
+window.given        = Tests.given.bind(Tests)
+window.pending      = Tests.pending.bind(Tests)
+window.tester       = Tests.tester.bind(Tests)
+window.action       = Tests.action.bind(Tests)
+window.beforeTests  = Tests.beforeTests.bind(Tests)
+window.afterTests   = Tests.afterTests.bind(Tests)
