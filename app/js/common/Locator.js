@@ -96,7 +96,10 @@ class Locator {
   /**
    * Méthode qui définit le temps du film
    *
-   * +time+ doit être un nombre de secondes
+   * +time+ doit être un nombre de secondes depuis le DÉBUT DE LA VIDÉO.
+   * Utiliser la méthode setRTime pour envoyer en argument le nombre de secondes
+   * depuis le début défini du film.
+   *
    */
   setTime(time){
     // console.log("-> setTime", time)

@@ -46,6 +46,19 @@ const DATA_MENUS = [
       ] // submenu du menu "Analyse"
   }
   /**
+   * MENU ÉDITION
+   */
+ , {
+     label: 'Édition'
+   , role: 'edit'
+   , submenu:[
+        {label: 'Copier', role: 'copy'}
+      , {label: 'Couper', role: 'cut'}
+      , {label: 'Coller', role: 'paste'}
+   ]
+ }
+
+  /**
    * MENU VIDÉO
    */
   , {
