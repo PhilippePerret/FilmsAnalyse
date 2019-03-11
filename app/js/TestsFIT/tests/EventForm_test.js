@@ -41,8 +41,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
     })
 
     assert_equal(0, current_analyse.events.length,
-      "L'analyse n'a pas d'évènements",
-      "L'analyse ne devrait avoir aucun évènement"
+      {success:"L'analyse n'a pas d'évènements", failure:"L'analyse ne devrait avoir aucun évènement"}
     )
 
     action("Je crée la note en cliquant le bouton « Créer »", ()=>{

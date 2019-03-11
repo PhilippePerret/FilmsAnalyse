@@ -1,4 +1,19 @@
 'use strict'
+/*
+
+assert_equal(expected, actual, options)
+  Produit un succès si l'expression actual est égale à l'expression expected
+
+*/
+
+window.assert_equal = function(expected, actual, options){
+  assert(
+      actual === expected
+    , `${actual} is equal to ${expected}`
+    , `${actual} should equal ${expected}`
+    , options
+  )
+}
 
 /**
  * Produit un succès si les deux premiers arguments correspondent.

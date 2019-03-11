@@ -12,7 +12,16 @@ class FAnalyse {
   constructor(pathFolder){
     this._events = [] // au départ
     this._folder = path.resolve(pathFolder)
+    Scene.init()
   }
+
+  get currentScene(){
+    if(undefined === this._current_scene){
+      this._current_scene = Scene.sceneAt(this.locator.getRTime())
+    }
+    return this._current_scene
+  }
+  set currentScene(v){this._current_scene = v}
 
   /**
    * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses

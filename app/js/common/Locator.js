@@ -112,6 +112,8 @@ class Locator {
     var rtime = this.getRTime(time)
     this.analyse.reader.resetBeyond(rtime - 60, rtime + 60)
     this.showEventsAt(rtime)
+    // Définir la scène courante de l'analyse
+    this.analyse.currentScene = Scene.sceneAt(rtime)
   }
 
   /**
