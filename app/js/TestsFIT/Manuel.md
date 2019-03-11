@@ -2,6 +2,7 @@
 
 * [Introduction](#introduction)
 * [Définition d'une feuille de test](#define_test_sheet)
+* [Liste des tests à lancer](#tests_list)
 * [Exécutions avant et après les tests](#before_and_after_tests)
 * [Textes écrits dans le suivi](#textes_suivis)
 * [Les Assertions](#les_assertions)
@@ -192,6 +193,41 @@ t.case("Un cas d'attente", function(){
 : Permet de détruire le fichier `fpath` désigné par `humanName`.
 : Par exemple : `removeFile('./mon/fichier.js', "Mon fichier")`
 : Note : la fonction produit une erreur fatale si le fichier n'a pas pu être détruit.
+
+## Liste des tests à lancer {#tests_list}
+
+Pour lancer toute la suite des tests, si `"scripts":"test"` est défini comme voulu dans le `package.json`, il suffit de jouer :
+
+```
+  > npm test
+```
+
+On peut filtrer les tests à jouer à l'aide d'un deuxième argument. Ce filtre peut être le dossier à jouer, à partir de `./app/js/testsFIT/tests/`. Par exemple
+
+```
+  > npm test dossier/dans/test
+```
+
+Ça peut être le path relatif du fichier, dans le même dossier des tests. Par exemple, pour jouer le test se trouvant à `./app/js/testsFIT/tests/mon/dossier/montests.js`, on joue :
+
+```
+  > npm test mon/dossier/montests.js
+```
+
+On peut enfin donner un filtre qui sera appliqué à tous les paths des tests. Par exemple :
+
+```
+  > npm tests "(Event|scene)(.*)_test"
+```
+
+Le filtre ci-dessous prendra en compte :
+
+    ./app/js/TestsFIT/tests/dans/folder/EventForm_tests.js
+    ./app/js/TestsFIT/tests/autre/current_scene_tests.js
+
+Mais pas :
+
+    ./app/js/TestsFIT/tests/autre/autre_tests.js
 
 
 ## Exécutions avant et après les tests {#before_and_after_tests}

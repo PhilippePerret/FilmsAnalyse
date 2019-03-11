@@ -90,6 +90,12 @@ class FAnalyse {
     }
     return this._data_file_path
   }
+  get vignettesScenesFolder(){
+    if(undefined === this._vignettesScenesFolder){
+      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
+    }
+    return this._vignettesScenesFolder
+  }
 
   /**
    * Retourne les données actuelles de l'analyse

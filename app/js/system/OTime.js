@@ -37,6 +37,13 @@ class OTime {
     }
     return this._horloge
   }
+  get horloge_simple(){
+    if(undefined === this._horloge_simple){
+      this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
+    }
+    return this._horloge_simple
+  }
+
   set duration(v) { this.duration = v }
   get duration()  { return this.duration || 1 }
 
@@ -66,7 +73,11 @@ class OTime {
     scs = scs > 9 ? scs : `0${scs}`
     frm = parseInt((r - scs) * 1000 / 40,10)
     frm = frm > 9 ? frm : `0${frm}`
-    return `${hrs}:${mns}:${scs}:${frm}`
+    if(format && format.no_frames){
+      return `${hrs}:${mns}:${scs}`
+    } else {
+      return `${hrs}:${mns}:${scs}:${frm}`
+    }
   }
 
   /**
