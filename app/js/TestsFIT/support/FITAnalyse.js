@@ -11,7 +11,10 @@ const FITAnalyse = {
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options
-      if(options.remove_events) this.removeEvents(options)
+      if(options.remove_events){
+        if (folder == 'simple3scenes') throw("Impossible de détruire les events de simple3scenes (on doit les garder absolument)")
+        else this.removeEvents(options)
+      }
 
       if (undefined === resolve){
         // <= l'argument resolve n'est pas défini

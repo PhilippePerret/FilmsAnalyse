@@ -52,13 +52,6 @@ class FAnalyse {
     } else {
       this.videoController.setVideoUI(false)
     }
-
-    // Extras
-    // ------
-    // Tous les champs input-text, on selectionne tout quand on focusse
-    // dedant
-    $('input[type="text"]').on('focus', function(){$(this).select()})
-
   }
 
   get modified() { return this._modified }
@@ -217,12 +210,7 @@ class FAnalyse {
     }
     return txt
   }
-  // /**
-  //  * Afficher les évènements de la liste +a_events+
-  //  */
-  // showEvents(a_events){
-  //   for(var e of a_events){e.show()}
-  // }
+
   /**
    * Méthode qui permet de (re)définir la vidéo de l'analyse
    */

@@ -53,6 +53,7 @@ class Scene {
       }
     }
     // Sinon, c'est la dernière
+    if(undefined === this.ScenesByTimes[i-1]) return null
     return this.get(this.ScenesByTimes[i-1].numero)
   }
 

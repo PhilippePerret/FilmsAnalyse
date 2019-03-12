@@ -50,7 +50,7 @@ const Tests = {
       else {
         var filtre    = this.ARGV[0]
         var searched, liste
-        if (filtre.match(/\.js$/)){
+        if (filtre && filtre.match(/\.js$/)){
           searched = filtre
         } else { // un dossier
           searched = `${filtre}/**/*.js`
