@@ -39,6 +39,14 @@ app.on('ready', () => {
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
   mainW.toggleDevTools();
 
+  mainW.on('close', (ev) => {
+    // console.log("Je fais ça avant de fermer la fenêtre et quitter")
+    // Maintenant, on sauve toujours car 1/ les données sauvées sont maigres
+    // et 2/ elles contiennent le dernier temps
+    mainW.webContents.executeJavaScript('current_analyse && current_analyse.saveData()')
+    // ev.preventDefault() // pour empêcher la fermeture
+  })
+
 })
 .on('quit', () => {
   // Si des préférences ont été modifiées, on les enregistré (en synchrone)
@@ -49,13 +57,3 @@ app.on('ready', () => {
 ipc.on('get-screen-dimensions', ev => {
   ev.returnValue = {width: screenWidth, height: screenHeight}
 })
-//
-// /**
-//  * Pour les préférences
-//  */
-// ipc.on('get-pref', (ev, data) => {
-//   ev.returnValue = Prefs.get(data)
-// })
-// ipc.on('set-pref', (ev, data) => {
-//   ev.returnValue = Prefs.set(data)
-// })

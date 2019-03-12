@@ -1,6 +1,27 @@
 'use strict'
 
+/**
+ * Retourne la fonction voulu
+ *
+ * Note : pour le moment, ça ne fonctionne que pour des instances. Il faudrait
+ * faire un test pour voir si bindee.constructor existe.
+ *
+ * @usage
+    methode(arg1, arg2)CROCHET_OUVERT
+      (this._methode || requireChunk(this, 'methode')).bind(this)(arg1, arg2)
+    CROCHET_FERME
 
+    La méthode doit être définie dans ./js/chunks/<this.constructor>/<methode>.js de
+    la façon suivante :
+    module.exports = function(arg1, arg2){
+      //... code de la fonction
+    }
+    Pour la clarté
+ */
+function requiredChunk(bindee, methodName){
+  bindee.constructor.prototype[`_${methodName}`] = require(`./js/chunks/${bindee.constructor.name}/${methodName}.js`)
+  return bindee[`_${methodName}`] // .bind(bindee) sera déjà bindée
+}
 /**
  *
   Pour pouvoir utiliser des tournures comme :

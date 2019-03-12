@@ -1,6 +1,6 @@
 'use strict'
 /**
- * La class FAnalyse
+ * Les instances de class FAnalyse
  * -----------------
  * Pour l'analyse d'un film
  */
@@ -27,22 +27,54 @@ class FAnalyse {
     }
   }
 
+  /**
+   * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
+   *
+   */
+  static onWantNewAnalyse(){
+    this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
+  }
+  /**
+   * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
+   * existante.
+   */
   static chooseAnalyse(){
-    let openOptions = {
-        defaultPath:  null // __dirname
-      , message:      'Analyse à ouvrir'
-      , properties:   ['openDirectory']
-      // , properties:   ['openDirectory', 'createDirectory']
-    }
-    let files = DIALOG.showOpenDialog(openOptions)
-    if (!files) return false
-    var analyseFolder = files[0]
-    if (this.load(analyseFolder)){
-      // <= L'analyse a pu être chargée
-      // => On l'enregistre comme dernière analyse chargée
-      Prefs.set({'last_analyse_folder': analyseFolder})
-    }
+    this.checkIfCurrentSavedBeforeExec('choose_analyse')
+  }
 
+  /**
+   * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
+   * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
+   * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
+   */
+  static checkIfCurrentSavedBeforeExec(toolName){
+    var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
+    if (current_analyse && true/*current_analyse.modified*/){
+      var my = this
+      DIALOG.showMessageBox(null, {
+          type: 'question'
+        , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
+        , defaultId: 0
+        , title: 'Sauvegarde de l’analyse courante'
+        , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
+      }, (reponse) => {
+        // console.log("reponse:", reponse)
+        switch (reponse) {
+          case 0:
+            current_analyse.methodAfterSaving = toolMethod()
+            current_analyse.save()
+            return
+          case 1: // Annuler
+            return false
+          case 2: // ignorer les changements (sauf les data, normal)
+            current_analyse.saveData() // toujours enregistrées
+            toolMethod()
+            break
+        }
+      })
+    } else {
+      toolMethod()
+    }
   }
 
   /**
@@ -51,13 +83,20 @@ class FAnalyse {
   static load(aFolder){
     try {
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
-      // On peut la charger
       UI.startWait(T('loading-analyse'))
       window.current_analyse = new FAnalyse(aFolder)
       current_analyse.load()
       return true
     } catch (e) {return F.error(e)}
   }
+
+  /**
+   * Méthode appelée par le menu "Définir vidéo du film courant…"
+   */
+  static redefineVideoPath(){
+    require('./js/tools/redefine_video_path.js')()
+  }
+
 
   /**
    * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
@@ -77,16 +116,82 @@ class FAnalyse {
     }
   }
 
-  // ---------------------------------------------------------------------
-  //  INSTANCE
-
   /**
    * Instanciation de l'analyse à partir du path de son dossier
    */
   constructor(pathFolder){
-    this._events = [] // au départ
-    this._folder = path.resolve(pathFolder)
-    Scene.init()
+    this._folder  = path.resolve(pathFolder)
+    this.events   = []
+  }
+
+  // ---------------------------------------------------------------------
+  //  Les données de l'analyse (dans le fichier data)
+
+  /**
+   * Retourne les données actuelles de l'analyse
+   */
+  get data(){
+    return {
+        folder:           this.folder
+      , title:            this.title
+      , filmStartTime:    this.filmStartTime.seconds
+      , videoPath:        this.videoPath
+      , diminutifs:       this.diminutifs
+      , videoSize:        this.videoSize
+      , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
+    }
+  }
+  set data(v){
+    this.title            = v.title
+    this.filmStartTime    = new OTime(v["filmStartTime"] || 0)
+    this._videoPath       = v.videoPath
+    this.diminutifs       = v.diminutifs  || {}
+    this.videoSize        = v.videoSize   || 'medium'
+    this.lastCurrentTime  = v.lastCurrentTime || 0
+  }
+
+  get folder()  { return this._folder }
+  set folder(v) { this._folder = v}
+
+  set videoSize(v)  { this._videoSize = v; this.modified = true }
+  get videoSize()   { return this._videoSize}
+
+  get filmStartTime() {
+    if(undefined === this._filmStartTime){
+      this._filmStartTime = new OTime(0)
+    }
+    return this._filmStartTime
+  }
+  set filmStartTime(v){ this._filmStartTime = v }
+
+  get videoPath(){ return this._videoPath }
+  set videoPath(v){
+    this._videoPath = v
+    this.modified = true
+  }
+
+  get title(){
+    if ( undefined === this._title ){
+      this._title = path.basename(this.folder)
+    }
+    return this._title
+  }
+  set title(v){ this._title = v ; this.modified = true }
+
+  get lastCurrentTime(){
+    if(undefined === this._lastCurrentTime){
+      this._lastCurrentTime = this.locator.getRTime()
+    }
+    return this._lastCurrentTime
+  }
+  set lastCurrentTime(v){ this._lastCurrentTime = v }
+
+  // ---------------------------------------------------------------------
+  //  DATA VOLATILES
+
+  get modified() { return this._modified }
+  set modified(v) {
+    this._modified = v
   }
 
   get currentScene(){
@@ -97,6 +202,9 @@ class FAnalyse {
   }
   set currentScene(v){this._current_scene = v}
 
+
+  // ---------------------------------------------------------------------
+
   /**
    * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
    * données ont été chargées et traitées. Si un fichier vidéo existe, on le
@@ -106,12 +214,13 @@ class FAnalyse {
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new AReader(this)
-
+    this.init()
     this.locator.init()
     this.reader.init()
     this.videoController.init()
     EventForm.init()
-    this.init()
+    Scene.init()
+    this.locator.setRTime(this.lastCurrentTime)
     UI.stopWait()// toujours, au cas où
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()
@@ -119,7 +228,6 @@ class FAnalyse {
   }
 
   init(){
-
     // Si l'analyse courante définit une vidéo, on la charge et on prépare
     // l'interface. Sinon, on masque la plupart des éléments
     if(this.videoPath){
@@ -127,12 +235,10 @@ class FAnalyse {
     } else {
       this.videoController.setVideoUI(false)
     }
+    // On met le titre dans la fenêtre
+    window.document.title = `Analyse du film « ${this.title} »`
   }
 
-  get modified() { return this._modified }
-  set modified(v) {
-    this._modified = v
-  }
 
   // Méthode à lancer après le chargement des données ou après la
   // sauvegarde
@@ -151,9 +257,6 @@ class FAnalyse {
       method(this.events[i])
     }
   }
-
-  get folder()  { return this._folder }
-  set folder(v) { this._folder = v}
 
   get eventsFilePath(){
     if(undefined===this._events_file_path){
@@ -175,27 +278,6 @@ class FAnalyse {
   }
 
   /**
-   * Retourne les données actuelles de l'analyse
-   */
-  get data(){
-    return {
-        filmStartTime:  this.filmStartTime.seconds
-      , videoPath:      this.videoPath
-      , diminutifs:     this.diminutifs
-      , videoSize:      this.videoSize
-    }
-  }
-  set data(v){
-    this.filmStartTime  = new OTime(v["filmStartTime"])
-    this._videoPath     = v.videoPath
-    this.diminutifs     = v.diminutifs
-    this.videoSize      = v.videoSize
-  }
-
-  set videoSize(v)  { this._videoSize = v; this.modified = true }
-  get videoSize()   { return this._videoSize}
-
-  /**
    * Méthode ajoutant un évènement
    *
    * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
@@ -206,31 +288,7 @@ class FAnalyse {
    * de l'analyse. +whenLoading+ est true, dans ce cas-là
    */
   addEvent(nev, whenLoading) {
-    if(undefined === this.ids){
-      this.events = []
-      this.ids    = {}
-    }
-    if (this.events.length){
-      // On place l'event à l'endroit voulu dans le film
-      var idx_event_before = this.getIndexOfEventAfter(nev.time)
-      this.events.splice(idx_event_before, 0, nev)
-    } else {
-      this.events.push(nev)
-    }
-    this.ids[nev.id] = nev
-
-    if (!whenLoading) {
-      this.locator.addEvent(nev)
-      // Si le nouvel event est une scène, il faut peut-être numéroter
-      // les suivantes
-      if(nev.type === 'scene'){this.updateNumerosScenes()}
-
-      // On place tout de suite l'évènement sur le lecteur
-      nev.show()
-      this.modified = true
-      nev = null
-      idx_event_before = null
-    }
+    (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
   }
 
   updateEvent(ev, options){
@@ -286,19 +344,6 @@ class FAnalyse {
     return txt
   }
 
-  /**
-   * Méthode qui permet de (re)définir la vidéo de l'analyse
-   */
-  setVideoPath(ev, p){
-    if(undefined === p){ p = $('#video-path').val() }
-    this._videoPath = p
-    this.modified   = true
-    this.videoController.load(p)
-    // On peut masquer le champ qui permet de définir la vidéo
-    $('#div-video-path').hide();
-  }
-  get videoPath(){ return this._videoPath }
-
 
   /**
    * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
@@ -332,7 +377,12 @@ class FAnalyse {
     return this._prop_per_path
   }
 
-
+  /**
+   * Appelée par le menu pour sauver l'analyse
+   */
+  saveIfModified(){
+    this.modified && this.save()
+  }
   /**
    * Méthode appelée pour sauver l'analyse courante
    */
@@ -343,6 +393,20 @@ class FAnalyse {
       this.saveFile(fpath, this.PROP_PER_FILE[fpath])
     }
   }
+  /**
+   * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
+   * fenêtre, et au changement d'analyse.
+   * @synchrone
+   * Elle doit être synchrone pour pour quitter l'application
+   * normalement.
+   */
+  saveData(){
+    fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
+  }
+
+  /**
+   * @asynchrone
+   */
   saveFile(fpath, prop){
     var my = this
     fs.writeFile(fpath, JSON.stringify(this[prop]),'utf8', (err)=>{
@@ -396,8 +460,6 @@ class FAnalyse {
   load(){
     var my = this
       , fpath ;
-    // Dans le cas où le fichier events.json n'existe pas
-    this.events = []
     // Les fichiers à charger
     var loadables = Object.assign([], my.SAVED_FILES)
     // Pour comptabiliser le nombre de fichiers chargés
@@ -420,18 +482,7 @@ class FAnalyse {
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
   loadFile(fpath, prop){
-    var my = this
-    if(fs.existsSync(fpath)){
-      fs.readFile(fpath, 'utf8', (err, data) => {
-        if (err) throw(err)
-        // console.log("data:",data)
-        my[prop] = JSON.parse(data)
-        my.onLoaded(fpath)
-      })
-    } else {
-      // Si le fichier n'existe pas
-      this.onLoaded(fpath)
-    }
+    (this._loadFile||requiredChunk(this,'loadFile')).bind(this)(fpath,prop)
   }
 
   /**
@@ -439,10 +490,7 @@ class FAnalyse {
    * bon départ
    */
   setFilmStartTimeAt(){
-    this.filmStartTime = this.locator.getOTime()
-    this.modified = true
-    this.setButtonGoToStart()
-    F.notify(`J'ai pris le temps ${this.filmStartTime.horloge} comme début du film.`)
+    (this._setFilmStartTimeAt||requiredChunk(this, 'setFilmStartTimeAt'))()
   }
 
   /**
@@ -450,7 +498,7 @@ class FAnalyse {
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime === undefined)?'hidden':'visible')
+    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime.seconds===0)?'hidden':'visible')
   }
 
 }

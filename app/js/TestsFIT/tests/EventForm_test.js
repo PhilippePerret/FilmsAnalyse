@@ -7,8 +7,8 @@ t.case("Création, enregistrement et modification d'un event de type note", func
   return FITAnalyse.setCurrent('tests/simple')
   .then(()=>{
 
-    console.log("Dossier de l'analyse : ", current_analyse.folder)
-    console.log("ID de l'instance FAnalyse:", current_analyse.__object_id__)
+    // console.log("Dossier de l'analyse : ", current_analyse.folder)
+    // console.log("ID de l'instance FAnalyse:", current_analyse.__object_id__)
     // return
 
 
