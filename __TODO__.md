@@ -1,3 +1,7 @@
+* Demander à sauvegarder quand il y a des changements pour la nouvelle aussi
+* Les boutons +/- 5s, etc. semblent recevoir plusieurs observer
+* Dans les horloges affichées, remplacer les ":frames" par un ".frames"
+
 * Enregistrer le temps courant (dans les données de l'analyse, pas de l'user, comme ça, plusieurs temps différents dans différentes analyses)
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.

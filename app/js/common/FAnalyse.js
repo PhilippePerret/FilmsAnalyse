@@ -32,21 +32,49 @@ class FAnalyse {
    *
    */
   static onWantNewAnalyse(){
-    require('./js/tools/creation_new_analyse.js')()
+    this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
   }
   /**
    * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
    * existante.
    */
   static chooseAnalyse(){
-    require('./js/tools/choose_analyse.js')()
+    this.checkIfCurrentSavedBeforeExec('choose_analyse')
   }
 
   /**
-   * Méthode appelée par le menu "Définir vidéo du film courant…"
+   * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
+   * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
+   * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
    */
-  static redefineVideoPath(){
-    require('./js/tools/redefine_video_path.js')()
+  static checkIfCurrentSavedBeforeExec(toolName){
+    var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
+    if (current_analyse && true/*current_analyse.modified*/){
+      var my = this
+      DIALOG.showMessageBox(null, {
+          type: 'question'
+        , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
+        , defaultId: 0
+        , title: 'Sauvegarde de l’analyse courante'
+        , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
+      }, (reponse) => {
+        // console.log("reponse:", reponse)
+        switch (reponse) {
+          case 0:
+            current_analyse.methodAfterSaving = toolMethod()
+            current_analyse.save()
+            return
+          case 1: // Annuler
+            return false
+          case 2: // ignorer les changements (sauf les data, normal)
+            current_analyse.saveData() // toujours enregistrées
+            toolMethod()
+            break
+        }
+      })
+    } else {
+      toolMethod()
+    }
   }
 
   /**
@@ -61,6 +89,14 @@ class FAnalyse {
       return true
     } catch (e) {return F.error(e)}
   }
+
+  /**
+   * Méthode appelée par le menu "Définir vidéo du film courant…"
+   */
+  static redefineVideoPath(){
+    require('./js/tools/redefine_video_path.js')()
+  }
+
 
   /**
    * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
@@ -96,20 +132,22 @@ class FAnalyse {
    */
   get data(){
     return {
-        folder:         this.folder
-      , title:          this.title
-      , filmStartTime:  this.filmStartTime.seconds
-      , videoPath:      this.videoPath
-      , diminutifs:     this.diminutifs
-      , videoSize:      this.videoSize
+        folder:           this.folder
+      , title:            this.title
+      , filmStartTime:    this.filmStartTime.seconds
+      , videoPath:        this.videoPath
+      , diminutifs:       this.diminutifs
+      , videoSize:        this.videoSize
+      , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
     }
   }
   set data(v){
-    this.title          = v.title
-    this.filmStartTime  = new OTime(v["filmStartTime"] || 0)
-    this._videoPath     = v.videoPath
-    this.diminutifs     = v.diminutifs || {}
-    this.videoSize      = v.videoSize  || 'medium'
+    this.title            = v.title
+    this.filmStartTime    = new OTime(v["filmStartTime"] || 0)
+    this._videoPath       = v.videoPath
+    this.diminutifs       = v.diminutifs  || {}
+    this.videoSize        = v.videoSize   || 'medium'
+    this.lastCurrentTime  = v.lastCurrentTime || 0
   }
 
   get folder()  { return this._folder }
@@ -140,6 +178,14 @@ class FAnalyse {
   }
   set title(v){ this._title = v ; this.modified = true }
 
+  get lastCurrentTime(){
+    if(undefined === this._lastCurrentTime){
+      this._lastCurrentTime = this.locator.getRTime()
+    }
+    return this._lastCurrentTime
+  }
+  set lastCurrentTime(v){ this._lastCurrentTime = v }
+
   // ---------------------------------------------------------------------
   //  DATA VOLATILES
 
@@ -168,12 +214,13 @@ class FAnalyse {
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new AReader(this)
+    this.init()
     this.locator.init()
     this.reader.init()
     this.videoController.init()
     EventForm.init()
-    this.init()
     Scene.init()
+    this.locator.setRTime(this.lastCurrentTime)
     UI.stopWait()// toujours, au cas où
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()
@@ -346,6 +393,20 @@ class FAnalyse {
       this.saveFile(fpath, this.PROP_PER_FILE[fpath])
     }
   }
+  /**
+   * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
+   * fenêtre, et au changement d'analyse.
+   * @synchrone
+   * Elle doit être synchrone pour pour quitter l'application
+   * normalement.
+   */
+  saveData(){
+    fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
+  }
+
+  /**
+   * @asynchrone
+   */
   saveFile(fpath, prop){
     var my = this
     fs.writeFile(fpath, JSON.stringify(this[prop]),'utf8', (err)=>{
