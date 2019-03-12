@@ -8,11 +8,10 @@
  *
  * @usage
     methode(arg1, arg2)CROCHET_OUVERT
-      this._methode || requireChunk(this, 'methode')
-      this._methode(arg1, arg2)
+      (this._methode || requireChunk(this, 'methode')).bind(this)(arg1, arg2)
     CROCHET_FERME
 
-    Et la méthode doit être définie dans ./js/chunks/<this.constructor>/<methode>.js de
+    La méthode doit être définie dans ./js/chunks/<this.constructor>/<methode>.js de
     la façon suivante :
     module.exports = function(arg1, arg2){
       //... code de la fonction
@@ -21,7 +20,7 @@
  */
 function requiredChunk(bindee, methodName){
   bindee.constructor.prototype[`_${methodName}`] = require(`./js/chunks/${bindee.constructor.name}/${methodName}.js`)
-  return bindee[`_${methodName}`].bind(bindee)
+  return bindee[`_${methodName}`] // .bind(bindee) sera déjà bindée
 }
 /**
  *

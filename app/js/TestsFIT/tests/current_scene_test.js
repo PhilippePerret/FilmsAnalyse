@@ -10,8 +10,8 @@ t.case("Se rendre à un point prévis calcule correctement la scène courante", 
   return FITAnalyse.setCurrent('tests/simple3scenes')
   .then(() => {
 
-    console.log("Dossier de l'analyse : ", current_analyse.folder)
-    console.log("ID de l'instance FAnalyse:", current_analyse.__object_id__)
+    // console.log("Dossier de l'analyse : ", current_analyse.folder)
+    // console.log("ID de l'instance FAnalyse:", current_analyse.__object_id__)
     // return
 
     assert_equal(

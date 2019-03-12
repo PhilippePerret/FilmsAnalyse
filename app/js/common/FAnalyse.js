@@ -43,12 +43,18 @@ class FAnalyse {
   }
 
   /**
+   * Méthode appelée par le menu "Définir vidéo du film courant…"
+   */
+  static redefineVideoPath(){
+    require('./js/tools/redefine_video_path.js')()
+  }
+
+  /**
    * Méthode qui charge l'analyse dont le dossier est +aFolder+
    */
   static load(aFolder){
     try {
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
-      // On peut la charger
       UI.startWait(T('loading-analyse'))
       window.current_analyse = new FAnalyse(aFolder)
       current_analyse.load()
@@ -235,33 +241,7 @@ class FAnalyse {
    * de l'analyse. +whenLoading+ est true, dans ce cas-là
    */
   addEvent(nev, whenLoading) {
-    (this._addEvent||requiredChunk(this,'addEvent'))(nev, whenLoading)
-
-    if(undefined === this.ids){
-      this.events = []
-      this.ids    = {}
-    }
-    if (this.events.length){
-      // On place l'event à l'endroit voulu dans le film
-      var idx_event_before = this.getIndexOfEventAfter(nev.time)
-      this.events.splice(idx_event_before, 0, nev)
-    } else {
-      this.events.push(nev)
-    }
-    this.ids[nev.id] = nev
-
-    if (!whenLoading) {
-      this.locator.addEvent(nev)
-      // Si le nouvel event est une scène, il faut peut-être numéroter
-      // les suivantes
-      if(nev.type === 'scene'){this.updateNumerosScenes()}
-
-      // On place tout de suite l'évènement sur le lecteur
-      nev.show()
-      this.modified = true
-      nev = null
-      idx_event_before = null
-    }
+    (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
   }
 
   updateEvent(ev, options){
@@ -350,7 +330,12 @@ class FAnalyse {
     return this._prop_per_path
   }
 
-
+  /**
+   * Appelée par le menu pour sauver l'analyse
+   */
+  saveIfModified(){
+    this.modified && this.save()
+  }
   /**
    * Méthode appelée pour sauver l'analyse courante
    */
@@ -436,7 +421,7 @@ class FAnalyse {
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
   loadFile(fpath, prop){
-    (this._loadFile||requiredChunk(this, 'loadFile'))(fpath,prop)
+    (this._loadFile||requiredChunk(this,'loadFile')).bind(this)(fpath,prop)
   }
 
   /**

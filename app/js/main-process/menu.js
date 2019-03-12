@@ -16,19 +16,19 @@ const DATA_MENUS = [
           {
               label: 'Nouvelle…'
             , accelerator: 'CmdOrCtrl+N'
-            , click: () => { mainW.webContents.send('new-analyse')}
+            , click: () => { mainW.webContents.executeJavaScript('FAnalyse.onWantNewAnalyse()')}
           }
         , {type: 'separator'}
         , {
               label: 'Ouvrir…'
             , accelerator: 'CmdOrCtrl+O'
-            , click: () => { mainW.webContents.send('open-analyse')}
+            , click: () => { mainW.webContents.executeJavaScript('FAnalyse.chooseAnalyse()')}
           }
         , { type: 'separator' }
         , {
               label: 'Enregistrer'
             , accelerator: 'CmdOrCtrl+S'
-            , click: () => { mainW.webContents.send('save-analyse')}
+            , click: () => { mainW.webContents.executeJavaScript('current_analyse.saveIfModified()')}
           }
         , {
               label: 'Enregistrer sous…'
@@ -39,6 +39,11 @@ const DATA_MENUS = [
         , {
               label: 'Prendre le temps courant comme début…'
             , click: () => {mainW.webContents.send('set-film-start')}
+          }
+        , {
+              label: 'Changer la vidéo du film…'
+            // , click: () => {mainW.webContents.send('change-film-video')}
+            , click: () => {mainW.webContents.executeJavaScript('FAnalyse.redefineVideoPath()')}
           }
 
         , {type: 'separator'}
@@ -52,7 +57,8 @@ const DATA_MENUS = [
      label: 'Édition'
    , role: 'edit'
    , submenu:[
-        {label: 'Copier', role: 'copy'}
+        {label: 'Tout sélectionner', role: 'select all'}
+      , {label: 'Copier', role: 'copy'}
       , {label: 'Couper', role: 'cut'}
       , {label: 'Coller', role: 'paste'}
    ]

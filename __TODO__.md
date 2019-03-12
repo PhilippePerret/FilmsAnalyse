@@ -1,4 +1,4 @@
-* Menu dans Vidéo pour définir la vidéo du film courant (ou dans Analyse ?)
+* Enregistrer le temps courant (dans les données de l'analyse, pas de l'user, comme ça, plusieurs temps différents dans différentes analyses)
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
 
