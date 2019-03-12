@@ -38,7 +38,7 @@ const DATA_MENUS = [
         , {type: 'separator'}
         , {
               label: 'Prendre le temps courant comme début…'
-            , click: () => {mainW.webContents.send('set-film-start')}
+            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
           }
         , {
               label: 'Changer la vidéo du film…'
@@ -88,7 +88,7 @@ const DATA_MENUS = [
           , {type: 'separator'}
           , {
                 label: 'Temps courant…'
-              , click:()=>{mainW.webContents.send('get-current-time')}
+              , click:()=>{mainW.webContents.executeJavaScript('current_analyse.locator.getAndShowCurrentTime()')}
           }
           , {type: 'separator'}
           , {
