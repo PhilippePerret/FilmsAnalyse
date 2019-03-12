@@ -49,7 +49,8 @@ class Scene {
     var i = 0
     for(;i<len;++i){
       if (this.ScenesByTimes[i].time > time ) {
-        return this.get(this.ScenesByTimes[i - 1].numero)
+        if(undefined === this.ScenesByTimes[i-1]) return null // première
+        return this.get(this.ScenesByTimes[i-1].numero)
       }
     }
     // Sinon, c'est la dernière

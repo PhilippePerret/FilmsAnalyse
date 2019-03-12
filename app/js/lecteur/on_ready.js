@@ -1,5 +1,7 @@
 'use strict'
 
+const APPFOLDER = path.resolve('.')
+
 
 $(document).ready(() => {
 

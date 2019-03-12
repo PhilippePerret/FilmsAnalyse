@@ -1,5 +1,21 @@
 'use strict'
 
+
+/**
+ *
+  Pour pouvoir utiliser des tournures comme :
+    try {
+      maCondition || raise(messageDerreur)
+    } catch(e){
+      console.log(e) // affiche le messageDerreur
+    }
+  … dans des blocs try
+
+  Note : parce que `maCondition || throw(message d'erreur)` est
+  impossible.
+ */
+function raise(msg){throw(msg)}
+
 // Pour mettre dans le presse-papier
 const { clipboard } = electron.remote
 function clip(str){
