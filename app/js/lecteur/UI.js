@@ -4,14 +4,33 @@
  */
 const UI = {
     class: 'UI'
+
   , inited: false
   , init:function(){
       if (this.inited === true) return F.error("On ne doit initier l'interface qu'une seule fois…")
       this.observe_ui()
 
+      this.divWaitingLoop = $('div#waiting-loop')
+
       this.inited = true
     }
 
+  // ---------------------------------------------------------------------
+  //  Pour les boucles d'attente
+  , startWait:function(message){
+      if(undefined !== message) message += ' Merci de patienter…'
+      $('span#waiting-loop-message').html(message || '')
+      this.divWaitingLoop.show()
+      this.waiting = true
+    }
+  , stopWait:function(){
+      if(!this.waiting) return
+      this.divWaitingLoop.hide()
+      this.waiting = false
+    }
+
+  // ---------------------------------------------------------------------
+  //  Méthodes d'évènement
   , observe_ui:function(){
       var my = this
       // On place les observers sur les boutons pour créer les nouveaux

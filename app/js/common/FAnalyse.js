@@ -6,6 +6,33 @@
  */
 
 class FAnalyse {
+
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Voir si les préférences demandent que la dernière analyse soit chargée
+  // et la charger si elle est définie.
+  static checkLast(){
+    var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+    // console.log("prefs:", dprefs)
+    if (!dprefs['load_last_on_launching']) return
+    if (!dprefs['last_analyse_folder']) return
+    var apath = path.resolve(dprefs['last_analyse_folder'])
+    apath += 'badad'
+    if(fs.existsSync(apath)){
+      UI.startWait("Chargement de l'analyse… ")
+      window.current_analyse = new FAnalyse(apath)
+      current_analyse.load()
+    } else {
+      // console.log("Impossible de trouver le dossier :", apath)
+      F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+      Prefs.set({'last_analyse_folder':null})
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  //  INSTANCE
+
   /**
    * Instanciation de l'analyse à partir du path de son dossier
    */
@@ -38,6 +65,7 @@ class FAnalyse {
     this.videoController.init()
     EventForm.init()
     this.init()
+    UI.stopWait()// toujours, au cas où
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()
     }
@@ -256,6 +284,8 @@ class FAnalyse {
     }
     return this._prop_per_path
   }
+
+
   /**
    * Méthode appelée pour sauver l'analyse courante
    */

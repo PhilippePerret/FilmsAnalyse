@@ -61,13 +61,16 @@ const Prefs = {
       }
     }
     /**
-     * +tpref+    'analyse' ou 'user'
-     * +kpref+    La clé de la préférence
-     * +vpref+    Valeur à donner à la préférence
-     */
-  , set:function(tpref, kpref, vpref){
-      if ('string' === typeof tpref){
-        switch (tpref) {
+      * +anyPref+     'analyse' ou 'user' (ou OBJECT)
+      * +kpref+       La clé de la préférence
+      * +vpref+       Valeur à donner à la préférence
+      * Si +anyPref+ est un object :
+      *   Soit {<clé pref>: <valeur>, ...} (pour user prefs)
+      *   Soit {<clé pref>: {type: <'user'|'analyse'>, value: <valeur>}, ...}
+      */
+  , set:function(anyPref, kpref, vpref){
+      if ('string' === typeof anyPref){
+        switch (anyPref) {
           case 'analyse':
             this.analysePrefs[kpref] = vpref
             break
@@ -75,14 +78,26 @@ const Prefs = {
             this.userPrefs[kpref] = vpref
             break
         }
-      } else if ( Array.isArray(tpref) ){
-        for(var dpref of tpref){
+      } else if ( Array.isArray(anyPref) ){
+        for(var dpref of anyPref){
           this.set(dpref.type, (dpref.key || dpref.id), dpref.value)
         }
-      } else if ( tpref instanceof Object ){
-        for(var kpref of tpref){
-          var dpref = tpref[kpref]
-          this.set(kpref, (dpref.type || 'user'), dpref.value)
+      } else if ( anyPref instanceof Object ){
+        var dpref, type, valu
+        for(var kpref in anyPref){
+          dpref = anyPref[kpref]
+          // Attention ici : si on emploie 'object' == typeof(dpref), si
+          // dpref est null (valeur possible pour une préférence), la condition
+          // est true puisque le typeof de null est 'object', alors que son
+          // instance (instanceof) n'est pas Object (allez comprendre…)
+          if(dpref instanceof Object){
+            type = dpref.type || 'user'
+            valu = dpref.value
+          } else {
+            type = 'user'
+            valu = dpref
+          }
+          this.set(type, kpref, valu)
         }
       }
       this.modified = true
@@ -122,8 +137,12 @@ const Prefs = {
   , loadUserPrefs:function(){
       if(fs.existsSync(this.userPrefsPath)){
         this.userPrefs = require(this.userPrefsPath)
-      } else {
+      }
+      /*/     + "/" pour décommenter, - "/" pour ex-commenter
+      else {
+        Pour débugage seulement
         // Pour les créer maintenant
+        console.log(`Le fichier "${this.userPrefsPath}" n'existe pas. Je crée les préférences de toute pièce`)
         this.userPrefs = {
           "load_last_on_launching": true,
           // "last_analyse_folder": "/Users/philippeperret/Programmation/Electron/FilmsAnalyse/analyses/her"
@@ -131,6 +150,7 @@ const Prefs = {
         }
         this.save()
       }
+      //*/
     }
 }
 

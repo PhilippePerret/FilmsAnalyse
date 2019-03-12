@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Analyse</title>
     <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/ui.css">
     <link rel="stylesheet" href="./css/analyzer.css">
     <link rel="stylesheet" href="./css/reader.css">
     <link rel="stylesheet" href="./css/form.css">
@@ -122,6 +123,11 @@
     </section>
     <!-- /section#section-footer -->
 
+    <!-- BOUCLE D'ATTENTE -->
+    <div id="waiting-loop" style="display:none;">
+      <img id="waiting-loop" src="img/spinner.gif" />
+      <span id="waiting-loop-message">...</span>
+    </div>
 
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script src="./js/system/jquery-ui-min.js"></script>
