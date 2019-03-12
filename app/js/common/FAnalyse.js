@@ -18,15 +18,62 @@ class FAnalyse {
     if (!dprefs['load_last_on_launching']) return
     if (!dprefs['last_analyse_folder']) return
     var apath = path.resolve(dprefs['last_analyse_folder'])
-    apath += 'badad'
     if(fs.existsSync(apath)){
-      UI.startWait("Chargement de l'analyse… ")
-      window.current_analyse = new FAnalyse(apath)
-      current_analyse.load()
+      this.load(apath)
     } else {
       // console.log("Impossible de trouver le dossier :", apath)
       F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
       Prefs.set({'last_analyse_folder':null})
+    }
+  }
+
+  static chooseAnalyse(){
+    let openOptions = {
+        defaultPath:  null // __dirname
+      , message:      'Analyse à ouvrir'
+      , properties:   ['openDirectory']
+      // , properties:   ['openDirectory', 'createDirectory']
+    }
+    let files = DIALOG.showOpenDialog(openOptions)
+    if (!files) return false
+    var analyseFolder = files[0]
+    if (this.load(analyseFolder)){
+      // <= L'analyse a pu être chargée
+      // => On l'enregistre comme dernière analyse chargée
+      Prefs.set({'last_analyse_folder': analyseFolder})
+    }
+
+  }
+
+  /**
+   * Méthode qui charge l'analyse dont le dossier est +aFolder+
+   */
+  static load(aFolder){
+    try {
+      this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
+      // On peut la charger
+      UI.startWait(T('loading-analyse'))
+      window.current_analyse = new FAnalyse(aFolder)
+      current_analyse.load()
+      return true
+    } catch (e) {return F.error(e)}
+  }
+
+  /**
+   * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
+   * valide. Il doit contenir les fichiers de base. Sinon, proposer à
+   * l'user de créer une nouvelle analyse.
+   */
+  static isDossierAnalyseValid(folder){
+    try {
+      var eventsPath = path.join(folder,'events.json')
+      var dataPath   = path.join(folder,'data.json')
+      fs.existsSync(eventsPath) || raise('Le fichier des events est introuvable.')
+      fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
+      return true
+    } catch (e) {
+      console.log(e)
+      return false
     }
   }
 

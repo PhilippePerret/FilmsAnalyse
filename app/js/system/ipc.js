@@ -16,7 +16,7 @@ ipc.on('new-analyse', (ev) => {
   F.notify("Nouvelle analyse demandée")
 })
 ipc.on('open-analyse', (ev) => {
-  F.notify("Ouverture d'une analyse demandée")
+  FAnalyse.chooseAnalyse()
 })
 ipc.on('save-analyse', (ev) => {
   if(current_analyse.modified === true) current_analyse.save()

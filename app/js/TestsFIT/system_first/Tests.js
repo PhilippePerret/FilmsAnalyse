@@ -4,7 +4,7 @@ window.INDENT = '    '
 window.RC     = `
 `
 window.STYLE1 = 'font-weight:bold;font-size:1.2em;'; // Titre principal/fin
-window.STYLE2 = 'border:1px solid black;padding:2px 4px;' // Tests
+window.STYLE2 = 'margin-top:2em;border:1px solid black;padding:2px 4px;font-size:1.21em;font-weight:bold;' // Tests
 window.PATHSTYLE = 'font-size:0.85;color:grey;font-style:italic;margin-left:400px;'//path
 window.STYLE3 = 'font-size:1.1em;font-weight:bold;' // Case
 window.REDBOLD = 'font-weight:bold;color:red;'
@@ -56,8 +56,8 @@ Tests.pending = function(str){
 }
 Tests.action  = function(msg, fn_action){
   try {
-    fn_action()
     this.log(INDENT+'%cACTION: '+msg, GREENBOLD)
+    return fn_action()
   } catch (e) {
     this.onFailure("Problème en exécutant l'action « " + msg + ' » : ' + e.message)
     throw(e)
