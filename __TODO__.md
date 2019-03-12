@@ -1,12 +1,21 @@
-* Des problèmes avec l'édition sont encore à déplorer. Je ne sais pas comment reproduire le problème.
-  => voir les tests (possibles maintenant)
+* Pour corriger le bug #6, utiliser un objet UI qui gère l'interface, indépendamment des analyses chargées. L'initialiser au ready et ne plus y toucher.
+* Utiliser un fichier de configuration/préférence dans `Application Support` et mettre dedans :
+  {"last_analyse_on_load": true, "last_analyse":"/Users/philippeperret/Programmation/Electron/FilmsAnalyse/analyses/her"}
+  - puis mettre en place la lecture de la configuration
+  - et supprimer le code qui charge HER en dur
 
-* Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue.
 
-* Un CB pour dire de repartir (play) dès qu'on va sur un temps (ou au contraire de ne rien faire)
+* Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
+
+* Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse
 
 
 * Pouvoir tirer un screenshot vignette du film (toujours dans la même taille)
+  > vlc “pathtovideo” –video-filter=scene –vout=dummy –start-time=300 –stop-time=600 –scene-ratio=250 –scene-path=”pathtosaveimages”
+  > ffmpeg -ss 04:00 -t 03:00 -i videofile.mpg -r 0.033 image-%04d.jpeg
+    ffmpeg -ss <horloge départ> -t <duration> -i <video path> -r <ratio> <image name.ext>
+
+
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
   Il faut aussi proposer d'éditer la scène en question.
 

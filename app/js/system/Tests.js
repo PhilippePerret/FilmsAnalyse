@@ -6,6 +6,7 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 const Tests = {
     tests: []
   , MAINFOLDER: './app/js/TestsFIT'
+  , ARGV: null
   , nombre_failures:  0
   , nombre_success:   0
   , nombre_pendings:  0
@@ -14,6 +15,11 @@ const Tests = {
   // ---------------------------------------------------------------------
 
   , initAndRun:function(){
+
+      this.ARGV = remote.process.argv
+      this.ARGV.shift()
+      this.ARGV.shift()
+
       this.sys_errors = []
       this.init()
     }
@@ -35,11 +41,41 @@ const Tests = {
       }
     }
 
+    /**
+     * Retourne la liste des fichiers tests, on fonction éventuellement
+     * d'un filtre défini en argument
+     */
+  , getTestFileList:function(){
+      if(!this.ARGV){return this.JsFilesOf('tests')}
+      else {
+        var filtre    = this.ARGV[0]
+        var searched, liste
+        if (filtre && filtre.match(/\.js$/)){
+          searched = filtre
+        } else { // un dossier
+          searched = `${filtre}/**/*.js`
+        }
+        liste = glob.sync(`${this.MAINFOLDER}/tests/${searched}`)
+        if (liste.length == 0){
+          // En dernier recours, on filtre la liste des tous les tests
+          liste = []
+          var allfiles = glob.sync(`${this.MAINFOLDER}/tests/**/*.js`)
+          var reg = new RegExp(filtre)
+          for(var fp of allfiles){
+            if (fp.match(reg)) liste.push(fp)
+          }
+        }
+
+        return liste
+      }
+
+    }
   , loadSysAndTestsFiles:function(){
 
       var sysFiles  = this.JsFilesOf('system')
-      var testFiles = this.JsFilesOf('tests')
       var supFiles  = this.JsFilesOf('support')
+      var testFiles = this.getTestFileList()
+      // console.log("testFiles:", testFiles)
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length

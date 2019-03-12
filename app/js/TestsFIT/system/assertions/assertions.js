@@ -5,8 +5,6 @@
 
 assert(<expression true>)
   Produit un succès si l'expression est vraie
-assert_equal(expected, actual)
-  Produit un succès si l'expression actual est égale à l'expression expected
 
  assert_error(<message>[, <type erreur>])
     Pour vérifier qu'une erreur a bien été produite.
@@ -24,15 +22,6 @@ assert_position(<nodes>, <position>) / inverse : assert_not_position
 
 assert_visible(<node>)
  */
-
-window.assert_equal = function(expected, actual, error_msg){
-  error_msg = error_msg || `${actual} should equal ${expected}`
-  assert(
-    actual === expected,
-    `${actual} is equal to ${expected}`,
-    error_msg
-  )
-}
 window.assert_function = function(fn_name, objet){
   var condition, ref ;
   if(undefined == objet){

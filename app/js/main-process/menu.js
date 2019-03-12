@@ -46,6 +46,19 @@ const DATA_MENUS = [
       ] // submenu du menu "Analyse"
   }
   /**
+   * MENU ÉDITION
+   */
+ , {
+     label: 'Édition'
+   , role: 'edit'
+   , submenu:[
+        {label: 'Copier', role: 'copy'}
+      , {label: 'Couper', role: 'cut'}
+      , {label: 'Coller', role: 'paste'}
+   ]
+ }
+
+  /**
    * MENU VIDÉO
    */
   , {
@@ -71,6 +84,11 @@ const DATA_MENUS = [
                 label: 'Temps courant…'
               , click:()=>{mainW.webContents.send('get-current-time')}
           }
+          , {type: 'separator'}
+          , {
+                label: 'Image courante comme vignette de scène courante…'
+              , click:()=>{mainW.webContents.send('current-image-for-current-scene')}
+            }
         ]
     }
   /**

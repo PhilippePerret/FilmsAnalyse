@@ -43,9 +43,6 @@ class VideoController {
 
     this.setDimensions()
 
-    // Pour définir le path de la vidéo
-    listenClick('btn-set-video-path',this.analyse, 'setVideoPath')
-
     // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
     // met la taille médium.
     this.setSize(null, this.analyse.videoSize||'medium', false)

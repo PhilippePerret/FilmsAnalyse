@@ -6,14 +6,28 @@ const FITAnalyse = {
      * Pour mettre l'analyse de dossier +folder+ en analyse courante
      */
   , setCurrent:function(folder, options, resolve){
-      if(undefined===options){options = {}}
+      var my = this
+      if(undefined === options){options = {}}
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options
-      if(options.remove_events) this.removeEvents(options)
-      // Pour lancer les tests à la fin du chargement
-      this.analyse.methodeAfterLoading = resolve
-      this.analyse.load()
+      if(options.remove_events){
+        if (folder == 'simple3scenes') throw("Impossible de détruire les events de simple3scenes (on doit les garder absolument)")
+        else this.removeEvents(options)
+      }
+
+      if (undefined === resolve){
+        // <= l'argument resolve n'est pas défini
+        // => Il faut retourner une promesse
+        return new Promise(ok => {
+          my.analyse.methodeAfterLoading = ok
+          this.analyse.load()
+        })
+      } else {
+        // Pour lancer les tests à la fin du chargement
+        this.analyse.methodeAfterLoading = resolve
+        this.analyse.load()
+      }
     }
 
     /**

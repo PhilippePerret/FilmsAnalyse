@@ -6,13 +6,49 @@
  */
 
 class FAnalyse {
+
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Voir si les préférences demandent que la dernière analyse soit chargée
+  // et la charger si elle est définie.
+  static checkLast(){
+    var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+    // console.log("prefs:", dprefs)
+    if (!dprefs['load_last_on_launching']) return
+    if (!dprefs['last_analyse_folder']) return
+    var apath = path.resolve(dprefs['last_analyse_folder'])
+    apath += 'badad'
+    if(fs.existsSync(apath)){
+      UI.startWait("Chargement de l'analyse… ")
+      window.current_analyse = new FAnalyse(apath)
+      current_analyse.load()
+    } else {
+      // console.log("Impossible de trouver le dossier :", apath)
+      F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+      Prefs.set({'last_analyse_folder':null})
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  //  INSTANCE
+
   /**
    * Instanciation de l'analyse à partir du path de son dossier
    */
   constructor(pathFolder){
     this._events = [] // au départ
     this._folder = path.resolve(pathFolder)
+    Scene.init()
   }
+
+  get currentScene(){
+    if(undefined === this._current_scene){
+      this._current_scene = Scene.sceneAt(this.locator.getRTime())
+    }
+    return this._current_scene
+  }
+  set currentScene(v){this._current_scene = v}
 
   /**
    * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
@@ -29,6 +65,7 @@ class FAnalyse {
     this.videoController.init()
     EventForm.init()
     this.init()
+    UI.stopWait()// toujours, au cas où
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()
     }
@@ -43,13 +80,6 @@ class FAnalyse {
     } else {
       this.videoController.setVideoUI(false)
     }
-
-    // Extras
-    // ------
-    // Tous les champs input-text, on selectionne tout quand on focusse
-    // dedant
-    $('input[type="text"]').on('focus', function(){$(this).select()})
-
   }
 
   get modified() { return this._modified }
@@ -89,6 +119,12 @@ class FAnalyse {
       this._data_file_path = path.join(this.folder,'data.json')
     }
     return this._data_file_path
+  }
+  get vignettesScenesFolder(){
+    if(undefined === this._vignettesScenesFolder){
+      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
+    }
+    return this._vignettesScenesFolder
   }
 
   /**
@@ -202,12 +238,7 @@ class FAnalyse {
     }
     return txt
   }
-  // /**
-  //  * Afficher les évènements de la liste +a_events+
-  //  */
-  // showEvents(a_events){
-  //   for(var e of a_events){e.show()}
-  // }
+
   /**
    * Méthode qui permet de (re)définir la vidéo de l'analyse
    */
@@ -253,6 +284,8 @@ class FAnalyse {
     }
     return this._prop_per_path
   }
+
+
   /**
    * Méthode appelée pour sauver l'analyse courante
    */

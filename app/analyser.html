@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Analyse</title>
     <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/ui.css">
     <link rel="stylesheet" href="./css/analyzer.css">
     <link rel="stylesheet" href="./css/reader.css">
     <link rel="stylesheet" href="./css/form.css">
@@ -122,11 +123,17 @@
     </section>
     <!-- /section#section-footer -->
 
+    <!-- BOUCLE D'ATTENTE -->
+    <div id="waiting-loop" style="display:none;">
+      <img id="waiting-loop" src="img/spinner.gif" />
+      <span id="waiting-loop-message">...</span>
+    </div>
 
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script src="./js/system/jquery-ui-min.js"></script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
     <script type="text/javascript" src="./js/system/Flash.js"></script>
+    <script type="text/javascript" src="./js/system/Prefs-renderer.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
     <script type="text/javascript" src="./js/system/utils.js"></script>
     <script type="text/javascript" src="./js/system/ipc.js"></script>
@@ -134,11 +141,13 @@
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>
     <script type="text/javascript" src="./js/lecteur/AReader.js"></script>
+    <script type="text/javascript" src="./js/lecteur/UI.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
     <script type="text/javascript" src="./js/common/FAEvent.js"></script>
+    <script type="text/javascript" src="./js/common/Scene.js"></script>
     <script type="text/javascript" src="./js/common/Locator.js"></script>
     <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
-    <!-- Pour être sûr que FAEvent est chargé (suffit ?) -->
+
     <script type="text/javascript" src="./js/common/FAEvents/FAEscene.js"></script>
     <script type="text/javascript" src="./js/common/FAEvents/FAEinfo.js"></script>
     <script type="text/javascript" src="./js/common/FAEvents/FAEaction.js"></script>

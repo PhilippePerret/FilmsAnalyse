@@ -12,10 +12,8 @@
 class EventForm {
 
   static init(){
-    // Tous les boutons pour créer un nouvel élément doivent réagir
-    // au click.
     var my = this
-    $('#buttons-new-event button').on('click', function(ev){ EventForm.onClickNewEvent.bind(EventForm)(ev, $(this)) })
+
     my = null
   }
 
