@@ -1,4 +1,3 @@
-* Demander à sauvegarder quand il y a des changements pour la nouvelle aussi
 * Les boutons +/- 5s, etc. semblent recevoir plusieurs observer
 * Dans les horloges affichées, remplacer les ":frames" par un ".frames"
 

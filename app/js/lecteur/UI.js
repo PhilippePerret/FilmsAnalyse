@@ -8,12 +8,54 @@ const UI = {
   , inited: false
   , init:function(){
       if (this.inited === true) return F.error("On ne doit initier l'interface qu'une seule fois…")
+      var my = this
       this.observe_ui()
 
       this.divWaitingLoop = $('div#waiting-loop')
 
+      $('#requested_time').on('keypress', ev => {
+        if(current_analyse){
+          var my = current_analyse.locator
+          if(ev.keyCode == 13){my.goToTime.bind(my)();$(ev).stop()}
+        }
+      })
+
+      // TODO Plus tard, faire une instance qui gère les boutons de
+      // navigation, en en faisant un par vidéo.
+      listenClick('btn-hide-current-time', this, 'hideCurrentTime')
+      listenClick('btn-go-to-time',this,'goToTime')
+
+      this.btnPlay = DGet('btn-real-play')
+      listen(this.btnPlay, 'click', this, 'togglePlay')
+      this.btnPlay.innerHTML = '<img src="./img/btn-play.jpg" />'
+
+      this.btnRewindStart = DGet('btn-rewind-start')
+      listen(this.btnRewindStart,'click',my,'rewindStart')
+      this.btnRewindStart.innerHTML = '<img src="./img/btn-rewind.jpg" />'
+
+      listenClick('btn-go-to-film-start', my, 'goToFilmStart')
+
+      listenClick('btn-rewind-1-sec',my,'rewind', 1)
+      listenClick('btn-rewind-5-sec',my,'rewind', 5)
+      listenClick('btn-forward-1-sec',my,'forward', 1)
+      listenClick('btn-forward-5-sec',my,'forward', 5)
+
       this.inited = true
     }
+
+  // ---------------------------------------------------------------------
+  // Méthode travaillant avec les boutons de l'UI, mais affectant l'analyse
+  // courante (seulement si elle existe, donc)
+  , runIfAnalyse:function(method, arg){
+      current_analyse && current_analyse.locator[method].bind(current_analyse.locator)(arg)
+    }
+  , hideCurrentTime:function(){this.runIfAnalyse('hideCurrentTime')}
+  , goToTime:function(){this.runIfAnalyse('goToTime')}
+  , togglePlay:function(){this.runIfAnalyse('togglePlay')}
+  , rewindStart:function(){this.runIfAnalyse('rewindStart')}
+  , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
+  , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
+  , forward:function(pas){this.runIfAnalyse('forward', pas)}
 
   // ---------------------------------------------------------------------
   //  Pour les boucles d'attente

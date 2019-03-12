@@ -20,28 +20,9 @@ class Locator {
 
     this.video = this.analyse.videoController.controller
 
-    listenClick('btn-hide-current-time', my, 'hideCurrentTime')
-    listenClick('btn-go-to-time',my,'goToTime')
-
-    $('#requested_time').on('keypress', ev => {
-      if(ev.keyCode == 13){this.goToTime.bind(this)();$(ev).stop()}
-    })
-
-    listen(this.btnPlay, 'click', my, 'togglePlay')
-    this.btnPlay.innerHTML = this.imgPlay
-
-    listen(this.btnRewindStart,'click',my,'rewindStart')
-    this.btnRewindStart.innerHTML = this.imgRewindStart
-
     // Le bouton pour rejoindre le début du film. Il n'est défini que si
     // ce temps est défini pour l'analyse courante
     this.analyse.setButtonGoToStart()
-    listenClick('btn-go-to-film-start', my, 'goToFilmStart')
-
-    listenClick('btn-rewind-1-sec',my,'rewind', 1)
-    listenClick('btn-rewind-5-sec',my,'rewind', 5)
-    listenClick('btn-forward-1-sec',my,'forward', 1)
-    listenClick('btn-forward-5-sec',my,'forward', 5)
 
     my = null
   }
