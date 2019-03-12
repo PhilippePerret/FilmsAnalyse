@@ -90,9 +90,9 @@ t.case("Création, enregistrement et modification d'un event de type note", func
         n = document.querySelector('#reader #revent-0.event.note .e-tools span.horloge')
         var h = n.innerHTML
         assert(
-            n.innerHTML.match(/0\:05\:00\:00/) !== null
+            n.innerHTML.match(/0\:05\:00\.00/) !== null
           , 'OK, l’horloge de l’event est bien réglée'
-          , `Hum… L'horloge de l'event n'est pas bien réglée… Elle devrait être "0:05:00:00" elle est réglée à "${h}"`
+          , `Hum… L'horloge de l'event n'est pas bien réglée… Elle devrait être "0:05:00.00" elle est réglée à "${h}"`
         )
 
         return FITAnalyse.save()

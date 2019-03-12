@@ -51,7 +51,7 @@ class OTime {
     return parseInt(this.seconds,10)
   }
   h2s(h){
-    var d = h.split(':')
+    var d = h.split('.') // Séparer l'horloge de ses frames
     var frms = d.splice(1,1)[0] || 0
     h = d[0].split(/[,\:]/).reverse()
     var tps = 0
@@ -76,7 +76,7 @@ class OTime {
     if(format && format.no_frames){
       return `${hrs}:${mns}:${scs}`
     } else {
-      return `${hrs}:${mns}:${scs}:${frm}`
+      return `${hrs}:${mns}:${scs}.${frm}`
     }
   }
 
