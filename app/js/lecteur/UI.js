@@ -41,9 +41,6 @@ const UI = {
       // au click.
       $('#buttons-new-event button').on('click', function(ev){ EventForm.onClickNewEvent.bind(EventForm)(ev, $(this)) })
 
-      // Pour définir le path de la vidéo
-      listenClick('btn-set-video-path', my, 'setVideoPath')
-
       // Extras
       // ------
       // Tous les champs input-text, on selectionne tout quand on focusse

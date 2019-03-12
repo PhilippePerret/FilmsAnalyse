@@ -104,7 +104,6 @@ class VideoController {
    * vidéo.
    */
   setVideoUI(visible){
-    $('#div-video-path')[visible?'hide':'show']()
     $('#div-video-top-tools')[visible?'show':'hide']()
     toggleVisible('#video', visible)
     toggleVisible('#div-nav-video-buttons', visible)

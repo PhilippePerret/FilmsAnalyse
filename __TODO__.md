@@ -1,4 +1,5 @@
-* Implémenter l'ouverture d'une analyse (Ouvrir…)
+* Menu dans Vidéo pour définir la vidéo du film courant (ou dans Analyse ?)
+
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
 
 * Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse

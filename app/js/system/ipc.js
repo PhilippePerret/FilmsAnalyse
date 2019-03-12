@@ -13,7 +13,7 @@ ipc.on('set-film-start', (ev) => {
 })
 
 ipc.on('new-analyse', (ev) => {
-  F.notify("Nouvelle analyse demandée")
+  FAnalyse.onWantNewAnalyse()
 })
 ipc.on('open-analyse', (ev) => {
   FAnalyse.chooseAnalyse()
