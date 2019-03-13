@@ -3,11 +3,6 @@
  * Côté RENDERER, on reçoit les évènements envoyés
  */
 
-// Définition de la taille de la vidéo
-ipc.on('set-video-size', (ev, data) => {
-  current_analyse.videoController.setSize(null, data.size)
-})
-
 ipc.on('save-as-analyse', (ev) => {
   F.notify("Enregistrement sous… de l'analyse")
 })

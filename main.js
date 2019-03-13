@@ -36,7 +36,8 @@ app.on('ready', () => {
 
   mainW = new BrowserWindow({
       height: screenHeight - 40
-    , width:  screenWidth - 40,
+    , width:  screenWidth - 40
+    , icon:   "../dist/icons/macos/icon.icns"
   })
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
   if (MODE_TEST) mainW.toggleDevTools();

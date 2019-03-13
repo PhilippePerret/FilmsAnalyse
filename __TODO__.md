@@ -1,13 +1,8 @@
 
-* Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)
+* Faire toujours une copie du fichier data de l'analyse, en cas de problème (de tous ses fichiers, d'ailleurs)
 
-* Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
-  Il faut aussi proposer d'éditer la scène en question.
-
-* Mettre la taille de la vidéo dans les options de l'analyse, pas dans les data.
-
-* Faire toujours une copie du fichier data de l'analyse, en cas de problème
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
+
 
 * Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse
 

@@ -142,9 +142,9 @@ const DATA_MENUS = [
           , {
                 label: 'Taille'
               , submenu: [
-                    {label: 'Petite',   type:'radio', click:()=>{setVideoSize('small')}}
-                  , {label: 'Moyenne',  type:'radio', click:()=>{setVideoSize('medium')}, checked: true}
-                  , {label: 'Large',    type:'radio', click:()=>{setVideoSize('large')}}
+                    {label: 'Petite',   id: 'size-video-small', type:'radio', click:()=>{setVideoSize('small')}}
+                  , {label: 'Moyenne',  id: 'size-video-medium', type:'radio', click:()=>{setVideoSize('medium')}}
+                  , {label: 'Large',    id: 'size-video-large', type:'radio', click:()=>{setVideoSize('large')}}
                 ]
             }
           , {type: 'separator'}
@@ -261,6 +261,7 @@ if (process.platform === 'darwin') {
 
 function setVideoSize(size){
   mainW.webContents.send('set-video-size', {size: size})
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('video_size','${size}')`)
 }
 function createEvent(type){
   mainW.webContents.send('create-event', {type: type})

@@ -13,6 +13,7 @@ const Options = {
   , DEFAULT_DATA: {
         'option_start_when_time_choosed':  true
       , 'option_lock_stop_points':         false
+      , 'video_size':                       "medium"
     }
 
   , modified: false
@@ -23,8 +24,32 @@ const Options = {
   // Définir la valeur d'une option
   , set:function(opid, value){
       this.data[opid] = value
+      this.onSetByApp(opid, value)
       this.modified = true
     }
+    /**
+     * En fonction de l'application, les choses à faire quand on change une
+     * option.
+     */
+  , onSetByApp:function(opid, value){
+      console.log("Options#onSetByApp", opid, value)
+      switch (opid) {
+        case 'video_size':
+          current_analyse.videoController.setSize(null, value)
+          break
+      }
+    }
+    /**
+     * Méthode appelée au chargement pour appliquer les options choisies
+     * Obsolète : normalement, on ne les applique pas, ce sont les éléments
+     * qui en ont besoin qui vont les chercher, comme la taille de la vidéo
+     * par exemple.
+     */
+  // , apply:function(){
+  //     for(var opid in this.data){
+  //       this.onSetByApp(opid, this.data[opid])
+  //     }
+  //   }
   , setData:function(data){
       this.data = data
     }
@@ -42,13 +67,12 @@ const Options = {
       }
     }
   , load: function(){
-      if(!current_analyse) throw("Impossible de charger les options d'une analyse qui n'existe pas…")
+      if(!current_analyse) throw("Impossible de charger les options d'une chose qui n'existe pas…")
       if(fs.existsSync(this.path)){
         this.data = require(this.path)
       } else {
         this.data = this.DEFAULT_DATA
       }
-
       this.modified = false
     }
 }
