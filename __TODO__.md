@@ -1,5 +1,4 @@
 
-* Stop-points : ne pas ajouter un point qui existe déjà
 * Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)
 
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
