@@ -34,12 +34,18 @@ const UI = {
       listenClick('btn-go-to-film-start', my, 'goToFilmStart')
       listenClick('btn-stop-points',my,'goToNextStopPoint')
 
-      listenClick('btn-rewind-1',my,'rewind', 0.04)
-      listenClick('btn-rewind-2',my,'rewind', 1)
-      listenClick('btn-rewind-3',my,'rewind', 5)
-      listenClick('btn-forward-1',my,'forward', 0.04)
-      listenClick('btn-forward-2',my,'forward', 1)
-      listenClick('btn-forward-3',my,'forward', 5)
+      listenMDown('btn-rewind-1',my,'rewind', 0.04)
+      listenMUp('btn-rewind-1',my,'stopRewind')
+      listenMDown('btn-rewind-2',my,'rewind', 1)
+      listenMUp('btn-rewind-2',my,'stopRewind')
+      listenMDown('btn-rewind-3',my,'rewind', 5)
+      listenMUp('btn-rewind-3',my,'stopRewind')
+      listenMDown('btn-forward-1',my,'forward', 0.04)
+      listenMUp('btn-forward-1',my,'stopForward')
+      listenMDown('btn-forward-2',my,'forward', 1)
+      listenMUp('btn-forward-2',my,'stopForward')
+      listenMDown('btn-forward-3',my,'forward', 5)
+      listenMUp('btn-forward-3',my,'stopForward')
 
       this.inited = true
     }
@@ -56,8 +62,11 @@ const UI = {
   , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
   , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
   , goToNextStopPoint:function(){this.runIfAnalyse('goToNextStopPoint')}
+
   , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
   , forward:function(pas){this.runIfAnalyse('forward', pas)}
+  , stopRewind:function(pas){this.runIfAnalyse('stopRewind', pas)}
+  , stopForward:function(pas){this.runIfAnalyse('stopForward', pas)}
 
   // ---------------------------------------------------------------------
   //  Pour les boucles d'attente

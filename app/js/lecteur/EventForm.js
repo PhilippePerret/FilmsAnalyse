@@ -281,6 +281,7 @@ class EventForm {
     $(this.fieldID('is_new')).val(this.isNew?'1':'0')
     $(this.fieldID('time')).val(parseInt(this.analyse.locator.getRTime(),10))
     this.jqForm.find('section.footer span.event-type').html(this.type.toUpperCase())
+    this.jqForm.find('section.header span.event-type').html(this.type.toUpperCase())
     this.jqForm.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqForm.find('section.footer span.event-time').html(new OTime(this.time).horloge)
     this.built = true
@@ -430,6 +431,10 @@ const EVENT_FORM_TEMP = `
   <input type="hidden" id="event-__EID__-is_new" />
   <input type="hidden" id="event-__EID__-type" />
   <input type="hidden" id="event-__EID__-time" />
+
+  <section class="header">
+    <span class="event-type">...</span>
+  </section>
 
   <section class="form">
 

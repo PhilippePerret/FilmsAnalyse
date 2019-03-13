@@ -52,14 +52,18 @@ table.video-controller button.controller {
 table.video-controller button:focus {
   outline:none;
 }
+
+table.video-controller button.main {
+  padding-bottom:2px;
+  background-color:#CCFFCC;
+}
 table.video-controller button:active {
-  border-color:green;
-  transition-duration:0.4s;
+  background-color:green;
+  /* transition-duration:0.4s; */
 }
 table.video-controller button.actived {
-  border-color:green;
+  background-color:green;
 }
-
 table.video-controller button.main img {
   width:40px;
 }

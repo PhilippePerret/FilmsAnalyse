@@ -35,9 +35,10 @@ class Locator {
   }
   addStopPoint(time){
     if(current_analyse.options.get('option_lock_stop_points')) return
+    if (this.stop_points.indexOf(time) > -1) return
     this.stop_points.length > 2 && this.stop_points.shift()
     this.stop_points.push(time)
-    // console.log("Ajout du stop-point:", time, this.stop_points)
+    console.log("Ajout du stop-point:", time, this.stop_points)
   }
 
   init(){
@@ -115,10 +116,26 @@ class Locator {
    * on jouait, ou alors on remet en route)
    */
   rewind(secs){
-    this.setTime(this.video.currentTime - secs)
+    // console.log("-> rewind")
+    var method = ()=>{this.setTime(this.video.currentTime - secs)}
+    this.timerRewind = setInterval(method, 100)
+    // method = null
   }
   forward(secs){
-    this.setTime(this.video.currentTime + secs)
+    // console.log("-> forward")
+    var method = ()=>{this.setTime(this.video.currentTime + secs)}
+    this.timerForward = setInterval(method, 100)
+    // method = null
+  }
+  stopRewind(){
+    // console.log("-> stopRewind")
+    clearInterval(this.timerRewind)
+    this.timerRewind = null
+  }
+  stopForward(){
+    // console.log("-> stopForward")
+    clearInterval(this.timerForward)
+    this.timerForward = null
   }
 
   /**
@@ -132,7 +149,6 @@ class Locator {
   setTime(time){
     // console.log("-> setTime", time)
     this.video.currentTime = time
-    console.log("this.playAfterSettingTime:", this.playAfterSettingTime)
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     } else if(this.video.paused){ this.actualizeHorloge() }
