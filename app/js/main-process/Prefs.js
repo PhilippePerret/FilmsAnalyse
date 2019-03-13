@@ -121,7 +121,7 @@ const Prefs = {
      */
   , save:function(){
       fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
-      console.log("Préférences User actualisées.")
+      console.log("Préférences User actualisées.", this.userPrefs)
       // TODO Faire pareil avec les préférences de l'analyse
       // TODO Il faudrait trouver un autre nom que "analyse" pour que ce module
       // puisse être utilisé partout.

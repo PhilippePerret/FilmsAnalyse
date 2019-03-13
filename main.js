@@ -11,11 +11,10 @@ var screenHeight  = null
 
 const DATA_MENUS = require('./app/js/main-process/menu.js')
 
-let mainMenuBar = null
-
 global.mainW          = null
 global.userPrefsPath  =
 global.userPrefs      = null
+global.mainMenuBar    = null
 
 app.on('ready', () => {
 
@@ -37,7 +36,7 @@ app.on('ready', () => {
     , width:  screenWidth - 40,
   })
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
-  mainW.toggleDevTools();
+  // mainW.toggleDevTools();
 
   mainW.on('close', (ev) => {
     // console.log("Je fais ça avant de fermer la fenêtre et quitter")

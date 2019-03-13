@@ -1,20 +1,8 @@
-* Un bouton à côté du bouton "début du film" qui permette de passer en revue les 3 derniers points d'arrêt    
-  - à l'avenir, pouvoir régler dans les préférences le nombre de points d'arrêts
-  - mémoriser ces trois derniers points d'arrêt
-
+* Définir le checked du menu "Charger la dernière analyse au chargement"
+* Définir le checked des deux autres options
+* [BUG] Voir pourquoi la vidéo ne se charge plus…
+* Interdire le changement des points d'arrêt s'ils sont verrouillés
 * Comme avant, indiquer par une bande verte sous le bouton qu'il est actif
-
-* Le menu "démarrer au temps choisi" ne fonctionne pas
-  - Il faut enregistrer cette préférences
-  - il faut la régler au démarrage
-
-* Poursuivre EventForm avec le cas de deux scènes créées au même endroit
-  - il faut interdire si c'est dans la même seconde (+/- 1 secondes)
-  - il faut demander si c'est dans les dix secondes
-
-* Boutons pour se déplacer de frame en frame
-  - mettre des vraies images pour les 6 boutons
-  - tester les six boutons avec un film court
 * Mettre le type de l'event en haut de son formulaire d'édition
 
 * Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)

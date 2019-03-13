@@ -21,7 +21,8 @@ $(document).ready(() => {
     // et la charger si elle est définie.
     FAnalyse.checkLast()
 
-    $(document).focus()
+    $('#reader').focus()
+
 
   }
 
