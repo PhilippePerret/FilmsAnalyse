@@ -148,7 +148,6 @@ class Locator {
   setTime(time){
     // console.log("-> setTime", time)
     this.video.currentTime = time
-    console.log("this.playAfterSettingTime:", this.playAfterSettingTime)
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     } else if(this.video.paused){ this.actualizeHorloge() }

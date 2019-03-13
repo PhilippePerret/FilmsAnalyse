@@ -9,6 +9,7 @@ form.form-edit-event {
   padding:0;
   z-index:50;
 }
+
 form.form-edit-event .div-form {
   display:block;
   margin-top:8px;
@@ -33,17 +34,31 @@ form.form-edit-event input[type="text"].temps-secondes {width:60px;}
 form.form-edit-event section.form {
   padding:0.5em;
 }
+/* Section contenant l'entête */
+form.form-edit-event section.header {
+  text-align:right;
+  padding:0.2em 1em;
+  color:#00DDDD;
+}
 /* Section contenant le footer */
 form.form-edit-event section.footer {
   margin-top:1em;
   padding:0.2em 1em;
 }
 form.form-edit-event section.footer,
-form.form-edit-event section.footer * {
+form.form-edit-event section.footer *,
+form.form-edit-event section.header,
+form.form-edit-event section.header *
+ {
   background-color:black;
-  color:#CCCCCC;
   font-size:11pt;
 }
+form.form-edit-event section.footer,
+form.form-edit-event section.footer *
+{
+  color:#CCCCCC;
+}
+
 form.form-edit-event section.footer span {
   /* border-right:1px solid; */
   padding-right:1em;

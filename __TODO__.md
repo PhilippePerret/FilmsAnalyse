@@ -1,6 +1,3 @@
-* Pouvoir tenir la souris pressée sur les boutons d'avance pour répéter l'opération (utiliser les mousedown et mouseup au lieu du simple clic)
-
-* Mettre le type de l'event en haut de son formulaire d'édition
 
 * Stop-points : ne pas ajouter un point qui existe déjà
 * Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)
