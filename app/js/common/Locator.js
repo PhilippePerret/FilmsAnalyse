@@ -8,12 +8,37 @@
 class Locator {
 
   constructor(analyse){
-    this.analyse = analyse
+    this.analyse      = analyse
   }
 
   // Pour savoir si la vidéo est en train de jouer
   get playing(){return this._playing || false}
   set playing(v){ this._playing = v}
+
+  // ---------------------------------------------------------------------
+  //  Gestion des points d'arrêt
+  get stop_points(){
+    if (undefined === this._stop_points) this._stop_points = []
+    return this._stop_points
+  }
+  set stop_points(v){ this._stop_points = v}
+
+  goToNextStopPoint(){
+    if(undefined === this._i_stop_point) this._i_stop_point = -1
+    ++ this._i_stop_point
+    if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
+    if(undefined === this.stop_points[this._i_stop_point]){
+      F.notify(T('no-stop-point'))
+    } else {
+      this.setTime(this.stop_points[this._i_stop_point])
+    }
+  }
+  addStopPoint(time){
+    if(current_analyse.options.get('option_lock_stop_points')) return
+    this.stop_points.length > 2 && this.stop_points.shift()
+    this.stop_points.push(time)
+    // console.log("Ajout du stop-point:", time, this.stop_points)
+  }
 
   init(){
     var my = this
@@ -45,7 +70,9 @@ class Locator {
     } else {
       // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
       // stop.
-      this.lastStartTime = this.getTime()
+      var curT = this.getTime()
+      this.lastStartTime = curT
+      this.addStopPoint(curT)
       this.video.play()
       $(this.btnPlay).addClass('actived')
       this.playing = true
@@ -105,6 +132,7 @@ class Locator {
   setTime(time){
     // console.log("-> setTime", time)
     this.video.currentTime = time
+    console.log("this.playAfterSettingTime:", this.playAfterSettingTime)
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     } else if(this.video.paused){ this.actualizeHorloge() }
@@ -149,7 +177,6 @@ class Locator {
       F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
     }else{
       this.setTime(this.startTime)
-      if(!this.playing) this.togglePlay()
     }
   }
 
@@ -375,9 +402,8 @@ class Locator {
   }
 
   get playAfterSettingTime(){
-    return this._play_after_setting_time || false /* pour le moment */
+    return this.analyse.options.get('option_start_when_time_choosed')
   }
-  set playAfterSettingTime(v){ this._play_after_setting_time = v }
 
   // --- DOM ÉLÉMENTS ---
   get horloge(){

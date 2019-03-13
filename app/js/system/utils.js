@@ -20,8 +20,19 @@
  */
 function requiredChunk(bindee, methodName){
   bindee.constructor.prototype[`_${methodName}`] = require(`./js/chunks/${bindee.constructor.name}/${methodName}.js`)
-  return bindee[`_${methodName}`] // .bind(bindee) sera déjà bindée
+  return bindee[`_${methodName}`].bind(bindee) // sera déjà bindée
 }
+
+/**
+  * Pour pouvoir utiliser la tournure
+    this._propriete || defineP(this, '_propriete', valeur)
+    return this._propriete
+  */
+function defineP(obj, prop, val){
+  obj[prop] = val
+}
+
+
 /**
  *
   Pour pouvoir utiliser des tournures comme :

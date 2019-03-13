@@ -1,26 +1,19 @@
+* Le bouton gotostart ne doit pas lancer la lecture (sauf si option,mais c'est fait ailleurs)
 
-* Un bouton à côté du bouton "début du film" qui permette de passer en revue les 3 derniers points d'arrêt    
-  - à l'avenir, pouvoir régler dans les préférences le nombre de points d'arrêts
-  - mémoriser ces trois derniers points d'arrêt
+* Pouvoir tenir la souris pressée sur les boutons d'avance pour répéter l'opération (utiliser les mousedown et mouseup au lieu du simple clic)
 
-* Le menu "démarrer au temps choisi" ne fonctionne pas
-  - Il faut enregistrer cette préférences
-  - il faut la régler au démarrage
-
-* Poursuivre EventForm avec le cas de deux scènes créées au même endroit
-  - il faut interdire si c'est dans la même seconde (+/- 1 secondes)
-  - il faut demander si c'est dans les dix secondes
-
-* Boutons pour se déplacer de frame en frame
-  - mettre des vraies images pour les 6 boutons
-  - tester les six boutons avec un film court
+* Comme avant, indiquer par une bande verte sous le bouton qu'il est actif
 * Mettre le type de l'event en haut de son formulaire d'édition
 
+* Stop-points : ne pas ajouter un point qui existe déjà
 * Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)
 
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
   Il faut aussi proposer d'éditer la scène en question.
 
+* Mettre la taille de la vidéo dans les options de l'analyse, pas dans les data.
+
+* Faire toujours une copie du fichier data de l'analyse, en cas de problème
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
 
 * Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse

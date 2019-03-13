@@ -31,16 +31,13 @@ span#waiting-loop-message {
 table.video-controller {
   float:right;
   text-align:right;
-  /* height:64px; */
-  background-color:#BBBBBB;
-  /* width:240px; */
   border:3px solid #555555;
 }
 
 /* TABLE DU CONTROLEUR DE VIDÉO */
 
 table.video-controller, table.video-controller * {
-  background:transparent;
+  background:#DCDCDC;
 }
 table.video-controller button {
   border:0;

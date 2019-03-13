@@ -96,7 +96,6 @@ class VideoController {
   load(vpath){
     this.controller.src = path.resolve(vpath)
     this.controller.load()
-    this.setVideoUI(true)
   }
 
   /**

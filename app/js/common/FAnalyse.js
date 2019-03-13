@@ -77,6 +77,13 @@ class FAnalyse {
     }
   }
 
+  static setGlobalOption(opt_id, opt_value){
+    require('./js/tools/global_options.js').setGlobalOption(opt_id, opt_value)
+  }
+  static toggleGlobalOption(opt_id){
+    require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
+  }
+
   /**
    * Méthode qui charge l'analyse dont le dossier est +aFolder+
    */
@@ -87,7 +94,10 @@ class FAnalyse {
       window.current_analyse = new FAnalyse(aFolder)
       current_analyse.load()
       return true
-    } catch (e) {return F.error(e)}
+    } catch (e) {
+      console.error('ERREUR:', e)
+      return F.error(e)
+    }
   }
 
   /**
@@ -139,15 +149,17 @@ class FAnalyse {
       , diminutifs:       this.diminutifs
       , videoSize:        this.videoSize
       , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
+      , stopPoints:       (this.locator ? this.locator.stop_points : [])
     }
   }
   set data(v){
-    this.title            = v.title
-    this.filmStartTime    = new OTime(v["filmStartTime"] || 0)
-    this._videoPath       = v.videoPath
-    this.diminutifs       = v.diminutifs  || {}
-    this.videoSize        = v.videoSize   || 'medium'
-    this.lastCurrentTime  = v.lastCurrentTime || 0
+    this.title                = v.title
+    this.filmStartTime        = new OTime(v["filmStartTime"] || 0)
+    this._videoPath           = v.videoPath
+    this.diminutifs           = v.diminutifs  || {}
+    this.videoSize            = v.videoSize   || 'medium'
+    this.lastCurrentTime      = v.lastCurrentTime || 0
+    this.stopPoints           = v.stopPoints || []
   }
 
   get folder()  { return this._folder }
@@ -204,7 +216,6 @@ class FAnalyse {
 
 
   // ---------------------------------------------------------------------
-
   /**
    * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
    * données ont été chargées et traitées. Si un fichier vidéo existe, on le
@@ -221,7 +232,11 @@ class FAnalyse {
     EventForm.init()
     Scene.init()
     this.locator.setRTime(this.lastCurrentTime)
+    this.locator.stop_points = this.stopPoints
+    this.setOptionsInMenus()
     UI.stopWait()// toujours, au cas où
+    // Si une fonction a été définie pour la fin du chargement, on
+    // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()
     }
@@ -230,16 +245,22 @@ class FAnalyse {
   init(){
     // Si l'analyse courante définit une vidéo, on la charge et on prépare
     // l'interface. Sinon, on masque la plupart des éléments
-    if(this.videoPath){
-      this.videoController.load(this.videoPath)
-    } else {
-      this.videoController.setVideoUI(false)
-    }
+    this.videoController.setVideoUI(!!this.videoPath)
+    this.videoPath && this.videoController.load(this.videoPath)
+    if(!this.videoPath) F.error(T('video-path-required'))
     // On met le titre dans la fenêtre
     window.document.title = `Analyse du film « ${this.title} »`
   }
 
+  get options(){ return Options }
 
+  /**
+   * Réglage des options dans les menus (en asynchrone)
+   */
+  setOptionsInMenus(){
+    ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
+    ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
+  }
   // Méthode à lancer après le chargement des données ou après la
   // sauvegarde
   // Pour le moment, ne sert que pour les tests.
@@ -387,6 +408,8 @@ class FAnalyse {
    * Méthode appelée pour sauver l'analyse courante
    */
   save() {
+    // On sauve les options toutes seules, ça se fait de façon synchrone
+    this.options.saveIfModified()
     this.savers = 0
     this.savables_count = this.SAVED_FILES.length
     for(var fpath of this.SAVED_FILES){
@@ -460,6 +483,8 @@ class FAnalyse {
   load(){
     var my = this
       , fpath ;
+    // Les options peuvent être chargée en premier, de façon synchrone
+    this.options.load()
     // Les fichiers à charger
     var loadables = Object.assign([], my.SAVED_FILES)
     // Pour comptabiliser le nombre de fichiers chargés

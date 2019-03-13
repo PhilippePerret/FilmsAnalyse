@@ -4,14 +4,15 @@ const { Menu, MenuItem } = require('electron')
 const path = require('path')
 const ipc = electron.ipcMain
 
+const MODE_TEST = process.env.MODE_TEST == 'true'
+if(MODE_TEST) console.log("--- Mode Tests ---")
+
 const Prefs = require('./app/js/main-process/Prefs.js')
 
 var screenWidth   = null
 var screenHeight  = null
 
-const DATA_MENUS = require('./app/js/main-process/menu.js')
-
-let mainMenuBar = null
+global.ObjMenus   = require('./app/js/main-process/menu.js')
 
 global.mainW          = null
 global.userPrefsPath  =
@@ -25,8 +26,9 @@ app.on('ready', () => {
   // Construction des menus
   // Note : on a besoin de `mainMenuBar` pour retrouver les menus par
   // leur identifiant (cf. le modules modules/menus.js)
-  mainMenuBar = Menu.buildFromTemplate(DATA_MENUS)
-  Menu.setApplicationMenu(mainMenuBar);
+  ObjMenus.mainMenuBar = Menu.buildFromTemplate(ObjMenus.data_menus)
+  Menu.setApplicationMenu(ObjMenus.mainMenuBar)
+  Prefs.setMenusPrefs()
 
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   screenWidth   = width
@@ -37,7 +39,7 @@ app.on('ready', () => {
     , width:  screenWidth - 40,
   })
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
-  mainW.toggleDevTools();
+  if (MODE_TEST) mainW.toggleDevTools();
 
   mainW.on('close', (ev) => {
     // console.log("Je fais ça avant de fermer la fenêtre et quitter")
