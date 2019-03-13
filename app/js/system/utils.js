@@ -103,3 +103,5 @@ function listen(cible, ename, objet, method, param){
   }
 }
 function listenClick(cible, objet, method, param){listen(cible,'click',objet,method, param)}
+function listenMDown(cible, objet, method, param){listen(cible,'mousedown',objet,method, param)}
+function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,method, param)}

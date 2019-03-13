@@ -115,10 +115,26 @@ class Locator {
    * on jouait, ou alors on remet en route)
    */
   rewind(secs){
-    this.setTime(this.video.currentTime - secs)
+    // console.log("-> rewind")
+    var method = ()=>{this.setTime(this.video.currentTime - secs)}
+    this.timerRewind = setInterval(method, 100)
+    // method = null
   }
   forward(secs){
-    this.setTime(this.video.currentTime + secs)
+    // console.log("-> forward")
+    var method = ()=>{this.setTime(this.video.currentTime + secs)}
+    this.timerForward = setInterval(method, 100)
+    // method = null
+  }
+  stopRewind(){
+    // console.log("-> stopRewind")
+    clearInterval(this.timerRewind)
+    this.timerRewind = null
+  }
+  stopForward(){
+    // console.log("-> stopForward")
+    clearInterval(this.timerForward)
+    this.timerForward = null
   }
 
   /**

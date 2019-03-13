@@ -1,8 +1,5 @@
-* Le bouton gotostart ne doit pas lancer la lecture (sauf si option,mais c'est fait ailleurs)
-
 * Pouvoir tenir la souris pressée sur les boutons d'avance pour répéter l'opération (utiliser les mousedown et mouseup au lieu du simple clic)
 
-* Comme avant, indiquer par une bande verte sous le bouton qu'il est actif
 * Mettre le type de l'event en haut de son formulaire d'édition
 
 * Stop-points : ne pas ajouter un point qui existe déjà
