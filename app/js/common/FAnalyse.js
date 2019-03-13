@@ -222,13 +222,21 @@ class FAnalyse {
     this.reader  = new AReader(this)
     this.init()
     this.locator.init()
+    this.locator.stop_points = this.stopPoints
     this.reader.init()
-    this.videoController.init()
     EventForm.init()
     Scene.init()
-    this.locator.setRTime(this.lastCurrentTime)
-    this.locator.stop_points = this.stopPoints
     this.setOptionsInMenus()
+    this.videoController.init()
+  }
+  /**
+   * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
+   * où l'on est vraiment prêt.
+   */
+  setAllIsReady(){
+    if (this.videoPath){
+      this.locator.setRTime(this.lastCurrentTime)
+    }
     UI.stopWait()// toujours, au cas où
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
@@ -238,13 +246,17 @@ class FAnalyse {
   }
 
   init(){
+    // On met le titre dans la fenêtre
+    window.document.title = `Analyse du film « ${this.title} »`
     // Si l'analyse courante définit une vidéo, on la charge et on prépare
     // l'interface. Sinon, on masque la plupart des éléments
     this.videoController.setVideoUI(!!this.videoPath)
-    this.videoPath && this.videoController.load(this.videoPath)
-    if(!this.videoPath) F.error(T('video-path-required'))
-    // On met le titre dans la fenêtre
-    window.document.title = `Analyse du film « ${this.title} »`
+    if (this.videoPath){
+      this.videoController.load(this.videoPath)
+    } else {
+      F.error(T('video-path-required'))
+      this.setAllIsReady()
+    }
   }
 
   get options(){ return Options }

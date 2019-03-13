@@ -1,10 +1,14 @@
+* Affiner encore la procédure de démarrage (voir avec l'ajout de FAnalyse#allIsReady : il se peut qu'elle soit appelée avant la fin normale de chargement de la vidéo)
+
+* Implémenter l'option pour dire de commencer à jouer x secondes avant l'event choisi.
+
+* On doit pouvoir rectifier le temps d'un event
+  - soit en glissant la souris après avoir cliqué sur son horloge dans la boite d'édition
+  - soit en le spécifiant en disant que ça doit être le temps courant (bouton spécial)
 
 * Faire toujours une copie du fichier data de l'analyse, en cas de problème (de tous ses fichiers, d'ailleurs)
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
-
-
-* Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse
 
 
 * Modification de l'évènement
@@ -13,7 +17,7 @@
   -> manuel
 * Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
 * Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)
-* Quand on clique pour éditer un évènement dans le reader, mettre en route le film quelques secondes avant (ou plutôt un CB pour demander de le faire, dans la boite de l'évènement, parce que sinon ça va être énervant)
+
 * Toutes les données absolues du formulaire (les types, les catégories, etc.) doivent être enregistrées dans des fichiers JSON et les éléments du formulaire doivent être construits à la volée.
   Bien se servir du type de l'évènement pour régler la class du tag
   Faire un script pour les prendre en compte après changement

@@ -83,6 +83,12 @@ const UI = {
     }
 
   // ---------------------------------------------------------------------
+  //  Méthode d'affichage
+  , showVideoController:function(){
+      $('table#video-controller-1').show()
+    }
+    
+  // ---------------------------------------------------------------------
   //  Méthodes d'évènement
   , observe_ui:function(){
       var my = this
