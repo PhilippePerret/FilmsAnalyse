@@ -1,20 +1,14 @@
-body, body * {
-  font-size: 15.1pt;
-  font-family:Avenir;
-}
 
 .small {
   font-size: 0.75em;
 }
 .bold {font-weight:bold;}
 
-.controller {border:0; padding:0;vertical-align:middle;}
-button.controller img {width:40px;}
-
 .fleft {float:left;}
 .fright {float:right;}
 .left {text-align:left;}
 .right {text-align:right;}
+.center{text-align:center;}
 
 .block {display:block;}
 .inline {display:inline-block;}
@@ -35,8 +29,8 @@ input.horloge, input.temps-secondes {
   text-align:center;
 }
 input.temps-secondes {
-  width: 80px;
+  width: 100px;
 }
-input.horloge.small {
-  width: 100px !important;
+input.horloge.small, input.temps-secondes.small {
+  width:100px !important;
 }

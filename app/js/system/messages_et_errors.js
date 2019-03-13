@@ -7,10 +7,14 @@ const ERRORS = {
   "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
+, "---- SCÈNES ---":""
+, "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
 }
 const MESSAGES = {
   "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "
+, "--- messages SCÈNES ---":""
+, "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
 }
 
 /**

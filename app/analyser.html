@@ -17,7 +17,7 @@
 
       <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
       <div id="div-video-top-tools">
-        <span id="horloge" class="horloge vignette"> 0:00:00:00</span>
+        <span id="horloge" class="horloge vignette"> 0:00:00.00</span>
       </div>
 
       <!-- VIDÉO -->
@@ -30,54 +30,82 @@
 
       <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
       <div id="div-nav-video-buttons">
-        <span id="horloge_real" class="horloge mini fleft">0:00:00:00</span>
+        <span id="horloge_real" class="horloge mini fleft">0:00:00.00</span>
 
-        <table class="controls">
+
+        <table class="video-controller">
           <tr>
             <td>
-              <button type="button" id="btn-go-to-film-start" class="small">Début du film</button>
-            </td>
-            <td rowspan="3">
-              <button type="button" id="btn-rewind-start" class="controller">...</button>
-              <button type="button" id="btn-real-play" class="controller">...</button>
+              <button type="button" id="btn-rewind-3" class="controller">
+                <img src="./img/btns-controller/btn-rewind-3.png" />
+              </button>
+              <button type="button" id="btn-rewind-2" class="controller">
+                <img src="./img/btns-controller/btn-rewind-2.png" />
+              </button>
+              <button type="button" id="btn-rewind-1" class="controller">
+                <img src="./img/btns-controller/btn-rewind-1.png" />
+              </button>
+              <button type="button" id="btn-forward-1" class="controller">
+                <img src="./img/btns-controller/btn-forward-1.png" />
+              </button>
+              <button type="button" id="btn-forward-2" class="controller">
+                <img src="./img/btns-controller/btn-forward-2.png" />
+              </button>
+              <button type="button" id="btn-forward-3" class="controller">
+                <img src="./img/btns-controller/btn-forward-3.png" />
+              </button>
             </td>
           </tr>
           <tr>
-            <td>
-              <button type="button" id="btn-rewind-5-sec" class="small">&lt; 5s.</button>
-              <button type="button" id="btn-rewind-1-sec" class="small">&lt; 1s.</button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button type="button" id="btn-forward-1-sec" class="small">1s. &gt;</button>
-              <button type="button" id="btn-forward-5-sec" class="small">5s. &gt;</button>
+            <td class="center">
+              <button type="button" id="btn-go-to-film-start" class="main">
+                <img src="./img/btns-controller/btn-film-start.png" />
+              </button>
+              <button type="button" id="btn-stop" class="main">
+                <img src="./img/btns-controller/btn-stop.png" />
+              </button>
+              <button type="button" id="btn-real-play" class="main">
+                <img src="./img/btns-controller/btn-play.png" />
+              </button>
             </td>
           </tr>
         </table>
 
         <fieldset class="time-tools">
           <div>
-            <button type="button" id="btn-go-to-time" class="small">Aller au temps : </button>
-            <input type="text" id="requested_time" class="horloge small" value="0,0,0:0" />
+            <button type="button" id="btn-go-to-time-video-1" class="small">Aller au temps : </button>
+            <input type="text" id="requested_time" class="horloge small" value="0,0,0.0" placeholder="hr,mn,sc.fr" />
           </div>
-          <div id="div-temps-courants" style="display:none;">
-            <div>
-              <span id="span-temps-courants-video">
-                <span class="small">Vidéo : </span>
-                <input type="text" class="horloge small" id="temps-courant-video-horloge" />
-                <input type="text" class="temps-secondes small" id="temps-courant-video-seconds" />
-              </span>
-              <button id="btn-hide-current-time" type="button" class="small">OK</button>
-            </div>
-            <div>
-              <span id="span-temps-courants-film" style="display:none;">
-                <span class="small">Film : </span>
-                <input type="text" class="horloge small" id="temps-courant-film-horloge" />
-                <input type="text" class="temps-secondes small" id="temps-courant-film-seconds" />
-              </span>
-            </div>
-          </div>
+
+          <table id="curtime-video-1" class="cont-temps-courants" style="display:none;">
+            <tr class="span-temps-courants-video">
+              <td class="small">
+                Vidéo
+              </td>
+              <td>
+                <input type="text" class="curtime-video-horloge horloge small" />
+              </td>
+              <td>
+                <input type="text" class="curtime-video-seconds temps-secondes small" />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="field-curtime-film small">
+                Film
+              </td>
+              <td class="field-curtime-film">
+                <input type="text" class="curtime-film-horloge horloge small" />
+              </td>
+              <td class="field-curtime-film">
+                <input type="text" class="curtime-film-seconds temps-secondes small" />
+              </td>
+              <td>
+                <button id="btn-hide-current-time-video-1" type="button" class="small">OK</button>
+              </td>
+            </tr>
+          </table>
+
         </fieldset>
       </div>
       <!-- / Fin des boutons de navigation -->
@@ -131,6 +159,7 @@
     <script type="text/javascript" src="./js/system/utils.js"></script>
     <script type="text/javascript" src="./js/system/ipc.js"></script>
     <script type="text/javascript" src="./js/system/Tests.js"></script>
+    <script type="text/javascript" src="./js/system/Number.js"></script>
     <script type="text/javascript" src="./js/system/messages_et_errors.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/EventForm.js"></script>

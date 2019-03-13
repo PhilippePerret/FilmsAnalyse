@@ -43,6 +43,9 @@ class Locator {
       this.playing = false
       this.desactivateHorloge()
     } else {
+      // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
+      // stop.
+      this.lastStartTime = this.getTime()
       this.video.play()
       $(this.btnPlay).addClass('actived')
       this.playing = true
@@ -59,8 +62,25 @@ class Locator {
    * revenir tout au début (sinon, on revient toujours au début défini du
    * film)
    */
-  rewindStart(){
-    this.setTime(this.getRTime(0) - 5)
+  stopAndRewind(){
+    var curTime = this.getTime()
+
+    // Si le film jouait, on doit l'arrêter
+    if(this.playing) this.togglePlay()
+
+    if(curTime > this.lastStartTime){
+      // <= Le temps courant est supérieur au dernier temps de départ
+      // => on revient au dernier temps de départ
+      this.setTime(this.lastStartTime)
+    } else if (this.hasStartTime && curTime > (this.analyse.filmStartTime.seconds + 5)){
+      // <= le temps courant est au-delà des 5 secondes après le début du film
+      // => On revient au début du film
+      this.setTime(this.analyse.filmStartTime.seconds)
+    } else {
+      // Sinon, on revient au début de la vidéo
+      this.setTime(0)
+    }
+    this.actualizeHorloge()
   }
 
   /**
@@ -146,6 +166,12 @@ class Locator {
   }
   get currentRTime(){return this.getRTime()}
 
+  /**
+  * Alias de this.currentTime pour retourner le temps vidéo courant
+  **/
+  getTime(){
+    return this.currentTime
+  }
   /**
    * Méthode qui récupère le temps courant du film et retourne une instance
    * OTime
@@ -272,9 +298,11 @@ class Locator {
 
   // ---------------------------------------------------------------------
   // Méthodes DOM
-  // Méthode qui cache les champs précédents
+
+
+  // Méthode qui cache la table indiquant les temps courants
   hideCurrentTime(){
-    $('#div-temps-courants').hide();
+    $('#curtime-video-1').hide();
   }
 
   /**
@@ -290,18 +318,18 @@ class Locator {
    */
   getAndShowCurrentTime(){
     var videoTC = this.getOTime()
-    $('#temps-courant-video-horloge').val(videoTC.horloge)
-    $('#temps-courant-video-seconds').val(videoTC.secondsInt)
+    $('#curtime-video-1 .curtime-video-horloge').val(videoTC.horloge)
+    $('#curtime-video-1 .curtime-video-seconds').val(videoTC.secondsInt)
     if(this.hasStartTime){
       var filmTC  = new OTime(this.getRTime())
-      $('#temps-courant-film-horloge').val(filmTC.horloge)
-      $('#temps-courant-film-seconds').val(filmTC.secondsInt)
+      $('#curtime-video-1 .curtime-film-horloge').val(filmTC.horloge)
+      $('#curtime-video-1 .curtime-film-seconds').val(filmTC.secondsInt)
       clip(filmTC.horloge)
     } else {
       clip(videoTC.horloge)
     }
-    $('#div-temps-courants').show();
-    $('#span-temps-courants-film')[this.hasStartTime?'show':'hide']()
+    $('#curtime-video-1').show();
+    $('#curtime-video-1 .field-curtime-film').css('visibility',this.hasStartTime?'visible':'hidden')
   }
 
   /**
@@ -343,7 +371,7 @@ class Locator {
   // ---------------------------------------------------------------------
   // Méthodes d'état
   get hasStartTime(){
-    return undefined!==this.analyse.filmStartTime
+    return this.analyse && this.analyse.filmStartTime && this.analyse.filmStartTime.seconds > 0
   }
 
   get playAfterSettingTime(){
@@ -365,17 +393,13 @@ class Locator {
     return this._btnPl
   }
   get btnRewindStart(){
-    if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-rewind-start')}
+    if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-stop')}
     return this._btnRwdSt
   }
   get imgPauser(){
-    return '<img src="./img/btn-pause.jpg" />'
+    return '<img src="./img/btns-controller/btn-pause.png" />'
   }
   get imgPlay(){
-    return '<img src="./img/btn-play.jpg" />'
+    return '<img src="./img/btns-controller/btn-play.png" />'
   }
-  get imgRewindStart(){
-    return '<img src="./img/btn-rewind.jpg" />'
-  }
-
 }

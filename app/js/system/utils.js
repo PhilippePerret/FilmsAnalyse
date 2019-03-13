@@ -85,10 +85,10 @@ function listen(cible, ename, objet, method, param){
       cible.addEventListener(ename, objet[method].bind(objet, param))
     }
   } catch (e) {
+    console.error("Impossible d'écouter le DOM élément défini ci-dessous :", e)
     console.error({
       cible: cible, ename: ename, method: method, objet: objet, param: param
     })
-    throw("Impossible d'écouter le DOM élément défini ci-dessus :", e)
   }
 }
 function listenClick(cible, objet, method, param){listen(cible,'click',objet,method, param)}
