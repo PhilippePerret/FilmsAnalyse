@@ -11,8 +11,8 @@ const Options = {
 
     // Options par défaut
   , DEFAULT_DATA: {
-        'start-when-time-choosed':  true
-      , 'lock-stop-points':         false
+        'option_start_when_time_choosed':  true
+      , 'option_lock_stop_points':         false
     }
 
   , modified: false

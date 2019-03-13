@@ -4,6 +4,9 @@ const { Menu, MenuItem } = require('electron')
 const path = require('path')
 const ipc = electron.ipcMain
 
+const MODE_TEST = process.env.MODE_TEST == 'true'
+if(MODE_TEST) console.log("--- Mode Tests ---")
+
 const Prefs = require('./app/js/main-process/Prefs.js')
 
 var screenWidth   = null
@@ -36,7 +39,7 @@ app.on('ready', () => {
     , width:  screenWidth - 40,
   })
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
-  // mainW.toggleDevTools();
+  if (MODE_TEST) mainW.toggleDevTools();
 
   mainW.on('close', (ev) => {
     // console.log("Je fais ça avant de fermer la fenêtre et quitter")

@@ -103,7 +103,6 @@ class VideoController {
    * vidéo.
    */
   setVideoUI(visible){
-    console.log("-> setVideoUI(visible =)",visible)
     $('#div-video-top-tools')[visible?'show':'hide']()
     toggleVisible('#video', visible)
     toggleVisible('#div-nav-video-buttons', visible)

@@ -132,6 +132,7 @@ class Locator {
   setTime(time){
     // console.log("-> setTime", time)
     this.video.currentTime = time
+    console.log("this.playAfterSettingTime:", this.playAfterSettingTime)
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     } else if(this.video.paused){ this.actualizeHorloge() }
@@ -176,7 +177,6 @@ class Locator {
       F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
     }else{
       this.setTime(this.startTime)
-      if(!this.playing) this.togglePlay()
     }
   }
 
@@ -402,9 +402,8 @@ class Locator {
   }
 
   get playAfterSettingTime(){
-    return this._play_after_setting_time || false /* pour le moment */
+    return this.analyse.options.get('option_start_when_time_choosed')
   }
-  set playAfterSettingTime(v){ this._play_after_setting_time = v }
 
   // --- DOM ÉLÉMENTS ---
   get horloge(){
