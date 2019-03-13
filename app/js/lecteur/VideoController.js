@@ -96,6 +96,9 @@ class VideoController {
   load(vpath){
     this.controller.src = path.resolve(vpath)
     this.controller.load()
+    $(this.controller).on('load', ()=>{
+      console.log("La vidéo a pu être chargée")
+    })
   }
 
   /**
