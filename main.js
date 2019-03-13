@@ -9,12 +9,11 @@ const Prefs = require('./app/js/main-process/Prefs.js')
 var screenWidth   = null
 var screenHeight  = null
 
-const DATA_MENUS = require('./app/js/main-process/menu.js')
+global.ObjMenus   = require('./app/js/main-process/menu.js')
 
 global.mainW          = null
 global.userPrefsPath  =
 global.userPrefs      = null
-global.mainMenuBar    = null
 
 app.on('ready', () => {
 
@@ -24,8 +23,9 @@ app.on('ready', () => {
   // Construction des menus
   // Note : on a besoin de `mainMenuBar` pour retrouver les menus par
   // leur identifiant (cf. le modules modules/menus.js)
-  mainMenuBar = Menu.buildFromTemplate(DATA_MENUS)
-  Menu.setApplicationMenu(mainMenuBar);
+  ObjMenus.mainMenuBar = Menu.buildFromTemplate(ObjMenus.data_menus)
+  Menu.setApplicationMenu(ObjMenus.mainMenuBar)
+  Prefs.setMenusPrefs()
 
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   screenWidth   = width

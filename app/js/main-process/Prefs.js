@@ -137,6 +137,11 @@ const Prefs = {
   , loadUserPrefs:function(){
       if(fs.existsSync(this.userPrefsPath)){
         this.userPrefs = require(this.userPrefsPath)
+      } else {
+        this.userPrefs = {
+            'load_last_on_launching': true
+          , 'last_analyse_folder':    null
+        }
       }
       /*/     + "/" pour décommenter, - "/" pour ex-commenter
       else {
@@ -152,6 +157,13 @@ const Prefs = {
       }
       //*/
     }
+    /**
+     * Réglage des menus options globales après le chargement du
+     * fichier userPrefs
+     */
+  , setMenusPrefs(){
+      ObjMenus.getMenu('load_last_on_launching').checked = this.get('load_last_on_launching')
+    }
 }
 
 
@@ -166,5 +178,7 @@ ipc.on('get-pref', (ev, data) => {
 ipc.on('set-pref', (ev, data) => {
   ev.returnValue = Prefs.set(data)
 })
+
+
 
 module.exports = Prefs

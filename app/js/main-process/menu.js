@@ -19,13 +19,12 @@ const ipc     = require('electron').ipcMain
 
 const ObjMenus = {
     class: 'ObjMenus'
+  , mainMenuBar: null // défini par le main.js
   , getMenuData: null
   , getMenu: function(id) {
-      // var mainMenuBar = global.mainMenuBar
       var d = this.getMenuData[id]
       if(undefined == typeof(d)) throw(`Menu <${id}> is not defined…`)
-      // console.log("d:", d)
-      var m = mainMenuBar.items[d[0]].submenu.items[d[1]] ;
+      var m = this.mainMenuBar.items[d[0]].submenu.items[d[1]] ;
       // console.log("m:", m)
       // Si hiérarchie plus profonde
       if (d.length > 2){ m = m.submenu.items[d[2]] }
@@ -51,7 +50,7 @@ const ObjMenus = {
      */
   , updateLang: function(){
       let { Menu } = require('electron')
-      global.mainMenuBar = Menu.buildFromTemplate(this.menuTemplate())
+      this.mainMenuBar = Menu.buildFromTemplate(this.data_menus())
       Menu.setApplicationMenu(global.mainMenuBar);
     }
 
@@ -169,10 +168,11 @@ const DATA_MENUS = [
             {
                 // Note: option générale
                 label: "Charger la dernière analyse au chargement"
-              , id:     'load-last-on-launching'
+              , id:     'load_last_on_launching'
               , type:   'checkbox'
+              , checked: false
               , click:  () => {
-                  var checked = ObjMenus.getMenu('load-last-on-launching').checked
+                  var checked = ObjMenus.getMenu('load_last_on_launching').checked
                   mainW.webContents.executeJavaScript(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
                 }
             }
@@ -293,7 +293,10 @@ for(iMainMenu = 0; iMainMenu < nbMainMenus; ++iMainMenu ){
 }//fin de boucle sur tous les menus principaux
 
 
-module.exports = DATA_MENUS
+ObjMenus.data_menus = DATA_MENUS
+
+module.exports = ObjMenus
+// module.exports = DATA_MENUS
 
 
 ipc.on('set-option', (ev, data) => {
