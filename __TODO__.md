@@ -1,6 +1,8 @@
-* Régler la troisième option du bouton stop : revenir au dernier temps
-  - documenter
-  
+
+* Un bouton à côté du bouton "début du film" qui permette de passer en revue les 3 derniers points d'arrêt    
+  - à l'avenir, pouvoir régler dans les préférences le nombre de points d'arrêts
+  - mémoriser ces trois derniers points d'arrêt
+
 * Le menu "démarrer au temps choisi" ne fonctionne pas
   - Il faut enregistrer cette préférences
   - il faut la régler au démarrage

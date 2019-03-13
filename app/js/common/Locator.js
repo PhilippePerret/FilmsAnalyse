@@ -43,6 +43,9 @@ class Locator {
       this.playing = false
       this.desactivateHorloge()
     } else {
+      // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
+      // stop.
+      this.lastStartTime = this.getTime()
       this.video.play()
       $(this.btnPlay).addClass('actived')
       this.playing = true
@@ -60,7 +63,16 @@ class Locator {
    * film)
    */
   stopAndRewind(){
-    if(this.hasStartTime && this.getRTime() > 5){
+    var curTime = this.getTime()
+
+    // Si le film jouait, on doit l'arrêter
+    if(this.playing) this.togglePlay()
+
+    if(curTime > this.lastStartTime){
+      // <= Le temps courant est supérieur au dernier temps de départ
+      // => on revient au dernier temps de départ
+      this.setTime(this.lastStartTime)
+    } else if (this.hasStartTime && curTime > (this.analyse.filmStartTime.seconds + 5)){
       // <= le temps courant est au-delà des 5 secondes après le début du film
       // => On revient au début du film
       this.setTime(this.analyse.filmStartTime.seconds)
@@ -68,8 +80,6 @@ class Locator {
       // Sinon, on revient au début de la vidéo
       this.setTime(0)
     }
-    // Si le film jouait, on doit l'arrêter
-    if(this.playing) this.togglePlay()
     this.actualizeHorloge()
   }
 
@@ -156,6 +166,12 @@ class Locator {
   }
   get currentRTime(){return this.getRTime()}
 
+  /**
+  * Alias de this.currentTime pour retourner le temps vidéo courant
+  **/
+  getTime(){
+    return this.currentTime
+  }
   /**
    * Méthode qui récupère le temps courant du film et retourne une instance
    * OTime
