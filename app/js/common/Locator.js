@@ -34,6 +34,7 @@ class Locator {
     }
   }
   addStopPoint(time){
+    if(current_analyse.options.get('option_lock_stop_points')) return
     this.stop_points.length > 2 && this.stop_points.shift()
     this.stop_points.push(time)
     // console.log("Ajout du stop-point:", time, this.stop_points)

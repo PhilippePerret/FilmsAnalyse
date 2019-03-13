@@ -6,6 +6,8 @@
 const ERRORS = {
   "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
+, "--- VIDÉO ---": ""
+, "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
 , "---- SCÈNES ---":""
 , "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"

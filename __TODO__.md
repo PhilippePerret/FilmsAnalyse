@@ -1,7 +1,5 @@
-* Définir le checked du menu "Charger la dernière analyse au chargement"
-* Définir le checked des deux autres options
-* [BUG] Voir pourquoi la vidéo ne se charge plus…
-* Interdire le changement des points d'arrêt s'ils sont verrouillés
+* Le bouton gotostart ne doit pas lancer la lecture (sauf si option,mais c'est fait ailleurs)
+
 * Comme avant, indiquer par une bande verte sous le bouton qu'il est actif
 * Mettre le type de l'event en haut de son formulaire d'édition
 
@@ -10,6 +8,9 @@
 * Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
   Il faut aussi proposer d'éditer la scène en question.
 
+* Mettre la taille de la vidéo dans les options de l'analyse, pas dans les data.
+
+* Faire toujours une copie du fichier data de l'analyse, en cas de problème
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
 
 * Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse

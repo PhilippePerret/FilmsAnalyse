@@ -61,3 +61,11 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
   }
 
 ```
+
+### Ajout de préférence analyse
+
+1. Dans le fichier `./app/js/system/Options.js`, ajouter l'option à la donnée `Options.DEFAULT_DATA`.
+
+2. Demander le réglage de l'option dans `FAnalyse#setOptionsInMenus` dans le fichier `common/FAnalyse.js` en s'inspirant des autres options.
+
+3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>').

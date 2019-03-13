@@ -216,23 +216,6 @@ class FAnalyse {
 
 
   // ---------------------------------------------------------------------
-
-  /**
-   * Fonction appelée lorsque l'on actionne le menu Options > Verrouiller point d'arrêt
-   * pour activer/désactiver cette fonction.
-   */
-  toggleOptionStopPointsLock(){
-    console.log("Je vais activer/désactiver le verrouillage des points d'arrêt")
-  }
-
-  /**
-   * Fonction appelée lorsque l'on actionne le menu Options > Démarrer quand un temps est choisi
-   * est actionner, pour activer/désactiver cette option
-   */
-  toggleOptionStartWhenPositionChoosed(){
-    console.log("Je vais activer/désactiver la fonction de démarrage quand point choisi")
-  }
-  // ---------------------------------------------------------------------
   /**
    * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
    * données ont été chargées et traitées. Si un fichier vidéo existe, on le
@@ -262,11 +245,9 @@ class FAnalyse {
   init(){
     // Si l'analyse courante définit une vidéo, on la charge et on prépare
     // l'interface. Sinon, on masque la plupart des éléments
-    if(this.videoPath){
-      this.videoController.load(this.videoPath)
-    } else {
-      this.videoController.setVideoUI(false)
-    }
+    this.videoController.setVideoUI(!!this.videoPath)
+    this.videoPath && this.videoController.load(this.videoPath)
+    if(!this.videoPath) F.error(T('video-path-required'))
     // On met le titre dans la fenêtre
     window.document.title = `Analyse du film « ${this.title} »`
   }
@@ -277,8 +258,8 @@ class FAnalyse {
    * Réglage des options dans les menus (en asynchrone)
    */
   setOptionsInMenus(){
-    ipc.send('set-option', {menu_id: 'option-start-when-time-choosed', property: 'checked', value: !!this.options.get('start-when-time-choosed')})
-    ipc.send('set-option', {menu_id: 'option-lock-stop-points', property: 'checked', value: !!this.options.get('lock-stop-points')})
+    ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
+    ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
   }
   // Méthode à lancer après le chargement des données ou après la
   // sauvegarde

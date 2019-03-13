@@ -63,17 +63,7 @@ Object.defineProperties(Options,{
   , path:{
       get:function(){
         this._path || defineP(this, '_path', path.join(current_analyse.folder,'options.json'))
-        // if(undefined === this._path){this._path = path.join(current_analyse.folder,'options.json')}
         return this._path
       }
   }
 })
-
-/**
-  * Pour pouvoir utiliser la tournure
-    this._propriete || defineP(this, '_propriete', valeur)
-    return this._propriete
-  */
-function defineP(obj, prop, val){
-  obj[prop] = val
-}

@@ -98,7 +98,7 @@ const DATA_MENUS = [
             , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
           }
         , {
-              label: 'Changer la vidéo du film…'
+              label: 'Choisir la vidéo du film…'
             // , click: () => {mainW.webContents.send('change-film-video')}
             , click: () => {mainW.webContents.executeJavaScript('FAnalyse.redefineVideoPath()')}
           }
@@ -179,19 +179,25 @@ const DATA_MENUS = [
           , {type:'separator'}
           , {
                 label:  'Démarrer quand un temps est choisi'
-              , id:     'option-start-when-time-choosed'
+              , id:     'option_start_when_time_choosed'
               , type:   'checkbox'
               , checked: false
               , enabled: true
-              , click: () => { mainW.webContents.executeJavaScript('current_analyse && current_analyse.toggleOptionStartWhenPositionChoosed()')}
+              , click: () => {
+                  var c = ObjMenus.getMenu('option_start_when_time_choosed').checked ? 'true' : 'false'
+                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_start_when_time_choosed',${c})`)
+                }
             }
           , {
                 label:  "Verrouiller les points d'arrêt"
-              , id:     'option-lock-stop-points'
+              , id:     'option_lock_stop_points'
               , type:   'checkbox'
               , checked: true
               , enabled: true // plus tard, à régler en fonction de la présence de l'analyse
-              , click: () => { mainW.webContents.executeJavaScript('current_analyse && current_analyse.toggleOptionStopPointsLock()')}
+              , click: () => {
+                  var c = ObjMenus.getMenu('option_lock_stop_points').checked ? 'true' : 'false'
+                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_lock_stop_points',${c})`)
+                }
             }
         ]
     }
