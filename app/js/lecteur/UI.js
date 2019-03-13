@@ -32,6 +32,7 @@ const UI = {
       listen(this.btnRewindStart,'click',my,'stopAndRewind')
 
       listenClick('btn-go-to-film-start', my, 'goToFilmStart')
+      listenClick('btn-stop-points',my,'goToNextStopPoint')
 
       listenClick('btn-rewind-1',my,'rewind', 0.04)
       listenClick('btn-rewind-2',my,'rewind', 1)
@@ -54,6 +55,7 @@ const UI = {
   , togglePlay:function(){this.runIfAnalyse('togglePlay')}
   , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
   , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
+  , goToNextStopPoint:function(){this.runIfAnalyse('goToNextStopPoint')}
   , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
   , forward:function(pas){this.runIfAnalyse('forward', pas)}
 

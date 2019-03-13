@@ -1,7 +1,8 @@
-
 * Un bouton à côté du bouton "début du film" qui permette de passer en revue les 3 derniers points d'arrêt    
   - à l'avenir, pouvoir régler dans les préférences le nombre de points d'arrêts
   - mémoriser ces trois derniers points d'arrêt
+
+* Comme avant, indiquer par une bande verte sous le bouton qu'il est actif
 
 * Le menu "démarrer au temps choisi" ne fonctionne pas
   - Il faut enregistrer cette préférences

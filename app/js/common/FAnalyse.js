@@ -139,15 +139,17 @@ class FAnalyse {
       , diminutifs:       this.diminutifs
       , videoSize:        this.videoSize
       , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
+      , stopPoints:       (this.locator ? this.locator.stop_points : [])
     }
   }
   set data(v){
-    this.title            = v.title
-    this.filmStartTime    = new OTime(v["filmStartTime"] || 0)
-    this._videoPath       = v.videoPath
-    this.diminutifs       = v.diminutifs  || {}
-    this.videoSize        = v.videoSize   || 'medium'
-    this.lastCurrentTime  = v.lastCurrentTime || 0
+    this.title                = v.title
+    this.filmStartTime        = new OTime(v["filmStartTime"] || 0)
+    this._videoPath           = v.videoPath
+    this.diminutifs           = v.diminutifs  || {}
+    this.videoSize            = v.videoSize   || 'medium'
+    this.lastCurrentTime      = v.lastCurrentTime || 0
+    this.stopPoints           = v.stopPoints || []
   }
 
   get folder()  { return this._folder }
@@ -221,6 +223,7 @@ class FAnalyse {
     EventForm.init()
     Scene.init()
     this.locator.setRTime(this.lastCurrentTime)
+    this.locator.stop_points = this.stopPoints
     UI.stopWait()// toujours, au cas où
     if ('function' == typeof this.methodeAfterLoading){
       this.methodeAfterLoading()

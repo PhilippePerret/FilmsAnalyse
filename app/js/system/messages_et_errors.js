@@ -13,6 +13,8 @@ const ERRORS = {
 const MESSAGES = {
   "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "
+, "--- messages VIDÉO ---":""
+, "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
 , "--- messages SCÈNES ---":""
 , "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
 }
