@@ -28,8 +28,8 @@ const UI = {
       this.btnPlay = DGet('btn-real-play')
       listen(this.btnPlay, 'click', this, 'togglePlay')
 
-      this.btnRewindStart = DGet('btn-rewind-start')
-      listen(this.btnRewindStart,'click',my,'rewindStart')
+      this.btnRewindStart = DGet('btn-stop')
+      listen(this.btnRewindStart,'click',my,'stopAndRewind')
 
       listenClick('btn-go-to-film-start', my, 'goToFilmStart')
 
@@ -52,7 +52,7 @@ const UI = {
   , hideCurrentTime:function(){this.runIfAnalyse('hideCurrentTime')}
   , goToTime:function(){this.runIfAnalyse('goToTime')}
   , togglePlay:function(){this.runIfAnalyse('togglePlay')}
-  , rewindStart:function(){this.runIfAnalyse('rewindStart')}
+  , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
   , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
   , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
   , forward:function(pas){this.runIfAnalyse('forward', pas)}

@@ -1,7 +1,10 @@
+* Régler la troisième option du bouton stop : revenir au dernier temps
+  - documenter
+  
 * Le menu "démarrer au temps choisi" ne fonctionne pas
   - Il faut enregistrer cette préférences
   - il faut la régler au démarrage
-  
+
 * Poursuivre EventForm avec le cas de deux scènes créées au même endroit
   - il faut interdire si c'est dans la même seconde (+/- 1 secondes)
   - il faut demander si c'est dans les dix secondes

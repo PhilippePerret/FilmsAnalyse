@@ -59,8 +59,18 @@ class Locator {
    * revenir tout au début (sinon, on revient toujours au début défini du
    * film)
    */
-  rewindStart(){
-    this.setTime(this.getRTime(0) - 5)
+  stopAndRewind(){
+    if(this.hasStartTime && this.getRTime() > 5){
+      // <= le temps courant est au-delà des 5 secondes après le début du film
+      // => On revient au début du film
+      this.setTime(this.analyse.filmStartTime.seconds)
+    } else {
+      // Sinon, on revient au début de la vidéo
+      this.setTime(0)
+    }
+    // Si le film jouait, on doit l'arrêter
+    if(this.playing) this.togglePlay()
+    this.actualizeHorloge()
   }
 
   /**
@@ -68,11 +78,9 @@ class Locator {
    * on jouait, ou alors on remet en route)
    */
   rewind(secs){
-    console.log("-> rewind")
     this.setTime(this.video.currentTime - secs)
   }
   forward(secs){
-    console.log("-> forward")
     this.setTime(this.video.currentTime + secs)
   }
 
@@ -347,7 +355,7 @@ class Locator {
   // ---------------------------------------------------------------------
   // Méthodes d'état
   get hasStartTime(){
-    return undefined!==this.analyse.filmStartTime
+    return this.analyse && this.analyse.filmStartTime && this.analyse.filmStartTime.seconds > 0
   }
 
   get playAfterSettingTime(){
@@ -369,7 +377,7 @@ class Locator {
     return this._btnPl
   }
   get btnRewindStart(){
-    if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-rewind-start')}
+    if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-stop')}
     return this._btnRwdSt
   }
   get imgPauser(){
