@@ -45,7 +45,7 @@ class VideoController {
 
     // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
     // met la taille médium.
-    this.setSize(null, this.analyse.videoSize||'medium', false)
+    this.setSize(null, this.analyse.options.get('video_size')||'medium')
     // TODO Si la taille est définie par l'analyse, il faut la reporter
     // dans le menu principal (Vidéo > Taille > <diminutif taille>)
 
@@ -96,6 +96,9 @@ class VideoController {
   load(vpath){
     this.controller.src = path.resolve(vpath)
     this.controller.load()
+    $(this.controller).on('load', ()=>{
+      console.log("La vidéo a pu être chargée")
+    })
   }
 
   /**

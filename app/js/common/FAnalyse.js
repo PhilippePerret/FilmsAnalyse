@@ -147,7 +147,6 @@ class FAnalyse {
       , filmStartTime:    this.filmStartTime.seconds
       , videoPath:        this.videoPath
       , diminutifs:       this.diminutifs
-      , videoSize:        this.videoSize
       , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
       , stopPoints:       (this.locator ? this.locator.stop_points : [])
     }
@@ -157,16 +156,12 @@ class FAnalyse {
     this.filmStartTime        = new OTime(v["filmStartTime"] || 0)
     this._videoPath           = v.videoPath
     this.diminutifs           = v.diminutifs  || {}
-    this.videoSize            = v.videoSize   || 'medium'
     this.lastCurrentTime      = v.lastCurrentTime || 0
     this.stopPoints           = v.stopPoints || []
   }
 
   get folder()  { return this._folder }
   set folder(v) { this._folder = v}
-
-  set videoSize(v)  { this._videoSize = v; this.modified = true }
-  get videoSize()   { return this._videoSize}
 
   get filmStartTime() {
     if(undefined === this._filmStartTime){
@@ -258,8 +253,11 @@ class FAnalyse {
    * Réglage des options dans les menus (en asynchrone)
    */
   setOptionsInMenus(){
+    // Options générales
     ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
     ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
+    // Options propres à l'analyse courante
+    ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
   }
   // Méthode à lancer après le chargement des données ou après la
   // sauvegarde
@@ -484,6 +482,7 @@ class FAnalyse {
     var my = this
       , fpath ;
     // Les options peuvent être chargée en premier, de façon synchrone
+    // Noter qu'elles seront appliquées plus tard, à la fin.
     this.options.load()
     // Les fichiers à charger
     var loadables = Object.assign([], my.SAVED_FILES)
