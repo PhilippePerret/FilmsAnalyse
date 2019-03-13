@@ -22,23 +22,23 @@ const UI = {
 
       // TODO Plus tard, faire une instance qui gère les boutons de
       // navigation, en en faisant un par vidéo.
-      listenClick('btn-hide-current-time', this, 'hideCurrentTime')
-      listenClick('btn-go-to-time',this,'goToTime')
+      listenClick('btn-hide-current-time-video-1', this, 'hideCurrentTime')
+      listenClick('btn-go-to-time-video-1',this,'goToTime')
 
       this.btnPlay = DGet('btn-real-play')
       listen(this.btnPlay, 'click', this, 'togglePlay')
-      this.btnPlay.innerHTML = '<img src="./img/btn-play.jpg" />'
 
       this.btnRewindStart = DGet('btn-rewind-start')
       listen(this.btnRewindStart,'click',my,'rewindStart')
-      this.btnRewindStart.innerHTML = '<img src="./img/btn-rewind.jpg" />'
 
       listenClick('btn-go-to-film-start', my, 'goToFilmStart')
 
-      listenClick('btn-rewind-1-sec',my,'rewind', 1)
-      listenClick('btn-rewind-5-sec',my,'rewind', 5)
-      listenClick('btn-forward-1-sec',my,'forward', 1)
-      listenClick('btn-forward-5-sec',my,'forward', 5)
+      listenClick('btn-rewind-1',my,'rewind', 0.04)
+      listenClick('btn-rewind-2',my,'rewind', 1)
+      listenClick('btn-rewind-3',my,'rewind', 5)
+      listenClick('btn-forward-1',my,'forward', 0.04)
+      listenClick('btn-forward-2',my,'forward', 1)
+      listenClick('btn-forward-3',my,'forward', 5)
 
       this.inited = true
     }

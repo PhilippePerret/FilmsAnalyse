@@ -68,9 +68,11 @@ class Locator {
    * on jouait, ou alors on remet en route)
    */
   rewind(secs){
+    console.log("-> rewind")
     this.setTime(this.video.currentTime - secs)
   }
   forward(secs){
+    console.log("-> forward")
     this.setTime(this.video.currentTime + secs)
   }
 
@@ -272,9 +274,11 @@ class Locator {
 
   // ---------------------------------------------------------------------
   // Méthodes DOM
-  // Méthode qui cache les champs précédents
+
+
+  // Méthode qui cache la table indiquant les temps courants
   hideCurrentTime(){
-    $('#div-temps-courants').hide();
+    $('#curtime-video-1').hide();
   }
 
   /**
@@ -290,18 +294,18 @@ class Locator {
    */
   getAndShowCurrentTime(){
     var videoTC = this.getOTime()
-    $('#temps-courant-video-horloge').val(videoTC.horloge)
-    $('#temps-courant-video-seconds').val(videoTC.secondsInt)
+    $('#curtime-video-1 .curtime-video-horloge').val(videoTC.horloge)
+    $('#curtime-video-1 .curtime-video-seconds').val(videoTC.secondsInt)
     if(this.hasStartTime){
       var filmTC  = new OTime(this.getRTime())
-      $('#temps-courant-film-horloge').val(filmTC.horloge)
-      $('#temps-courant-film-seconds').val(filmTC.secondsInt)
+      $('#curtime-video-1 .curtime-film-horloge').val(filmTC.horloge)
+      $('#curtime-video-1 .curtime-film-seconds').val(filmTC.secondsInt)
       clip(filmTC.horloge)
     } else {
       clip(videoTC.horloge)
     }
-    $('#div-temps-courants').show();
-    $('#span-temps-courants-film')[this.hasStartTime?'show':'hide']()
+    $('#curtime-video-1').show();
+    $('#curtime-video-1 .field-curtime-film').css('visibility',this.hasStartTime?'visible':'hidden')
   }
 
   /**
@@ -369,13 +373,9 @@ class Locator {
     return this._btnRwdSt
   }
   get imgPauser(){
-    return '<img src="./img/btn-pause.jpg" />'
+    return '<img src="./img/btns-controller/btn-pause.png" />'
   }
   get imgPlay(){
-    return '<img src="./img/btn-play.jpg" />'
+    return '<img src="./img/btns-controller/btn-play.png" />'
   }
-  get imgRewindStart(){
-    return '<img src="./img/btn-rewind.jpg" />'
-  }
-
 }
