@@ -1,3 +1,12 @@
+body, body * {
+  font-size: 15.1pt;
+  font-family:Avenir;
+}
+body {
+  background-color:#BBBBBB;
+}
+
+
 div#waiting-loop {
   position:fixed;
   top:300px;

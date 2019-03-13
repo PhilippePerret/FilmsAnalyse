@@ -1,20 +1,22 @@
-* Dans les horloges affichées, remplacer les ":frames" par un ".frames"
 
-* Enregistrer le temps courant (dans les données de l'analyse, pas de l'user, comme ça, plusieurs temps différents dans différentes analyses)
+* Poursuivre EventForm avec le cas de deux scènes créées au même endroit
+  - il faut interdire si c'est dans la même seconde (+/- 1 secondes)
+  - il faut demander si c'est dans les dix secondes
+
+* Boutons pour se déplacer de frame en frame
+  - mettre des vraies images pour les 6 boutons
+  - tester les six boutons avec un film court
+* Mettre le type de l'event en haut de son formulaire d'édition
+
+* Commencer à travailler sur le logo (un microscope ou un monitoring et une bande de film)
+
+* Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
+  Il faut aussi proposer d'éditer la scène en question.
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
 
 * Le menu pour "dire de repartir (play) dès qu'on va sur un temps" existe, il faut le synchroniser avec les options de l'analyse
 
-
-* Pouvoir tirer un screenshot vignette du film (toujours dans la même taille)
-  > vlc “pathtovideo” –video-filter=scene –vout=dummy –start-time=300 –stop-time=600 –scene-ratio=250 –scene-path=”pathtosaveimages”
-  > ffmpeg -ss 04:00 -t 03:00 -i videofile.mpg -r 0.033 image-%04d.jpeg
-    ffmpeg -ss <horloge départ> -t <duration> -i <video path> -r <ratio> <image name.ext>
-
-
-* Ne pas pouvoir créer deux scènes sur le même temps. Il faut CHECKER avant qu'on ouvre le formulaire, PAS une fois qu'on a rentré toutes les données.
-  Il faut aussi proposer d'éditer la scène en question.
 
 * Modification de l'évènement
   Voir si sa position (temps) a bougé et le replacer dans les listes de FAnalyse

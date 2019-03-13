@@ -49,7 +49,7 @@ class FAnalyse {
    */
   static checkIfCurrentSavedBeforeExec(toolName){
     var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
-    if (current_analyse && true/*current_analyse.modified*/){
+    if (current_analyse && current_analyse.modified){
       var my = this
       DIALOG.showMessageBox(null, {
           type: 'question'

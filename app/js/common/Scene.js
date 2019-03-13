@@ -33,6 +33,13 @@ class Scene {
     return this.scenes[numero]
   }
 
+  static forEachScene(fn){
+    var nb_scenes = this.ScenesByTimes.length
+    for(var i = 0; i < nb_scenes; ++i){
+      fn(this.get(this.ScenesByTimes[i].numero))
+    }
+  }
+
   /**
    * Retourne l'instance Scene de la scène au temps +time+
    *
@@ -78,6 +85,10 @@ class Scene {
     // console.log("this._scene_number_to_id:", this._scene_number_to_id)
     return this._scene_number_to_id
   }
+  /**
+   * Retourne un Array contenant des objects contenant
+   * {:time, :numero, :id} (numéro de la scène et id de l'event)
+   */
   static get ScenesByTimes(){
     if(undefined === this._scenes_by_time){
       this.SceneNumberToID // pour forcer le calcul
@@ -105,4 +116,6 @@ class Scene {
     if(undefined === this._event){this._event = current_analyse.ids[this.event_id]}
     return this._event
   }
+
+  get time(){ return this.event.time }
 }
