@@ -234,13 +234,12 @@ class FAnalyse {
    * où l'on est vraiment prêt.
    */
   setAllIsReady(){
-    if (this.videoPath){
-      this.locator.setRTime(this.lastCurrentTime)
-    }
+    // console.log("-> FAnalyse#setAllIsReady")
     UI.stopWait()// toujours, au cas où
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
+      // console.log("---> this.methodeAfterLoading", this.methodeAfterLoading)
       this.methodeAfterLoading()
     }
   }
@@ -268,6 +267,7 @@ class FAnalyse {
     // Options générales
     ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
     ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
+    ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
     // Options propres à l'analyse courante
     ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
   }

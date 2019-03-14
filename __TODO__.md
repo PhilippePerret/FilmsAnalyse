@@ -15,6 +15,11 @@
   Voir si sa position (temps) a bougé et le replacer dans les listes de FAnalyse
 * Pouvoir définir la DURÉE en cliquant-glissant de droite à gauche (les touches MAJ et CTRL permettent de faire gros ou fin)
   -> manuel
+
+* Outil pour dessiner le paradigme de Field Augmenté du film.
+  -> Classe PFA
+  -> Classe NoeudDrama (qui peut hériter de FAEvent)
+  
 * Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
 * Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)
 
@@ -25,17 +30,12 @@
 * Les QD non actuellement résolues doivent s'afficher en bas à droite
 * Les PP non actuellement résolues doivent s'afficher en bas à droite
 
-* Faire les menus
-  - menu pour choisir une analyse
-  - menu pour créer une nouvelle analyse
-  - menu pour définir le film (mp4/webm/ogg) de l'analyse
 * Faire un mode d'emploi interactif
-* Panneaux pour afficher les scènes, les personnages, les brins, etc.
 * Proposer la liste des décors/sous-décors quand on focusse dans ces champs
 * Pouvoir ajouter et retirer des diminutifs (peut-être utiliser les mêmes boutons pour le moment, en précisant "@T = Theodore")
 * Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
-* Avant le load de la vidéo, il faut vérifier que le fichier existe toujours.
-* Voir comment ajouter les sous-titres avec ffmpeg
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 * Possibilité d'afficher tous les évènements d'un coup, pour pouvoir lire et se déplacer dans le film
 * Pouvoir exporter en PDF le reader
+  - procédure de mise en forme
+  - sortie en format Kindle ou autre livre en ligne

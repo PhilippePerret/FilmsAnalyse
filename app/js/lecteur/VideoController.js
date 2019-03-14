@@ -87,20 +87,19 @@ class VideoController {
    * Pour charger la vidéo de path +vpath+
    */
   load(vpath){
+    // console.log("-> VideoController#load")
     $(this.controller)
-    .on('loaderror', ()=>{
+    .on('error', ()=>{
       console.log("Une erreur s'est produite au chargement de la vidéo.", err)
     })
-    // .on('loadstart', ()=>{
-    //   console.log("Le chargement de la vidéo a commencé")
-    // })
-    // .on('loadeddata', ()=>{
-    //   console.log("data loaded")
-    // })
-    .on('canplay', ()=>{
+    .on('loadeddata', () => {
       // console.log("La vidéo peut jouer")
+      console.log("-> loadeddata")
       UI.showVideoController()
-      current_analyse.setAllIsReady.bind(current_analyse)()
+      var lastCurTime = this.analyse.lastCurrentTime
+      lastCurTime && this.analyse.locator.setRTime(lastCurTime)
+      this.analyse.setAllIsReady.bind(current_analyse)()
+      console.log("<- loadeddata")
     })
     this.controller.src = path.resolve(vpath)
     this.controller.load()

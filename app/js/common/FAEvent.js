@@ -204,7 +204,11 @@ class FAEvent {
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
     o.find('.e-tools button.btn-play').on('click', () => {
-      this.locator.setRTime.bind(this.locator)(this.time)
+      var t = this.time
+      if(current_analyse.options.get('option_start_3secs_before_event')){
+        t += 3
+      }
+      this.locator.setRTime.bind(this.locator)(t)
     })
   }
 
