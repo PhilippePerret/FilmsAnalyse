@@ -38,7 +38,6 @@ class Locator {
     if (this.stop_points.indexOf(time) > -1) return
     this.stop_points.length > 2 && this.stop_points.shift()
     this.stop_points.push(time)
-    console.log("Ajout du stop-point:", time, this.stop_points)
   }
 
   init(){

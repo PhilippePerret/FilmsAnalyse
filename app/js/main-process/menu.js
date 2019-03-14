@@ -94,7 +94,7 @@ const DATA_MENUS = [
           }
         , {type: 'separator'}
         , {
-              label: 'Prendre le temps courant comme début…'
+              label: 'Prendre le temps courant comme début du film…'
             , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
           }
         , {
@@ -177,6 +177,17 @@ const DATA_MENUS = [
                 }
             }
           , {type:'separator'}
+          , {
+                label: 'Démarrer 3 secondes avant l’event'
+              , id:    'option_start_3secs_before_event'
+              , type:  'checkbox'
+              , checked:  false
+              , enabled: true
+              , click: ()=>{
+                  var c = ObjMenus.getMenu('option_start_3secs_before_event').checked ? 'true' : 'false'
+                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_start_3secs_before_event',${c})`)
+              }
+            }
           , {
                 label:  'Démarrer quand un temps est choisi'
               , id:     'option_start_when_time_choosed'

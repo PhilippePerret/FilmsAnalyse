@@ -5,6 +5,7 @@
   border: 1px dashed green;
   min-height: 600px;
   padding:0;
+  background-color:#EEEEEE;
 }
 #reader {
   width: 95%;

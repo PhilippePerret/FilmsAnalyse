@@ -42,14 +42,15 @@ const FITAnalyse = {
     }
 
     /**
-     * Destruction des évènements
-     */
+      * Destruction des évènements.
+      * Noter que maintenant on ne détruit plus le fichier, on le vide
+      */
   , removeEvents:function(){
-      removeFile(this.analyse.eventsFilePath, 'Le fichier des events')
+      fs.writeFileSync(this.analyse.eventsFilePath,'[]','utf8')
       this.analyse._events  = []
       this.analyse.ids      = {}
       EventForm.lastId      = -1
       $('#reader').html('')
-      $('.form-edit-event').remove()
+      $('.form-edit-event').remove() // toutes
     }
 }

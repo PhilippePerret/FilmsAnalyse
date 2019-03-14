@@ -98,6 +98,8 @@ t.case("Création, enregistrement et modification d'un event de type note", func
         return FITAnalyse.save()
           .then(()=>{
             assert_fileExists(FITAnalyse.analyse.eventsFilePath)
+            // Noter qu'il existe toujours, maintenant
+            
             // var contenu = fs.readFileSync(FITAnalyse.analyse.eventsFilePath, 'utf8')
             var contenu = require(FITAnalyse.analyse.eventsFilePath)
             assert_isArray(contenu, {success: "Le fichier des events contient bien une liste."})

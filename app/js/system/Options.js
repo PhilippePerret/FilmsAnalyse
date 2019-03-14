@@ -14,6 +14,7 @@ const Options = {
         'option_start_when_time_choosed':  true
       , 'option_lock_stop_points':         false
       , 'video_size':                       "medium"
+      , 'option_start_3secs_before_event': false
     }
 
   , modified: false
