@@ -5,6 +5,7 @@
 * [Gestion des temps](#gestion_des_temps)
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
+  * [Réglage du temps de l'event](#set_event_time)
 * [L'Interface](#linterface)
   * [Comportement du bouton STOP](#le_bouton_stop)
 
@@ -35,6 +36,23 @@ Ce bouton permet de passer en revue les trois derniers points d'arrêt de la vid
 ### Récupération du temps courant {#get_current_time}
 
 Pour coller rapidement un temps courant dans un champ d'édition, il suffit de cliquer sur le bouton « Temps courant » qui affiche le résultat et le colle dans le presse-papier.
+
+### Réglage du temps de l'event {#set_event_time}
+
+Pour éditer le temps d'un event — i.e. le modifier, on peut s'y prendre de cette manière :
+
+* éditer l'event en cliquant sur son bouton d'édition dans sa ligne d'outil dans le reader,
+* cliquer sur l'horloge de position et déplacer la souris — horizontalement — pour changer le temps. Noter que la vidéo se change en conséquence
+* utiliser la touche MAJ appuyée pour se déplacer rapidement dans le temps,
+* utiliser la touche CTRL appuyée pour régler en finesse le temps,
+* double-cliquer sur l'horloge pour remettre le temps initial (permet aussi, à l'ouverture du formulaire, de rejoindre tout de suite l'event dans le film),
+* relâcher la souris lorsque le bon temps est trouvé,
+* enregistrer les changements.
+
+### Réglage de la durée de l'event {#set_event_duration}
+
+On peut régler la durée d'un event quelconque en modifiant son horloge de durée.
+
 
 ## Interface {#linterface}
 

@@ -43,6 +43,9 @@ class OTime {
     }
     return this._horloge_simple
   }
+  get horloge_as_duree(){
+    return this.s2h(this.seconds,{as_duree: true})
+  }
 
   set duration(v) { this.duration = v }
   get duration()  { return this.duration || 1 }
@@ -62,22 +65,31 @@ class OTime {
     return tps / 1000
   }
   s2h(s, format){
+    if(undefined===format) format = {}
     var r, hrs, mns, scs, frm ;
     if(undefined==s){s = this.seconds}
     hrs = Math.floor(s / 3600)
     r = s - (hrs * 3600)
     mns = Math.floor(r / 60)
-    mns = mns > 9 ? mns : `0${mns}`
+    if(!(format.as_duree && hrs == 0)){
+      mns = mns > 9 ? mns : `0${mns}`
+    }
     r = r - (mns * 60)
     scs = Math.floor(r)
     scs = scs > 9 ? scs : `0${scs}`
     frm = parseInt((r - scs) * 1000 / 40,10)
     frm = frm > 9 ? frm : `0${frm}`
-    if(format && format.no_frames){
-      return `${hrs}:${mns}:${scs}`
+
+    var hstr
+    if(format.no_frames){
+      hstr = `${mns}:${scs}`
     } else {
-      return `${hrs}:${mns}:${scs}.${frm}`
+      hstr = `${mns}:${scs}.${frm}`
     }
+    if(!format.as_duree){
+      hstr = `${hrs}:${hstr}`
+    }
+    return hstr
   }
 
   /**

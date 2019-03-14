@@ -147,6 +147,10 @@ class Locator {
    */
   setTime(time){
     // console.log("-> setTime", time)
+    if(isNaN(time)){
+      console.error(`${time} n'est pas un temps. Je ne bouge pas la vidéo.`)
+      return
+    }
     this.video.currentTime = time
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()

@@ -17,6 +17,13 @@
   width: 90;
 }
 
+/* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
+button.main-button {
+  -webkit-appearance: none;
+}
+ */
+
+
 span.horloge, input.horloge {
   font-family: Courier;
   background-color: black;

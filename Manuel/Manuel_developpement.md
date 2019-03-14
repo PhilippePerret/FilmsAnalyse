@@ -1,6 +1,12 @@
-# Manuel de développement
+# Manuel de développement de Film-Analyzer
 
-# Point d'entrée
+* [Point d'entrée](#point_dentree)
+* [Ajout de préférences globales](#add_global_prefs)
+* [Ajout de préférence analyse](#add_analyse_pref)
+* [Champs temporels](#temporal_fields)
+* [Aspect visuel](#visual_aspect)
+
+## Point d'entrée {#point_dentree}
 
 Le point d'entrée du main process se fait par `./main.js`
 
@@ -10,7 +16,8 @@ On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, po
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
 
-# Ajout de préférences global (appelées aussi "options globales")
+
+## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 
 Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
 
@@ -62,10 +69,30 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
 
 ```
 
-### Ajout de préférence analyse
+### Ajout de préférence analyse {#add_analyse_pref}
 
 1. Dans le fichier `./app/js/system/Options.js`, ajouter l'option à la donnée `Options.DEFAULT_DATA`.
 
 2. Demander le réglage de l'option dans `FAnalyse#setOptionsInMenus` dans le fichier `common/FAnalyse.js` en s'inspirant des autres options.
 
-3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>').
+3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>')`.
+
+
+### Champs temporels {#temporal_fields}
+
+On peut mettre `horlogeable` et `durationable` sur les input-text qui doivent être gérable au niveau des horloges (positions) et des durées.
+
+Quand un champ input-text possède l'une de ces deux classes :
+
+* il est rendu inéditable (`disabled`)
+* il est sensible au déplacement de la souris pour augmenter/diminuer le temps
+* pour les horlogeable, un bouton est placé après le champ pour prendre le temps courant
+
+Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>)` ou `UI.setDurationable(<container>)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
+
+
+## Aspect visuel {#visual_aspect}
+
+### Boutons principaux
+
+Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans `ui.css`.

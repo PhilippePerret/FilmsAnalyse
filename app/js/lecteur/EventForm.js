@@ -163,6 +163,12 @@ class EventForm {
   get inited(){ return this._initied || false}   // mis à true à l'initialisation
   set inited(v){ this._inited = v }
 
+  get modified(){return this._modified || false}
+  set modified(v){
+    this._modified = v
+    this.jqObj[v?'addClass':'removeClass']('modified')
+  }
+
   get event(){ return this._event }
   get id(){
     if(undefined === this._id){this._id = this.event.id}
@@ -250,12 +256,12 @@ class EventForm {
   }
 
   show(){
-    this.jqForm.show()
+    this.jqObj.show()
     this.visible = true
     EventForm.setCurrent(this)
   }
   hide(){
-    this.jqForm.hide()
+    this.jqObj.hide()
     this.visible = false
     EventForm.unsetCurrent(this)
   }
@@ -270,20 +276,41 @@ class EventForm {
     f.innerHTML = EVENT_FORM_TEMP.replace(/__EID__/g, this.id).replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
     // document.body.appendChild(EVENT_FORM_TEMP.replace(/__EID__/g, this.id))
     // --- Champs à voir et à masquer --
-    this.jqForm.find('.ff').hide()
-    this.jqForm.find(`.f${this.type}`).show()
-    this.jqForm.find(`.fall`).show()
-    this.jqForm.find(`.-f${this.type}`).hide()
+    this.jqObj.find('.ff').hide()
+    this.jqObj.find(`.f${this.type}`).show()
+    this.jqObj.find(`.fall`).show()
+    this.jqObj.find(`.-f${this.type}`).hide()
 
     // --- Valeurs définies ---
     $(this.fieldID('id')).val(this.id)
     $(this.fieldID('type')).val(this.type)
     $(this.fieldID('is_new')).val(this.isNew?'1':'0')
     $(this.fieldID('time')).val(parseInt(this.analyse.locator.getRTime(),10))
-    this.jqForm.find('section.footer span.event-type').html(this.type.toUpperCase())
-    this.jqForm.find('section.header span.event-type').html(this.type.toUpperCase())
-    this.jqForm.find('section.footer span.event-id').html(`event #${this.id}`)
-    this.jqForm.find('section.footer span.event-time').html(new OTime(this.time).horloge)
+    this.jqObj.find('section.footer span.event-type').html(this.type.toUpperCase())
+    this.jqObj.find('section.header span.event-type').html(this.type.toUpperCase())
+    this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
+    this.jqObj.find('section.footer span.event-time').html(new OTime(this.time).horloge)
+
+    // On rend les champs horlogeable et durationables
+    let horloges = UI.setHorlogeable(f)
+    // L'horloge de position de l'évènement
+    this.horlogePosition = horloges[`event-${this.id}-time`]
+    this.horlogePosition.dispatch({
+        time: this.time
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
+    let hdurees = UI.setDurationable(f)
+    // L'horloge de durée de l'évènement
+    this.horlogeDuration = hdurees[`event-${this.id}-duration`]
+    this.horlogeDuration.dispatch({
+        duration: this.duration || 10
+      , startTime: parseFloat(this.time)
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
     this.built = true
     f = null
   }
@@ -292,10 +319,10 @@ class EventForm {
    * Méthode pour ramener le formulaire au premier plan
    */
   bringToFront(){
-    this.jqForm.css('z-index', '1000')
+    this.jqObj.css('z-index', '1000')
   }
   bringToBack(){
-    this.jqForm.css('z-index', '50')
+    this.jqObj.css('z-index', '50')
   }
 
   // Retourne l'ID du champ pour la propriété (ou autre) +prop+
@@ -306,10 +333,10 @@ class EventForm {
 
   observeForm(){
     var my = this
-    this.jqForm.on('click', EventForm.setCurrent.bind(EventForm, my))
-    this.jqForm.draggable()
-    this.jqForm.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-    this.jqForm.find('.btn-form-submit').on('click', my.submit.bind(my))
+    this.jqObj.on('click', EventForm.setCurrent.bind(EventForm, my))
+    this.jqObj.draggable()
+    this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
+    this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
     my = null
   }
 
@@ -419,9 +446,9 @@ class EventForm {
     if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
     return this._form
   }
-  get jqForm(){
-    if(undefined === this._jqForm){this._jqForm = $(this.form)}
-    return this._jqForm
+  get jqObj(){
+    if(undefined === this._jqObj){this._jqObj = $(this.form)}
+    return this._jqObj
   }
 }
 
@@ -439,12 +466,11 @@ const EVENT_FORM_TEMP = `
 
     <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
 
-    <div id="div-infos-temporelles">
-      <label>Position</label> <input type="text" class="horloge form-event-time" id="event-__EID__-time" value="" placeholder="h,m,s.f" />
-      <label class="ff -fscene">Durée</label>
-      <label class="ff fscene">Numéro</label>
-      <input type="text" id="event-__EID__-duration" class="temps-secondes ff -fscene">
-      <input type="text" id="event-__EID__-numero" class="temps-secondes ff fscene">
+    <div class="div-infos-temporelles">
+      <label>Position</label>
+      <horloge class="small" id="event-__EID__-time" value="">...</horloge>
+      <label>Durée</label>
+      <duree id="event-__EID__-duration" class="small durationable">...</duree>
     </div>
 
     <div class="div-form">
@@ -501,6 +527,10 @@ const EVENT_FORM_TEMP = `
 
     <div class="div-form">
 
+      <!-- Champ pour le numéro de la scène -->
+      <label class="ff fscene">Num.</label>
+      <input type="text" id="event-__EID__-numero" class="temps-secondes ff fscene" disabled>
+
       <!-- Menu pour l'effet de la scène -->
       <select class="ff fscene" id="event-__EID__-lieu">
         <option value="int">INT.</option>
@@ -508,6 +538,7 @@ const EVENT_FORM_TEMP = `
         <option value="extint">INT. & EXT.</option>
       </select>
 
+      <!-- Menu pour le lieu de la scène -->
       <select class="ff fscene" id="event-__EID__-effet">
         <option value="jour">JOUR</option>
         <option value="nuit">NUIT</option>
@@ -562,7 +593,7 @@ const EVENT_FORM_TEMP = `
 
     <div class="event-form-buttons">
       <button class="btn-form-cancel fleft" type="button">Renoncer</button>
-      <button class="btn-form-submit" type="button">__SAVE_BUTTON_LABEL__</button>
+      <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
     </div>
   </section>
 

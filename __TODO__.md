@@ -1,3 +1,8 @@
+* Mettre le numéro de la scène à côté de son intitulé
+* Laisser l'horloge de durée pour la scène
+* Régler l'horloge de durée presque comme l'horloge de position (mettre 10 secondes par défaut)
+* Poursuivre le mode d'emploi sur le réglage de l'horloge
+
 * On doit pouvoir rectifier le temps d'un event
   - soit en glissant la souris après avoir cliqué sur son horloge dans la boite d'édition
   - soit en le spécifiant en disant que ça doit être le temps courant (bouton spécial)

@@ -109,6 +109,35 @@ const UI = {
 
       my = null
     }
+    /**
+     * Rend tous les champs avec la class "horlogeable" du +container+ comme
+     * des input-text dont on peut régler le temps à la souris
+     */
+  , setHorlogeable:function(container){
+      var my = this
+      var hrs = container.querySelectorAll('horloge')
+      var horloges = {}
+      // console.log("horloges trouvées : ", hrs)
+      for(var i = 0, len=hrs.length; i<len; ++i){
+        var h = new DOMHorloge(hrs[i])
+        horloges[h.id] = h
+        h.observe()
+      }
+      return horloges
+    }
+  , setDurationable:function(container){
+    var my = this
+    var hrs = container.querySelectorAll('duree')
+    var horloges = {}
+    // console.log("horloges trouvées : ", hrs)
+    for(var i = 0, len=hrs.length; i<len; ++i){
+      var h = new DOMDuration(hrs[i])
+      horloges[h.id] = h
+      h.observe()
+    }
+    return horloges
+  }
+
   , setVideoPath:function(ev){
       current_analyse.setVideoPath(ev)
     }
