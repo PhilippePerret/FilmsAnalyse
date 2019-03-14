@@ -95,7 +95,6 @@ class FAnalyse {
       current_analyse.load()
       return true
     } catch (e) {
-      console.error('ERREUR:', e)
       return F.error(e)
     }
   }
@@ -430,7 +429,7 @@ class FAnalyse {
    * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
    * fenêtre, et au changement d'analyse.
    * @synchrone
-   * Elle doit être synchrone pour pour quitter l'application
+   * Elle doit être synchrone pour quitter l'application
    * normalement.
    */
   saveData(){
@@ -438,16 +437,24 @@ class FAnalyse {
   }
 
   /**
-   * @asynchrone
-   */
+    * Procédure prudente de sauvegarde
+    *
+    * @asynchrone
+    *
+    * Par mesure de prudence, on procède toujours en inscrivant le
+    * fichier sur le disque, sous un autre nom, puis on change son nom
+    * en mettant l'original en backup (s'il n'est pas vide)
+    */
   saveFile(fpath, prop){
-    var my = this
-    fs.writeFile(fpath, JSON.stringify(this[prop]),'utf8', (err)=>{
-      if(err) throw(err)
-      my.setSaved(fpath)
-    })
+    var iofile = new IOFile(fpath)
+    iofile.code = this[prop]
+    iofile.methodAfterSaving = this.setSaved.bind(this, fpath)
+    iofile.save({as_json: true})
+    var isSaved = iofile.saved
+    iofile = null
+    return isSaved
   }
-  setSaved(path){
+  setSaved(fpath){
     this.savers += 1
     if(this.savers === this.savables_count){
       this.modified = false
@@ -502,11 +509,14 @@ class FAnalyse {
     this.loaders = 0
     my.loadables_count = loadables.length
     // console.log("loadables:",loadables)
-    while(fpath = loadables.shift()){my.loadFile(fpath, my.PROP_PER_FILE[fpath])}
+    while(fpath = loadables.shift()){
+      my.loadFile(fpath, my.PROP_PER_FILE[fpath])
+    }
   }
 
   onLoaded(fpath){
     this.loaders += 1
+    // console.log("-> onLoaded", fpath, this.loaders)
     if(this.loaders === this.loadables_count){
       // console.log("Analyse chargée avec succès.")
       // console.log("Event count:",this.events.length)
@@ -518,7 +528,14 @@ class FAnalyse {
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
   loadFile(fpath, prop){
-    (this._loadFile||requiredChunk(this,'loadFile')).bind(this)(fpath,prop)
+    var my = this
+    var iofile = new IOFile(fpath)
+    iofile.loadIfExists({as_json: true}, (data) => {
+      // console.log(`Data retournées par iofile:${fpath}`, data)
+      my[prop] = data
+      my.onLoaded.bind(my)(fpath)
+    })
+    iofile  = null
   }
 
   /**

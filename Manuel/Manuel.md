@@ -1,6 +1,7 @@
 # Manuel de l'analyse de films
 
 * [Présentation générale](#presentation_generale)
+* [Videos](#concernant_la_video)
 * [Gestion des temps](#gestion_des_temps)
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
@@ -10,6 +11,10 @@
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
 
 ## Présentation générale {#presentation_generale}
+
+## Videos {#concernant_la_video}
+
+Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 ## Gestion des temps {#gestion_des_temps}
 

@@ -30,12 +30,15 @@ module.exports = function(){
   let folderPath, videoPath
   try {
     // On demande le path du nouveau fichier vidéo
+    var cura = current_analyse
     videoPath = NewAnalyse.askForVideo()
     videoPath !== false || raise('Vidéo invalide')
-    current_analyse.videoPath = videoPath
-    current_analyse.videoController.load(videoPath)
+    cura.videoPath = videoPath
+    cura.methodeAfterSaving = cura.videoController.load.bind(cura.videoController.videoPath)
+    // On sauve tout de suite
+    cura.save()
   } catch (e) {
     console.log(e)
   }
-
+  cura = null
 }

@@ -49,7 +49,15 @@ const Flash = {
       this.close();
     }
     // Affichage d'une erreur
+    /**
+     *
+     * Si c'est une "vraie" qui est envoyée, on l'affichage en console, aussi
+     */
   , error: function(str){
+      if ('undefined' !== typeof(str.message)){
+        console.error(str)
+        str = str.message
+      }
       this.display(str, 'jqWarning');
     }
     // Pour poser une question

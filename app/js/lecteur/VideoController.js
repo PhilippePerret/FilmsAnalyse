@@ -93,13 +93,10 @@ class VideoController {
       console.log("Une erreur s'est produite au chargement de la vidéo.", err)
     })
     .on('loadeddata', () => {
-      // console.log("La vidéo peut jouer")
-      console.log("-> loadeddata")
       UI.showVideoController()
       var lastCurTime = this.analyse.lastCurrentTime
       lastCurTime && this.analyse.locator.setRTime(lastCurTime)
       this.analyse.setAllIsReady.bind(current_analyse)()
-      console.log("<- loadeddata")
     })
     this.controller.src = path.resolve(vpath)
     this.controller.load()

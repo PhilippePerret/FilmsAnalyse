@@ -42,7 +42,7 @@ app.on('ready', () => {
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
   if (MODE_TEST) mainW.toggleDevTools();
   // ou pour débuguer
-  mainW.toggleDevTools();
+  // mainW.toggleDevTools();
 
   mainW.on('close', (ev) => {
     // console.log("Je fais ça avant de fermer la fenêtre et quitter")

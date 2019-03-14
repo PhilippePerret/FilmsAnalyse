@@ -30,6 +30,7 @@ function requiredChunk(bindee, methodName){
   */
 function defineP(obj, prop, val){
   obj[prop] = val
+  return val
 }
 
 

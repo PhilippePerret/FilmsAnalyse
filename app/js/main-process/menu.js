@@ -94,7 +94,7 @@ const DATA_MENUS = [
           }
         , {type: 'separator'}
         , {
-              label: 'Prendre le temps courant comme début…'
+              label: 'Prendre le temps courant comme début du film…'
             , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
           }
         , {
