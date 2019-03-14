@@ -432,7 +432,7 @@ class EventForm {
    * En cas d'annulation de l'édition
    */
   cancel(){
-    console.log("Je renonce à l'édition de l'event")
+    // console.log("Je renonce à l'édition de l'event")
     this.endEdition()
   }
 

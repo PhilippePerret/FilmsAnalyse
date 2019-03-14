@@ -93,3 +93,9 @@ table.cont-temps-courants {
 table.cont-temps-courants td.field-curtime-film {
   visibility:hidden;
 }
+
+/* Pour des petits boutons controller, par exemple au-dessus des events */
+img.small-btn-controller {
+  width:22px;
+  vertical-align:middle;
+}

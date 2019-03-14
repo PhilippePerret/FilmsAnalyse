@@ -1,6 +1,10 @@
-* Mettre le numéro de la scène à côté de son intitulé
-* Laisser l'horloge de durée pour la scène
-* Régler l'horloge de durée presque comme l'horloge de position (mettre 10 secondes par défaut)
+* Jouer l'event : ne mettre le bouton "stop" que si les options disent de jouer tout de suite l'event.
+
+* Ajouter aussi les boutons play/stop dans le formulaire de l'event
+
+* Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
+  -> Objet Tips
+
 * Poursuivre le mode d'emploi sur le réglage de l'horloge
 
 * On doit pouvoir rectifier le temps d'un event
