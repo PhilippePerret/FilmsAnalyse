@@ -29,7 +29,6 @@ class IOFile {
       if(this.tempExists()) fs.unlinkSync(this.tempPath)
       fs.writeFile(this.tempPath,this.code,'utf8', this.afterTempSaved.bind(this))
     } catch (e) { return F.error(e) }
-    c = null
   }
   afterTempSaved(err){
     try {

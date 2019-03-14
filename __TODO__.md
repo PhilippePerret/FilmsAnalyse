@@ -1,3 +1,12 @@
+* Jouer l'event : ne mettre le bouton "stop" que si les options disent de jouer tout de suite l'event.
+
+* Ajouter aussi les boutons play/stop dans le formulaire de l'event
+
+* Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
+  -> Objet Tips
+
+* Poursuivre le mode d'emploi sur le réglage de l'horloge
+
 * On doit pouvoir rectifier le temps d'un event
   - soit en glissant la souris après avoir cliqué sur son horloge dans la boite d'édition
   - soit en le spécifiant en disant que ça doit être le temps courant (bouton spécial)

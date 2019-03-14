@@ -81,6 +81,10 @@ class Locator {
     // console.log("<- togglePlay")
   }
 
+  stop(){
+    if(this.playing)this.togglePlay()
+  }
+
   /**
    * Méthode pour rembobiner au début du film (si on est après et qu'il est
    * défini) ou au début de la vidéo
@@ -147,6 +151,10 @@ class Locator {
    */
   setTime(time){
     // console.log("-> setTime", time)
+    if(isNaN(time)){
+      console.error(`${time} n'est pas un temps. Je ne bouge pas la vidéo.`)
+      return
+    }
     this.video.currentTime = time
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
@@ -182,6 +190,14 @@ class Locator {
     this.setTime(time, dontPlay)
   }
 
+  /**
+   * On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
+   */
+  setEndTime(time, fnOnEndTime){
+    if(this.hasStartTime) time += this.startTime
+    this.wantedEndTime = parseFloat(time)
+    this.wantedEndTimeCallback = fnOnEndTime
+  }
   // ---------------------------------------------------------------------
 
   /**
@@ -288,6 +304,10 @@ class Locator {
 
   actualizeReader(){
     this.showEventsAt(this.currentRTime)
+    if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
+      this.togglePlay()
+      if('function'===typeof this.wantedEndTimeCallback) this.wantedEndTimeCallback()
+    }
   }
 
   /**

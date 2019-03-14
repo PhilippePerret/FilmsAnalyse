@@ -37,7 +37,7 @@ class FAEvent {
     }
     this._duration = v
   }
-  get duration(){return this._duration}
+  get duration(){return this._duration || 10}
 
   /**
    * Méthode appelée en cas d'erreur.
@@ -124,7 +124,9 @@ class FAEvent {
       be.innerHTML = '<img src="./img/btn/edit.png" class="btn" />'
       var br = document.createElement('BUTTON')
       br.className = 'btn-play'
-      br.innerHTML = '<img src="./img/btn/play.png" class="btn" />'
+      br.innerHTML =
+          '<img src="./img/btns-controller/btn-play.png" class="small-btn-controller btn-play" />'
+        + '<img src="./img/btns-controller/btn-stop.png" class="small-btn-controller btn-stop" style="display:none" />'
       etools.append(br)
       etools.append(be)
       etools.append(h)
@@ -200,16 +202,39 @@ class FAEvent {
     }
 
   }
+  togglePlay(){
+    if(this.playing){
+      this.locator.stop()
+    } else {
+      // On met en route
+      var t = this.time
+      if(current_analyse.options.get('option_start_3secs_before_event')){t -= 3}
+      this.locator.setRTime.bind(this.locator)(t)
+      // On détermine la fin du jeu
+      this.locator.setEndTime(t + this.duration, this.togglePlay.bind(this))
+    }
+
+    this.playing = !this.playing
+    if(current_analyse.options.get('option_start_when_time_choosed')){
+      this.imgBtnPlay[this.playing?'hide':'show']()
+      this.imgBtnStop[this.playing?'show':'hide']()
+    }
+
+  }
+  get imgBtnPlay(){
+    return this._imgBtnPlay || defineP(this,'_imgBtnPlay',this.btnPlayETools.find('img.btn-play'))
+  }
+  get imgBtnStop(){
+    return this._imgBtnStop || defineP(this,'_imgBtnStop',this.btnPlayETools.find('img.btn-stop'))
+  }
+  get btnPlayETools(){
+    return this._btnPlayETools || defineP(this,'_btnPlayETools', this.jqReaderObj.find('.e-tools .btn-play'))
+  }
+
   observe(){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-    o.find('.e-tools button.btn-play').on('click', () => {
-      var t = this.time
-      if(current_analyse.options.get('option_start_3secs_before_event')){
-        t += 3
-      }
-      this.locator.setRTime.bind(this.locator)(t)
-    })
+    o.find('.e-tools button.btn-play').on('click', this.togglePlay.bind(this))
   }
 
   get locator(){return this.analyse.locator}

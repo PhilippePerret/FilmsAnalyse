@@ -33,7 +33,7 @@ const Options = {
      * option.
      */
   , onSetByApp:function(opid, value){
-      console.log("Options#onSetByApp", opid, value)
+      // console.log("Options#onSetByApp", opid, value)
       switch (opid) {
         case 'video_size':
           current_analyse.videoController.setSize(null, value)

@@ -10,6 +10,17 @@ form.form-edit-event {
   z-index:50;
 }
 
+/* Le Formulaire quand les données ont été modifée */
+form.form-edit-event.modified {
+
+}
+form.form-edit-event:not(.modified) button.btn-form-submit {
+  visibility:hidden;
+}
+form.form-edit-event.modified button.btn-form-submit {
+  visibility:visible;
+}
+
 form.form-edit-event .div-form {
   display:block;
   margin-top:8px;
@@ -27,7 +38,8 @@ form.form-edit-event label {
   font-style:italic;
   margin-right:0.5em;
 }
-form.form-edit-event input[type="text"]{width:98%;}
+form.form-edit-event input[type="text"]:not(.horloge){width:98%;}
+form.form-edit-event input[type="text"].horloge{width:90px;}
 form.form-edit-event input[type="text"].temps-secondes {width:60px;}
 
 /* Section contenant le formulaire */
@@ -45,18 +57,36 @@ form.form-edit-event section.footer {
   margin-top:1em;
   padding:0.2em 1em;
 }
+form.form-edit-event:not(.modified) section.footer,
+form.form-edit-event:not(.modified) section.footer *,
+form.form-edit-event:not(.modified) section.header,
+form.form-edit-event:not(.modified) section.header *
+{
+  background-color:black;
+}
+form.form-edit-event.modified section.footer,
+form.form-edit-event.modified section.footer *,
+form.form-edit-event.modified section.header,
+form.form-edit-event.modified section.header *
+{
+  background-color:#990022;
+}
 form.form-edit-event section.footer,
 form.form-edit-event section.footer *,
 form.form-edit-event section.header,
 form.form-edit-event section.header *
  {
-  background-color:black;
   font-size:11pt;
 }
 form.form-edit-event section.footer,
 form.form-edit-event section.footer *
 {
   color:#CCCCCC;
+}
+form.form-edit-event div.div-infos-temporelles {
+  border-bottom:1px solid;
+  padding-bottom:2px;
+  margin-bottom:2px;
 }
 
 form.form-edit-event section.footer span {
@@ -86,6 +116,7 @@ div#buttons-new-event button {
 div.event-form-buttons {
   margin-top:1em;
   text-align:right;
+  padding:0 0.7em;
 }
 
 textarea#event-content {
