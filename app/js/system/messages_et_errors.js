@@ -11,6 +11,8 @@ const ERRORS = {
 , "error-while-saving-file": "Une erreur s'est produite à l'enregistrement du fichier. Il ne contient pas le bon nombre d'octets.<br>%{fpath}."
 , "temp-file-empty-stop-save": "Le code du fichier temporaire est malheureusement vide. Je dois interrompre la procédure de sauvegarde du fichier.<br>%{fpath}"
 , "temps-file-unfound": "Le fichier temporaire est introuvable. Je dois interrompre la procédure d'enregistrement.<br>%{fpath}"
+, "code-to-save-is-undefined":"Le code à sauver est indéfini (undefined), c'est impossible !"
+, "code-to-save-is-null":"Le code à sauver est nul (null), c'est impossible !"
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."

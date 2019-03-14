@@ -18,15 +18,16 @@ class IOFile {
    * en bon fichier tout en faisant un backup de l'original.
    */
   save(options){
-    var c // le code final, en fonction des options
     this.options = options
     this.checkBackupFolder()
     try {
       this.saved = false
       if(this.options.as_json) this.code = JSON.stringify(this.code)
-      this.code.length > 0 || raise(T('code-to-save-is-empty'))
+      this.code !== undefined || raise(T('code-to-save-is-undefined'))
+      this.code !== null      || raise(T('code-to-save-is-null'))
+      this.code.length > 0    || raise(T('code-to-save-is-empty'))
       if(this.tempExists()) fs.unlinkSync(this.tempPath)
-      fs.writeFile(this.tempPath,c,'utf8', this.afterTempSaved.bind(this))
+      fs.writeFile(this.tempPath,this.code,'utf8', this.afterTempSaved.bind(this))
     } catch (e) { return F.error(e) }
     c = null
   }
@@ -156,6 +157,7 @@ class IOFile {
       try {
         this._dejsonedCode = JSON.parse(this.code)
       } catch (e) {
+        console.log("ERROR JSON AVEC:", this.pathii)
         F.error('Une erreur s’est produite en lisant le fichier '+this.path)
         F.error(e)
         this._dejsonedCode = null

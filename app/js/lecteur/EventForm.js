@@ -430,7 +430,6 @@ const EVENT_FORM_TEMP = `
   <input type="hidden" id="event-__EID__-id" />
   <input type="hidden" id="event-__EID__-is_new" />
   <input type="hidden" id="event-__EID__-type" />
-  <input type="hidden" id="event-__EID__-time" />
 
   <section class="header">
     <span class="event-type">...</span>
@@ -438,15 +437,14 @@ const EVENT_FORM_TEMP = `
 
   <section class="form">
 
-    <!-- Un div flottant pour définir la durée (pour tous sauf scène) -->
-    <div id="div-duration" class="fright -fscene">
-      <label for="event-__EID__-duration">Durée</label>
-      <input type="text" id="event-__EID__-duration" class="temps-secondes" placeholder="">
-    </div>
+    <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
 
-    <div id="div-duration" class="fright ff fscene">
-      <label for="event-__EID__-numero">Numéro</label>
-      <input type="text" id="event-__EID__-numero" class="temps-secondes fscene" placeholder="">
+    <div id="div-infos-temporelles">
+      <label>Position</label> <input type="text" class="horloge form-event-time" id="event-__EID__-time" value="" placeholder="h,m,s.f" />
+      <label class="ff -fscene">Durée</label>
+      <label class="ff fscene">Numéro</label>
+      <input type="text" id="event-__EID__-duration" class="temps-secondes ff -fscene">
+      <input type="text" id="event-__EID__-numero" class="temps-secondes ff fscene">
     </div>
 
     <div class="div-form">

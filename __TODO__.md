@@ -1,7 +1,3 @@
-* Affiner encore la procédure de démarrage (voir avec l'ajout de FAnalyse#allIsReady : il se peut qu'elle soit appelée avant la fin normale de chargement de la vidéo)
-
-* Implémenter l'option pour dire de commencer à jouer x secondes avant l'event choisi.
-
 * On doit pouvoir rectifier le temps d'un event
   - soit en glissant la souris après avoir cliqué sur son horloge dans la boite d'édition
   - soit en le spécifiant en disant que ça doit être le temps courant (bouton spécial)
@@ -19,7 +15,7 @@
 * Outil pour dessiner le paradigme de Field Augmenté du film.
   -> Classe PFA
   -> Classe NoeudDrama (qui peut hériter de FAEvent)
-  
+
 * Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
 * Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)
 
