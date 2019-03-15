@@ -215,7 +215,7 @@ class EventForm {
     // Les valeurs communes
     for(prop of FAEvent.OWN_PROPS){
       if(null === this.event[prop] || undefined === this.event[prop]) continue
-      $(this.fieldID(prop)).val(this.event[prop])
+      this.jqField(prop).val(this.event[prop])
       // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
     }
     // Les valeurs propres au type d'event
@@ -226,8 +226,11 @@ class EventForm {
         [prop, sufProp] = prop
       }
       if(null === this.event[prop] || undefined === this.event[prop]) continue
-      $(this.fieldID(sufProp)).val(this.event[prop])
+      this.jqField(sufProp).val(this.event[prop])
       // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
+    }
+    if(this.type === 'stt'){
+      this.domField('sttID').disabled = true
     }
   }
 
@@ -242,7 +245,7 @@ class EventForm {
     } else {
       numero = this.event.numero
     }
-    $(this.fieldID('numero')).val(numero)
+    this.jqField('numero').val(numero)
     // console.log("type/numero", this.type, numero)
     numero = null
   }
@@ -282,10 +285,10 @@ class EventForm {
     this.jqObj.find(`.-f${this.type}`).hide()
 
     // --- Valeurs définies ---
-    $(this.fieldID('id')).val(this.id)
-    $(this.fieldID('type')).val(this.type)
-    $(this.fieldID('is_new')).val(this.isNew?'1':'0')
-    $(this.fieldID('time')).val(parseInt(this.analyse.locator.getRTime(),10))
+    this.jqField('id').val(this.id)
+    this.jqField('type').val(this.type)
+    this.jqField('is_new').val(this.isNew?'1':'0')
+    this.jqField('time').val(parseInt(this.analyse.locator.getRTime(),10))
     this.jqObj.find('section.footer span.event-type').html(this.type.toUpperCase())
     this.jqObj.find('section.header span.event-type').html(this.type.toUpperCase())
     this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
@@ -311,6 +314,23 @@ class EventForm {
       , parentModifiable: this
     }).showTime()
 
+    // Si c'est pour un nœud structurel, il faut peupler le menu des types
+    if (this.type === 'stt'){
+      var dataStt = (current_analyse._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
+      var mstt = this.jqObj.find('.event-sttID')
+      var o = document.createElement('OPTION')
+      o.value = ''
+      o.innerHTML = 'Choisir l’ID du nœud'
+      mstt.append(o)
+      for(var nid in dataStt){
+        o = document.createElement('OPTION')
+        var dstt = dataStt[nid]
+        o.value     = nid
+        o.innerHTML = dstt.hname
+        mstt.append(o)
+      }
+    }
+
     this.built = true
     f = null
   }
@@ -330,6 +350,12 @@ class EventForm {
   fieldID(prop){
     return `#event-${this.id}-${prop}`
   }
+  jqField(prop){
+    return $(this.fieldID(prop))
+  }
+  domField(prop){
+    return document.getElementById(`event-${this.id}-${prop}`)
+  }
 
   observeForm(){
     var my = this
@@ -337,6 +363,9 @@ class EventForm {
     this.jqObj.draggable()
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
+    // Toutes les modifications de texte doivent entrainer une activation du
+    // bouton de sauvegarde
+    this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
     my = null
   }
 
@@ -411,6 +440,7 @@ class EventForm {
       if(this.isNew){
         // CRÉATION
         current_analyse.addEvent(this.event)
+        if('function'===this.event.onCreate) this.event.onCreate()
       } else {
         // ÉDITION
         current_analyse.updateEvent(this.event, {initTime: initTime})
@@ -420,8 +450,8 @@ class EventForm {
     if (this.event.isValid){
       this.isNew = false // il a été enregistré, maintenant
       this.endEdition()
-    } else {
-      // En cas d'erreur, on focus dans le premier champ erroné
+    } else if(this.event.firstErroredFieldId) {
+      // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
       $(this.event.firstErroredFieldId).focus().select()
     }
 
@@ -475,6 +505,11 @@ const EVENT_FORM_TEMP = `
 
     <div class="div-form">
       <label class="ff finfo fpp fdialog fscene fproc">Type</label>
+      <label class="ff fstt">Type du Nœud</label>
+
+      <select class="event-sttID ff fstt" id="event-__EID__-sttID">
+        <!-- sera rempli automatiquement à l'init de l'UI -->
+      </select>
 
       <select class="ff fscene" id="event-__EID__-sceneType">
         <option value="n/d">N/D</option>
@@ -579,7 +614,7 @@ const EVENT_FORM_TEMP = `
       <div>
         <label class="ff fscene fbrin">Résumé</label>
         <label class="ff finfo">Information</label>
-        <label class="ff fevent faction fqd fpp">Description</label>
+        <label class="ff fevent faction fqd fpp fstt">Description</label>
         <label class="ff fdialog">Commentaire</label>
         <label class="ff fnote">Contenu de la note</label>
       </div>

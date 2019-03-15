@@ -19,10 +19,19 @@ class FAEvent {
 
   }
 
-  get otime(){
-    if(undefined === this._otime) this._otime = new OTime(this.time)
-    return this._otime
+  // ---------------------------------------------------------------------
+  //  Méthodes d'helper
+
+  // Un lien cliquable pour se rendre au temps de l'event
+  get link(){
+    return `-&gt; <a onclick="current_analyse.locator.setRTime(${this.time})">E #${this.id}</a>`
   }
+
+  // ---------------------------------------------------------------------
+  //  Propriétés temporelles
+
+  get otime(){return this._otime || defineP(this,'_otime',new OTime(this.time))}
+  get horloge(){return this._horl||defineP(this,'_horl',this.otime.horloge)}
 
   /**
    * Définition de la durée
@@ -53,7 +62,7 @@ class FAEvent {
       $(`${focusPrefix}${d.prop}`).addClass('error')
       return d.msg
     }).join(RC), {error: true, duration: 'auto'})
-    evt.firstErroredFieldId = focusFieldId
+    if($(focusFieldId).length) evt.firstErroredFieldId = focusFieldId
   }
   /**
    * Méthode qui affiche l'évènement de manière différée, en tenant compte du
@@ -138,7 +147,7 @@ class FAEvent {
         // Contenu formaté
         contenu = current_analyse.deDim(this.content)
       } else {
-        // Contenu non formaté
+        // Contenu formaté par la sous-instance
         contenu = this.formated
       }
       c.innerHTML = contenu

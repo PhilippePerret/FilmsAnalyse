@@ -78,6 +78,9 @@ class SttNode {
 
   // ---------------------------------------------------------------------
   //  Méthodes de données fixes (absolues)
+
+  get hname(){ return this._hname }
+  get shortHname(){return this._shortHname}
   get cZone(){ return this._cZone }
 
 
