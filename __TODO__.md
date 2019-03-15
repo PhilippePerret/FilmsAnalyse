@@ -1,10 +1,28 @@
-* Quand une note a déjà été affichée, elle ne se raffiche pas, il faut corriger ça.
+* Peut-être faire une classe BtnPlay
+  * Documenter :
+    - lorsqu'on donne la class "right" ("btnplay right"), c'est une margin-left
+      qui est réglée, lorsqu'on met "btnplay left", c'est une margin-rigth (ce
+      qui est logique)
+  - reçoit : une taille (px), un event
+    (le classe BtnPlay est toujours associé à un event, donc à son temps et
+      sa durée)
+  - on pourrait définir son aspect par une taille précise en pixel
+  - quand on l'active, elle change l'image du bouton pour l'arrêter
+  - s'en servir pour les events (dans l'affichage du reader, dans l'affichage
+    du formulaire d'event — et plus tard dans d'autres affichages)
+  * prendre en compte le fait que ce bouton ne démarre pas toujours la
+    vidéo, qu'elle ne fait que se placer au bon endroit.
+  * Il faudrait que tous les boutons play d'un même event se suivent, c'est-à-dire
+    qu'il se mette en activité
+    Pour ce faire, c'est facile : travailler avec une class "btn-play-<id event>"
+    que porteront tous les boutons et changer toujours les éléments de cette
+    classe ensemble.
+
 
 * Pouvoir avoir un résumé (dans le reader) de l'analyse courante
   - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
   - nombre de Scènes
   - nombre de nœuds structurels définis
-
 
 * Quand on change de film, il faut vider le reader (de façon générale, reseter l'UI)
 
