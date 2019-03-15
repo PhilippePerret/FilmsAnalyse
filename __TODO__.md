@@ -1,9 +1,12 @@
+* MANUEL DÉVELOPPEMENT
+  * Documenter l'utilisation de formated (pour mettre en forme l'event dans le reader)
+  * Documenter l'utilisation de la méthode `onCreate` (pour accomplir une tâche sur l'event après la création)
+
+* Procédure de suppression d'un event (dans la fiche d'édition)
+
 * Ajouter aussi le bouton play/stop dans le formulaire de l'event
 
 * Le bouton "Aller au temps" doit être horlogeable
-
-* Pouvoir déterminer la fin du film (générique)
-  + la fin du générique de fin
 
 * Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
   -> Objet **Tips**

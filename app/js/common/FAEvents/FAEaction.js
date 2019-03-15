@@ -20,13 +20,6 @@ class FAEaction extends FAEvent {
     return errors.length == 0
   }
 
-  /**
-   * On dispatch les valeurs depuis le formulaire
-   */
-  dispatch(d){
-    super.dispatch(this, d)
-  }
-
   get div(){
     var n = super.div
 
