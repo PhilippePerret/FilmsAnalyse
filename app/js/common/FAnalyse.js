@@ -12,6 +12,10 @@ class FAnalyse {
   // ---------------------------------------------------------------------
   //  CLASSE
 
+  // Retourne l'analyse courante
+  static get current(){return this._current||defineP(this,'_current',current_analyse)}
+  static set current(v){this._current = v}
+
   // Voir si les préférences demandent que la dernière analyse soit chargée
   // et la charger si elle est définie.
   static checkLast(){
@@ -176,7 +180,7 @@ class FAnalyse {
   set folder(v) { this._folder = v}
 
   get filmStartTime() {return this._filmStTi || defineP(this,'_filmStTi', 0)}
-  set filmStartTime(v){ this._filmStartTime = v ; this.duration = undefined }
+  set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
 
   get filmEndTime(){return this._filmEndTime || defineP(this,'_filmEndTime',this.calcFilmEndTime())}
   set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
@@ -556,26 +560,12 @@ class FAnalyse {
    * Méthode qui définit le départ réel du film. Permettra de prendre un
    * bon départ
    */
-  setFilmStartTimeAt(){
-    this.runTimeFunction('FilmStartTime')
-  }
-  setFilmEndStartAt(){
-    this.runTimeFunction('FilmEndStart')
-  }
-  setEndGeneriqueFin(){
-    this.runTimeFunction('EndGenericFin')
-    this._setEndGeneriqueFin()
-  }
   runTimeFunction(fct_id){
     var underf = `_set${fct_id}At`
-    (this[underf] || this.requireTimeFunctions(underf))()
+    this.requireTimeFunctions(underf)()
   }
   requireTimeFunctions(whichOne){
-    let fcts = requiredChunk(this,'timesFunctions')
-    this._setFilmStartTimeAt  = fcts.setFilmStartTimeAt.bind(this)
-    this._setFilmEndTimeAt    = fcts.setFilmEndTimeAt.bind(this)
-    this._setEndGenericFinAt  = fcts.setEndGenericFinAt.bind(this)
-    return this[whichOne]
+    return require('./js/tools/timesFunctions')[whichOne].bind(this)
   }
 
   /**

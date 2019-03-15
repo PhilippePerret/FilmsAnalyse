@@ -1,8 +1,10 @@
 * Ajouter aussi le bouton play/stop dans le formulaire de l'event
 
+* Le bouton "Aller au temps" doit être horlogeable
+
 * Pouvoir déterminer la fin du film (générique)
   + la fin du générique de fin
-  
+
 * Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
   -> Objet **Tips**
 

@@ -92,19 +92,6 @@ const DATA_MENUS = [
             , accelerator: 'CmdOrCtrl+Shift+S'
             , click: () => { mainW.webContents.send('save-as-analyse')}
           }
-        , {type: 'separator'}
-        , {
-              label: 'Temps courant comme début du film…'
-            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
-          }
-        , {
-              label: 'Temps courant comme fin du film (avant générique)…'
-            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmEndTimeAt()')}
-          }
-        , {
-              label: 'Temps courant comme fin du générique de fin…'
-            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setEndGenericFinAt()')}
-          }
         , {type:'separator'}
         , {
               label: 'Choisir la vidéo du film…'
@@ -161,6 +148,19 @@ const DATA_MENUS = [
                 label: 'Temps courant…'
               , click:()=>{mainW.webContents.executeJavaScript('current_analyse.locator.getAndShowCurrentTime()')}
           }
+          , {type: 'separator'}
+          , {
+                label: 'Temps courant comme début du film…'
+              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("FilmStartTime")')}
+            }
+          , {
+                label: 'Temps courant comme fin du film (avant générique)…'
+              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("FilmEndTime")')}
+            }
+          , {
+                label: 'Temps courant comme fin du générique de fin…'
+              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("EndGenericFin")')}
+            }
           , {type: 'separator'}
           , {
                 label: 'Image courante comme vignette de scène courante…'

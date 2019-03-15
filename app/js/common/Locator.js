@@ -58,12 +58,12 @@ class Locator {
    * Méthode appelée quand on presse le bouton Play
    */
   togglePlay(ev){
-    console.log("-> togglePlay")
-    try {
-      raisepourvoir
-    } catch (e) {
-      console.error(e)
-    }
+    // console.log("-> togglePlay")
+    // try {
+    //   raisepourvoir
+    // } catch (e) {
+    //   console.error(e)
+    // }
     var pauser = this.playing === true
     if (pauser) {
       this.video.pause()

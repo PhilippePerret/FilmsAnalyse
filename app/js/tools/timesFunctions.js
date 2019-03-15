@@ -16,14 +16,14 @@ let setFilmEndTimeAt = function(){
 }
 
 // Pour définir la fin du générique de fin
-let setEndGeneriqueFin = function(){
+let setEndGenericFin = function(){
   this.filmEndGenericFin = this.locator.getTime()
   this.modified = true
-  F.notify(`J'ai pris le temps ${new OTime(this.filmEndGenericFin).horloge} comme fin du film.`)
+  F.notify(`J'ai pris le temps ${new OTime(this.filmEndGenericFin).horloge} comme fin du générique de fin.`)
 }
 
 module.exports = {
-    setFilmStartTimeAt: setFilmStartTimeAt
-  , setFilmEndTimeAt:   setFilmEndTimeAt
-  , setEndGeneriqueFin: setEndGeneriqueFin
+    _setFilmStartTimeAt: setFilmStartTimeAt
+  , _setFilmEndTimeAt:   setFilmEndTimeAt
+  , _setEndGenericFinAt: setEndGenericFin
 }
