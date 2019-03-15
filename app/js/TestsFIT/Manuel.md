@@ -124,7 +124,7 @@ On peut s'inspirer des assertions système pour créer ses assertions. De façon
     ```javascript
     assert(
         condition
-      , "<message si condition true>"
+      , "<message si condition true>" // ou `false` pour ne pas mettre de message
       , "<message si condition false"
       [, options]
     )
@@ -166,6 +166,8 @@ onlyFailure
 
 onlySuccess
 : si `true`, la failure reste silencieuse, seul le succès écrit un message.
+
+On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
 
 
 ## Méthodes pratiques {#les_methodes_pratiques}
