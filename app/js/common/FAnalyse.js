@@ -339,15 +339,23 @@ class FAnalyse {
     (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
   }
 
+  /**
+   * Méthode appelée à la modification d'un event
+   *
+   * [1]  En règle générale, si une opération spéciale doit être faite sur
+   *      l'event, il faut mieux définir sa méthode d'instance `onModify` qui
+   *      sera automatiquement appelée après la modification.
+   */
   updateEvent(ev, options){
     // TODO Peut-être faut-il replacer l'event à un autre endroit
     if (options && options.initTime != ev.time){
       console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
     }
+    // [1]
     if(ev.type === 'scene'){this.updateNumerosScenes()}
     // On marque l'analyse modifiée
     this.modified = true
-  // Enfin, s'il est affiché, il faut updater son affichage dans le
+    // Enfin, s'il est affiché, il faut updater son affichage dans le
     // reader
     ev.updateInReader()
   }

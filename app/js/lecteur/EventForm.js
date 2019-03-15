@@ -444,6 +444,7 @@ class EventForm {
       } else {
         // ÉDITION
         current_analyse.updateEvent(this.event, {initTime: initTime})
+        if('function'===this.event.onModify) this.event.onModify()
       }
     }
 

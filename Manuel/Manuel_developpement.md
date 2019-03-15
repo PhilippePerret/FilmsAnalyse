@@ -1,6 +1,8 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Création/modification des events](#creation_event)
+  * [Mise en forme des events](#event_mise_en_forme)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
@@ -15,6 +17,46 @@ Le point d'entrée de l'analyser (`analyser.html`) se fait par `./app/js/lecteur
 On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, pour le moment, c'est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
+
+
+## Création/modification des events {#creation_event}
+
+Les `events` (scène, info, note, qrd, etc.) héritent tous de la classe `FAEvent`.
+
+### Exécution d'une opération après la création
+
+Il suffit de créer la méthode d'instance `onCreate` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.
+
+### Exécution d'une opération après la modification
+
+Il suffit de créer la méthode d'instance `onModify` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.
+
+## Mise en forme des events {#event_mise_en_forme}
+
+C'est le getter super `div` qui se charge de construire le div qui doit être affiché dans le reader. Il convient de ne pas le surclasser, pour obtenir tous les outils nécessaires à la gestion des events.
+
+En revanche, pour un affichage particulier, on peut définir le getter d'instance `formated` qui doit définir ce qui va remplacer le texte `content` dans le div final.
+
+> Utiliser la méthode `current_analyse.deDim(<formated>)` à la fin de l'opération pour remplacer tous les diminutifs utilisés.
+
+Exemple :
+
+```javascript
+
+  get formated(){
+    if(undefined === this._formated){
+      var str
+      str = '<mon div avec content>'
+      str += '<mon div avec les notes>'
+      str += '<mon div avec une autre valeur>'
+      // etc.
+      str = this.analyse.deDim(str)
+      this.formated = str
+      str = null // garbage collector
+    }
+    return this._formated
+  }
+```
 
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}

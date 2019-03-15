@@ -1,7 +1,3 @@
-* MANUEL DÉVELOPPEMENT
-  * Documenter l'utilisation de formated (pour mettre en forme l'event dans le reader)
-  * Documenter l'utilisation de la méthode `onCreate` (pour accomplir une tâche sur l'event après la création)
-
 * Procédure de suppression d'un event (dans la fiche d'édition)
 
 * Ajouter aussi le bouton play/stop dans le formulaire de l'event
