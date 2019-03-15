@@ -261,6 +261,7 @@ class EventForm {
   show(){
     this.jqObj.show()
     this.visible = true
+    this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
     EventForm.setCurrent(this)
   }
   hide(){
@@ -288,6 +289,7 @@ class EventForm {
     this.jqField('id').val(this.id)
     this.jqField('type').val(this.type)
     this.jqField('is_new').val(this.isNew?'1':'0')
+    this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
     this.jqField('time').val(parseInt(this.analyse.locator.getRTime(),10))
     this.jqObj.find('section.footer span.event-type').html(this.type.toUpperCase())
     this.jqObj.find('section.header span.event-type').html(this.type.toUpperCase())
@@ -363,6 +365,8 @@ class EventForm {
     this.jqObj.draggable()
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
+    this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
+
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
     this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
@@ -459,6 +463,14 @@ class EventForm {
     my = null
   }
 
+  /**
+   * Demande destruction de l'élément
+   */
+  destroy(){
+    if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
+    this.jqObj.remove()
+    this.analyse.destroyEvent(this.id, this)
+  }
   /**
    * En cas d'annulation de l'édition
    */
@@ -628,7 +640,8 @@ const EVENT_FORM_TEMP = `
     </div>
 
     <div class="event-form-buttons">
-      <button class="btn-form-cancel fleft" type="button">Renoncer</button>
+      <button id="event-__EID__-destroy" class="btn-form-destroy warning small fleft" type="button">Détruire</button>
+      <button class="btn-form-cancel cancel small fleft" type="button">Renoncer</button>
       <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
     </div>
   </section>

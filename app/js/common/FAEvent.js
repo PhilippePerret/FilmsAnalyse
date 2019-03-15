@@ -85,8 +85,15 @@ class FAEvent {
     if(!this.jqReaderObj){
       this.analyse.reader.append(this.div)
       this.observe()
+    } else {
+      this.jqReaderObj.show()
     }
     this.makeAppear() // c'est l'opacité qui masque l'event affiché
+  }
+
+  hide(){
+    this.makeDesappear()
+    this.jqReaderObj.hide()
   }
 
   /**
@@ -103,6 +110,9 @@ class FAEvent {
 
   makeAppear(){
     this.jqReaderObj.animate({opacity:1}, 600)
+  }
+  makeDesappear(){
+    this.jqReaderObj.animate({opacity:0}, 600)
   }
 
   get jqReaderObj(){
@@ -122,6 +132,7 @@ class FAEvent {
       n.id = this.domId
       n.style.opacity = 0
       n.setAttribute('data-time', this.time)
+      n.setAttribute('data-id', this.id)
 
       var etools = document.createElement('DIV')
       etools.className = 'e-tools'

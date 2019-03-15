@@ -1,4 +1,12 @@
-* Procédure de suppression d'un event (dans la fiche d'édition)
+* Quand une note a déjà été affichée, elle ne se raffiche pas, il faut corriger ça.
+
+* Pouvoir avoir un résumé (dans le reader) de l'analyse courante
+  - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
+  - nombre de Scènes
+  - nombre de nœuds structurels définis
+
+
+* Quand on change de film, il faut vider le reader (de façon générale, reseter l'UI)
 
 * Ajouter aussi le bouton play/stop dans le formulaire de l'event
 

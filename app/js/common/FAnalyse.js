@@ -340,6 +340,12 @@ class FAnalyse {
   }
 
   /**
+   * Procédure de description de l'event
+   */
+  destroyEvent(event_id, form_instance){
+    (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
+  }
+  /**
    * Méthode appelée à la modification d'un event
    *
    * [1]  En règle générale, si une opération spéciale doit être faite sur
@@ -411,6 +417,19 @@ class FAnalyse {
       , len = this.events.length ;
     for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
     return len
+  }
+  /**
+   * Retourne l'index de l'event d'identifiant +event_id+
+   *
+   * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
+   * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
+   * depuis des `event_after` et `event_before`
+   * TODO Voir d'abord où on se sert exactement de la liste this.events comme
+   * liste.
+   */
+  indexOfEvent(event_id){
+    var i = 0, len = this.events.length ;
+    for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
   }
 
   // --- FONCTIONS I/O ----------------------------------------------
