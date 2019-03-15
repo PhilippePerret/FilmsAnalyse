@@ -48,10 +48,7 @@ class Scene {
    */
   static sceneAt(time){
     time = Math.round(time)
-    if (time < (current_analyse.filmStartTime || 0)){
-      F.error("Impossible de trouver une scène avant le début du film.")
-      return
-    }
+    if (time < current_analyse.filmStartTime) return
     var len = this.ScenesByTimes.length
     var i = 0
     for(;i<len;++i){

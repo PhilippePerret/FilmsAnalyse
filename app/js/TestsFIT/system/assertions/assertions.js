@@ -43,7 +43,20 @@ window.assert_function = function(fn_name, objet){
     `Hum… ${ref} should be a function (it's ${typeof(objet[fn_name])})`
   );
 };
-window.assert_object = function(obj_name, objet){
+/**
+ * Produit un succès si l'object +objet+ possède bien la propriété
+ * +property_name+
+ *
+ */
+window.assert_property = function(property_name, objet, options){
+  assert(
+      undefined !== objet[property_name]
+    , `OK, ${property_name} is a property of ${objet}`
+    , `Hum… ${property_name} should be a property of ${objet}…`
+    , options
+  )
+}
+window.assert_object = function(obj_name, objet, options){
   var condition, ref ;
   if(undefined == objet){
     ref = obj_name;
@@ -59,9 +72,10 @@ window.assert_object = function(obj_name, objet){
     condition = objet && obj_name && 'object' == typeof(objet[obj_name])
   }
   assert(
-    condition,
-    `Right, ${ref} is an object`,
-    `Hum… ${ref} should be an object (it's ${typeof(objet[obj_name])})`
+      condition
+    , `Right, ${ref} is an object`
+    , `Hum… ${ref} should be an object (it's ${typeof(objet[obj_name])})`
+    , options
   );
 };
 // Produit un succès si l'appel à la fonction +fn+ ne produit pas d'erreur

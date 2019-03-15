@@ -95,7 +95,7 @@ class VideoController {
     .on('loadeddata', () => {
       UI.showVideoController()
       var lastCurTime = this.analyse.lastCurrentTime
-      lastCurTime && this.analyse.locator.setRTime(lastCurTime)
+      lastCurTime && this.analyse.locator.setRTime(lastCurTime, true)
       this.analyse.setAllIsReady.bind(current_analyse)()
     })
     this.controller.src = path.resolve(vpath)

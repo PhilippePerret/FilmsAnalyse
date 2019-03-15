@@ -5,10 +5,16 @@
  * Pour l'analyse d'un film
  */
 
+ let SttNode = null
+
 class FAnalyse {
 
   // ---------------------------------------------------------------------
   //  CLASSE
+
+  // Retourne l'analyse courante
+  static get current(){return this._current||defineP(this,'_current',current_analyse)}
+  static set current(v){this._current = v}
 
   // Voir si les préférences demandent que la dernière analyse soit chargée
   // et la charger si elle est définie.
@@ -141,64 +147,69 @@ class FAnalyse {
    */
   get data(){
     return {
-        folder:           this.folder
-      , title:            this.title
-      , filmStartTime:    this.filmStartTime.seconds
-      , videoPath:        this.videoPath
-      , diminutifs:       this.diminutifs
-      , lastCurrentTime:  (this.locator ? this.locator.getRTime() : 0)
-      , stopPoints:       (this.locator ? this.locator.stop_points : [])
+        folder:             this.folder
+      , title:              this.title
+      , filmStartTime:      this.filmStartTime
+      , filmEndTime:        this.filmEndTime
+      , filmEndGenericFin:  this.filmEndGenericFin
+      , videoPath:          this.videoPath
+      , diminutifs:         this.diminutifs
+      , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
+      , stopPoints:         (this.locator ? this.locator.stop_points : [])
     }
   }
   set data(v){
     this.title                = v.title
-    this.filmStartTime        = new OTime(v["filmStartTime"] || 0)
+    this.filmStartTime        = v.filmStartTime || 0
+    this.filmEndTime          = v.filmEndTime
+    this.filmEndGenericFin    = v.filmEndGenericFin
     this._videoPath           = v.videoPath
     this.diminutifs           = v.diminutifs  || {}
     this.lastCurrentTime      = v.lastCurrentTime || 0
     this.stopPoints           = v.stopPoints || []
   }
 
+  // avant de le calculer vraiment :
+  get duration(){ return this._duration || defineP(this,'_duration', this.calcDuration()) }
+  set duration(v){ this._duration = v ; this.modified = true }
+  calcDuration(){
+    if(!this.filmEndTime) return null
+    return this.filmEndTime - this.filmStartTime
+  }
   get folder()  { return this._folder }
   set folder(v) { this._folder = v}
 
-  get filmStartTime() {
-    if(undefined === this._filmStartTime){
-      this._filmStartTime = new OTime(0)
+  get filmStartTime() {return this._filmStTi || defineP(this,'_filmStTi', 0)}
+  set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
+
+  get filmEndTime(){return this._filmEndTime || defineP(this,'_filmEndTime',this.calcFilmEndTime())}
+  set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
+
+  calcFilmEndTime(){
+    var endt = null
+    if(this.videoPath){
+      this._filmEndTime = this.videoController.controller.duration
     }
-    return this._filmStartTime
+    return endt
   }
-  set filmStartTime(v){ this._filmStartTime = v }
+
+  get filmEndGenericFin(){return this._filmEGF}
+  set filmEndGenericFin(v){this._filmEGF = v ; this.modified = true }
 
   get videoPath(){ return this._videoPath }
-  set videoPath(v){
-    this._videoPath = v
-    this.modified = true
-  }
+  set videoPath(v){ this._videoPath = v ; this.modified = true }
 
-  get title(){
-    if ( undefined === this._title ){
-      this._title = path.basename(this.folder)
-    }
-    return this._title
-  }
+  get title(){return this._title || defineP(this,'_title',path.basename(this.folder))}
   set title(v){ this._title = v ; this.modified = true }
 
-  get lastCurrentTime(){
-    if(undefined === this._lastCurrentTime){
-      this._lastCurrentTime = this.locator.getRTime()
-    }
-    return this._lastCurrentTime
-  }
+  get lastCurrentTime(){return this._lastCurT||defineP(this,'_lastCurT',this.locator.getRTime())}
   set lastCurrentTime(v){ this._lastCurrentTime = v }
 
   // ---------------------------------------------------------------------
   //  DATA VOLATILES
 
   get modified() { return this._modified }
-  set modified(v) {
-    this._modified = v
-  }
+  set modified(v) { this._modified = v }
 
   get currentScene(){
     if(undefined === this._current_scene){
@@ -208,6 +219,13 @@ class FAnalyse {
   }
   set currentScene(v){this._current_scene = v}
 
+  get PFA(){
+    if(undefined === this._PFA){
+      SttNode   = require('./js/common/PFA/SttNode.js')
+      this._PFA = require('./js/common/PFA/PFA.js')
+    }
+    return this._PFA
+  }
 
   // ---------------------------------------------------------------------
   /**
@@ -542,8 +560,12 @@ class FAnalyse {
    * Méthode qui définit le départ réel du film. Permettra de prendre un
    * bon départ
    */
-  setFilmStartTimeAt(){
-    (this._setFilmStartTimeAt||requiredChunk(this, 'setFilmStartTimeAt'))()
+  runTimeFunction(fct_id){
+    var underf = `_set${fct_id}At`
+    this.requireTimeFunctions(underf)()
+  }
+  requireTimeFunctions(whichOne){
+    return require('./js/tools/timesFunctions')[whichOne].bind(this)
   }
 
   /**
@@ -551,7 +573,7 @@ class FAnalyse {
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime.seconds===0)?'hidden':'visible')
+    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime===0)?'hidden':'visible')
   }
 
 }

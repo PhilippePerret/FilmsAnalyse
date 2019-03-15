@@ -5,7 +5,7 @@
 * [Gestion des temps](#gestion_des_temps)
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
-  * [Réglage du temps de l'event](#set_event_time)
+  * [Réglage du temps et de la durée de l'event](#set_event_time)
 * [L'Interface](#linterface)
   * [Comportement du bouton STOP](#le_bouton_stop)
 
@@ -39,6 +39,8 @@ Pour coller rapidement un temps courant dans un champ d'édition, il suffit de c
 
 ### Réglage du temps de l'event {#set_event_time}
 
+#### Réglage du temps
+
 Pour éditer le temps d'un event — i.e. le modifier, on peut s'y prendre de cette manière :
 
 * éditer l'event en cliquant sur son bouton d'édition dans sa ligne d'outil dans le reader,
@@ -49,9 +51,17 @@ Pour éditer le temps d'un event — i.e. le modifier, on peut s'y prendre de c
 * relâcher la souris lorsque le bon temps est trouvé,
 * enregistrer les changements.
 
-### Réglage de la durée de l'event {#set_event_duration}
+#### Réglage de la durée
 
-On peut régler la durée d'un event quelconque en modifiant son horloge de durée.
+On peut régler la durée d'un event quelconque en modifiant son horloge de durée, de la même manière que pour l'horloge :
+
+* éditer l'event en cliquant sur son bouton d'édition dans le lecteur (ou autre affichage de l'event),
+* cliquer dans l'horloge de durée et déplacer la souris horizontalement pour changer le temps,
+* la vidéo suit la fin de la durée, par caler précisément le temps,
+* utiliser la touche MAJ appuyée pour se déplacer rapidement dans le temps,
+* utiliser la touche CTRL appuyée pour régler en finesse le temps,
+* relâcher la souris lorsque la bonne durée est trouvée,
+* enregistrer les changements en cliquant sur le bouton adéquat.
 
 
 ## Interface {#linterface}
