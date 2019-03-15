@@ -1,29 +1,25 @@
-* Jouer l'event : ne mettre le bouton "stop" que si les options disent de jouer tout de suite l'event.
+* Ajouter aussi le bouton play/stop dans le formulaire de l'event
 
-* Ajouter aussi les boutons play/stop dans le formulaire de l'event
-
+* Pouvoir déterminer la fin du film (générique)
+  + la fin du générique de fin
+  
 * Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
-  -> Objet Tips
-
-* Poursuivre le mode d'emploi sur le réglage de l'horloge
-
-* On doit pouvoir rectifier le temps d'un event
-  - soit en glissant la souris après avoir cliqué sur son horloge dans la boite d'édition
-  - soit en le spécifiant en disant que ça doit être le temps courant (bouton spécial)
-
-* Faire toujours une copie du fichier data de l'analyse, en cas de problème (de tous ses fichiers, d'ailleurs)
+  -> Objet **Tips**
 
 * Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
-
+  - de façon générale, il faut encore revoir le système d'affichage des events. Par exemple, si on revient en arrière, les nouveaux events sont affichés après ceux qui sont déjà présents
+  => mettre peut-être le temps de l'even dans sa balise, pour pouvoir insérer très facilement les nouveaux events (par leur temps)
 
 * Modification de l'évènement
   Voir si sa position (temps) a bougé et le replacer dans les listes de FAnalyse
-* Pouvoir définir la DURÉE en cliquant-glissant de droite à gauche (les touches MAJ et CTRL permettent de faire gros ou fin)
-  -> manuel
 
 * Outil pour dessiner le paradigme de Field Augmenté du film.
-  -> Classe PFA
+  -> Objet **PFA** (une classe, car il peut y avoir plusieurs paradigmes de Field ?)
   -> Classe NoeudDrama (qui peut hériter de FAEvent)
+
+* Faire la classe **Timeline**
+  - elle permettra d'afficher par exemple les brins, leur position dans le film
+  - on fait une classe car de nombreux éléments peuvent avoir une timeline. Le PFA peut en avoir une, par exemple, et même deux : une pour les temps absolues et une pour les temps du film
 
 * Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
 * Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)

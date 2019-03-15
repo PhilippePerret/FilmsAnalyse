@@ -54,32 +54,55 @@ class Locator {
 
   // ---------------------------------------------------------------------
   //  Méthode de navigation dans la vidéo (play, stop, etc.)
-
   /**
    * Méthode appelée quand on presse le bouton Play
    */
   togglePlay(ev){
-    // console.log("-> togglePlay")
+    console.log("-> togglePlay")
+    try {
+      raisepourvoir
+    } catch (e) {
+      console.error(e)
+    }
     var pauser = this.playing === true
-    this.btnPlay.innerHTML = pauser ? this.imgPlay : this.imgPauser
-    if(pauser){
+    if (pauser) {
       this.video.pause()
       $(this.btnPlay).removeClass('actived')
       this.playing = false
       this.desactivateHorloge()
+      this.setPlayButton(this.playing)
     } else {
       // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
       // stop.
       var curT = this.getTime()
-      this.lastStartTime = curT
-      this.addStopPoint(curT)
-      this.video.play()
-      $(this.btnPlay).addClass('actived')
-      this.playing = true
-      this.activateHorloge()
+      // Pour gérer l'Autoplay Policy de Chromium
+      var videoPromise = this.video.play()
+      if (videoPromise !== undefined) {
+        videoPromise.then( _ => {
+          // Autoplay started!
+          this.lastStartTime = curT
+          this.addStopPoint(curT)
+          $(this.btnPlay).addClass('actived')
+          this.playing = true
+          this.activateHorloge()
+          this.setPlayButton(this.playing)
+        }).catch(error => {
+          // Autoplay was prevented.
+          // Show a "Play" button so that user can start playback.
+          // Pouvoir mettre cette alerte, en cas de début fort
+          console.warn("Autoplay prevented, ok.")
+          this.setPlayButton(this.playing)
+        });
+      }
     }
     // console.log("<- togglePlay")
   }
+
+  // Réglage du bouton PLAY en fonction de +running+ (qui est this.playing)
+  setPlayButton(running){
+    this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
+  }
+
 
   stop(){
     if(this.playing)this.togglePlay()
@@ -103,10 +126,10 @@ class Locator {
       // <= Le temps courant est supérieur au dernier temps de départ
       // => on revient au dernier temps de départ
       this.setTime(this.lastStartTime)
-    } else if (this.hasStartTime && curTime > (this.analyse.filmStartTime.seconds + 5)){
+    } else if (this.hasStartTime && curTime > (this.analyse.filmStartTime + 5)){
       // <= le temps courant est au-delà des 5 secondes après le début du film
       // => On revient au début du film
-      this.setTime(this.analyse.filmStartTime.seconds)
+      this.setTime(this.analyse.filmStartTime)
     } else {
       // Sinon, on revient au début de la vidéo
       this.setTime(0)
@@ -149,16 +172,18 @@ class Locator {
    * depuis le début défini du film.
    *
    */
-  setTime(time){
+  setTime(time, dontPlay){
     // console.log("-> setTime", time)
     if(isNaN(time)){
       console.error(`${time} n'est pas un temps. Je ne bouge pas la vidéo.`)
       return
     }
     this.video.currentTime = time
-    if(this.playAfterSettingTime === true && !this.playing){
-      this.togglePlay()
-    } else if(this.video.paused){ this.actualizeHorloge() }
+    if(!dontPlay){
+      if(this.playAfterSettingTime === true && !this.playing){
+        this.togglePlay()
+      } else if(this.video.paused){ this.actualizeHorloge() }
+    }
 
     // Mettre le temps pour le lecteur d'analyse (afficher les events)
     var rtime = this.getRTime(time)
@@ -215,9 +240,7 @@ class Locator {
   // Méthodes de données
 
   get startTime(){
-    if(this.analyse.filmStartTime){
-      return this.analyse.filmStartTime.seconds
-    } else { return 0 }
+    return this.analyse.filmStartTime // toujours défini
   }
   get currentTime(){
     return this.video.currentTime
@@ -433,7 +456,7 @@ class Locator {
   // ---------------------------------------------------------------------
   // Méthodes d'état
   get hasStartTime(){
-    return this.analyse && this.analyse.filmStartTime && this.analyse.filmStartTime.seconds > 0
+    return this.analyse && this.analyse.filmStartTime > 0
   }
 
   get playAfterSettingTime(){

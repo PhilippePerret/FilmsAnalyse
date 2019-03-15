@@ -94,9 +94,18 @@ const DATA_MENUS = [
           }
         , {type: 'separator'}
         , {
-              label: 'Prendre le temps courant comme début du film…'
+              label: 'Temps courant comme début du film…'
             , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmStartTimeAt()')}
           }
+        , {
+              label: 'Temps courant comme fin du film (avant générique)…'
+            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setFilmEndTimeAt()')}
+          }
+        , {
+              label: 'Temps courant comme fin du générique de fin…'
+            , click: () => {mainW.webContents.executeJavaScript('current_analyse.setEndGenericFinAt()')}
+          }
+        , {type:'separator'}
         , {
               label: 'Choisir la vidéo du film…'
             // , click: () => {mainW.webContents.send('change-film-video')}
