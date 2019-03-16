@@ -1,4 +1,5 @@
 * [BUG] La fenêtre d'édition ne se rouvre pas une seconde fois, encore…
+  - précision : ça se passe quand on fait "modifier", pas quand on renonce
 * [BUG] Les durées des events ne semblent pas être enregistrées
 * Implémenter #13 (un event jouant interrompt un autre event jouant avant)
 

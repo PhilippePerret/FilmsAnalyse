@@ -296,8 +296,8 @@ class EventForm {
     this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqObj.find('section.footer span.event-time').html(new OTime(this.time).horloge)
 
-    // On règle les boutons Play
-    BtnPlay.setAndWatch(this.jqObj, this.id)
+    // On règle les boutons Play (mais seulement si l'event est défini)
+    this.isNew || BtnPlay.setAndWatch(this.jqObj, this.id)
 
     // On rend les champs horlogeable et durationables
     let horloges = UI.setHorlogeable(f)
@@ -369,7 +369,6 @@ class EventForm {
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
-    this.jqObj.find('.btn-play').on('click',my.event.togglePlay.bind(my.event))
 
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
@@ -452,7 +451,7 @@ class EventForm {
       } else {
         // ÉDITION
         current_analyse.updateEvent(this.event, {initTime: initTime})
-        if('function'===this.event.onModify) this.event.onModify()
+        if('function' === this.event.onModify) this.event.onModify()
       }
     }
 
@@ -485,8 +484,7 @@ class EventForm {
 
   endEdition(){
     this.hide()
-    // Si la vidéo jouait quand on a créé l'évènement, on la remet en route
-    if(this.videoWasPlaying) this.analyse.locator.togglePlay()
+    this.videoWasPlaying && this.analyse.locator.togglePlay()
   }
 
   get form(){
