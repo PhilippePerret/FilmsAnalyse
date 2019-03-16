@@ -3,10 +3,12 @@
 * [Point d'entrée](#point_dentree)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
+  * [Bouton Play/Stop des events](#bouton_playstop_event)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+
 
 ## Point d'entrée {#point_dentree}
 
@@ -58,6 +60,35 @@ Exemple :
   }
 ```
 
+### Bouton Play/Stop des events {#bouton_playstop_event}
+
+`BtnPlay` est une classe javascript qui permet de gérer facilement les boutons play/stop des events, c'est-à-dire des boutons qui mettent en route (ou se rendent au temps de) la vidéo et l'arrête à la fin de la durée de l'event.
+
+Une unique instance `BtnPlay` est associée à un event `event.btnPlay` et va gérer tous les boutons play affichés de cet évènement.
+
+Pour l'implémenter, inscrire ce code HTML dans la page, à l'endroit où le bouton doit apparaitre, en réglant l'attribut `size` pour que le bouton ait la taille voulu. Si le bouton doit être à gauche, ajouter la classe `left`, s'il doit être à droite, ajouter `right` (cela permet de gérer l'espace avec les éléments autour) :
+
+```html
+
+  <div id="main-container">
+
+    <button class="btnplay left" size="30"></button>
+
+  </div>
+
+```
+
+Dans le code javascript, ajouter simplement :
+
+```javascript
+
+  BtnPlay.setAndWatch($('#main-container'), <event>)
+
+```
+
+> `#main-container` ne peut pas être le bouton lui-même, il ne serait pas traité.
+
+Tout le reste est géré automatiquement, il n'y a rien à faire.
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 

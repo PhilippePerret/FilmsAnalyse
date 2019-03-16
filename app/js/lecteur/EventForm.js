@@ -296,13 +296,8 @@ class EventForm {
     this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqObj.find('section.footer span.event-time').html(new OTime(this.time).horloge)
 
-    var btnPlay
-    this.jqObj.find('.btnplay').each((i,o) => {
-      o = $(o)
-      btnPlay = new BtnPlay(o, this.id)
-      btnPlay.set()
-      o.bind('click', btnPlay.togglePlay.bind(btnPlay))
-    })
+    // On règle les boutons Play
+    BtnPlay.setAndWatch(this.jqObj, this.id)
 
     // On rend les champs horlogeable et durationables
     let horloges = UI.setHorlogeable(f)
@@ -519,7 +514,7 @@ const EVENT_FORM_TEMP = `
     <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
 
     <div class="div-infos-temporelles">
-      <button class="btnplay left" size="30"></button>
+      <button class="btnplay right" size="30"></button>
       <label>Position</label>
       <horloge class="small" id="event-__EID__-time" value="">...</horloge>
       <label>Durée</label>

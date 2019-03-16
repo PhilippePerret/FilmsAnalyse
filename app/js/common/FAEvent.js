@@ -258,6 +258,12 @@ class FAEvent {
   }
 
   get locator(){return this.analyse.locator}
+
+  // ---------------------------------------------------------------------
+  // Gestion du Bouton BtnPlay
+  // Cf. Le manuel de développement
+  get btnPlay(){return this._btnPlay||defineP(this,'_btnPlay',new BtnPlay(this))}
+
 }
 
 // Pour la compatibilité avec les autres types

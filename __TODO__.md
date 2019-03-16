@@ -1,23 +1,27 @@
-* Peut-être faire une classe BtnPlay
-  * Documenter :
-    - lorsqu'on donne la class "right" ("btnplay right"), c'est une margin-left
-      qui est réglée, lorsqu'on met "btnplay left", c'est une margin-rigth (ce
-      qui est logique)
-  - reçoit : une taille (px), un event
-    (le classe BtnPlay est toujours associé à un event, donc à son temps et
-      sa durée)
-  - on pourrait définir son aspect par une taille précise en pixel
-  - quand on l'active, elle change l'image du bouton pour l'arrêter
-  - s'en servir pour les events (dans l'affichage du reader, dans l'affichage
-    du formulaire d'event — et plus tard dans d'autres affichages)
-  * prendre en compte le fait que ce bouton ne démarre pas toujours la
-    vidéo, qu'elle ne fait que se placer au bon endroit.
+* [BUG] La fenêtre d'édition ne se rouvre pas une seconde fois, encore…
+* [BUG] Les durées des events ne semblent pas être enregistrées
+* [BUG] La définition d'un temps de fin pour le locator n'est pas prise en compte
+
+* Classe BtnPlay
+  En fait, pour le moment, ils ne font que se suivre visuellement, au niveau du
+  bouton. Mais moi, ce que je voudrais, c'est que tous les boutons partagent la
+  même instance BtnPlay. De cette manière, on pourrait mettre en route en cliquant
+  sur un des boutons et arrêter en cliquant sur un autre.
+  Pour ce faire :
+    * Pour un event, on construit une classe btnPlay (`event.btnPlay`). C'est
+      son instance BtnPlay.
+    * Dès qu'on doit construire un bouton pour cet event, on appelle un code
+      `event.btnPlay.buildOne({:size, :left/right})` qui retourne le code à insérer
+      dans la page (en fait on l'insère dans la page tout de suite pour pouvoir
+      le surveiller) et on le place au bon endroit.
   * Il faudrait que tous les boutons play d'un même event se suivent, c'est-à-dire
     qu'il se mette en activité
     Pour ce faire, c'est facile : travailler avec une class "btn-play-<id event>"
     que porteront tous les boutons et changer toujours les éléments de cette
     classe ensemble.
+  - implémenter aussi la fin du jeu à la fin de l'event
 
+* Une classe `Writer` pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * Pouvoir avoir un résumé (dans le reader) de l'analyse courante
   - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)

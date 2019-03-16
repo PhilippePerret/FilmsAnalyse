@@ -103,7 +103,6 @@ class Locator {
     this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
   }
 
-
   stop(){
     if(this.playing)this.togglePlay()
   }
@@ -219,6 +218,10 @@ class Locator {
    * On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
    */
   setEndTime(time, fnOnEndTime){
+    if(isNaN(time)){
+      console.error(`${time} n'est pas un temps. Je ne définis pas la fin de la vidéo.`)
+      return
+    }
     if(this.hasStartTime) time += this.startTime
     this.wantedEndTime = parseFloat(time)
     this.wantedEndTimeCallback = fnOnEndTime
