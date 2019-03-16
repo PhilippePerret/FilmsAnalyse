@@ -198,7 +198,7 @@ class EventForm {
     if (this.isNew){
       if(this.type === 'scene') this.setNumeroScene()
     } else {
-      this.dispatchData()
+      this.setFormValues()
     }
 
     this.inited = true
@@ -206,49 +206,6 @@ class EventForm {
     return true
   }
 
-  /**
-   * Si c'est une édition, on doit mettre les valeurs courantes dans les
-   * champs.
-   */
-  dispatchData(){
-    var prop, sufProp
-    // Les valeurs communes
-    for(prop of FAEvent.OWN_PROPS){
-      if(null === this.event[prop] || undefined === this.event[prop]) continue
-      this.jqField(prop).val(this.event[prop])
-      // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
-    }
-    // Les valeurs propres au type d'event
-    for(prop of this.event.constructor.OWN_PROPS){
-      if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
-        sufProp = prop
-      } else {
-        [prop, sufProp] = prop
-      }
-      if(null === this.event[prop] || undefined === this.event[prop]) continue
-      this.jqField(sufProp).val(this.event[prop])
-      // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
-    }
-    if(this.type === 'stt'){
-      this.domField('sttID').disabled = true
-    }
-  }
-
-  setNumeroScene(){
-    // On ne numérote pas une scène "générique"
-    if(this.event && this.event.sceneType === 'generic') return
-    var numero
-    if (this.isNew || !this.event.numero) {
-      // <= C'est une scène et son numéro n'est pas défini
-      // => Il faut définir le numéro de la scène en fonction de son temps
-      numero = 1 + current_analyse.getSceneNumeroAt(this.time)
-    } else {
-      numero = this.event.numero
-    }
-    this.jqField('numero').val(numero)
-    // console.log("type/numero", this.type, numero)
-    numero = null
-  }
 
     /**
      * Pour basculer des boutons d'évènements au formulaire
@@ -466,6 +423,50 @@ class EventForm {
   //  Méthode pour les données dans le formulaire
 
   /**
+   * Si c'est une édition, on doit mettre les valeurs courantes dans les
+   * champs.
+   */
+  setFormValues(){
+    var prop, sufProp
+    // Les valeurs communes
+    for(prop of FAEvent.OWN_PROPS){
+      if(null === this.event[prop] || undefined === this.event[prop]) continue
+      this.jqField(prop).val(this.event[prop])
+      // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
+    }
+    // Les valeurs propres au type d'event
+    for(prop of this.event.constructor.OWN_PROPS){
+      if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
+        sufProp = prop
+      } else {
+        [prop, sufProp] = prop
+      }
+      if(null === this.event[prop] || undefined === this.event[prop]) continue
+      this.jqField(sufProp).val(this.event[prop])
+      // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
+    }
+    if(this.type === 'stt'){
+      this.domField('sttID').disabled = true
+    }
+  }
+
+  setNumeroScene(){
+    // On ne numérote pas une scène "générique"
+    if(this.event && this.event.sceneType === 'generic') return
+    var numero
+    if (this.isNew || !this.event.numero) {
+      // <= C'est une scène et son numéro n'est pas défini
+      // => Il faut définir le numéro de la scène en fonction de son temps
+      numero = 1 + current_analyse.getSceneNumeroAt(this.time)
+    } else {
+      numero = this.event.numero
+    }
+    this.jqField('numero').val(numero)
+    // console.log("type/numero", this.type, numero)
+    numero = null
+  }
+
+  /**
    * Méthode qui récupère les valeurs dans le formulaire
    *
    */
@@ -479,10 +480,12 @@ class EventForm {
     data_min.titre    = getValOrNull(this.fieldID('titre'))
     data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
     data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
-    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
-    data_min.duration = getValOrNull(this.fieldID('duration'))
     data_min.content  = getValOrNull(this.fieldID('content'))
     data_min.note     = getValOrNull(this.fieldID('note'))
+    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'horloge'})
+    data_min.duration = getValOrNull(this.fieldID('duration'), {type: 'duree'})
+
+    // console.log("data_min:", data_min)
 
     // On récupère toutes les données (ça consiste à passer en revue tous
     // les éléments de formulaire qui ont la classe "f<type>")

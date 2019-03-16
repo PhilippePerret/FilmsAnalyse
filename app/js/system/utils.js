@@ -63,16 +63,28 @@ function clip(str){
  *  :type   Peut définir le format précis de retour, quand la donnée existe
  *          'number'  => retourne un Int
  *          'float'   => retourne un flottant
+ *          'horloge'   =>  C'est une horloge (donc une balise <horloge>) et il
+ *                          faut retourner le nombre de secondes et frames
+ *          'duree'     =>  C'est une durée (donc une balise <duree>) et il
+ *                          faut retourner des secondes et frames.
  */
 function getValOrNull(domId, options){
+  if(undefined===options) options = {}
   if(domId.substr(0,1)!='#') domId = `#${domId}`
-  var v = $(`${domId}`).val().trim()
-  if ( v === "" ) return null
-  else if ('object' === typeof options){
-    if(options.type === 'number') v = parseInt(v,10)
-    if(options.type === 'float') v = parseFloat(v)
+  var field = $(`${domId}`)
+  var value ;
+  switch (options.type) {
+    case 'horloge':
+    case 'duree':
+      return parseFloat(field.attr('value'))
+    default:
+      value = field.val().trim()
   }
-  return v
+  if ( value === "" ) return null
+  else if(options.type === 'number')  value = parseInt(value,10)
+  else if(options.type === 'float')   value = parseFloat(value)
+
+  return value
 }
 
 function DGet(DOMId){

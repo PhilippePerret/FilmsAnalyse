@@ -1,7 +1,7 @@
-* [BUG] La fenêtre d'édition ne se rouvre pas une seconde fois, encore…
-  - précision : ça se passe quand on fait "modifier", pas quand on renonce
 * [BUG] Les durées des events ne semblent pas être enregistrées
 * Implémenter #13 (un event jouant interrompt un autre event jouant avant)
+
+* Mettre un cursor horizontal quand on est sur une horloge (<horloge>, <duree>, une classe existe déjà)
 
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
