@@ -3,6 +3,8 @@
 
 class FAEvent {
 
+  static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events']}
+
   constructor(analyse, data){
     this.analyse  = analyse
 
@@ -102,14 +104,21 @@ class FAEvent {
 
   /**
    * Après édition de l'event, on peut avoir à updater son affichage dans
-   * le reader. On va faire simplement un remplacement de div.
+   * le reader. On va faire simplement un remplacement de div (le div du
+   * contenu, pour ne pas refaire les boutons, etc.).
    */
   updateInReader(){
-    if(undefined === this.jqReaderObj) return // il n'existe pas
-    this._div = undefined
-    this.jqReaderObj.replaceWith(this.div)
+    // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
+    // à faire. Par prudence, on a quand réinitialisé le _div qui avait peut-
+    // être été défini lors d'un affichage précédent
+    if(undefined === this.jqReaderObj){
+      this._div = undefined
+      return
+    }
+    delete this._contenu
+    this.jqReaderObj.find('.content').replaceWith(this.contenu)
+
     this.div.style.opacity = 1
-    this.observe()
   }
 
   makeAppear(){
@@ -153,25 +162,28 @@ class FAEvent {
       etools.append(be)
       etools.append(h)
 
-      var c = document.createElement('DIV')
-      c.className = 'content'
-      var contenu
-      if(undefined === this.formated){
-        // Contenu formaté
-        contenu = current_analyse.deDim(this.content)
-      } else {
-        // Contenu formaté par la sous-instance
-        contenu = this.formated
-      }
-      c.innerHTML = contenu
+      var cont = document.createElement('DIV')
+      cont.className = 'content'
+      cont.innerHTML = this.contenu
       n.append(etools)
-      n.append(c)
+      n.append(cont)
       this._div = n
     }
     return this._div
   }
 
-  static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events']}
+
+  get contenu(){return this._contenu||defineP(this,'_contenu',this.defineContenu())}
+
+  // Définition du contenu, soit formaté d'une façon particulière par
+  // l'event propre, soit le content normal, dediminutivisé
+  defineContenu(){
+    if('function' === typeof this.formateContenu){
+      return this.formateContenu()
+    } else {
+      return current_analyse.deDim(this.content)
+    }
+  }
 
   /**
    * Les données qui seront enregistrées
@@ -222,8 +234,8 @@ class FAEvent {
       if(undefined === d[fieldName]) continue
       this[prop] = d[fieldName]
     }
-
   }
+
   togglePlay(){
     if(this.playing){
       this.locator.stop()
@@ -256,7 +268,6 @@ class FAEvent {
   observe(){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-    // Pour le bouton play
     BtnPlay.setAndWatch(this.jqReaderObj, this.id)
   }
 

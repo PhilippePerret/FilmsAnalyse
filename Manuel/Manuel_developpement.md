@@ -8,6 +8,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+  * [Emp^rche]
 
 
 ## Point d'entrée {#point_dentree}
@@ -37,7 +38,7 @@ Il suffit de créer la méthode d'instance `onModify` dans la classe de l'event.
 
 C'est le getter super `div` qui se charge de construire le div qui doit être affiché dans le reader. Il convient de ne pas le surclasser, pour obtenir tous les outils nécessaires à la gestion des events.
 
-En revanche, pour un affichage particulier, on peut définir le getter d'instance `formated` qui doit définir ce qui va remplacer le texte `content` dans le div final.
+En revanche, pour un affichage particulier du contenu, on peut définir le fonction d'instance `formateContenu` qui doit définir ce qui va remplacer le texte `content` dans le div final. Elle doit retourner le contenu à afficher (sans le mettre dans une propriété conservé, ce qui empêcherait l'actualisation — ou la compliquerait).
 
 > Utiliser la méthode `current_analyse.deDim(<formated>)` à la fin de l'opération pour remplacer tous les diminutifs utilisés.
 
@@ -45,18 +46,15 @@ Exemple :
 
 ```javascript
 
-  get formated(){
-    if(undefined === this._formated){
-      var str
-      str = '<mon div avec content>'
-      str += '<mon div avec les notes>'
-      str += '<mon div avec une autre valeur>'
-      // etc.
-      str = this.analyse.deDim(str)
-      this.formated = str
-      str = null // garbage collector
-    }
-    return this._formated
+  formateContenu(){
+    var str
+    str = '<mon div avec content>'
+    str += '<mon div avec les notes>'
+    str += '<mon div avec une autre valeur>'
+    // etc.
+    str = this.analyse.deDim(str)
+
+    return str
   }
 ```
 
@@ -169,3 +167,9 @@ Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>)` ou `UI.se
 ### Boutons principaux
 
 Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans `ui.css`.
+
+### Empêcher la sélection
+
+Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
+
+> Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.

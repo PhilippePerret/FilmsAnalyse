@@ -296,8 +296,8 @@ class EventForm {
     this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
     this.jqObj.find('section.footer span.event-time').html(new OTime(this.time).horloge)
 
-    // On règle les boutons Play
-    BtnPlay.setAndWatch(this.jqObj, this.id)
+    // On règle les boutons Play (mais seulement si l'event est défini)
+    this.isNew || BtnPlay.setAndWatch(this.jqObj, this.id)
 
     // On rend les champs horlogeable et durationables
     let horloges = UI.setHorlogeable(f)
@@ -369,7 +369,6 @@ class EventForm {
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
-    this.jqObj.find('.btn-play').on('click',my.event.togglePlay.bind(my.event))
 
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
@@ -386,12 +385,7 @@ class EventForm {
     // dans l'analyse courante
     var initTime = this.isNew ? null : parseInt(this.event.time,10)
 
-    // TODO On doit récupérer toutes les données
-    var data_min = {}
-    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
-    data_min.titre    = getValOrNull(this.fieldID('titre'))
-    data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
+    var [data_min, other_data] = this.getFormValues()
 
     // Création d'objet particulier, qui ne sont pas des sous-classes
     // de FAEvent
@@ -406,28 +400,6 @@ class EventForm {
         return
     }
 
-    // Les champs communs à tous les types d'event
-    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
-    data_min.content  = getValOrNull(this.fieldID('content'))
-    data_min.note     = getValOrNull(this.fieldID('note'))
-    data_min.duration = getValOrNull(this.fieldID('duration'))
-
-    // On récupère toutes les données (ça consiste à passer en revue tous
-    // les éléments de formulaire qui ont la classe "f<type>")
-    var ftype = `f${data_min.type}`
-    var fields = []
-    var other_data = {}
-    var idSansPref = null
-    $('select,input[type="text"],textarea,input[type="checkbox"]')
-      .filter(function(){
-        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
-      })
-      .each(function(){
-        idSansPref = this.id.replace(`event-${my.id}-`,'')
-        other_data[idSansPref] = getValOrNull(this.id)
-        // Pour vérification
-        fields.push(this.id)
-      })
 
     // console.log("Champs trouvés:", fields)
     // console.log("Data finale min:", data_min)
@@ -452,17 +424,19 @@ class EventForm {
       } else {
         // ÉDITION
         current_analyse.updateEvent(this.event, {initTime: initTime})
-        if('function'===this.event.onModify) this.event.onModify()
+        if('function' === this.event.onModify) this.event.onModify()
       }
     }
 
     if (this.event.isValid){
       this.isNew = false // il a été enregistré, maintenant
+      this.modified = false
       this.endEdition()
     } else if(this.event.firstErroredFieldId) {
       // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
       $(this.event.firstErroredFieldId).focus().select()
     }
+
 
     my = null
   }
@@ -485,9 +459,53 @@ class EventForm {
 
   endEdition(){
     this.hide()
-    // Si la vidéo jouait quand on a créé l'évènement, on la remet en route
-    if(this.videoWasPlaying) this.analyse.locator.togglePlay()
+    this.videoWasPlaying && this.analyse.locator.togglePlay()
   }
+
+  // ---------------------------------------------------------------------
+  //  Méthode pour les données dans le formulaire
+
+  /**
+   * Méthode qui récupère les valeurs dans le formulaire
+   *
+   */
+  getFormValues(){
+    var my = this
+    // --- Les champs communs à tous les types ---
+    var data_min    = {}
+    var other_data  = {}
+
+    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
+    data_min.titre    = getValOrNull(this.fieldID('titre'))
+    data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
+    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
+    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
+    data_min.duration = getValOrNull(this.fieldID('duration'))
+    data_min.content  = getValOrNull(this.fieldID('content'))
+    data_min.note     = getValOrNull(this.fieldID('note'))
+
+    // On récupère toutes les données (ça consiste à passer en revue tous
+    // les éléments de formulaire qui ont la classe "f<type>")
+    var ftype = `f${data_min.type}`
+    var fields = []
+    var idSansPref = null
+    $('select,input[type="text"],textarea,input[type="checkbox"]')
+      .filter(function(){
+        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
+      })
+      .each(function(){
+        idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
+        other_data[idSansPref] = getValOrNull(this.id)
+        // Pour vérification
+        fields.push(this.id)
+      })
+
+    my = null
+    return [data_min, other_data]
+  }
+  //getFormValues
+
+  // ---------------------------------------------------------------------
 
   get form(){
     if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
@@ -505,7 +523,7 @@ const EVENT_FORM_TEMP = `
   <input type="hidden" id="event-__EID__-is_new" />
   <input type="hidden" id="event-__EID__-type" />
 
-  <section class="header">
+  <section class="header no-user-selection">
     <span class="event-type">...</span>
   </section>
 
@@ -513,13 +531,12 @@ const EVENT_FORM_TEMP = `
 
     <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
 
-    <div class="div-infos-temporelles">
+    <div class="div-infos-temporelles no-user-selection">
       <button class="btnplay right" size="30"></button>
       <label>Position</label>
       <horloge class="small" id="event-__EID__-time" value="">...</horloge>
       <label>Durée</label>
       <duree id="event-__EID__-duration" class="small durationable">...</duree>
-      <button class="btnplay right" size="20"></button>
     </div>
 
     <div class="div-form">
@@ -645,14 +662,14 @@ const EVENT_FORM_TEMP = `
       <textarea id="event-__EID__-note" rows="3"></textarea>
     </div>
 
-    <div class="event-form-buttons">
+    <div class="event-form-buttons no-user-selection">
       <button id="event-__EID__-destroy" class="btn-form-destroy warning small fleft" type="button">Détruire</button>
       <button class="btn-form-cancel cancel small fleft" type="button">Renoncer</button>
       <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
     </div>
   </section>
 
-  <section class="footer">
+  <section class="footer no-user-selection">
     <span class="event-type">...</span>
     <span class="event-id">...</span>
     <span class="event-time">...</span>
