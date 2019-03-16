@@ -82,11 +82,15 @@ class FAEvent {
    * Pour afficher l'évènement dans le reader de l'analyse
    */
   show(){
-    if(!this.jqReaderObj){
+    if(this.jqReaderObj && this.jqReaderObj.length){
+      // <= l'objet DOM existe déjà
+      // => On a juste à l'afficher
+      this.jqReaderObj.show()
+    } else {
+      // <= L'objet DOM n'existe pas encore
+      // => Il faut le construire en appelant this.div
       this.analyse.reader.append(this.div)
       this.observe()
-    } else {
-      this.jqReaderObj.show()
     }
     this.makeAppear() // c'est l'opacité qui masque l'event affiché
   }
@@ -143,10 +147,8 @@ class FAEvent {
       be.className = 'btn-edit'
       be.innerHTML = '<img src="./img/btn/edit.png" class="btn" />'
       var br = document.createElement('BUTTON')
-      br.className = 'btn-play'
-      br.innerHTML =
-          '<img src="./img/btns-controller/btn-play.png" class="small-btn-controller btn-play" />'
-        + '<img src="./img/btns-controller/btn-stop.png" class="small-btn-controller btn-stop" style="display:none" />'
+      br.className = 'btnplay left'
+      br.setAttribute('size', '22')
       etools.append(br)
       etools.append(be)
       etools.append(h)
@@ -254,7 +256,8 @@ class FAEvent {
   observe(){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-    o.find('.e-tools button.btn-play').on('click', this.togglePlay.bind(this))
+    // Pour le bouton play
+    BtnPlay.setAndWatch(this.jqReaderObj, this.id)
   }
 
   get locator(){return this.analyse.locator}
