@@ -46,7 +46,6 @@ const Tests = {
      * d'un filtre défini en argument
      */
   , getTestFileList:function(){
-      console.log("-> getTestFileList")
       if(!this.ARGV){return this.JsFilesOf('tests')}
       else {
         var filtre    = this.ARGV[0]

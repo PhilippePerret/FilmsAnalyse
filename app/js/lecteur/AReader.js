@@ -20,7 +20,7 @@ class AReader {
 
   // ---------------------------------------------------------------------
   //  INSTANCE
-  
+
   constructor(analyse){
     this.analyse = analyse
   }
@@ -75,6 +75,15 @@ class AReader {
     this.container.append(node)
   }
 
+  /**
+   * Méthode qui permet d'afficher tous les events d'un coup
+   */
+  displayAll(){
+    console.log("Je dois afficher tous les events.")
+  }
+
+  // ---------------------------------------------------------------------
+  //  DOM ELEMENTS
   get container(){
     if(undefined === this._container){
       // TODO Il faudra lui donner un identifiant unique lorsqu'il y aura

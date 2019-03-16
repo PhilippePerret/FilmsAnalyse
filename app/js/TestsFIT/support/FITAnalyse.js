@@ -4,9 +4,13 @@ const FITAnalyse = {
     analyse: null // analyse courante des tests
     /**
      * Pour mettre l'analyse de dossier +folder+ en analyse courante
+     *
+     * +options+
+     *    :remove_events      Si true, on détruit tous les events
+     *    :reader             Si 'display-all-events', on doit demander à
+     *                        l'analyse d'afficher tous les events
      */
   , setCurrent:function(folder, options, resolve){
-      console.log("-> setCurrent")
       var my = this
       if(undefined === options){options = {}}
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
@@ -20,9 +24,11 @@ const FITAnalyse = {
       if (undefined === resolve){
         // <= l'argument resolve n'est pas défini
         // => Il faut retourner une promesse
-        console.log("On retourne une promesse")
         return new Promise(ok => {
-          my.analyse.methodeAfterLoading = ok
+          my.analyse.methodeAfterLoading = ()=>{
+            this.analyse.reader.displayAll()
+            ok()
+          }
           this.analyse.load()
         })
       } else {

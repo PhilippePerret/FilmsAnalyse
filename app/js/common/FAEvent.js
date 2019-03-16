@@ -107,7 +107,7 @@ class FAEvent {
    * le reader. On va faire simplement un remplacement de div (le div du
    * contenu, pour ne pas refaire les boutons, etc.).
    */
-  updateInReader(){
+  updateInReader(repositionne){
     // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
     // à faire. Par prudence, on a quand réinitialisé le _div qui avait peut-
     // être été défini lors d'un affichage précédent
@@ -117,6 +117,12 @@ class FAEvent {
     }
     delete this._contenu
     this.jqReaderObj.find('.content').replaceWith(this.contenu)
+
+    if (repositionne) {
+      // TODO Si le temps de l'event a changé de façon conséquente, il faut
+      // le replacer.
+      // TODO
+    }
 
     this.div.style.opacity = 1
   }

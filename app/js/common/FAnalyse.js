@@ -356,16 +356,30 @@ class FAnalyse {
    */
   updateEvent(ev, options){
     // TODO Peut-être faut-il replacer l'event à un autre endroit
+    var positionIsChanging = false
     if (options && options.initTime != ev.time){
-      console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
+      var idx_init      = this.indexOfEvent(ev.id)
+      var next_ev_old   = this.events[idx_init + 1]
+      var idx_new_next  = this.getIndexOfEventAfter(ev.time)
+      var next_ev_new   = this.events[idx_new_next]
+      if( next_ev_old != next_ev_new){
+        // => Il faut replacer l'event au bon endroit
+        positionIsChanging = true
+        this.events.splice(idx_init, 1)
+        var idx_new = this.getIndexOfEventAfter(ev.time)
+        this.events.splice(idx_new, 0, ev)
+      }
     }
     // [1]
     if(ev.type === 'scene'){this.updateNumerosScenes()}
     // On marque l'analyse modifiée
     this.modified = true
     // Enfin, s'il est affiché, il faut updater son affichage dans le
-    // reader
-    ev.updateInReader()
+    // reader (et le replacer si nécessaire)
+    ev.updateInReader(positionIsChanging)
+
+    next_ev_old = null
+    next_ev_new = null
   }
 
   getEventById(eid){
