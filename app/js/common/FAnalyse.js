@@ -209,7 +209,14 @@ class FAnalyse {
   //  DATA VOLATILES
 
   get modified() { return this._modified }
-  set modified(v) { this._modified = v }
+  set modified(v) {
+    try {
+      pourvoirquivientla
+    } catch (e) {
+      console.error(e)
+    }
+    this._modified = v
+  }
 
   get currentScene(){
     if(undefined === this._current_scene){
@@ -252,11 +259,13 @@ class FAnalyse {
    */
   setAllIsReady(){
     // console.log("-> FAnalyse#setAllIsReady")
+    // Au cours du dispatch des données, la méthode modified a été invoquée
+    // de nombreuses fois. Il faut revenir à l'état normal.
+    this.modified = false
     UI.stopWait()// toujours, au cas où
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
-      // console.log("---> this.methodeAfterLoading", this.methodeAfterLoading)
       this.methodeAfterLoading()
     }
   }

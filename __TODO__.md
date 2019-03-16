@@ -1,7 +1,5 @@
 * Au Quit, il faut appeler FAnalyse.checkIfCurrentSavedBeforeExec
 
-* Quand on ouvre une analyse sans rien faire (que déplacer le curseur vidéo) et qu'on veut passer à une autre, l'alerte de changement non enregistrés est donnée. Voir pourquoi et corriger (si c'est juste la position de départ, l'enregistrer silencieusement — peut-être en profiter pour le faire dans un autre fichier "hot.js")
-
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante
