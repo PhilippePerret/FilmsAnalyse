@@ -17,13 +17,11 @@ class BtnPlay {
   // Le BtnPlay courant (celui en train de jouer)
   static get current(){return this._current}
   static set current(v){
-    console.log("-> current", v)
     this.stopCurrentIfExists()
     this._current = v
   }
 
   static stopCurrentIfExists(){
-    console.log("-> stopCurrentIfExists (this.current =)",this.current)
     if(this.current){
       this.current.stop()
       delete this._current
@@ -31,7 +29,6 @@ class BtnPlay {
   }
 
   static unsetCurrent(iBtnPlay){
-    console.log("-> unsetCurrent",iBtnPlay)
     if(this.current && this.current.id == iBtnPlay.id){
       delete this._current
     }
