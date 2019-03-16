@@ -385,12 +385,7 @@ class EventForm {
     // dans l'analyse courante
     var initTime = this.isNew ? null : parseInt(this.event.time,10)
 
-    // TODO On doit récupérer toutes les données
-    var data_min = {}
-    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
-    data_min.titre    = getValOrNull(this.fieldID('titre'))
-    data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
+    var [data_min, other_data] = this.getFormValues()
 
     // Création d'objet particulier, qui ne sont pas des sous-classes
     // de FAEvent
@@ -405,28 +400,6 @@ class EventForm {
         return
     }
 
-    // Les champs communs à tous les types d'event
-    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
-    data_min.content  = getValOrNull(this.fieldID('content'))
-    data_min.note     = getValOrNull(this.fieldID('note'))
-    data_min.duration = getValOrNull(this.fieldID('duration'))
-
-    // On récupère toutes les données (ça consiste à passer en revue tous
-    // les éléments de formulaire qui ont la classe "f<type>")
-    var ftype = `f${data_min.type}`
-    var fields = []
-    var other_data = {}
-    var idSansPref = null
-    $('select,input[type="text"],textarea,input[type="checkbox"]')
-      .filter(function(){
-        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
-      })
-      .each(function(){
-        idSansPref = this.id.replace(`event-${my.id}-`,'')
-        other_data[idSansPref] = getValOrNull(this.id)
-        // Pour vérification
-        fields.push(this.id)
-      })
 
     // console.log("Champs trouvés:", fields)
     // console.log("Data finale min:", data_min)
@@ -457,11 +430,13 @@ class EventForm {
 
     if (this.event.isValid){
       this.isNew = false // il a été enregistré, maintenant
+      this.modified = false
       this.endEdition()
     } else if(this.event.firstErroredFieldId) {
       // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
       $(this.event.firstErroredFieldId).focus().select()
     }
+
 
     my = null
   }
@@ -486,6 +461,51 @@ class EventForm {
     this.hide()
     this.videoWasPlaying && this.analyse.locator.togglePlay()
   }
+
+  // ---------------------------------------------------------------------
+  //  Méthode pour les données dans le formulaire
+
+  /**
+   * Méthode qui récupère les valeurs dans le formulaire
+   *
+   */
+  getFormValues(){
+    var my = this
+    // --- Les champs communs à tous les types ---
+    var data_min    = {}
+    var other_data  = {}
+
+    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
+    data_min.titre    = getValOrNull(this.fieldID('titre'))
+    data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
+    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
+    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'number'})
+    data_min.duration = getValOrNull(this.fieldID('duration'))
+    data_min.content  = getValOrNull(this.fieldID('content'))
+    data_min.note     = getValOrNull(this.fieldID('note'))
+
+    // On récupère toutes les données (ça consiste à passer en revue tous
+    // les éléments de formulaire qui ont la classe "f<type>")
+    var ftype = `f${data_min.type}`
+    var fields = []
+    var idSansPref = null
+    $('select,input[type="text"],textarea,input[type="checkbox"]')
+      .filter(function(){
+        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
+      })
+      .each(function(){
+        idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
+        other_data[idSansPref] = getValOrNull(this.id)
+        // Pour vérification
+        fields.push(this.id)
+      })
+
+    my = null
+    return [data_min, other_data]
+  }
+  //getFormValues
+
+  // ---------------------------------------------------------------------
 
   get form(){
     if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
@@ -517,7 +537,6 @@ const EVENT_FORM_TEMP = `
       <horloge class="small" id="event-__EID__-time" value="">...</horloge>
       <label>Durée</label>
       <duree id="event-__EID__-duration" class="small durationable">...</duree>
-      <button class="btnplay right" size="20"></button>
     </div>
 
     <div class="div-form">

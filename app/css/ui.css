@@ -55,6 +55,13 @@ button.main-button {
   font-size: 16px;
 }
 
+/* --------------------------------------------------------------------- */
+
+section#section-video {
+  background:black;
+}
+
+
 div#waiting-loop {
   position:fixed;
   top:300px;

@@ -21,10 +21,11 @@ class BtnPlay {
    * [1]  La méthode est aussi appelée lorsque l'on crée un nouvel event,
    *      mais il n'a pas encore d'event réel. Donc, ev est indefined. On s'en
    *      retourne sans rien faire, dans ce cas là.
+   *      Ne pas mettre `!ev` car ev peut être égal à 0.
    */
   static setAndWatch(container, ev){
     var btnPlay ;
-    if (!ev) return // [1]
+    if (undefined === ev) return // [1]
     if('function' !== typeof ev.id) ev = current_analyse.ids[ev]
     // On boucle sur chaque bouton trouvé qui n'a pas été préparé
     // On reconnait un bouton préparé au fait qu'il a une image (mais on

@@ -32,19 +32,15 @@ class FAEstt extends FAEvent {
 
   get sttNode(){return this._sttNode || defineP(this,'_sttNode',this.analyse.PFA.node(this.sttID))}
 
-  // Pour mettre en forme le contenu
-  get formated(){
-    if(undefined === this._formated){
-      var str
-      str = `<div>===== ${this.sttNode.hname} =====</div>`
-      str += `<div class="small">${this.content}</div>`
-      if(this.note) str += `<div class="small">${this.note}</div>`
-      // TODO Mettre des liens pour voir dans la structure ? (ou ça doit être fait
-      // de façon générale pour tout event)
-      str = this.analyse.deDim(str)
-      this._formated = str
-    }
-    return this._formated
+  // Mise en forme du contenu propre à ce type d'event
+  formateContenu(){
+    var str
+    str = `<div>===== ${this.sttNode.hname} =====</div>`
+    str += `<div class="small">${this.content}</div>`
+    if(this.note) str += `<div class="small">${this.note}</div>`
+    // TODO Mettre des liens pour voir dans la structure ? (ou ça doit être fait
+    // de façon générale pour tout event)
+    return this.analyse.deDim(str)
   }
 
   /**

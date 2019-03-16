@@ -38,7 +38,7 @@ Il suffit de créer la méthode d'instance `onModify` dans la classe de l'event.
 
 C'est le getter super `div` qui se charge de construire le div qui doit être affiché dans le reader. Il convient de ne pas le surclasser, pour obtenir tous les outils nécessaires à la gestion des events.
 
-En revanche, pour un affichage particulier, on peut définir le getter d'instance `formated` qui doit définir ce qui va remplacer le texte `content` dans le div final.
+En revanche, pour un affichage particulier du contenu, on peut définir le fonction d'instance `formateContenu` qui doit définir ce qui va remplacer le texte `content` dans le div final. Elle doit retourner le contenu à afficher (sans le mettre dans une propriété conservé, ce qui empêcherait l'actualisation — ou la compliquerait).
 
 > Utiliser la méthode `current_analyse.deDim(<formated>)` à la fin de l'opération pour remplacer tous les diminutifs utilisés.
 
@@ -46,18 +46,15 @@ Exemple :
 
 ```javascript
 
-  get formated(){
-    if(undefined === this._formated){
-      var str
-      str = '<mon div avec content>'
-      str += '<mon div avec les notes>'
-      str += '<mon div avec une autre valeur>'
-      // etc.
-      str = this.analyse.deDim(str)
-      this.formated = str
-      str = null // garbage collector
-    }
-    return this._formated
+  formateContenu(){
+    var str
+    str = '<mon div avec content>'
+    str += '<mon div avec les notes>'
+    str += '<mon div avec une autre valeur>'
+    // etc.
+    str = this.analyse.deDim(str)
+
+    return str
   }
 ```
 
