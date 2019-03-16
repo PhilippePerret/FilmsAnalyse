@@ -37,6 +37,7 @@ class DOMHorloge {
   get time(){return this._time}
   set time(v){
     this._time = v
+    this.domObj.setAttribute('value', v)
     this._otime = undefined
     if(undefined === this._initTime) this.initTime = this.otime.seconds
   }
@@ -151,6 +152,7 @@ class DOMDuration extends DOMHorloge {
   set duration(v){
     // console.log("-> duration", v)
     this._endTime = this.startTime + v
+    this.domObj.setAttribute('value', v)
     this._duration = v
   }
 
