@@ -6,6 +6,35 @@ body {
   background-color:#BBBBBB;
 }
 
+button.cancel {
+  /* all:unset; */
+	background-color:#EEEEEE;
+	border:1px solid black;
+	display:inline-block;
+	cursor:pointer;
+	color:#333333;
+	padding:0.4em 1em;
+  font-size:1em;
+  font-weight:normal;
+	text-decoration:none;
+  margin-left:0.5em;
+}
+button.warning {
+  /* all:unset; */
+	background-color:#eb3a2a;
+	border:1px solid #d02718;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	padding:0.4em 1em;
+  font-size:1em;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #810e05;
+}
+button.warning.small,
+button.cancel.small {
+  font-size:0.85em;
+}
 button.main-button {
   /* -webkit-appearance: none; sinon le background ne changera pas */
   all:unset;

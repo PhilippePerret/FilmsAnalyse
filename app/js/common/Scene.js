@@ -33,6 +33,15 @@ class Scene {
     return this.scenes[numero]
   }
 
+  static destroy(numero){
+    if(!this.scenes) return
+    this.scenes[numero] = undefined
+    delete this.scenes[numero]
+    // Pour forcer le recalcul
+    this._scene_number_to_id = undefined
+    this._scenes_by_time = undefined
+  }
+
   static forEachScene(fn){
     var nb_scenes = this.ScenesByTimes.length
     for(var i = 0; i < nb_scenes; ++i){
@@ -61,7 +70,6 @@ class Scene {
     if(undefined === this.ScenesByTimes[i-1]) return null
     return this.get(this.ScenesByTimes[i-1].numero)
   }
-
   /**
    * Liste qui contient en clé le numéro de la scène et en valeur son
    * temps de départ

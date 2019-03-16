@@ -339,15 +339,29 @@ class FAnalyse {
     (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
   }
 
+  /**
+   * Procédure de description de l'event
+   */
+  destroyEvent(event_id, form_instance){
+    (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
+  }
+  /**
+   * Méthode appelée à la modification d'un event
+   *
+   * [1]  En règle générale, si une opération spéciale doit être faite sur
+   *      l'event, il faut mieux définir sa méthode d'instance `onModify` qui
+   *      sera automatiquement appelée après la modification.
+   */
   updateEvent(ev, options){
     // TODO Peut-être faut-il replacer l'event à un autre endroit
     if (options && options.initTime != ev.time){
       console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
     }
+    // [1]
     if(ev.type === 'scene'){this.updateNumerosScenes()}
     // On marque l'analyse modifiée
     this.modified = true
-  // Enfin, s'il est affiché, il faut updater son affichage dans le
+    // Enfin, s'il est affiché, il faut updater son affichage dans le
     // reader
     ev.updateInReader()
   }
@@ -403,6 +417,19 @@ class FAnalyse {
       , len = this.events.length ;
     for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
     return len
+  }
+  /**
+   * Retourne l'index de l'event d'identifiant +event_id+
+   *
+   * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
+   * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
+   * depuis des `event_after` et `event_before`
+   * TODO Voir d'abord où on se sert exactement de la liste this.events comme
+   * liste.
+   */
+  indexOfEvent(event_id){
+    var i = 0, len = this.events.length ;
+    for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
   }
 
   // --- FONCTIONS I/O ----------------------------------------------

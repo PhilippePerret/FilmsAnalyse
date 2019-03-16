@@ -1,10 +1,14 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Création/modification des events](#creation_event)
+  * [Mise en forme des events](#event_mise_en_forme)
+  * [Bouton Play/Stop des events](#bouton_playstop_event)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+
 
 ## Point d'entrée {#point_dentree}
 
@@ -16,6 +20,75 @@ On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, po
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
 
+
+## Création/modification des events {#creation_event}
+
+Les `events` (scène, info, note, qrd, etc.) héritent tous de la classe `FAEvent`.
+
+### Exécution d'une opération après la création
+
+Il suffit de créer la méthode d'instance `onCreate` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.
+
+### Exécution d'une opération après la modification
+
+Il suffit de créer la méthode d'instance `onModify` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.
+
+## Mise en forme des events {#event_mise_en_forme}
+
+C'est le getter super `div` qui se charge de construire le div qui doit être affiché dans le reader. Il convient de ne pas le surclasser, pour obtenir tous les outils nécessaires à la gestion des events.
+
+En revanche, pour un affichage particulier, on peut définir le getter d'instance `formated` qui doit définir ce qui va remplacer le texte `content` dans le div final.
+
+> Utiliser la méthode `current_analyse.deDim(<formated>)` à la fin de l'opération pour remplacer tous les diminutifs utilisés.
+
+Exemple :
+
+```javascript
+
+  get formated(){
+    if(undefined === this._formated){
+      var str
+      str = '<mon div avec content>'
+      str += '<mon div avec les notes>'
+      str += '<mon div avec une autre valeur>'
+      // etc.
+      str = this.analyse.deDim(str)
+      this.formated = str
+      str = null // garbage collector
+    }
+    return this._formated
+  }
+```
+
+### Bouton Play/Stop des events {#bouton_playstop_event}
+
+`BtnPlay` est une classe javascript qui permet de gérer facilement les boutons play/stop des events, c'est-à-dire des boutons qui mettent en route (ou se rendent au temps de) la vidéo et l'arrête à la fin de la durée de l'event.
+
+Une unique instance `BtnPlay` est associée à un event `event.btnPlay` et va gérer tous les boutons play affichés de cet évènement.
+
+Pour l'implémenter, inscrire ce code HTML dans la page, à l'endroit où le bouton doit apparaitre, en réglant l'attribut `size` pour que le bouton ait la taille voulu. Si le bouton doit être à gauche, ajouter la classe `left`, s'il doit être à droite, ajouter `right` (cela permet de gérer l'espace avec les éléments autour) :
+
+```html
+
+  <div id="main-container">
+
+    <button class="btnplay left" size="30"></button>
+
+  </div>
+
+```
+
+Dans le code javascript, ajouter simplement :
+
+```javascript
+
+  BtnPlay.setAndWatch($('#main-container'), <event>)
+
+```
+
+> `#main-container` ne peut pas être le bouton lui-même, il ne serait pas traité.
+
+Tout le reste est géré automatiquement, il n'y a rien à faire.
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 

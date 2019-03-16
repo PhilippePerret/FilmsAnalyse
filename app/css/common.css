@@ -41,3 +41,24 @@ input.temps-secondes {
 input.horloge.small, input.temps-secondes.small {
   width:100px !important;
 }
+
+/* Pour les boutons de classe `BtnPlay` */
+button.btnplay {
+  unset:all;
+  border:0;
+  background:transparent;
+}
+button.btnplay.right {
+  margin-left:0.1em;
+}
+button.btnplay.left {
+  margin-right:0.1em;
+}
+button.btnplay:focus {
+  outline:none;
+}
+button.btnplay,
+button.btnplay img
+{
+  vertical-align:middle;
+}

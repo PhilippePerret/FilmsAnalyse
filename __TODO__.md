@@ -1,8 +1,34 @@
-* MANUEL DÉVELOPPEMENT
-  * Documenter l'utilisation de formated (pour mettre en forme l'event dans le reader)
-  * Documenter l'utilisation de la méthode `onCreate` (pour accomplir une tâche sur l'event après la création)
+* [BUG] La fenêtre d'édition ne se rouvre pas une seconde fois, encore…
+* [BUG] Les durées des events ne semblent pas être enregistrées
+* [BUG] La définition d'un temps de fin pour le locator n'est pas prise en compte
 
-* Procédure de suppression d'un event (dans la fiche d'édition)
+* Classe BtnPlay
+  En fait, pour le moment, ils ne font que se suivre visuellement, au niveau du
+  bouton. Mais moi, ce que je voudrais, c'est que tous les boutons partagent la
+  même instance BtnPlay. De cette manière, on pourrait mettre en route en cliquant
+  sur un des boutons et arrêter en cliquant sur un autre.
+  Pour ce faire :
+    * Pour un event, on construit une classe btnPlay (`event.btnPlay`). C'est
+      son instance BtnPlay.
+    * Dès qu'on doit construire un bouton pour cet event, on appelle un code
+      `event.btnPlay.buildOne({:size, :left/right})` qui retourne le code à insérer
+      dans la page (en fait on l'insère dans la page tout de suite pour pouvoir
+      le surveiller) et on le place au bon endroit.
+  * Il faudrait que tous les boutons play d'un même event se suivent, c'est-à-dire
+    qu'il se mette en activité
+    Pour ce faire, c'est facile : travailler avec une class "btn-play-<id event>"
+    que porteront tous les boutons et changer toujours les éléments de cette
+    classe ensemble.
+  - implémenter aussi la fin du jeu à la fin de l'event
+
+* Une classe `Writer` pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
+
+* Pouvoir avoir un résumé (dans le reader) de l'analyse courante
+  - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
+  - nombre de Scènes
+  - nombre de nœuds structurels définis
+
+* Quand on change de film, il faut vider le reader (de façon générale, reseter l'UI)
 
 * Ajouter aussi le bouton play/stop dans le formulaire de l'event
 

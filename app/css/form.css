@@ -14,10 +14,12 @@ form.form-edit-event {
 form.form-edit-event.modified {
 
 }
-form.form-edit-event:not(.modified) button.btn-form-submit {
+form.form-edit-event:not(.modified) button.btn-form-submit
+{
   visibility:hidden;
 }
-form.form-edit-event.modified button.btn-form-submit {
+form.form-edit-event.modified button.btn-form-submit
+{
   visibility:visible;
 }
 

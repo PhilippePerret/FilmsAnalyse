@@ -117,7 +117,12 @@ class SttNode {
   get scene(){ return this._scene }
 
   get event(){return this._event || defineP(this,'_event',current_analyse.ids[this.event_id])}
-  set event(v){this._event = v ; this._event_id = v.id ; this.modified = true }
+  set event(v){
+    this._event = v
+    this._event_id = v ? v.id : undefined
+    this.resetDependencies()
+    this.modified = true
+  }
 
   resetDependencies(){
     for(var i=0,len = this.dependencies.length;i<len;++i){
