@@ -1,5 +1,6 @@
-* [BUG] Les durées des events ne semblent pas être enregistrées
 * Implémenter #13 (un event jouant interrompt un autre event jouant avant)
+
+* Mettre 'slategrey' comme couleur de fond et de bordure des formulaires
 
 * Mettre un cursor horizontal quand on est sur une horloge (<horloge>, <duree>, une classe existe déjà)
 
