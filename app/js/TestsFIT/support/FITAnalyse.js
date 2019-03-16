@@ -6,12 +6,13 @@ const FITAnalyse = {
      * Pour mettre l'analyse de dossier +folder+ en analyse courante
      */
   , setCurrent:function(folder, options, resolve){
+      console.log("-> setCurrent")
       var my = this
       if(undefined === options){options = {}}
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options
-      if(options.remove_events){
+      if( options.remove_events ){
         if (folder == 'simple3scenes') throw("Impossible de détruire les events de simple3scenes (on doit les garder absolument)")
         else this.removeEvents(options)
       }
@@ -19,6 +20,7 @@ const FITAnalyse = {
       if (undefined === resolve){
         // <= l'argument resolve n'est pas défini
         // => Il faut retourner une promesse
+        console.log("On retourne une promesse")
         return new Promise(ok => {
           my.analyse.methodeAfterLoading = ok
           this.analyse.load()
@@ -29,7 +31,6 @@ const FITAnalyse = {
         this.analyse.load()
       }
     }
-
     /**
       * Méthode sauvant l'analyse courant (this.analyse)
       * @asynchrone
@@ -54,3 +55,5 @@ const FITAnalyse = {
       $('.form-edit-event').remove() // toutes
     }
 }
+
+FITAnalyse.load = FITAnalyse.setCurrent

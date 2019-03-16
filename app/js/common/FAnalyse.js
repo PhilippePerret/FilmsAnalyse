@@ -209,14 +209,7 @@ class FAnalyse {
   //  DATA VOLATILES
 
   get modified() { return this._modified }
-  set modified(v) {
-    try {
-      pourvoirquivientla
-    } catch (e) {
-      console.error(e)
-    }
-    this._modified = v
-  }
+  set modified(v) { this._modified = v }
 
   get currentScene(){
     if(undefined === this._current_scene){

@@ -1,5 +1,3 @@
-* Au Quit, il faut appeler FAnalyse.checkIfCurrentSavedBeforeExec
-
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante

@@ -46,6 +46,7 @@ const Tests = {
      * d'un filtre défini en argument
      */
   , getTestFileList:function(){
+      console.log("-> getTestFileList")
       if(!this.ARGV){return this.JsFilesOf('tests')}
       else {
         var filtre    = this.ARGV[0]
@@ -74,23 +75,35 @@ const Tests = {
 
       var sysFiles  = this.JsFilesOf('system')
       var supFiles  = this.JsFilesOf('support')
-      var testFiles = this.getTestFileList()
-      // console.log("testFiles:", testFiles)
 
       this.expected_loadings = 0
       this.expected_loadings += sysFiles.length
-      this.expected_loadings += testFiles.length
       this.expected_loadings += supFiles.length
 
       // La méthode qui devra être appelée après le chargement
-      this.methode_suite_loading = this.initBeforeRun.bind(this)
+      this.methode_suite_loading = this.loadTestFiles.bind(this)
 
-      for(var filesFolder of [sysFiles, testFiles, supFiles]){
+      for(var filesFolder of [sysFiles, supFiles]){
         // console.log("Fichiers du dossier :", filesFolder, sysFiles)
         for(var relpath of filesFolder){
           this.createScript(relpath)
         }
       }
+    }
+
+  , loadTestFiles:function(){
+
+      this.expected_loadings = 0
+      var testFiles = this.getTestFileList()
+      this.expected_loadings += testFiles.length
+
+      // La méthode qui devra être appelée après le chargement
+      this.methode_suite_loading = this.initBeforeRun.bind(this)
+
+      for(var relpath of testFiles){
+        this.createScript(relpath)
+      }
+
     }
 
     /**

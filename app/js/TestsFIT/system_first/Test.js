@@ -43,8 +43,15 @@ class Test {
    */
   run(){
     Tests.showTestTitle(this.title, this.srcRelPath)
-    this.nextCase()
+    if(undefined === this.codeBeforeTest){
+      this.nextCase()
+    } else {
+      this.codeBeforeTest().then(this.nextCase.bind(this))
+    }
   }
+
+  beforeTest(v) { this.codeBeforeTest = v }
+  afterTest(v)  { this.codeAfterTest = v }
 }
 
 const TCase = function(intitule, fn_test){
