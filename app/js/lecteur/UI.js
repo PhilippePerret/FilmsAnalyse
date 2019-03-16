@@ -50,23 +50,15 @@ const UI = {
       this.inited = true
     }
 
-  // ---------------------------------------------------------------------
-  // Méthode travaillant avec les boutons de l'UI, mais affectant l'analyse
-  // courante (seulement si elle existe, donc)
-  , runIfAnalyse:function(method, arg){
-      current_analyse && current_analyse.locator[method].bind(current_analyse.locator)(arg)
+    /**
+     * Au chargement d'un analyse, ou à la création d'une nouvelle, cette
+     * méthode est appelée pour ré-initialiser tout l'interface (en tout cas
+     * les parties qui n'ont pas pu encore l'être)
+     */
+  , reset:function(){
+      AReader.reset()
+      EventForm.reset() // notamment destruction des formulaires
     }
-  , hideCurrentTime:function(){this.runIfAnalyse('hideCurrentTime')}
-  , goToTime:function(){this.runIfAnalyse('goToTime')}
-  , togglePlay:function(){this.runIfAnalyse('togglePlay')}
-  , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
-  , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
-  , goToNextStopPoint:function(){this.runIfAnalyse('goToNextStopPoint')}
-
-  , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
-  , forward:function(pas){this.runIfAnalyse('forward', pas)}
-  , stopRewind:function(pas){this.runIfAnalyse('stopRewind', pas)}
-  , stopForward:function(pas){this.runIfAnalyse('stopForward', pas)}
 
   // ---------------------------------------------------------------------
   //  Pour les boucles d'attente
@@ -141,4 +133,26 @@ const UI = {
   , setVideoPath:function(ev){
       current_analyse.setVideoPath(ev)
     }
+
+  // ---------------------------------------------------------------------
+  //  RACCOURCIS
+  // ---------------------------------------------------------------------
+  // Méthode travaillant avec les boutons de l'UI, mais affectant l'analyse
+  // courante (seulement si elle existe, donc)
+  // En fait, ce sont des raccourcis
+  , runIfAnalyse:function(method, arg){
+      current_analyse && current_analyse.locator[method].bind(current_analyse.locator)(arg)
+    }
+  , hideCurrentTime:function(){this.runIfAnalyse('hideCurrentTime')}
+  , goToTime:function(){this.runIfAnalyse('goToTime')}
+  , togglePlay:function(){this.runIfAnalyse('togglePlay')}
+  , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
+  , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
+  , goToNextStopPoint:function(){this.runIfAnalyse('goToNextStopPoint')}
+
+  , rewind:function(pas){this.runIfAnalyse('rewind', pas)}
+  , forward:function(pas){this.runIfAnalyse('forward', pas)}
+  , stopRewind:function(pas){this.runIfAnalyse('stopRewind', pas)}
+  , stopForward:function(pas){this.runIfAnalyse('stopForward', pas)}
+
 }

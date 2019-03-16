@@ -14,6 +14,13 @@ class AReader {
   // régler.
   static get TIME_AROUND(){ return 5*60 }
 
+  static reset(){
+    document.getElementById('reader').innerHTML = ""
+  }
+
+  // ---------------------------------------------------------------------
+  //  INSTANCE
+  
   constructor(analyse){
     this.analyse = analyse
   }
@@ -44,7 +51,7 @@ class AReader {
    * Ne pas la confondre avec la méthode `resetBeyond` suivante
    */
   reset(){
-    this.container.innerHTML = ""
+    AReader.reset()
   }
 
   /**

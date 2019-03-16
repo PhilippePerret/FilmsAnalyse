@@ -10,6 +10,7 @@ module.exports = function(){
   }
   let files = DIALOG.showOpenDialog(openOptions)
   if (!files) return false
+  UI.reset()
   var analyseFolder = files[0]
   if (FAnalyse.load(analyseFolder)){
     // <= L'analyse a pu être chargée

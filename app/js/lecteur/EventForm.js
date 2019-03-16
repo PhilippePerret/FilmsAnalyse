@@ -17,6 +17,14 @@ class EventForm {
     my = null
   }
 
+  static reset(){
+    delete this.currentForm
+    delete this._lastId
+    delete this._eventForms
+    this.videoWasPlaying = false
+    $('form.form-edit-event').remove()
+  }
+
   // Les formulaires déjà initiés (et donc cachés dans le DOM)
   static get eventForms(){
     if(undefined===this._eventForms){this._eventForms = {}}
