@@ -505,7 +505,7 @@ const EVENT_FORM_TEMP = `
   <input type="hidden" id="event-__EID__-is_new" />
   <input type="hidden" id="event-__EID__-type" />
 
-  <section class="header">
+  <section class="header no-user-selection">
     <span class="event-type">...</span>
   </section>
 
@@ -513,7 +513,7 @@ const EVENT_FORM_TEMP = `
 
     <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
 
-    <div class="div-infos-temporelles">
+    <div class="div-infos-temporelles no-user-selection">
       <button class="btnplay right" size="30"></button>
       <label>Position</label>
       <horloge class="small" id="event-__EID__-time" value="">...</horloge>
@@ -645,14 +645,14 @@ const EVENT_FORM_TEMP = `
       <textarea id="event-__EID__-note" rows="3"></textarea>
     </div>
 
-    <div class="event-form-buttons">
+    <div class="event-form-buttons no-user-selection">
       <button id="event-__EID__-destroy" class="btn-form-destroy warning small fleft" type="button">Détruire</button>
       <button class="btn-form-cancel cancel small fleft" type="button">Renoncer</button>
       <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
     </div>
   </section>
 
-  <section class="footer">
+  <section class="footer no-user-selection">
     <span class="event-type">...</span>
     <span class="event-id">...</span>
     <span class="event-time">...</span>

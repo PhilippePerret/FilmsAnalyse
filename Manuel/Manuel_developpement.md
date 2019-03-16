@@ -8,6 +8,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+  * [Emp^rche]
 
 
 ## Point d'entrée {#point_dentree}
@@ -169,3 +170,9 @@ Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>)` ou `UI.se
 ### Boutons principaux
 
 Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans `ui.css`.
+
+### Empêcher la sélection
+
+Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
+
+> Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.

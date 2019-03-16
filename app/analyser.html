@@ -17,12 +17,12 @@
     <section id="section-video">
 
       <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
-      <div id="div-video-top-tools">
+      <div id="div-video-top-tools" class="no-user-selection">
         <span id="horloge" class="horloge vignette"> 0:00:00.00</span>
       </div>
 
       <!-- VIDÉO -->
-      <video id="video">
+      <video id="video" class="no-user-selection">
         <!-- <source id="video-src" src="/Users/philippeperret/Desktop/BUREAU/EssaiFilm/Her_extrait_720p.mp4" type="video/mp4"> -->
         <source id="video-src" src="" type="video/mp4">
         <!-- <track label="English" kind="subtitles" srclang="en" src="captions/vtt/sintel-en.vtt"> -->
@@ -30,11 +30,11 @@
       </video>
 
       <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
-      <div id="div-nav-video-buttons">
+      <div id="div-nav-video-buttons" class="no-user-selection">
         <span id="horloge_real" class="horloge mini fleft">0:00:00.00</span>
 
 
-        <table id="video-controller-1" class="video-controller" style="display:none;">
+        <table id="video-controller-1" class="video-controller no-user-selection">
           <tr>
             <td>
               <button type="button" id="btn-rewind-3" class="controller">
@@ -75,7 +75,7 @@
           </tr>
         </table>
 
-        <fieldset class="time-tools">
+        <fieldset class="time-tools no-user-selection">
           <div>
             <button type="button" id="btn-go-to-time-video-1" class="small">Aller au temps : </button>
             <input type="text" id="requested_time" class="horloge small" value="0,0,0.0" placeholder="hr,mn,sc.fr" />
@@ -128,7 +128,7 @@
 
       <!-- Section pour ajouter un nouvel évènement -->
 
-      <div id="buttons-new-event">
+      <div id="buttons-new-event" class="no-user-selection">
         <button type="button" id="btn-new-event" data-type="event" class="small" title="Évènement">Ev.</button>
         <button type="button" id="btn-new-scene" data-type="scene" class="small">Scène</button>
         <button type="button" id="btn-new-stt" data-type="stt" class="small">Nœud STT</button>
@@ -150,7 +150,7 @@
     <!-- /section#section-footer -->
 
     <!-- BOUCLE D'ATTENTE -->
-    <div id="waiting-loop" style="display:none;">
+    <div id="waiting-loop" class="no-user-selection" style="display:none;">
       <img id="waiting-loop" src="img/spinner.gif" />
       <span id="waiting-loop-message">...</span>
     </div>

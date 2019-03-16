@@ -6,6 +6,12 @@ body {
   background-color:#BBBBBB;
 }
 
+.no-user-selection,
+button, select, option, label
+{
+  -webkit-user-select:none;
+}
+
 button.cancel {
   /* all:unset; */
 	background-color:#EEEEEE;
@@ -74,6 +80,7 @@ table.video-controller {
   float:right;
   text-align:right;
   border:3px solid #555555;
+  -webkit-user-select:none;
 }
 
 /* TABLE DU CONTROLEUR DE VIDÉO */
