@@ -392,7 +392,6 @@ class FAnalyse {
       if( ev.isRealScene ){
         ev.numero = ++num
         ev.updateNumero()
-        // console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
       }
     })
   }

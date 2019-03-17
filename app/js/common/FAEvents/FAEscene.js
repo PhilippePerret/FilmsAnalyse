@@ -62,7 +62,7 @@ class FAEscene extends FAEvent {
    * est bien formaté
    */
   updateNumero(){
-    this.jqReaderObj.find(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
+    $(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
   }
 
   get isGenerique(){return this.sceneType === 'generic'}
