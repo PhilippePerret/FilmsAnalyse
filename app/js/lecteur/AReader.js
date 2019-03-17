@@ -79,7 +79,7 @@ class AReader {
    * Méthode qui permet d'afficher tous les events d'un coup
    */
   displayAll(){
-    console.log("Je dois afficher tous les events.")
+    this.analyse.forEachEvent(function(ev){ev.show()})
   }
 
   // ---------------------------------------------------------------------

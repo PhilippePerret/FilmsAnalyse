@@ -1,6 +1,15 @@
+* Documenter la façon d'écrire un numéro de scène dans l'interface (quel que soit l'endroit, pour qu'il soit actualisé simplement)
+  - Idem avec la donnée du temps
+  // TODO S'inspirer de numero-scene pour écrire un code qui permette de transformer le
+  // data-time de l'event partout où il est marqué. Simplement en le liant à data-id :
+  // $('*[data-time][data-id="${this.id}"]')
+  //  <= tous les tags ayant un attribut `data-time` et un attribut `data-id`
+  //      valant l'identifiant de l'evenement
+
+
 * Implémenter la méthode AReader#displayAll qui affiche d'un coup tous les events
   - peut-être prévoir un outil (menu) qui permette de le faire.
-  
+
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante

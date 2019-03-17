@@ -355,8 +355,7 @@ class FAnalyse {
    *      sera automatiquement appelée après la modification.
    */
   updateEvent(ev, options){
-    // TODO Peut-être faut-il replacer l'event à un autre endroit
-    var positionIsChanging = false
+    var new_idx = undefined
     if (options && options.initTime != ev.time){
       var idx_init      = this.indexOfEvent(ev.id)
       var next_ev_old   = this.events[idx_init + 1]
@@ -364,19 +363,20 @@ class FAnalyse {
       var next_ev_new   = this.events[idx_new_next]
       if( next_ev_old != next_ev_new){
         // => Il faut replacer l'event au bon endroit
-        positionIsChanging = true
         this.events.splice(idx_init, 1)
-        var idx_new = this.getIndexOfEventAfter(ev.time)
-        this.events.splice(idx_new, 0, ev)
+        var new_idx = this.getIndexOfEventAfter(ev.time)
+        this.events.splice(new_idx, 0, ev)
       }
     }
     // [1]
-    if(ev.type === 'scene'){this.updateNumerosScenes()}
+    if(ev.isRealScene){this.updateNumerosScenes()}
+    // On actualise tous les autres éléments (par exemple l'attribut data-time)
+    ev.updateInUI()
     // On marque l'analyse modifiée
     this.modified = true
     // Enfin, s'il est affiché, il faut updater son affichage dans le
     // reader (et le replacer si nécessaire)
-    ev.updateInReader(positionIsChanging)
+    ev.updateInReader(new_idx)
 
     next_ev_old = null
     next_ev_new = null
@@ -389,8 +389,9 @@ class FAnalyse {
   updateNumerosScenes(){
     var num = 0
     this.forEachEvent(function(ev){
-      if(ev.type === 'scene' && ev.sceneType != 'generic'){
+      if( ev.isRealScene ){
         ev.numero = ++num
+        ev.updateNumero()
         // console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
       }
     })

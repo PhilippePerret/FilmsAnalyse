@@ -42,11 +42,29 @@ class FAEscene extends FAEvent {
     else {
       var decor  = this.decor ? ` — ${this.analyse.deDim(this.decor)}` : ''
       var sdecor = this.sous_decor ? ` : ${this.analyse.deDim(this.sous_decor)}` : ''
-      h = `${this.numero}. ${(this.lieu || 'INT').toUpperCase()}. ${(this.effet || 'jour').toUpperCase()}${decor}${sdecor}`
+      h = `${this.numeroFormated}. ${(this.lieu || 'INT').toUpperCase()}. ${(this.effet || 'jour').toUpperCase()}${decor}${sdecor}`
     }
     this._formated = `<div class="scene-heading">${h}</div><span class="scene-resume">${this.analyse.deDim(this.content)}</span>`
     return this._formated
   }
 
+  get numeroFormated(){
+    if(undefined===this._numeroFormated){
+      this._numeroFormated = `<span class="numero-scene" data-id="${this.id}">${this.numero}</span>`
+    }
+    return this._numeroFormated
+  }
+
+  /**
+   * Actualisation du numéro de scène
+   *
+   * Noter que ça le change partout dans l'interface, si le numéro de scène
+   * est bien formaté
+   */
+  updateNumero(){
+    this.jqReaderObj.find(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
+  }
+
   get isGenerique(){return this.sceneType === 'generic'}
+
 }

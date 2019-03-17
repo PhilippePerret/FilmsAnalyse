@@ -32,6 +32,10 @@ class FAEvent {
   // ---------------------------------------------------------------------
   //  Propriétés temporelles
 
+  // On utilise un getter et un setter pour réinitialiser d'autres propriétés
+  get time(){return this._time}
+  set time(v){ this._time = v ; delete this._horl ; delete this._otime }
+
   get otime(){return this._otime || defineP(this,'_otime',new OTime(this.time))}
   get horloge(){return this._horl||defineP(this,'_horl',this.otime.horloge)}
 
@@ -107,7 +111,7 @@ class FAEvent {
    * le reader. On va faire simplement un remplacement de div (le div du
    * contenu, pour ne pas refaire les boutons, etc.).
    */
-  updateInReader(repositionne){
+  updateInReader(new_idx){
     // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
     // à faire. Par prudence, on a quand réinitialisé le _div qui avait peut-
     // être été défini lors d'un affichage précédent
@@ -118,14 +122,38 @@ class FAEvent {
     delete this._contenu
     this.jqReaderObj.find('.content').replaceWith(this.contenu)
 
-    if (repositionne) {
-      // TODO Si le temps de l'event a changé de façon conséquente, il faut
-      // le replacer.
-      // TODO
+    if (undefined !== new_idx /* peut être 0 */) {
+      // Si le temps de l'event a changé de façon conséquente, il faut
+      // le replacer au bon endroit dans le reader. C'est la valeur de `new_idx`
+      // qui le définit, undefined si l'event reste en place ou le nouvel index
+      //
+      // Rappel : l'new_idx est "calculé" après retrait de l'event de la liste,
+      // il faut en tenir compte ici.
+      // On met d'abord le noeud en dehors du reader
+      $('#section-reader').append(this.jqReaderObj)
+      var reader = DGet('reader')
+      reader.insertBefore(this.domReaderObj, reader.childNodes[new_idx])
+
+      this.updateInUI()
     }
 
     this.div.style.opacity = 1
   }
+
+  /**
+   * Les données "communes" qu'on doit actualiser dans tous l'interface, quel
+   * que soit l'élément.
+   */
+  updateInUI(){
+
+    // Le temps se trouve toujours dans une balise contenant data-time, avec
+    // le data-id défini
+    $(`*[data-time][data-id="${this.id}"]`).attr('data-time',this.time)
+    // TODO Il faut traiter l'horloge aussi
+    $(`.horloge-event[data-id="${this.id}"]`).html(this.horloge)
+
+  }
+
 
   makeAppear(){
     this.jqReaderObj.animate({opacity:1}, 600)
@@ -141,6 +169,7 @@ class FAEvent {
     if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
     return this._jq_reader_obj
   }
+  get domReaderObj(){return this._domReaderObj||defineP(this,'_domReaderObj',this.defineDomReaderObj())}
 
   get domId(){ return `revent-${this.id}`}
 
@@ -156,7 +185,8 @@ class FAEvent {
       var etools = document.createElement('DIV')
       etools.className = 'e-tools'
       var h = document.createElement('SPAN')
-      h.className = "horloge"
+      h.className = "horloge horloge-event"
+      h.setAttribute('data-id', this.id)
       h.innerHTML = this.otime.horloge
       var be = document.createElement('BUTTON')
       be.className = 'btn-edit'
@@ -259,8 +289,16 @@ class FAEvent {
       this.imgBtnPlay[this.playing?'hide':'show']()
       this.imgBtnStop[this.playing?'show':'hide']()
     }
-
   }
+
+  // ---------------------------------------------------------------------
+  // MÉTHODE D'ÉTAT
+
+  get isRealScene(){return this.type === 'scene' && this.sceneType !== 'generic'}
+
+  // ---------------------------------------------------------------------
+  //  DOM ÉLÉMENTS
+
   get imgBtnPlay(){
     return this._imgBtnPlay || defineP(this,'_imgBtnPlay',this.btnPlayETools.find('img.btn-play'))
   }
@@ -283,6 +321,13 @@ class FAEvent {
   // Gestion du Bouton BtnPlay
   // Cf. Le manuel de développement
   get btnPlay(){return this._btnPlay||defineP(this,'_btnPlay',new BtnPlay(this))}
+
+  // Pour définir le dom obj de l'event dans le Reader
+  defineDomReaderObj(){
+    var obj
+    if (this.jqReaderObj) obj = this.jqReaderObj[0]
+    return obj
+  }
 
 }
 

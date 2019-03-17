@@ -25,8 +25,8 @@ const FITAnalyse = {
         // <= l'argument resolve n'est pas défini
         // => Il faut retourner une promesse
         return new Promise(ok => {
-          my.analyse.methodeAfterLoading = ()=>{
-            this.analyse.reader.displayAll()
+          my.analyse.methodeAfterLoading = () => {
+            if(options.displayAllEvents) this.analyse.reader.displayAll()
             ok()
           }
           this.analyse.load()
