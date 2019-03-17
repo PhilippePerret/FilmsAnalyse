@@ -4,12 +4,11 @@
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
+  * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
-  * [Emp^rche]
-
 
 ## Point d'entrée {#point_dentree}
 
@@ -87,6 +86,27 @@ Dans le code javascript, ajouter simplement :
 > `#main-container` ne peut pas être le bouton lui-même, il ne serait pas traité.
 
 Tout le reste est géré automatiquement, il n'y a rien à faire.
+
+### Actualisation automatique des horloges, time et numéro {#autoupdate_horloge_time_numera}
+
+Afin que les horloges et les times en attribut de balises soient automatiquement modifiés tous en même temps, il suffit de respecter les conventions suivantes :
+
+* Pour les horloges, ajouter la classe CSS `horloge-event` et mettre un attribut `data-id` avec la valeur de l'identifiant de l'event. Par exemple :
+    ```html
+      <span class="horloge horloge-event" data-id="4">...</span>
+    ```
+* Pour la valeur du `time` enregistré en attribut (pratique pour certaines opération), il suffit d'ajouter l'attribut `data-id` en parallèle de l'attribut `data-time`. Par exemple :
+    ```html
+      <div data-time="23.56" data-id="12">...</div>
+    ```
+* Si l'event est une scène, son numéro doit être indiqué de la manière suivante :
+    ```html
+      <span class="numero-scene" data-id="23">...</span>
+    ```
+Si ces conventions sont respectées, l'appel à la méthode `FAEvent#updateInUI` modification automatiquement les valeurs affichées et consignées. Pour ce qui est des scènes, c'est la méthode qui actualise tous les numéros qui se chargera d'actualiser les numéros de scène.
+
+Cf. aussi [Champs temporels](#temporal_fields) pour les champs *horlogeables* et *durationables*.
+
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 

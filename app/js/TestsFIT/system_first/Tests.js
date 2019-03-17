@@ -110,6 +110,7 @@ Tests.termine = function(){
   if(this.sys_errors.length){
     console.log(RC+RC+'%cDes erreurs systèmes se sont produites :', REDBOLD+'font-size:1.1em;');
     console.log('%c'+this.sys_errors[0], REDBOLD+'font-size:1.1em;');
+    console.error(this.sys_errors[0])
   };
 }
 

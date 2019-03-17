@@ -45,7 +45,6 @@ app.on('ready', () => {
   mainW.toggleDevTools();
 
   mainW.on('close', (ev) => {
-    // console.log("Je fais ça avant de fermer la fenêtre et quitter")
     // Maintenant, on sauve toujours car 1/ les données sauvées sont maigres
     // et 2/ elles contiennent le dernier temps
     mainW.webContents.executeJavaScript('current_analyse && current_analyse.saveData()')
@@ -56,7 +55,6 @@ app.on('ready', () => {
 .on('quit', () => {
   // Si des préférences ont été modifiées, on les enregistré (en synchrone)
   Prefs.saveIfModified()
-
 })
 
 ipc.on('get-screen-dimensions', ev => {

@@ -7,6 +7,9 @@ horloge, duree {
   background-color:#222222;
   -webkit-user-select: none;
 }
+horloge:hover, duree:hover {
+  cursor:ew-resize;
+}
 horloge:not(.small), duree:not(.small) {
   width:120px;
 }

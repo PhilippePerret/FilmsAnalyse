@@ -232,7 +232,9 @@ Mais pas :
     ./app/js/TestsFIT/tests/autre/autre_tests.js
 
 
-## Exécutions avant et après les tests {#before_and_after_tests}
+## Exécutions avant et après la suite entière de tests {#before_and_after_tests}
+
+Pour le code à évaluer avant le test courant, voir [exécution avant et après le test courant](#before_and_after_testseul)
 
 Pour définir le code à jouer avant ou après l'ensemble de la suite de **tous les tests**, on utilise, *dans n'importe quel fichier test*, la méthode `beforeTests` et `afterTests`.
 
@@ -258,6 +260,34 @@ Si la méthode `beforeTests` retourne une promesse, les tests ne seront lancés 
 > Noter que si le fichier définissant ces codes n'est pas chargé car filtré, les méthodes ne seront pas invoquées. Cf. l'astuce ci-dessous pour palier cet inconvénient.
 
 Astuce : le plus simple est de définir ces méthodes dans un fichier du dossier `TestsFIT/support`, car ces fichiers sont toujours chargés.
+
+## Exécution avant et après le test courant {#before_and_after_testseul}
+
+Pour jouer du code avant et après la feuille de test courant, le test courant, utiliser :
+```javascript
+
+  var t = new Test("mon test")
+  t.beforeTest(<promesse>)
+  t.case(...)
+  t.case(...)
+  t.afterTest(<promesse>)
+
+```
+
+Le cas classique, dans Film-Analyzer, consiste à charger une analyse de film avant de procéder aux tests. On procède ainsi :
+
+```javascript
+
+var t = new Test("Mon test sur une analyse")
+
+t.beforeTest(FITAnalyse.load.bind(FITAnalyse, 'dossier/test'))
+
+t.case("Premier test", ()=>{
+  //... Je peux exécuter ici un tests sur l'analyse chargée, après son
+  //... chargement.
+})
+
+```
 
 ## Textes écrits dans le suivi {#textes_suivis}
 

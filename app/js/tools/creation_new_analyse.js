@@ -58,6 +58,7 @@ module.exports = function(){
     analyse.save()
     // console.log("analyse.data :", analyse.data)
     window.current_analyse = analyse
+    UI.reset()
     F.notify(T('conf-created-analyse'))
     window.current_analyse.load()
   } catch (e) {

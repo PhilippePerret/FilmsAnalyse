@@ -14,6 +14,26 @@ class BtnPlay {
   // ---------------------------------------------------------------------
   //  CLASSE
 
+  // Le BtnPlay courant (celui en train de jouer)
+  static get current(){return this._current}
+  static set current(v){
+    this.stopCurrentIfExists()
+    this._current = v
+  }
+
+  static stopCurrentIfExists(){
+    if(this.current){
+      this.current.stop()
+      delete this._current
+    }
+  }
+
+  static unsetCurrent(iBtnPlay){
+    if(this.current && this.current.id == iBtnPlay.id){
+      delete this._current
+    }
+  }
+
   /**
    * Pour placer et surveiller les boutons play/stop des events
    * Cf. Manuel de développement > #bouton_playstop_event
@@ -76,9 +96,7 @@ class BtnPlay {
 
     // Si on est en train de jouer la vidéo, il faut l'arrêter
     if (this.playing){
-      this.playing = false
-      this.locator.stop()
-      imgBtn = this.srcPlay // le bouton start doit être affiché
+      this.stop()
     } else {
       // Dans tous les cas, si on n'est pas en train de jouer, quand on clique
       // sur le bouton, on rejoint le temps de début de l'event
@@ -94,12 +112,22 @@ class BtnPlay {
       } else {
         imgBtn = this.srcPlay
       }
+      BtnPlay.current = this
     }
-
     // console.log("videoIsPlaying après:", !!this.videoIsPlaying)
     // console.log("playing après:", !!this.playing)
+    this.setButton(imgBtn)
+  }
 
-    $(`.${this.class} img`).attr('src', imgBtn)
+  stop(){
+    this.playing = false
+    this.locator.stop()
+    this.setButton(this.srcPlay)
+    BtnPlay.unsetCurrent(this) // attention aux loops
+  }
+
+  setButton(src){
+    $(`.${this.class} img`).attr('src', src)
   }
 
   // ---------------------------------------------------------------------

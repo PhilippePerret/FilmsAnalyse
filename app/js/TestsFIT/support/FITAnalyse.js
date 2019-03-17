@@ -4,6 +4,11 @@ const FITAnalyse = {
     analyse: null // analyse courante des tests
     /**
      * Pour mettre l'analyse de dossier +folder+ en analyse courante
+     *
+     * +options+
+     *    :remove_events      Si true, on détruit tous les events
+     *    :reader             Si 'display-all-events', on doit demander à
+     *                        l'analyse d'afficher tous les events
      */
   , setCurrent:function(folder, options, resolve){
       var my = this
@@ -11,7 +16,7 @@ const FITAnalyse = {
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options
-      if(options.remove_events){
+      if( options.remove_events ){
         if (folder == 'simple3scenes') throw("Impossible de détruire les events de simple3scenes (on doit les garder absolument)")
         else this.removeEvents(options)
       }
@@ -20,7 +25,10 @@ const FITAnalyse = {
         // <= l'argument resolve n'est pas défini
         // => Il faut retourner une promesse
         return new Promise(ok => {
-          my.analyse.methodeAfterLoading = ok
+          my.analyse.methodeAfterLoading = () => {
+            if(options.displayAllEvents) this.analyse.reader.displayAll()
+            ok()
+          }
           this.analyse.load()
         })
       } else {
@@ -29,7 +37,6 @@ const FITAnalyse = {
         this.analyse.load()
       }
     }
-
     /**
       * Méthode sauvant l'analyse courant (this.analyse)
       * @asynchrone
@@ -54,3 +61,5 @@ const FITAnalyse = {
       $('.form-edit-event').remove() // toutes
     }
 }
+
+FITAnalyse.load = FITAnalyse.setCurrent

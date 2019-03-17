@@ -7,6 +7,10 @@ assert_equal(expected, actual, options)
 */
 
 window.assert_equal = function(expected, actual, options){
+  if ('object' === typeof expected){
+    if (Array.isArray(expected)) throw("Pour tester l'égalité d'une liste Array, il faut utiliser l'assertion `assert_match`.")
+    else throw("Pour tester l'égalité d'un Object, il faut utiliser l'assertion `assert_match`.")
+  }
   assert(
       actual === expected
     , `${actual} is equal to ${expected}`
@@ -73,8 +77,7 @@ window.assert_match = function(
     options.failure += ` : ${errs.join(', ')}`
   }
   if (!ok){
-    console.log("expected:", expected)
-    console.log("actual:", actual)
+    console.log("Non correspondance trouvée :", {expected:expected, actual:actual})
   }
   assert(
       ok

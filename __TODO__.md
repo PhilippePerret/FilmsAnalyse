@@ -1,16 +1,14 @@
-* [BUG] Les durées des events ne semblent pas être enregistrées
-* Implémenter #13 (un event jouant interrompt un autre event jouant avant)
-
-* Mettre un cursor horizontal quand on est sur une horloge (<horloge>, <duree>, une classe existe déjà)
-
+*
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
+* PFA
+  Construction du graphique du PFA.
+  
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante
   - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
   - nombre de Scènes
   - nombre de nœuds structurels définis
 
-* Quand on change de film, il faut vider le reader (de façon générale, reseter l'UI)
 
 * Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type).
 

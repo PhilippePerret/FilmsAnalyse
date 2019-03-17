@@ -252,11 +252,13 @@ class FAnalyse {
    */
   setAllIsReady(){
     // console.log("-> FAnalyse#setAllIsReady")
+    // Au cours du dispatch des données, la méthode modified a été invoquée
+    // de nombreuses fois. Il faut revenir à l'état normal.
+    this.modified = false
     UI.stopWait()// toujours, au cas où
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
-      // console.log("---> this.methodeAfterLoading", this.methodeAfterLoading)
       this.methodeAfterLoading()
     }
   }
@@ -353,17 +355,31 @@ class FAnalyse {
    *      sera automatiquement appelée après la modification.
    */
   updateEvent(ev, options){
-    // TODO Peut-être faut-il replacer l'event à un autre endroit
+    var new_idx = undefined
     if (options && options.initTime != ev.time){
-      console.error("Il faut replacer l'event au bon endroit (dans current_analyse.events)")
+      var idx_init      = this.indexOfEvent(ev.id)
+      var next_ev_old   = this.events[idx_init + 1]
+      var idx_new_next  = this.getIndexOfEventAfter(ev.time)
+      var next_ev_new   = this.events[idx_new_next]
+      if( next_ev_old != next_ev_new){
+        // => Il faut replacer l'event au bon endroit
+        this.events.splice(idx_init, 1)
+        var new_idx = this.getIndexOfEventAfter(ev.time)
+        this.events.splice(new_idx, 0, ev)
+      }
     }
     // [1]
-    if(ev.type === 'scene'){this.updateNumerosScenes()}
+    if(ev.isRealScene){this.updateNumerosScenes()}
+    // On actualise tous les autres éléments (par exemple l'attribut data-time)
+    ev.updateInUI()
     // On marque l'analyse modifiée
     this.modified = true
     // Enfin, s'il est affiché, il faut updater son affichage dans le
-    // reader
-    ev.updateInReader()
+    // reader (et le replacer si nécessaire)
+    ev.updateInReader(new_idx)
+
+    next_ev_old = null
+    next_ev_new = null
   }
 
   getEventById(eid){
@@ -373,9 +389,9 @@ class FAnalyse {
   updateNumerosScenes(){
     var num = 0
     this.forEachEvent(function(ev){
-      if(ev.type === 'scene' && ev.sceneType != 'generic'){
+      if( ev.isRealScene ){
         ev.numero = ++num
-        // console.log(`Numéro de scène «${ev.pitch} mis à ${ev.numero}»`)
+        ev.updateNumero()
       }
     })
   }

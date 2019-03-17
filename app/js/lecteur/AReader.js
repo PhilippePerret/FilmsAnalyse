@@ -14,6 +14,13 @@ class AReader {
   // régler.
   static get TIME_AROUND(){ return 5*60 }
 
+  static reset(){
+    document.getElementById('reader').innerHTML = ""
+  }
+
+  // ---------------------------------------------------------------------
+  //  INSTANCE
+
   constructor(analyse){
     this.analyse = analyse
   }
@@ -44,7 +51,7 @@ class AReader {
    * Ne pas la confondre avec la méthode `resetBeyond` suivante
    */
   reset(){
-    this.container.innerHTML = ""
+    AReader.reset()
   }
 
   /**
@@ -68,6 +75,15 @@ class AReader {
     this.container.append(node)
   }
 
+  /**
+   * Méthode qui permet d'afficher tous les events d'un coup
+   */
+  displayAll(){
+    this.analyse.forEachEvent(function(ev){ev.show()})
+  }
+
+  // ---------------------------------------------------------------------
+  //  DOM ELEMENTS
   get container(){
     if(undefined === this._container){
       // TODO Il faudra lui donner un identifiant unique lorsqu'il y aura
