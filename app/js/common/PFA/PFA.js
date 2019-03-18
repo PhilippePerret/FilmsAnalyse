@@ -34,7 +34,18 @@ Object.assign(PFA, {
   // Méthodes d'affichage
   , display:function(){
       console.log("-> PFA.display")
+      if(!this.built) this.build()
+    }
 
+  // ---------------------------------------------------------------------
+  //  Méthodes de construction
+
+    /**
+     * Méthode principale de construction du PFA du film.
+     */
+  , build:function(){
+      require('./PFA_building.js').bind(this)()
+      this.built = true
     }
   // ---------------------------------------------------------------------
   //  Méthodes de calculs
