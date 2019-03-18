@@ -133,8 +133,8 @@ class BtnPlay {
   // ---------------------------------------------------------------------
   //  Méthodes de DATA
 
-  get startTime(){return this._startTime || defineP(this,'_startTime',this.event.time)}
-  get endTime(){return this._endTime || defineP(this,'_endTime',this.startTime+this.event.duration)}
+  get startTime(){return this._startTime || defP(this,'_startTime',this.event.time)}
+  get endTime(){return this._endTime || defP(this,'_endTime',this.startTime+this.event.duration)}
 
   // ---------------------------------------------------------------------
   //  Méthodes DOM
@@ -145,8 +145,8 @@ class BtnPlay {
     return `<img class="btn-stop-play-event" src="./img/btns-controller/btn-play.png" style="width:${size}px;" />`
   }
 
-  get srcPlay(){return this._srcPlay||defineP(this,'_srcPlay','./img/btns-controller/btn-play.png')}
-  get srcStop(){return this._srcStop||defineP(this,'_srcStop','./img/btns-controller/btn-stop.png')}
+  get srcPlay(){return this._srcPlay||defP(this,'_srcPlay','./img/btns-controller/btn-play.png')}
+  get srcStop(){return this._srcStop||defP(this,'_srcStop','./img/btns-controller/btn-stop.png')}
 
   // ---------------------------------------------------------------------
   // Raccourcis
@@ -156,15 +156,15 @@ class BtnPlay {
   // ---------------------------------------------------------------------
   //  Data
 
-  get id(){return this._id||defineP(this,'_id',this.event.id)}
+  get id(){return this._id||defP(this,'_id',this.event.id)}
   set id(v){this._id = v}
 
   // ---------------------------------------------------------------------
   //  Data DOM
 
-  get domBtn(){return this._domBtn || defineP(this,'_domBtn',this.jqBtn[0])}
-  get class(){return this._class  || defineP(this,'_class',`btnplay-${this.id}`)}
-  get size(){return this._size ||defineP(this,'_size',parseInt(this.jqBtn.attr('size'),10))}
+  get domBtn(){return this._domBtn || defP(this,'_domBtn',this.jqBtn[0])}
+  get class(){return this._class  || defP(this,'_class',`btnplay-${this.id}`)}
+  get size(){return this._size ||defP(this,'_size',parseInt(this.jqBtn.attr('size'),10))}
 
 
 }

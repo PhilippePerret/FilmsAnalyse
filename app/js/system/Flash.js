@@ -1,7 +1,7 @@
 /**
  * Pour la gestion des messages affichés à l'écran
  *
- * Version 1.0.2
+ * Version 1.0.3
  * Date    jan. 2019
  * Author  Philippe Perret <philippe.perret@yahoo.fr>
  *
@@ -10,6 +10,9 @@
  * ### 1.0.2
  *    Notify peut recevoir duration:'auto' pour régler la longueur en fonction
  *    du contenu.
+ * ### 1.0.3
+ *    Pour empêcher d'utiliser la méthode `show` au lieu de `message` ou
+ *    `notice`
  */
 
 const RC = `
@@ -34,6 +37,8 @@ const Flash = {
      * +options+ peut définir :duration, la durée en secondes d'ouverture
      * du message (5 secondes par défaut). La valeur par défaut est 'auto',
      * qui permet de calculer le temps d'affichage en fonction de la longueur
+     *
+     * @alias: message
      */
   , notify: function(str, options){
       if(!options){options={}}
@@ -87,8 +92,12 @@ const Flash = {
       this.hide();
     }
 
-  , show: function() {
-      this.jqObj.show();
+  , show: function(bad) {
+      if(undefined === bad){
+        this.jqObj.show();
+      } else {
+        throw("Il faut utiliser la méthode `notice` ou `message`, pas la méthode `show`, pour afficher un message.")
+      }
     }
   , hide: function() {
       this.jqObj.fadeOut();
@@ -199,3 +208,5 @@ Object.defineProperties(Flash,{
   }}
 });
 const F = Flash ;
+
+Flash.message = Flash.notice

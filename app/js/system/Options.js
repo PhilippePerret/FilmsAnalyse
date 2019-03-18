@@ -80,14 +80,14 @@ const Options = {
 Object.defineProperties(Options,{
   data:{
       get:function(){
-        this._data || defineP(this, '_data', this.DEFAULT_DATA)
+        this._data || defP(this, '_data', this.DEFAULT_DATA)
         return this._data
       }
     , set:function(v){this._data = v}
   }
   , path:{
       get:function(){
-        this._path || defineP(this, '_path', path.join(current_analyse.folder,'options.json'))
+        this._path || defP(this, '_path', path.join(current_analyse.folder,'options.json'))
         return this._path
       }
   }

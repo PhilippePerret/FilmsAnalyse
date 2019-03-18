@@ -36,8 +36,8 @@ class FAEvent {
   get time(){return this._time}
   set time(v){ this._time = v ; delete this._horl ; delete this._otime }
 
-  get otime(){return this._otime || defineP(this,'_otime',new OTime(this.time))}
-  get horloge(){return this._horl||defineP(this,'_horl',this.otime.horloge)}
+  get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
+  get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
 
   /**
    * Définition de la durée
@@ -169,7 +169,7 @@ class FAEvent {
     if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
     return this._jq_reader_obj
   }
-  get domReaderObj(){return this._domReaderObj||defineP(this,'_domReaderObj',this.defineDomReaderObj())}
+  get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.defineDomReaderObj())}
 
   get domId(){ return `revent-${this.id}`}
 
@@ -209,7 +209,7 @@ class FAEvent {
   }
 
 
-  get contenu(){return this._contenu||defineP(this,'_contenu',this.defineContenu())}
+  get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 
   // Définition du contenu, soit formaté d'une façon particulière par
   // l'event propre, soit le content normal, dediminutivisé
@@ -300,13 +300,13 @@ class FAEvent {
   //  DOM ÉLÉMENTS
 
   get imgBtnPlay(){
-    return this._imgBtnPlay || defineP(this,'_imgBtnPlay',this.btnPlayETools.find('img.btn-play'))
+    return this._imgBtnPlay || defP(this,'_imgBtnPlay',this.btnPlayETools.find('img.btn-play'))
   }
   get imgBtnStop(){
-    return this._imgBtnStop || defineP(this,'_imgBtnStop',this.btnPlayETools.find('img.btn-stop'))
+    return this._imgBtnStop || defP(this,'_imgBtnStop',this.btnPlayETools.find('img.btn-stop'))
   }
   get btnPlayETools(){
-    return this._btnPlayETools || defineP(this,'_btnPlayETools', this.jqReaderObj.find('.e-tools .btn-play'))
+    return this._btnPlayETools || defP(this,'_btnPlayETools', this.jqReaderObj.find('.e-tools .btn-play'))
   }
 
   observe(){
@@ -320,7 +320,7 @@ class FAEvent {
   // ---------------------------------------------------------------------
   // Gestion du Bouton BtnPlay
   // Cf. Le manuel de développement
-  get btnPlay(){return this._btnPlay||defineP(this,'_btnPlay',new BtnPlay(this))}
+  get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
   // Pour définir le dom obj de l'event dans le Reader
   defineDomReaderObj(){

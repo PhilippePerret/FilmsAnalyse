@@ -1,9 +1,33 @@
-*
+* Poursuivre les expériences pour exporter en ePub et autre format
+  - forcer la reconstruction du html quand on veut un ePub
+  - essayer depuis markdown => epub (et autre) et voir si c'est plus pratique
+    Se servir de ce que je fais déjà avec les manuels, qui fonctionne très bien
+  - utiliser les h1-7 pour les titres
+  - voir le problème des sauts de pages
+  - voir comment répartir les fichiers
+  - voir comment incorporer les fichiers dans le template
+    Peut-être chaque fichier doit-il avoir un ID (OUI), et une position:after
+    et :before qui le place, et d'autres propriétés comme la position x ou y
+    si c'est une image par exemple, ou des styles particuliers à appliquer,
+    etc.
+
+* Donc plutôt faire comme ça :
+  - le publisher s'ouvre dans une nouvelle page (`pubW`)
+  - il utilise (`loadURL`) une adresse "vierge" au départ, puis une page provenant d'un dossier `building` de l'analyse (qui contient toutes les images)
+  - ce dossier contient le fichier `<filmId>-v-<version>.html` qui est la version HTML de l'analyse.
+  - c'est version qui est transformée en ePub et peut-être autre version.
+  - pour le format des pages (html ou markdown), essayer les deux pour voir quel serait le meilleur
+
+* Faire un fichier `metadata.yml` pour les métadonnées du livre
+
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * PFA
   Construction du graphique du PFA.
-  
+
+* Menu pour passer à la version suivante de l'analyse
+  - faut-il conserver un certain nombre de versions ?
+
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante
   - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
   - nombre de Scènes

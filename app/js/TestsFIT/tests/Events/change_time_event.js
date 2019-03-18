@@ -7,11 +7,9 @@
 
 var t = new Test("Changement du temps d'un event")
 
-// t.beforeTest(()=>{return FITAnalyse.load.bind(FITAnalyse)('tests/simple3scenes')})
-t.beforeTest(FITAnalyse.load.bind(FITAnalyse,'tests/simple3scenes',{displayAllEvents:true}))
 
 
-
+t.beforeTest(loadAnalyse('tests/simple3scenes',{displayAllEvents:true}))
 
 t.case('Une modification de l’event sans changement de temps le laisse en place', () => {
   let idx_init = current_analyse.indexOfEvent(3)

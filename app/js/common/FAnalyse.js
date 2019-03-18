@@ -13,7 +13,7 @@ class FAnalyse {
   //  CLASSE
 
   // Retourne l'analyse courante
-  static get current(){return this._current||defineP(this,'_current',current_analyse)}
+  static get current(){return this._current||defP(this,'_current',current_analyse)}
   static set current(v){this._current = v}
 
   // Voir si les préférences demandent que la dernière analyse soit chargée
@@ -170,7 +170,7 @@ class FAnalyse {
   }
 
   // avant de le calculer vraiment :
-  get duration(){ return this._duration || defineP(this,'_duration', this.calcDuration()) }
+  get duration(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
   set duration(v){ this._duration = v ; this.modified = true }
   calcDuration(){
     if(!this.filmEndTime) return null
@@ -178,11 +178,12 @@ class FAnalyse {
   }
   get folder()  { return this._folder }
   set folder(v) { this._folder = v}
+  get folderExport(){return path.join(this.folder,'exports')}
 
-  get filmStartTime() {return this._filmStTi || defineP(this,'_filmStTi', 0)}
+  get filmStartTime() {return this._filmStTi || defP(this,'_filmStTi', 0)}
   set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
 
-  get filmEndTime(){return this._filmEndTime || defineP(this,'_filmEndTime',this.calcFilmEndTime())}
+  get filmEndTime(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
   set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
 
   calcFilmEndTime(){
@@ -199,10 +200,12 @@ class FAnalyse {
   get videoPath(){ return this._videoPath }
   set videoPath(v){ this._videoPath = v ; this.modified = true }
 
-  get title(){return this._title || defineP(this,'_title',path.basename(this.folder))}
+  get title(){return this._title || defP(this,'_title',path.basename(this.folder))}
   set title(v){ this._title = v ; this.modified = true }
 
-  get lastCurrentTime(){return this._lastCurT||defineP(this,'_lastCurT',this.locator.getRTime())}
+  get filmId(){return this._filmId||defP(this,'_filmId',this.title.camelize())}
+
+  get lastCurrentTime(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
   set lastCurrentTime(v){ this._lastCurrentTime = v }
 
   // ---------------------------------------------------------------------
@@ -256,6 +259,8 @@ class FAnalyse {
     // de nombreuses fois. Il faut revenir à l'état normal.
     this.modified = false
     UI.stopWait()// toujours, au cas où
+    // On peut indiquer aux menus qu'il y a une analyse chargée
+    ipc.send('current-analyse-exist', true)
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
@@ -276,6 +281,52 @@ class FAnalyse {
       this.setAllIsReady()
     }
   }
+
+  // ---------------------------------------------------------------------
+  //  MÉTHODES D'AFFICHAGE
+
+  displayInfosFilm(){
+    F.error("L'affichage des infos du film n'est pas encore implémenté")
+  }
+
+  /**
+   * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
+   */
+  displayFullAnalyse(format){
+    // TODO Pour le moment, on refait chaque fois l'analyse complète. Ensuite,
+    // il faudra prévoir un bouton ou un menu pour actualisation l'analyse.
+    // if(!fs.existsSync(this.html_path)){
+      require('./js/tools/full_analyse_building.js')(format)
+    // }
+    ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  }
+  get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
+  get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
+  get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
+  get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
+  get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
+  get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
+
+  defExportPath(type){
+    var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
+    var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
+    return {path: p, name: n}
+  }
+
+  // La version courante de l'analyse
+  get hVersion(){return this._hversion || '0.0.1'}
+
+  displayPFA(){this.PFA.display()}
+
+  // ---------------------------------------------------------------------
+  //  MÉTHODES D'EXPORT
+
+  exportAs(format){
+    require('./js/tools/export_analyse.js')(format)
+  }
+
+  // ---------------------------------------------------------------------
+  // MÉTHODES OPTIONS
 
   get options(){ return Options }
 

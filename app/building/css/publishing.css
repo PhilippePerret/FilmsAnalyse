@@ -1,0 +1,20 @@
+/* STYLE POUR LA PUBLICATION */
+@media print {
+
+}
+
+
+section#section-cover div#pub-title {
+  font-size:2.1em;
+  font-weight:bold;
+  text-align:center;
+}
+section#section-cover div#pub-film-title {
+  font-size:2.4em;
+  font-weight:bold;
+  text-align:center;
+}
+
+p.pagebreak {
+  page-break-after:always;
+}

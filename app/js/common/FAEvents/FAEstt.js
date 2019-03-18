@@ -30,7 +30,7 @@ class FAEstt extends FAEvent {
     return errors.length == 0
   }
 
-  get sttNode(){return this._sttNode || defineP(this,'_sttNode',this.analyse.PFA.node(this.sttID))}
+  get sttNode(){return this._sttNode || defP(this,'_sttNode',this.analyse.PFA.node(this.sttID))}
 
   // Mise en forme du contenu propre à ce type d'event
   formateContenu(){

@@ -33,7 +33,7 @@ class DOMHorloge {
   }
 
   // ID de l'horloge = ID du DomElement
-  get id(){return this._id || defineP(this,'_id', this.domObj.id)}
+  get id(){return this._id || defP(this,'_id', this.domObj.id)}
   get time(){return this._time}
   set time(v){
     this._time = v
@@ -47,8 +47,8 @@ class DOMHorloge {
     if(v && this.parentModifiable) this.parentModifiable.modified = true
     this.jqObj[v?'addClass':'removeClass']('modified')
   }
-  get jqObj(){return this._jqObj || defineP(this,'_jqObj', $(this.domObj))}
-  get otime(){return this._otime || defineP(this,'_otime', new OTime(this.time))}
+  get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.domObj))}
+  get otime(){return this._otime || defP(this,'_otime', new OTime(this.time))}
 
   get initTime(){return this._initTime}
   set initTime(v){this._initTime = v}

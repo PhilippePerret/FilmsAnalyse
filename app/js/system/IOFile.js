@@ -178,18 +178,18 @@ class IOFile {
   //  Données de path
 
   get folder(){
-    return this._folder || defineP(this,'_folder', path.dirname(this.path))
+    return this._folder || defP(this,'_folder', path.dirname(this.path))
   }
   get backupFolder(){
-    return this._bckFolder || defineP(this,'_bckFolder', path.join(this.folder,'.backups'))
+    return this._bckFolder || defP(this,'_bckFolder', path.join(this.folder,'.backups'))
   }
   get name(){
-    return this._name || defineP(this,'_name',path.basename(this.path))
+    return this._name || defP(this,'_name',path.basename(this.path))
   }
   get backupPath(){
-    return this._backupPath || defineP(this,'_backupPath',path.join(this.backupFolder,this.name))
+    return this._backupPath || defP(this,'_backupPath',path.join(this.backupFolder,this.name))
   }
   get tempPath(){
-    return this._tempPath || defineP(this,'_tempPath', `${this.path}.temp`)
+    return this._tempPath || defP(this,'_tempPath', `${this.path}.temp`)
   }
 }

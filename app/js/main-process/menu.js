@@ -17,6 +17,7 @@ const { app } = require('electron')
 const path    = require('path')
 const ipc     = require('electron').ipcMain
 
+
 const ObjMenus = {
     class: 'ObjMenus'
   , mainMenuBar: null // défini par le main.js
@@ -54,7 +55,7 @@ const ObjMenus = {
       Menu.setApplicationMenu(global.mainMenuBar);
     }
 
-  , CURRENT_THING_MENUS: [] // les menus à activer quand un élément principal est ouvert
+  , CURRENT_THING_MENUS: ['save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub', 'export-as-kindle', 'export-as-docbook', 'display-infos-film', 'display-full-analyse', 'display-pfa'] // les menus à activer quand un élément principal est ouvert
   , NEW_THING_MENUS: []
   , setMenuCurrentThing:function(on){
       var my = this
@@ -62,6 +63,17 @@ const ObjMenus = {
     }
 
 }
+
+// Fonctions pratiques
+
+function execJsOnCurrent(method, ...args){
+  if(args){
+    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}('${args}')`)
+  } else {
+    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
+  }
+}
+
 /**
  * Définition des menus
  */
@@ -79,16 +91,22 @@ const DATA_MENUS = [
         , {
               label: 'Ouvrir…'
             , accelerator: 'CmdOrCtrl+O'
-            , click: () => { mainW.webContents.executeJavaScript('FAnalyse.chooseAnalyse()')}
+            , click: () => {
+                mainW.webContents.executeJavaScript('FAnalyse.chooseAnalyse()')
+              }
           }
         , { type: 'separator' }
         , {
               label: 'Enregistrer'
+            , id: 'save-analyse'
+            , enabled: false
             , accelerator: 'CmdOrCtrl+S'
-            , click: () => { mainW.webContents.executeJavaScript('current_analyse.saveIfModified()')}
+            , click: () => {execJsOnCurrent('saveIfModified')}
           }
         , {
               label: 'Enregistrer sous…'
+            , id: 'save-as-analyse'
+            , enabled: false
             , accelerator: 'CmdOrCtrl+Shift+S'
             , click: () => { mainW.webContents.send('save-as-analyse')}
           }
@@ -99,6 +117,36 @@ const DATA_MENUS = [
             , click: () => {mainW.webContents.executeJavaScript('FAnalyse.redefineVideoPath()')}
           }
 
+        , {type: 'separator'}
+        , {
+              label: 'Exporter comme…'
+            , submenu:[
+                  {
+                      label: 'PDF…'
+                    , id: 'export-as-pdf'
+                    , enabled: false
+                    , click:()=>{execJsOnCurrent('exportAs', 'pdf')}
+                  }
+                , {
+                      label: 'Livre Kindle…'
+                    , id: 'export-as-kindle'
+                    , enabled: false
+                    , click:()=>{execJsOnCurrent('exportAs', 'kindle')}
+                  }
+                , {
+                      label: 'Livre ePub…'
+                    , id: 'export-as-epub'
+                    , enabled: false
+                    , click:()=>{execJsOnCurrent('exportAs', 'epub')}
+                  }
+                , {
+                      label: 'DocBook…'
+                    , id: 'export-as-docbook'
+                    , enabled: false
+                    , click:()=>{execJsOnCurrent('exportAs', 'docbook')}
+                  }
+            ]
+          }
         , {type: 'separator'}
         , {role: 'quit', label: 'Quitter', accelerator: 'CmdOrCtrl+Q'}
       ] // submenu du menu "Analyse"
@@ -123,6 +171,38 @@ const DATA_MENUS = [
  }
 
   /**
+   * MENU AFFICHAGE
+   */
+  , {
+        label: "Affichage"
+      , enabled: true
+      , submenu: [
+            {
+                label: "Informations sur le film"
+              , id: 'display-infos-film'
+              , enabled: false
+              , click: () => {execJsOnCurrent('displayInfosFilm')}
+            }
+          , {type:'separator'}
+          , {
+                label: "Analyse complète"
+              , id: 'display-full-analyse'
+              , accelerator: 'CmdOrCtrl+Shift+A'
+              , enabled: false
+              , click: () => {
+                FAWindows.displayAnalyse()
+                execJsOnCurrent('displayFullAnalyse')
+              }
+            }
+          , {
+                label: "Paradigme de Field Augmenté"
+              , id: 'display-pfa'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayPFA')}
+            }
+      ]
+    }
+  /**
    * MENU VIDÉO
    */
   , {
@@ -146,20 +226,20 @@ const DATA_MENUS = [
           , {type: 'separator'}
           , {
                 label: 'Temps courant…'
-              , click:()=>{mainW.webContents.executeJavaScript('current_analyse.locator.getAndShowCurrentTime()')}
+              , click:()=>{execJsOnCurrent('getAndShowCurrentTime')}
           }
           , {type: 'separator'}
           , {
                 label: 'Temps courant comme début du film…'
-              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("FilmStartTime")')}
+              , click: () => {execJsOnCurrent('runTimeFunction', 'FilmStartTime')}
             }
           , {
                 label: 'Temps courant comme fin du film (avant générique)…'
-              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("FilmEndTime")')}
+              , click: () => {execJsOnCurrent('runTimeFunction','FilmEndTime')}
             }
           , {
                 label: 'Temps courant comme fin du générique de fin…'
-              , click: () => {mainW.webContents.executeJavaScript('current_analyse.runTimeFunction("EndGenericFin")')}
+              , click: () => {execJsOnCurrent('runTimeFunction','EndGenericFin')}
             }
           , {type: 'separator'}
           , {
@@ -327,7 +407,11 @@ module.exports = ObjMenus
 
 
 ipc.on('set-option', (ev, data) => {
-  console.log("-> on set-option", data)
+  // console.log("-> on set-option", data)
   var m = ObjMenus.getMenu(data.menu_id)
   m[data.property] = data.value
+})
+
+ipc.on('current-analyse-exist', (ev, yesOrNo) => {
+  ObjMenus.setMenuCurrentThing(yesOrNo)
 })
