@@ -1,10 +1,4 @@
 * Poursuivre les expériences pour exporter en ePub et autre format
-  - forcer la reconstruction du html quand on veut un ePub
-  - essayer depuis markdown => epub (et autre) et voir si c'est plus pratique
-    Se servir de ce que je fais déjà avec les manuels, qui fonctionne très bien
-  - utiliser les h1-7 pour les titres
-  - voir le problème des sauts de pages
-  - voir comment répartir les fichiers
   - voir comment incorporer les fichiers dans le template
     Peut-être chaque fichier doit-il avoir un ID (OUI), et une position:after
     et :before qui le place, et d'autres propriétés comme la position x ou y
@@ -75,3 +69,4 @@
 * Pouvoir exporter en PDF le reader
   - procédure de mise en forme
   - sortie en format Kindle ou autre livre en ligne
+* API qui permettrait de récupérer les data des films online (au format json).

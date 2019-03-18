@@ -10,7 +10,8 @@ module.exports = format => {
   var my = current_analyse
 
   if(!fs.existsSync(my.html_path)){
-    console.log("Le format HTML n'existe pas. Je dois le contruire.")
+    console.log("Le format HTML n'existe pas. Je dois le construire.")
+    my.exportAs('md')
     my.exportAs('html')
   }
 

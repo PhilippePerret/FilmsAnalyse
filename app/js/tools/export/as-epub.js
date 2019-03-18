@@ -1,8 +1,6 @@
 'use strict'
 
-
-var util = require('util')
-var exec = require('child_process').exec
+const exec = require('child_process').exec
 
 module.exports = options => {
   let my = current_analyse
