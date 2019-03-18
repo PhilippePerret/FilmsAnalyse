@@ -128,16 +128,16 @@ const DATA_MENUS = [
                     , click:()=>{execJsOnCurrent('exportAs', 'pdf')}
                   }
                 , {
-                      label: 'Livre Kindle…'
-                    , id: 'export-as-kindle'
-                    , enabled: false
-                    , click:()=>{execJsOnCurrent('exportAs', 'kindle')}
-                  }
-                , {
                       label: 'Livre ePub…'
                     , id: 'export-as-epub'
                     , enabled: false
                     , click:()=>{execJsOnCurrent('exportAs', 'epub')}
+                  }
+                , {
+                      label: 'Livre Kindle…'
+                    , id: 'export-as-kindle'
+                    , enabled: false
+                    , click:()=>{execJsOnCurrent('exportAs', 'kindle')}
                   }
                 , {
                       label: 'DocBook…'

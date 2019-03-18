@@ -16,16 +16,32 @@ module.exports = options => {
 
   if(!fs.existsSync(my.folderExport)) fs.mkdirSync(my.folderExport)
 
-  if(!fs.existsSync(my.html_path)){
-    throw("Il faut construire le fichier HTML (en demandant l'affichage de l'analyse complète) pour pouvoir éditer l'ePub, pour le moment.")
+  var src_name, src_format
+
+  if(fs.existsSync(my.md_path)){
+    src_name    = my.md_name
+    src_format  = 'Markdown'
+  } else if(fs.existsSync(my.html_path)){
+    src_name    = my.html_name
+    src_format  = 'HTML'
+  } else {
+    console.log("Pas de fichier source trouvé, il faut que je le crée d'abord (au format markdown)")
+    src_name    = my.md_name
+    src_format  = 'Markdown'
+    my.exportAs('md')
   }
 
-  var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/building/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
-  console.log("cmd pandoc:", cmd)
+  // HTML -> ePub
+  // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/building/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
+
+  // Markdown -> ePub
+  var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/building/css/publishing.css --toc --toc-depth=2 --epub-cover-image='./exports/cover.jpg'`
+
+  // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {
     if(error)throw(error)
-    console.log("Création du livre ePub terminé avec succès.")
-    F.message("Création du livre ePub terminé avec succès.")
+    console.log(`Création du livre ePub (à partir du format ${src_format}) terminé avec succès.`)
+    F.notify(`Création du livre ePub (à partir du format ${src_format}) terminé avec succès.`)
   });
 
 

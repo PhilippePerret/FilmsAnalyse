@@ -3,6 +3,32 @@
 
 }
 
+/* --------------------------------------------------------------------- */
+/* Pour essai markdown */
+
+#monId { color: pink; font-size: 18pt;}
+.maClasse {
+  margin-left: 6em;
+  width: 200px;
+  font-family: inherit;
+  font-style: inherit;
+  font-size: inherit;
+}
+
+img#premiere_image {
+  unset:all;
+  /* width: 200px; */
+  height: 20px;
+  text-align:center;
+}
+
+img#deuxieme_image {
+  float:left;
+  margin-right:4em;
+  margin-bottom:4em;
+}
+
+/* --------------------------------------------------------------------- */
 
 section#section-cover div#pub-title {
   font-size:2.1em;

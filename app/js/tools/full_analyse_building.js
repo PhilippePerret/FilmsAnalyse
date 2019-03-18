@@ -6,10 +6,16 @@
 
 // +format+ peut être 'html' ou 'markdown'. C'est 'html' par défaut pour
 // le moment, en attendant de savoir quel format sera le plus pratique.
-module.exports = function(format){
+module.exports = format => {
   var my = current_analyse
 
-  var temp_html_path = path.join('./app/building/template.html')
-  fs.copyFileSync(temp_html_path, my.html_path)
+  if(!fs.existsSync(my.html_path)){
+    console.log("Le format HTML n'existe pas. Je dois le contruire.")
+    my.exportAs('html')
+  }
+
+  // Demander le chargement de la page dans la fenêtre de visualisation
+  // de l'analyse.
+  ipc.send('load-url-in-pubwindow', {path: my.html_path})
 
 }

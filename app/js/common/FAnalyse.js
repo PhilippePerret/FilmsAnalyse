@@ -298,7 +298,7 @@ class FAnalyse {
     // if(!fs.existsSync(this.html_path)){
       require('./js/tools/full_analyse_building.js')(format)
     // }
-    ipc.send('load-url-in-pubwindow', {path: this.html_path})
+    // ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
   get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
   get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
@@ -306,6 +306,12 @@ class FAnalyse {
   get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
   get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
   get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
+  get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
+  get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
+  get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
+  get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
+  get kindle_path(){return this.mobi_path}
+  get kindle_name(){return this.mobi_name}
 
   defExportPath(type){
     var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
