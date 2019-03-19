@@ -121,14 +121,16 @@ const UI = {
      * Rend tous les champs avec la class "horlogeable" du +container+ comme
      * des input-text dont on peut régler le temps à la souris
      */
-  , setHorlogeable:function(container){
+  , setHorlogeable:function(container, options){
       var my = this
+      if(undefined===options)options={}
       var hrs = container.querySelectorAll('horloge')
       var horloges = {}
       // console.log("horloges trouvées : ", hrs)
       for(var i = 0, len=hrs.length; i<len; ++i){
         var h = new DOMHorloge(hrs[i])
         horloges[h.id] = h
+        if(options.synchro_video) h.synchroVideo = true
         h.observe()
       }
       return horloges

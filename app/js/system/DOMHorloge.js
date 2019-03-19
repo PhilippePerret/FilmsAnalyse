@@ -28,7 +28,7 @@ class DOMHorloge {
     this.domObj = domElement
 
     // Valeurs par défaut
-    this.synchroVideo = false
+    this.synchroVideo     = false
     this.parentModifiable = undefined
   }
 
@@ -45,8 +45,11 @@ class DOMHorloge {
   set modified(v){
     this._modified = v
     if(v && this.parentModifiable) this.parentModifiable.modified = true
-    this.jqObj[v?'addClass':'removeClass']('modified')
+    if(!this.unmodifiable) this.jqObj[v?'addClass':'removeClass']('modified')
   }
+
+  get unmodifiable(){return this._unmodifiable || false}
+  set unmodifiable(v){this._unmodifiable = v}
   get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.domObj))}
   get otime(){return this._otime || defP(this,'_otime', new OTime(this.time))}
 

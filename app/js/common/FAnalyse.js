@@ -237,6 +237,8 @@ class FAnalyse {
     this.setOptionsInMenus()
     this.videoController.init()
   }
+
+
   /**
    * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
    * où l'on est vraiment prêt.

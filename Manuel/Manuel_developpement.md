@@ -8,7 +8,7 @@
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
-* [Champs temporels](#temporal_fields)
+* [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
 * [Documents de l'analyse](#documents_analyse)
 
@@ -179,18 +179,32 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
 3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>')`.
 
 
-### Champs temporels {#temporal_fields}
+### Horloges et durées {#temporal_fields}
 
-On peut mettre `horlogeable` et `durationable` sur les input-text qui doivent être gérable au niveau des horloges (positions) et des durées.
+On peut mettre `horlogeable` et `durationable` sur les balises `<horloge></horloge>` qui doivent être gérable au niveau des horloges (positions) et des durées.
 
-Quand un champ input-text possède l'une de ces deux classes :
+Quand un champ input-text possède l'une de ces deux classes :
 
 * il est rendu inéditable (`disabled`)
 * il est sensible au déplacement de la souris pour augmenter/diminuer le temps
-* pour les horlogeable, un bouton est placé après le champ pour prendre le temps courant
 
-Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>)` ou `UI.setDurationable(<container>)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
+Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>, options)` ou `UI.setDurationable(<container>, options)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
 
+```javascript
+  var h = new DOMHorloge()
+  h.dispatch({
+        time: <le temps de départ>
+      , synchroVideo: true/false
+      , parentModifiable: true/false
+      , unmodifiable: true/false
+    }).showTime()
+```
+
+`options` peut contenir `{synchro_video: true}` pour que l'horloge soit synchronisée avec la vidéo. Inutile alors de dispatcher cette donnée.
+
+Si `unmodifiable` est mis à true, on n'indiquera pas lorsque l'horloge aura changé de temps. C'est le cas par exemple de l'horloge principale.
+
+On utilise `parentModifiable` en indiquant le conteneur, qui peut recevoir la classe `modified` pour indiquer qu'il est modifiable (*visuellement* modifiable). C'est le cas par exemple pour les horloges des formulaires d'events. Les formulaires sont les « containers modifiables », qui vont recevoir la class `modified` quand l'horloge sera modifiée, ce qui aura pour effet de mettre l'horloge dans une autre couleur ainsi que le header et le footer du formulaire.
 
 ## Aspect visuel {#visual_aspect}
 

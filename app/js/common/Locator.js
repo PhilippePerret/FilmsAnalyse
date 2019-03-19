@@ -49,7 +49,30 @@ class Locator {
     // ce temps est défini pour l'analyse courante
     this.analyse.setButtonGoToStart()
 
+    // On prépare l'horloge principale (pour qu'elle soit sensible aux
+    // déplacements de souris)
+    this.prepareMainHorloge()
+
     my = null
+  }
+
+  prepareMainHorloge(){
+    // Rend horlogeable l'horloge principale qui doit permettre de se
+    // déplacer dans le film avec la souris.
+    var horloges = UI.setHorlogeable(DGet('div-video-top-tools'), {synchro_video: true})
+    this.oMainHorloge = horloges['main-horloge']
+  }
+
+
+  // L'instance DOMHorloge de l'horloge principale
+  get oMainHorloge(){return this._oMainHorloge}
+  set oMainHorloge(v){
+    v.dispatch({
+        time: this.getRTime()
+      , synchroVideo: true
+      , unmodifiable: true // pour ne pas la marquer modifiée
+    })
+    this._oMainHorloge = v
   }
 
   // ---------------------------------------------------------------------
@@ -178,6 +201,7 @@ class Locator {
       return
     }
     this.video.currentTime = time
+    this.oMainHorloge.time = time
     if(!dontPlay){
       if(this.playAfterSettingTime === true && !this.playing){
         this.togglePlay()
@@ -324,8 +348,10 @@ class Locator {
     }
   }
   actualizeHorloge(){
-    this.horloge.innerHTML = this.getRealTime(this.currentRTime)
+    var curt = this.currentRTime
+    this.horloge.innerHTML = this.getRealTime(curt)
     this.horloge_real.innerHTML = this.getRealTime(this.video.currentTime)
+    this.oMainHorloge.time = curt
   }
 
   actualizeReader(){
@@ -468,7 +494,7 @@ class Locator {
 
   // --- DOM ÉLÉMENTS ---
   get horloge(){
-    if(undefined===this._horloge){this._horloge=DGet('horloge')}
+    if(undefined===this._horloge){this._horloge=DGet('main-horloge')}
     return this._horloge
   }
   get horloge_real(){
