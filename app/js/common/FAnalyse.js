@@ -289,6 +289,10 @@ class FAnalyse {
     // ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
 
+  displayAnalyseState(){
+    require('./js/tools/analyse_state.js')()
+  }
+
   /**
    * Méthode qui ouvre le writer
    */

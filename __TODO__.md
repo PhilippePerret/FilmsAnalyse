@@ -1,9 +1,9 @@
-
-* DOCUMENT
-  * Pour éviter les erreurs, on va ne mettre le menu des modèles que lorsque le document est vide ou n'existe pas.
+* Rendre l'horloge principale de la vidéo "horlogeable"
+* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
+* Implémenter les infos générales du film
+  - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
 
 * Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
-* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
 * IL y a deux types de documents :
   1. Les documents "formatés" comme les 5 fondamentales
   2. Les documents "libres" comme un texte qui est inventé pour une analyse propre

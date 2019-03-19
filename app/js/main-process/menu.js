@@ -236,6 +236,13 @@ const DATA_MENUS = [
             }
           , {type:'separator'}
           , {
+                label: "Avancement de l'analyse"
+              , id: 'display-analyse-state'
+              , accelerator: 'CmdOrCtrl+Alt+S'
+              , click: () => {execJsOnCurrent('displayAnalyseState')}
+            }
+          , {type:'separator'}
+          , {
                 label: "Analyse complète"
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Shift+A'
