@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8">
     <title>Analyse</title>
-    <link rel="stylesheet" href="./css/common.css">
-    <link rel="stylesheet" href="./css/ui.css">
-    <link rel="stylesheet" href="./css/analyzer.css">
-    <link rel="stylesheet" href="./css/reader.css">
-    <link rel="stylesheet" href="./css/form.css">
-    <link rel="stylesheet" href="./css/DOMHorloge.css">
+    <link rel="stylesheet" href="./css/common.css" />
+    <link rel="stylesheet" href="./css/ui.css" />
+    <link rel="stylesheet" href="./css/analyzer.css" />
+    <link rel="stylesheet" href="./css/reader.css" />
+    <link rel="stylesheet" href="./css/writer.css" />
+    <link rel="stylesheet" href="./css/form.css" />
+    <link rel="stylesheet" href="./css/DOMHorloge.css" />
   </head>
   <body>
-
-
 
     <section id="section-video">
 
@@ -118,9 +117,42 @@
     <!-- /fin section vidéo -->
 
     <!-- MARGE DROITE POUR AFFICHER L'ANALYSE -->
-    <section id="section-reader">
-      <div id="reader"></div>
-    </section>
+    <div id="right-column">
+
+      <!-- READER -->
+      <section id="section-reader">
+        <div id="reader"></div>
+      </section>
+
+      <!-- WRITER -->
+      <section id="section-writer" style="display:none;">
+        <div id="writer-doc-visualizor" style="display:none;">
+          <!-- Pour visualiser le code -->
+        </div>
+        <div class="header">
+          <button id="btn-close-writer" type="button"><img class="btn-window" src="./img/btn-window/b_close.png" /></button>
+          <span id="writer-doc-title">
+            <label class="small">DOCUMENT</label> <select id="document-type"></select>
+          </span>
+          <span class="modeles">
+            <label class="small">Modèles</label> <select id="modeles-doc"></select>
+          </span>
+        </div>
+        <div class="body">
+          <textarea id="document-contents"></textarea>
+        </div>
+        <div class="footer">
+          <label id="writer-message">...</label>
+          <label class="fleft">Taille du texte : </label><span id="text-size" class="fleft">...</span>
+          <label for="cb-auto-visualize">Visualiser</label>
+          <input id="cb-auto-visualize" type="checkbox" />
+          <label for="cb-save-auto-doc">Sauvegarde automatique</label>
+          <input id="cb-save-auto-doc" type="checkbox" />
+          <button type="button" id="btn-save-doc">Enregistrer</button>
+        </div>
+        <div id="writer"></div>
+      </section>
+    </div>
 
 
     <!-- Pour la partie basse, dont le formulaire d'édition des events -->
@@ -158,6 +190,7 @@
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script src="./js/system/jquery-ui-min.js"></script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
+    <script type="text/javascript" src="./js/system/System.js"></script>
     <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/Prefs-renderer.js"></script>
     <script type="text/javascript" src="./js/system/OTime.js"></script>
@@ -166,6 +199,7 @@
     <script type="text/javascript" src="./js/system/ipc.js"></script>
     <script type="text/javascript" src="./js/system/Tests.js"></script>
     <script type="text/javascript" src="./js/system/Number.js"></script>
+    <script type="text/javascript" src="./js/system/String.js"></script>
     <script type="text/javascript" src="./js/system/messages_et_errors.js"></script>
     <script type="text/javascript" src="./js/system/Options.js"></script>
     <script type="text/javascript" src="./js/system/DOMHorloge.js"></script>

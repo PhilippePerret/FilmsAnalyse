@@ -4,17 +4,20 @@ const { Menu, MenuItem } = require('electron')
 const path = require('path')
 const ipc = electron.ipcMain
 
-const MODE_TEST = process.env.MODE_TEST == 'true'
+global.MODE_TEST = process.env.MODE_TEST == 'true'
 if(MODE_TEST) console.log("--- Mode Tests ---")
 
 const Prefs = require('./app/js/main-process/Prefs.js')
 
-var screenWidth   = null
-var screenHeight  = null
+global.screenWidth   = null
+global.screenHeight  = null
 
 global.ObjMenus   = require('./app/js/main-process/menu.js')
+global.FAWindows  = require('./app/js/main-process/windows.js')
+
 
 global.mainW          = null
+global.pubW           = null // fenêtre de publication
 global.userPrefsPath  =
 global.userPrefs      = null
 
@@ -56,6 +59,7 @@ app.on('ready', () => {
   // Si des préférences ont été modifiées, on les enregistré (en synchrone)
   Prefs.saveIfModified()
 })
+
 
 ipc.on('get-screen-dimensions', ev => {
   ev.returnValue = {width: screenWidth, height: screenHeight}

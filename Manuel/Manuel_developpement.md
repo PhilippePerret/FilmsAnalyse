@@ -1,6 +1,7 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Chargement de dossier de modules](#loading_modules_folders)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
@@ -9,6 +10,8 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+* [Documents de l'analyse](#documents_analyse)
+
 
 ## Point d'entrée {#point_dentree}
 
@@ -20,6 +23,13 @@ On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, po
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
 
+## Chargement de dossier de modules {#loading_modules_folders}
+
+On peut charger des modules en inscrivant leur balise `<script>` dans le document grâce à la méthode `System.loadJSFolders(mainFolder, subFolders, fn_callback)`.
+
+L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `WriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
+
+C'est cette formule qu'on utilise par exemple pour charger le *Writer* qui permet de rédiger les textes.
 
 ## Création/modification des events {#creation_event}
 
@@ -193,3 +203,12 @@ Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans
 Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
+
+## Documents de l'analyse {#documents_analyse}
+
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/writer`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
+
+Ces documents permettent de construire l'analyse de deux façons différentes :
+
+* en les rédigeant dans le *Writer* (qui s'ouvre grâce au menu « Documents »)
+* en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.

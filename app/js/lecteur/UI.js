@@ -9,6 +9,8 @@ const UI = {
   , init:function(){
       if (this.inited === true) return F.error("On ne doit initier l'interface qu'une seule fois…")
       var my = this
+
+      this.setDimensions()
       this.observe_ui()
 
       this.divWaitingLoop = $('div#waiting-loop')
@@ -49,6 +51,20 @@ const UI = {
 
       this.inited = true
     }
+
+    , setDimensions(){
+
+        var videoWidth   = parseInt((ScreenWidth * 60) / 100,10)
+        var readerWidth  = parseInt((ScreenWidth * 39) / 100,10)
+        var readerHeight = parseInt((ScreenHeight * 50)/100,10)
+
+        $('div#right-column').css({
+            "width": `${readerWidth}px`
+          , "height":`${readerHeight}px`
+          , "margin-left": `${1 + videoWidth}px`
+        })
+
+      }
 
     /**
      * Au chargement d'un analyse, ou à la création d'une nouvelle, cette

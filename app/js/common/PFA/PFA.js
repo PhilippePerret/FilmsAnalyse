@@ -3,35 +3,52 @@
 const PFA = require('./PFA-mini')
 Object.assign(PFA, {
     class: 'PFA'
-    // ---------------------------------------------------------------------
-    //  Méthodes de données
+  // ---------------------------------------------------------------------
+  //  Méthodes de données
 
-      /**
-       * Retourne l'instance SttNode du noeud d'identifiant +nid+
-       *
-       * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
-       */
-    , node:function(nid){
-        if(undefined === this.nodes) this.nodes = {}
-        if(undefined === this.nodes[nid]){
-          this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
-        }
-        return this.nodes[nid]
+    /**
+     * Retourne l'instance SttNode du noeud d'identifiant +nid+
+     *
+     * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
+     */
+  , node:function(nid){
+      if(undefined === this.nodes) this.nodes = {}
+      if(undefined === this.nodes[nid]){
+        this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
       }
+      return this.nodes[nid]
+    }
 
-    // ---------------------------------------------------------------------
-    //  Méthodes d'entrée sorties
-    , saveIfModified:function(){
-        this.modified && this.save()
-      }
-    , save:function(){
-        F.error("La procédure d'enregistrement du PFA n'est pas encore implémentée")
-        return new Promise((ok,ko) => {
-          ok()
-        })
-      }
-    // ---------------------------------------------------------------------
-    //  Méthodes de calculs
+  // ---------------------------------------------------------------------
+  //  Méthodes d'entrée sorties
+  , saveIfModified:function(){
+      this.modified && this.save()
+    }
+  , save:function(){
+      F.error("La procédure d'enregistrement du PFA n'est pas encore implémentée")
+      return new Promise((ok,ko) => {
+        ok()
+      })
+    }
+
+  // Méthodes d'affichage
+  , display:function(){
+      console.log("-> PFA.display")
+      if(!this.built) this.build()
+    }
+
+  // ---------------------------------------------------------------------
+  //  Méthodes de construction
+
+    /**
+     * Méthode principale de construction du PFA du film.
+     */
+  , build:function(){
+      require('./PFA_building.js').bind(this)()
+      this.built = true
+    }
+  // ---------------------------------------------------------------------
+  //  Méthodes de calculs
 
 })
 Object.defineProperties(PFA,{

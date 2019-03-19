@@ -109,14 +109,14 @@ class SttNode {
     for(var i=0,len=props.length;i<len;++i){this[`_${props[i]}`] = undefined}
   }
 
-  get zone(){return this._zone || defineP(this,'_zone',SttNode.calcZone(this))}
+  get zone(){return this._zone || defP(this,'_zone',SttNode.calcZone(this))}
 
   get zoneStart() { return this.zone[0] }
   get zoneEnd()   { return this.zone[1] }
 
   get scene(){ return this._scene }
 
-  get event(){return this._event || defineP(this,'_event',current_analyse.ids[this.event_id])}
+  get event(){return this._event || defP(this,'_event',current_analyse.ids[this.event_id])}
   set event(v){
     this._event = v
     this._event_id = v ? v.id : undefined

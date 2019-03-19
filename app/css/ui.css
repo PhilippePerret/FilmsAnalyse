@@ -6,6 +6,11 @@ body {
   background-color:#BBBBBB;
 }
 
+/* On entoure jamais les boutons focussés */
+button:focus {
+  outline:none;
+}
+
 .no-user-selection,
 button, select, option, label
 {
@@ -56,10 +61,37 @@ button.main-button {
 }
 
 /* --------------------------------------------------------------------- */
-
+/*
+    Note : les largeurs (widths sont définies par UI.setUi )
+ */
 section#section-video {
   background:black;
+  z-index:10;
 }
+
+div#right-column {
+  position:absolute;
+  top:0;
+  border: 1px dashed green;
+  padding:0;
+  background-color:#EEEEEE;
+  z-index:10;
+}
+
+div#right-column section#section-reader {
+  min-height: 600px;
+}
+
+section#section-footer {
+  position:absolute;
+  bottom:0;
+  background-color:white;
+  padding:1em;
+  width:100%;
+  z-index:0;
+}
+
+/* --------------------------------------------------------------------- */
 
 
 div#waiting-loop {
@@ -105,10 +137,6 @@ table.video-controller button.controller {
   vertical-align:middle;
   text-align:center;
 }
-table.video-controller button:focus {
-  outline:none;
-}
-
 table.video-controller button.main {
   padding-bottom:2px;
   background-color:#CCFFCC;

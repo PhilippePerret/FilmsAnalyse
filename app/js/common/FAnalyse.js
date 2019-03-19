@@ -13,7 +13,7 @@ class FAnalyse {
   //  CLASSE
 
   // Retourne l'analyse courante
-  static get current(){return this._current||defineP(this,'_current',current_analyse)}
+  static get current(){return this._current||defP(this,'_current',current_analyse)}
   static set current(v){this._current = v}
 
   // Voir si les préférences demandent que la dernière analyse soit chargée
@@ -105,12 +105,6 @@ class FAnalyse {
     }
   }
 
-  /**
-   * Méthode appelée par le menu "Définir vidéo du film courant…"
-   */
-  static redefineVideoPath(){
-    require('./js/tools/redefine_video_path.js')()
-  }
 
 
   /**
@@ -170,19 +164,17 @@ class FAnalyse {
   }
 
   // avant de le calculer vraiment :
-  get duration(){ return this._duration || defineP(this,'_duration', this.calcDuration()) }
+  get duration(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
   set duration(v){ this._duration = v ; this.modified = true }
   calcDuration(){
     if(!this.filmEndTime) return null
     return this.filmEndTime - this.filmStartTime
   }
-  get folder()  { return this._folder }
-  set folder(v) { this._folder = v}
 
-  get filmStartTime() {return this._filmStTi || defineP(this,'_filmStTi', 0)}
+  get filmStartTime() {return this._filmStTi || defP(this,'_filmStTi', 0)}
   set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
 
-  get filmEndTime(){return this._filmEndTime || defineP(this,'_filmEndTime',this.calcFilmEndTime())}
+  get filmEndTime(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
   set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
 
   calcFilmEndTime(){
@@ -196,13 +188,12 @@ class FAnalyse {
   get filmEndGenericFin(){return this._filmEGF}
   set filmEndGenericFin(v){this._filmEGF = v ; this.modified = true }
 
-  get videoPath(){ return this._videoPath }
-  set videoPath(v){ this._videoPath = v ; this.modified = true }
-
-  get title(){return this._title || defineP(this,'_title',path.basename(this.folder))}
+  get title(){return this._title || defP(this,'_title',path.basename(this.folder))}
   set title(v){ this._title = v ; this.modified = true }
 
-  get lastCurrentTime(){return this._lastCurT||defineP(this,'_lastCurT',this.locator.getRTime())}
+  get filmId(){return this._filmId||defP(this,'_filmId',this.title.camelize())}
+
+  get lastCurrentTime(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
   set lastCurrentTime(v){ this._lastCurrentTime = v }
 
   // ---------------------------------------------------------------------
@@ -256,6 +247,8 @@ class FAnalyse {
     // de nombreuses fois. Il faut revenir à l'état normal.
     this.modified = false
     UI.stopWait()// toujours, au cas où
+    // On peut indiquer aux menus qu'il y a une analyse chargée
+    ipc.send('current-analyse-exist', true)
     // Si une fonction a été définie pour la fin du chargement, on
     // peut l'appeler maintenant.
     if ('function' == typeof this.methodeAfterLoading){
@@ -276,6 +269,52 @@ class FAnalyse {
       this.setAllIsReady()
     }
   }
+
+  // ---------------------------------------------------------------------
+  //  MÉTHODES D'AFFICHAGE
+
+  displayInfosFilm(){
+    F.error("L'affichage des infos du film n'est pas encore implémenté")
+  }
+
+  /**
+   * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
+   */
+  displayFullAnalyse(format){
+    // TODO Pour le moment, on refait chaque fois l'analyse complète. Ensuite,
+    // il faudra prévoir un bouton ou un menu pour actualisation l'analyse.
+    // if(!fs.existsSync(this.html_path)){
+      require('./js/tools/full_analyse_building.js')(format)
+    // }
+    // ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  }
+
+  /**
+   * Méthode qui ouvre le writer
+   */
+  openDocInWriter(dtype){
+    if('undefined' === typeof Writer){
+      var fn_callback = this.openDocInWriter.bind(this, dtype)
+      System.loadJSFolders('./app/js/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
+      return
+    }
+    Writer.openDoc(dtype)
+  }
+
+  // La version courante de l'analyse
+  get hVersion(){return this._hversion || '0.0.1'}
+
+  displayPFA(){this.PFA.display()}
+
+  // ---------------------------------------------------------------------
+  //  MÉTHODES D'EXPORT
+
+  exportAs(format){
+    require('./js/tools/export_analyse.js')(format)
+  }
+
+  // ---------------------------------------------------------------------
+  // MÉTHODES OPTIONS
 
   get options(){ return Options }
 
@@ -306,25 +345,6 @@ class FAnalyse {
     for(;i<len;++i){
       method(this.events[i])
     }
-  }
-
-  get eventsFilePath(){
-    if(undefined===this._events_file_path){
-      this._events_file_path = path.join(this.folder,'events.json')
-    }
-    return this._events_file_path
-  }
-  get dataFilePath(){
-    if(undefined===this._data_file_path){
-      this._data_file_path = path.join(this.folder,'data.json')
-    }
-    return this._data_file_path
-  }
-  get vignettesScenesFolder(){
-    if(undefined === this._vignettesScenesFolder){
-      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
-    }
-    return this._vignettesScenesFolder
   }
 
   /**
@@ -617,6 +637,71 @@ class FAnalyse {
    */
   setButtonGoToStart(){
     $('#btn-go-to-film-start').css('visibility',(this.filmStartTime===0)?'hidden':'visible')
+  }
+
+
+  // ---------------------------------------------------------------------
+  //  PATHS
+
+  /**
+   * Méthode appelée par le menu "Définir vidéo du film courant…"
+   */
+  static redefineVideoPath(){
+    require('./js/tools/redefine_video_path.js')()
+  }
+
+  get folder()  { return this._folder }
+  set folder(v) { this._folder = v}
+  get folderExport(){return path.join(this.folder,'exports')}
+
+  get videoPath(){ return this._videoPath }
+  set videoPath(v){ this._videoPath = v ; this.modified = true }
+
+  get eventsFilePath(){
+    if(undefined===this._events_file_path){
+      this._events_file_path = path.join(this.folder,'events.json')
+    }
+    return this._events_file_path
+  }
+  get dataFilePath(){
+    if(undefined===this._data_file_path){
+      this._data_file_path = path.join(this.folder,'data.json')
+    }
+    return this._data_file_path
+  }
+  get vignettesScenesFolder(){
+    if(undefined === this._vignettesScenesFolder){
+      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
+    }
+    return this._vignettesScenesFolder
+  }
+
+  get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
+  get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
+  get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
+  get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
+  get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
+  get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
+  get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
+  get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
+  get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
+  get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
+  get kindle_path(){return this.mobi_path}
+  get kindle_name(){return this.mobi_name}
+
+  defExportPath(type){
+    var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
+    var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
+    return {path: p, name: n}
+  }
+
+  get folderFiles(){
+    if(undefined === this._folderFiles){
+      this._folderFiles = path.join(this.folder,'analyse_files')
+    }
+    // On construit le fichier s'il n'existe pas
+    if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
+    return this._folderFiles
   }
 
 }

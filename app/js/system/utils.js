@@ -25,10 +25,10 @@ function requiredChunk(bindee, methodName){
 
 /**
   * Pour pouvoir utiliser la tournure
-    this._propriete || defineP(this, '_propriete', valeur)
+    this._propriete || defP(this, '_propriete', valeur)
     return this._propriete
   */
-function defineP(obj, prop, val){
+function defP(obj, prop, val){
   obj[prop] = val
   return val
 }

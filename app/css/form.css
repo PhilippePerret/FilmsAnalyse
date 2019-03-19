@@ -69,7 +69,6 @@ form.form-edit-event:not(.modified) section.footer *,
 form.form-edit-event:not(.modified) section.header,
 form.form-edit-event:not(.modified) section.header *
 {
-  /* background-color:black; */
   background-color:slategrey;
 }
 form.form-edit-event.modified section.footer,

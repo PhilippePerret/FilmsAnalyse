@@ -1,9 +1,38 @@
-*
+
+* DOCUMENT
+  * Pour éviter les erreurs, on va ne mettre le menu des modèles que lorsque le document est vide ou n'existe pas.
+
+* Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
+* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
+* IL y a deux types de documents :
+  1. Les documents "formatés" comme les 5 fondamentales
+  2. Les documents "libres" comme un texte qui est inventé pour une analyse propre
+* On charge Writer en dur :
+  - on inscrit des balises dans le document et on attend qu'elles aient finies d'être chargées pour poursuivre. L'avantage : inutile d'indiquer les fichiers, ils sont tous chargés.
+* Poursuivre les expériences pour exporter en ePub et autre format
+  - voir comment incorporer les fichiers dans le template
+    Peut-être chaque fichier doit-il avoir un ID (OUI), et une position:after
+    et :before qui le place, et d'autres propriétés comme la position x ou y
+    si c'est une image par exemple, ou des styles particuliers à appliquer,
+    etc.
+
+* Donc plutôt faire comme ça :
+  - le publisher s'ouvre dans une nouvelle page (`pubW`)
+  - il utilise (`loadURL`) une adresse "vierge" au départ, puis une page provenant d'un dossier `building` de l'analyse (qui contient toutes les images)
+  - ce dossier contient le fichier `<filmId>-v-<version>.html` qui est la version HTML de l'analyse.
+  - c'est version qui est transformée en ePub et peut-être autre version.
+  - pour le format des pages (html ou markdown), essayer les deux pour voir quel serait le meilleur
+
+* Faire un fichier `metadata.yml` pour les métadonnées du livre
+
 * Une classe **Writer** pour écrire les longs textes de l'analyse. Un writer sera un grand textarea qui sera placé à la place du reader (ou un texte volant)
 
 * PFA
   Construction du graphique du PFA.
-  
+
+* Menu pour passer à la version suivante de l'analyse
+  - faut-il conserver un certain nombre de versions ?
+
 * Pouvoir avoir un résumé (dans le reader) de l'état de l'analyse courante
   - nombre d'events (et peut-être le détail par type, mais en ouvrant un div-dossier)
   - nombre de Scènes
@@ -51,3 +80,4 @@
 * Pouvoir exporter en PDF le reader
   - procédure de mise en forme
   - sortie en format Kindle ou autre livre en ligne
+* API qui permettrait de récupérer les data des films online (au format json).

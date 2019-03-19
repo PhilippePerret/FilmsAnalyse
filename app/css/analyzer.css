@@ -25,11 +25,3 @@
 #section-video fieldset.time-tools {
   width:500px;
 }
-
-#section-footer {
-  position:absolute;
-  bottom:0;
-  background-color:white;
-  padding:1em;
-  width:100%;
-}
