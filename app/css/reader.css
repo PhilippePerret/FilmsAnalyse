@@ -1,12 +1,9 @@
-#section-reader {
-  position:absolute;
-  top:0;
-  display:block;
-  border: 1px dashed green;
-  min-height: 600px;
-  padding:0;
-  background-color:#EEEEEE;
-}
+
+/*
+
+  NB : pour la section-reader, cf. ui.css
+*/
+
 #reader {
   width: 95%;
   max-height: 600px;

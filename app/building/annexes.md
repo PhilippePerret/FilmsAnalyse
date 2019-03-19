@@ -12,4 +12,4 @@ __LEXIQUE__
 
 # Scénier du film {#annexes_scenier_film}
 
-__SCENIER__
+[[SCENIER]]

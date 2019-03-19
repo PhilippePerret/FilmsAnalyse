@@ -1,3 +1,23 @@
+
+* DOCUMENT
+  * Ce qui serait génial, c'est d'avoir une visualiseur Markdown
+    Fonctionnement, si rien n'existe : à chaque seconde, j'envoie le texte dans
+    la commande pandoc qui transforme le MD en HTML et je l'affiche dans le
+    visualiseur de document (`DocVisualisor`)
+    - C'est une option qui permet de dire si on veut visualiser en direct
+  * Quand un document n'existe pas, proposer de charger son modèle type
+    (ou le faire par défaut ?)
+    - Possibilité d'avoir plusieurs documents types :
+      + si un seul document (introduction.md) existe => "LE" modèle
+      + si un dossier (introduction/) => "LES" modèles
+
+* Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
+* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
+* IL y a deux types de documents :
+  1. Les documents "formatés" comme les 5 fondamentales
+  2. Les documents "libres" comme un texte qui est inventé pour une analyse propre
+* On charge Writer en dur :
+  - on inscrit des balises dans le document et on attend qu'elles aient finies d'être chargées pour poursuivre. L'avantage : inutile d'indiquer les fichiers, ils sont tous chargés.
 * Poursuivre les expériences pour exporter en ePub et autre format
   - voir comment incorporer les fichiers dans le template
     Peut-être chaque fichier doit-il avoir un ID (OUI), et une position:after

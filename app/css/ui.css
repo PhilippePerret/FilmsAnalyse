@@ -56,10 +56,37 @@ button.main-button {
 }
 
 /* --------------------------------------------------------------------- */
-
+/*
+    Note : les largeurs (widths sont définies par UI.setUi )
+ */
 section#section-video {
   background:black;
+  z-index:10;
 }
+
+div#right-column {
+  position:absolute;
+  top:0;
+  border: 1px dashed green;
+  padding:0;
+  background-color:#EEEEEE;
+  z-index:10;
+}
+
+div#right-column section#section-reader {
+  min-height: 600px;
+}
+
+section#section-footer {
+  position:absolute;
+  bottom:0;
+  background-color:white;
+  padding:1em;
+  width:100%;
+  z-index:0;
+}
+
+/* --------------------------------------------------------------------- */
 
 
 div#waiting-loop {

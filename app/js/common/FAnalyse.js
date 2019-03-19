@@ -289,6 +289,18 @@ class FAnalyse {
     // ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
 
+  /**
+   * Méthode qui ouvre le writer
+   */
+  openWriter(typeDoc){
+    if('undefined' === typeof Writer){
+      var fn_callback = this.openWriter.bind(this)
+      System.loadJSFolders('./app/js/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
+      return
+    }
+    Writer.openDoc(typeDoc)
+  }
+
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
 

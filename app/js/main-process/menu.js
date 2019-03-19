@@ -55,7 +55,14 @@ const ObjMenus = {
       Menu.setApplicationMenu(global.mainMenuBar);
     }
 
-  , CURRENT_THING_MENUS: ['save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub', 'export-as-kindle', 'export-as-docbook', 'display-infos-film', 'display-full-analyse', 'display-pfa'] // les menus à activer quand un élément principal est ouvert
+    // les menus à activer quand un élément principal est ouvert (une analyse)
+  , CURRENT_THING_MENUS:
+      [
+        'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
+        'export-as-kindle', 'export-as-docbook', 'display-infos-film',
+        'display-full-analyse', 'display-pfa', 'open-writer', 'open-doc-intro',
+        'open-doc-conclusion'
+      ]
   , NEW_THING_MENUS: []
   , setMenuCurrentThing:function(on){
       var my = this
@@ -201,6 +208,35 @@ const DATA_MENUS = [
               , click: ()=>{execJsOnCurrent('displayPFA')}
             }
       ]
+    }
+  /**
+   * MENU DOCUMENTS
+   */
+  , {
+        label: "Documents"
+      , enabled: true
+      , submenu: [
+            {
+                label: "Ouvrir le Writer"
+              , id: 'open-writer'
+              , accelerator: 'CmdOrCtrl+Shift+W'
+              , enabled: false
+              , click: () => {execJsOnCurrent('openWriter')}
+            }
+          , {type:'separator'}
+          , {
+                label: "Introduction"
+              , id: 'open-doc-intro'
+              , enabled: false
+              , click: () => {execJsOnCurrent('openWriter', 'introduction')}
+            }
+          , {
+                label: "Conclusion"
+              , id: 'open-doc-conclusion'
+              , enabled: false
+              , click: () => {execJsOnCurrent('openWriter', 'conclusion')}
+            }
+        ]
     }
   /**
    * MENU VIDÉO

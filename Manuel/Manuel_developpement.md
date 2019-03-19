@@ -1,6 +1,7 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Chargement de dossier de modules](#loading_modules_folders)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
@@ -9,6 +10,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+
 
 ## Point d'entrée {#point_dentree}
 
@@ -20,6 +22,13 @@ On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, po
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
 
+## Chargement de dossier de modules {#loading_modules_folders}
+
+On peut charger des modules en inscrivant leur balise `<script>` dans le document grâce à la méthode `System.loadJSFolders(mainFolder, subFolders, fn_callback)`.
+
+L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `WriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
+
+C'est cette formule qu'on utilise par exemple pour charger le *Writer* qui permet de rédiger les textes.
 
 ## Création/modification des events {#creation_event}
 
