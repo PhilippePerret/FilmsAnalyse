@@ -9,6 +9,8 @@
 * [L'Interface](#linterface)
   * [Comportement du bouton STOP](#le_bouton_stop)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
+* [Les Documents](#les_documents)
+  * [Variables dans les documents](#variables_dans_les_documents)
 
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
 
@@ -81,3 +83,34 @@ Le bouton STOP a trois comportement différents, dans l'ordre de priorité :
 Pour définir le PFA du film, on crée des events de type **Nœud STT**. Il suffit de choisir le type du nœud dans le premier menu et de décrire en quoi le temps courant correspond au nœud concerné.
 
 Une fois suffisamment de nœud définis, on peut demander l'affichage du paradigme en actionnant le menu « Affichage > Paradigme de Field Augmenté ».
+
+
+## Les Documents {#les_documents}
+
+### Variables dans les documents {#variables_dans_les_documents}
+
+On peut placer des variables dans les documents à l'aide de la syntaxe :
+
+```markdown
+
+  {{variable-name}}
+
+```
+
+Ces variables — pour le moment — ne concernent que les données générales de l'analyse.
+
+On trouve :
+
+`{{title}}`
+: Titre complet du film
+
+`{{authors}}`
+: Auteurs du film.
+: Ce sont des noms formatés séparés par des virgules.
+
+`{{analystes}}`
+: Analystes du film.
+: Ce sont des noms formatés séparés par des virgules.
+
+`{{date}}`
+: Date du film.

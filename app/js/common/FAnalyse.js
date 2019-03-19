@@ -292,13 +292,13 @@ class FAnalyse {
   /**
    * Méthode qui ouvre le writer
    */
-  openWriter(typeDoc){
+  openDocInWriter(dtype){
     if('undefined' === typeof Writer){
-      var fn_callback = this.openWriter.bind(this)
+      var fn_callback = this.openDocInWriter.bind(this, dtype)
       System.loadJSFolders('./app/js/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
       return
     }
-    Writer.openDoc(typeDoc)
+    Writer.openDoc(dtype)
   }
 
   // La version courante de l'analyse

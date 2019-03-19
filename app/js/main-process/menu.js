@@ -17,6 +17,44 @@ const { app } = require('electron')
 const path    = require('path')
 const ipc     = require('electron').ipcMain
 
+const CURRENT_THING_MENUS = [
+  'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
+  'export-as-kindle', 'export-as-docbook', 'display-infos-film',
+  'display-full-analyse', 'display-pfa', 'open-writer'
+]
+
+// Les submenus du writer, qui doivent être calculés en fonction des types
+// de documents.
+const WriterSubmenus = [
+      {
+          label: "Ouvrir/fermer le Writer"
+        , id: 'open-writer'
+        , accelerator: 'CmdOrCtrl+Shift+W'
+        , enabled: false
+        , click: () => {execJsOnCurrent('openDocInWriter')}
+      }
+    , {type:'separator'}
+  ]
+
+const DATA_DOCS = require('../writer/required_first/min.js')
+
+function openDocInWriter(doc_id){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
+}
+for(var doc_id in DATA_DOCS){
+  var ddoc = DATA_DOCS[doc_id]
+  var menu_id = `open-doc-${doc_id}`
+  CURRENT_THING_MENUS.push(menu_id)
+  var method = openDocInWriter.bind(null, doc_id)
+  WriterSubmenus.push({
+      label:    ddoc.hname
+    , id:       menu_id
+    , enabled:  false
+    , click:    method
+  })
+}
+
+// console.log("WriterSubmenus:", WriterSubmenus)
 
 const ObjMenus = {
     class: 'ObjMenus'
@@ -46,35 +84,41 @@ const ObjMenus = {
     }
 
     /**
-     * Méthode qui actualise les menus lorsqu'une autre langue a été choisie
-     * dans les options.
+     * Méthode qui actualise les menus par exemple lorsqu'on change
+     * un label.
+     *
+     * Note : ne fonctionne pas encore vraiment, car l'état n'est pas
+     * conservé, par exemple les menus enabled ou disabled ne conservent pas
+     * leur état, il faudrait tout reprendre.
      */
-  , updateLang: function(){
+  , updateMenus: function(){
       let { Menu } = require('electron')
-      this.mainMenuBar = Menu.buildFromTemplate(this.data_menus())
+      global.mainMenuBar = Menu.buildFromTemplate(this.data_menus)
       Menu.setApplicationMenu(global.mainMenuBar);
     }
 
     // les menus à activer quand un élément principal est ouvert (une analyse)
-  , CURRENT_THING_MENUS:
-      [
-        'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
-        'export-as-kindle', 'export-as-docbook', 'display-infos-film',
-        'display-full-analyse', 'display-pfa', 'open-writer', 'open-doc-intro',
-        'open-doc-conclusion'
-      ]
-  , NEW_THING_MENUS: []
   , setMenuCurrentThing:function(on){
       var my = this
-      my[on?'enableMenus':'disableMenus'](my.CURRENT_THING_MENUS)
+      my[on?'enableMenus':'disableMenus'](CURRENT_THING_MENUS)
     }
 
+    /**
+     * Pour modifier le label d'un menu
+     */
+  , setLabelMenu:function(menu_id, menu_label){
+      console.log("-> setLabelMenu", menu_id, menu_label)
+      var m = this.getMenu(menu_id).label = menu_label
+      this.updateMenus();
+      // var cloneM = m.clone()
+    }
 }
 
 // Fonctions pratiques
 
 function execJsOnCurrent(method, ...args){
   if(args){
+    // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${args}')`)
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}('${args}')`)
   } else {
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
@@ -215,28 +259,7 @@ const DATA_MENUS = [
   , {
         label: "Documents"
       , enabled: true
-      , submenu: [
-            {
-                label: "Ouvrir le Writer"
-              , id: 'open-writer'
-              , accelerator: 'CmdOrCtrl+Shift+W'
-              , enabled: false
-              , click: () => {execJsOnCurrent('openWriter')}
-            }
-          , {type:'separator'}
-          , {
-                label: "Introduction"
-              , id: 'open-doc-intro'
-              , enabled: false
-              , click: () => {execJsOnCurrent('openWriter', 'introduction')}
-            }
-          , {
-                label: "Conclusion"
-              , id: 'open-doc-conclusion'
-              , enabled: false
-              , click: () => {execJsOnCurrent('openWriter', 'conclusion')}
-            }
-        ]
+      , submenu: WriterSubmenus
     }
   /**
    * MENU VIDÉO

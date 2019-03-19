@@ -1,15 +1,6 @@
 
 * DOCUMENT
-  * Ce qui serait génial, c'est d'avoir une visualiseur Markdown
-    Fonctionnement, si rien n'existe : à chaque seconde, j'envoie le texte dans
-    la commande pandoc qui transforme le MD en HTML et je l'affiche dans le
-    visualiseur de document (`DocVisualisor`)
-    - C'est une option qui permet de dire si on veut visualiser en direct
-  * Quand un document n'existe pas, proposer de charger son modèle type
-    (ou le faire par défaut ?)
-    - Possibilité d'avoir plusieurs documents types :
-      + si un seul document (introduction.md) existe => "LE" modèle
-      + si un dossier (introduction/) => "LES" modèles
+  * Pour éviter les erreurs, on va ne mettre le menu des modèles que lorsque le document est vide ou n'existe pas.
 
 * Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse

@@ -130,19 +130,20 @@
           <!-- Pour visualiser le code -->
         </div>
         <div class="header">
+          <button id="btn-close-writer" type="button"><img class="btn-window" src="./img/btn-window/b_close.png" /></button>
           <span id="writer-doc-title">
-            <label>DOCUMENT</label> <select id="document-type"></select>
+            <label class="small">DOCUMENT</label> <select id="document-type"></select>
           </span>
           <span class="modeles">
-            <label>Modèles</label> <select id="modeles-doc"></select>
+            <label class="small">Modèles</label> <select id="modeles-doc"></select>
           </span>
         </div>
         <div class="body">
           <textarea id="document-contents"></textarea>
         </div>
         <div class="footer">
+          <label id="writer-message">...</label>
           <label class="fleft">Taille du texte : </label><span id="text-size" class="fleft">...</span>
-          <label id="writer-message" class="fleft">...</label>
           <label for="cb-auto-visualize">Visualiser</label>
           <input id="cb-auto-visualize" type="checkbox" />
           <label for="cb-save-auto-doc">Sauvegarde automatique</label>

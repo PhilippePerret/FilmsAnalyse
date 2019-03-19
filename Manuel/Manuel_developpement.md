@@ -10,6 +10,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Champs temporels](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+* [Documents de l'analyse](#documents_analyse)
 
 
 ## Point d'entrée {#point_dentree}
@@ -202,3 +203,12 @@ Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans
 Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
+
+## Documents de l'analyse {#documents_analyse}
+
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/writer`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
+
+Ces documents permettent de construire l'analyse de deux façons différentes :
+
+* en les rédigeant dans le *Writer* (qui s'ouvre grâce au menu « Documents »)
+* en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.

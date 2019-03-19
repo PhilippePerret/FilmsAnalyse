@@ -13,7 +13,18 @@ class WriterDoc {
   get a() { return current_analyse }
 
   get modified(){return this._modified || false}
-  set modified(v){this._modified = v}
+  set modified(v){
+    Writer.header[v?'addClass':'removeClass']('modified')
+    Writer.footer[v?'addClass':'removeClass']('modified')
+    this._modified = v
+  }
+
+  get contents(){return this._contents}
+  set contents(v){
+    this._contents = v
+    this.modified = true
+    this.setMenuModeles()
+  }
 
   // Affiche le document
   display(){
@@ -53,9 +64,6 @@ class WriterDoc {
   setContents(code){
     this.contents = code
     this.loaded   = true
-    this.modified = true
-    // TODO Faire une méthode unique pour afficher le contenu (et régler
-    // la longueur et, plus tard, des raccourcis, etc.)
     Writer.docField.val(this.contents)
     this.displaySize()
   }
@@ -87,10 +95,16 @@ class WriterDoc {
       })
     }
   }
+  // Le menu des modèles ne doit être affiché que si le contenu du document
+  // est vide.
+  setMenuModeles(){
+    var doit = this.contents.trim() == ''
+    $('#section-writer .header span.modeles')[doit?'show':'hide']()
+  }
   afficheModeles(modeles){
     var mModeles = $('#section-writer select#modeles-doc')
     var opts = []
-    opts.push('<option value="">Choisir le modèle…</option>')
+    opts.push('<option value="">Choisir…</option>')
     for(var p of modeles){
       var n = path.basename(p, path.extname(p))
       opts.push(`<option value="${p}">${n}</option>`)
@@ -98,6 +112,12 @@ class WriterDoc {
     mModeles.html(opts)
   }
 
+  /**
+   * Retourne TRUE si le document propre à l'analyse, du type, existe.
+   *
+   * Note : ce document se trouve dans le dossier `analyse_files` de
+   * l'analyse.
+   */
   exists(){ return fs.existsSync(this.path) }
 
   // Le path du document

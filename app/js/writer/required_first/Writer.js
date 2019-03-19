@@ -7,20 +7,24 @@
 const Writer = {
     class: 'Writer'
 
-  , ready: false // pour savoir s'il est préparé
+  , ready: false      // pour savoir s'il est préparé
+  , isOpened: false  // Pour savoir si le writer est ouvert ou fermé
 
   , currentDoc: undefined //l'instance WriterDoc courante (elle doit toujours exister)
+
     /**
      * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
      */
   , openDoc:function(dtype){
-      this.message('Document en préparation…')
-      if(undefined === dtype){
-        this.menuTypeDoc.value = 'introduction'
-        dtype = 'introduction'
-      }
-      if(this.currentDoc && this.currentDoc.modified){
-        F.error("Il faut implémenter la formule de sauvegarde du document courant.")
+      this.message(`Document de type "${dtype}" en préparation…`)
+      if('' == dtype){
+        if (this.isOpened){
+          return this.close()
+        }
+        else {
+          this.menuTypeDoc.value = 'introduction'
+          dtype = 'introduction'
+        }
       }
       this.makeCurrent(dtype)
       this.message('Document prêt à être travaillé.')
@@ -30,9 +34,16 @@ const Writer = {
      * Fait du document de type +dtype+ le document courant.
      */
   , makeCurrent:function(dtype){
-      this.currentDoc = new WriterDoc(dtype)
+      this.checkCurrentDocModified()
+      if(undefined === this.writerDocs) this.writerDocs = {}
+      if(undefined === this.writerDocs[dtype]){
+        this.writerDocs[dtype] = new WriterDoc(dtype)
+      }
+      this.currentDoc = this.writerDocs[dtype]
       this.currentDoc.display()
-      this.open()
+      if(!this.isOpened) this.open()
+      // On règle toujours le menu des types (après l'ouverture)
+      this.menuTypeDoc.val(dtype)
     }
 
     /**
@@ -48,8 +59,8 @@ const Writer = {
       })
     }
   , checkCurrentDocModified:function(){
-      if(this.currentDoc.modified){
-        if(confirm("Le document courant a été modifié. Voulez-vous enregistrer les changements ?")){
+      if(this.currentDoc && this.currentDoc.modified){
+        if(confirm(T('ask-for-save-document-modified', {type: this.currentDoc.type}))){
           this.currentDoc.save()
         }
       }
@@ -58,7 +69,6 @@ const Writer = {
      * Menu appelé quand on choisit un type de document dans le menu
      */
   , onChooseTypeDoc:function(e){
-      this.checkCurrentDocModified()
       this.makeCurrent(this.menuTypeDoc.val())
     }
 
@@ -66,7 +76,6 @@ const Writer = {
      * Méthode appelée quand on choisit un modèle de document
      */
   , onChooseModeleDoc:function(e){
-      this.checkCurrentDocModified()
       // On charge le modèle
       var modelPath = $('#section-writer select#modeles-doc').val()
       this.currentDoc.setContents(fs.readFileSync(modelPath, 'utf8'))
@@ -79,7 +88,6 @@ const Writer = {
      */
   , onContentsChange:function(){
       this.currentDoc.contents = this.docField.val()
-      this.currentDoc.modified = true
       this.currentDoc.displaySize()
     }
 
@@ -98,15 +106,20 @@ const Writer = {
      */
   , OTHER_SECTIONS: ['#section-reader']
   , open:function(){
+      if(this.isOpened) return this.close() // appelé par le menu
       if(!this.ready) this.prepare()
       for(var section of this.OTHER_SECTIONS){$(section).hide()}
       this.section.show()
       this.setDimensions()
+      this.isOpened = true
       // OK
     }
   , close:function(){
+      this.checkCurrentDocModified()
       this.section.hide()
       this.unsetDimensions()
+      this.isOpened = false
+      delete this.currentDoc
     }
 
 
@@ -200,7 +213,11 @@ const Writer = {
       $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
       // On observe la case à cocher pour visualiser régulièrement le document
       $('input#cb-auto-visualize').on('click', this.setAutoVisualize.bind(this))
+      // Bouton pour fermer le writer
+      $('button#btn-close-writer').on('click', this.close.bind(this))
 
+      // On rend le writer draggable
+      this.section.draggable();
       // On rend le visualiseur draggable
       $('div#writer-doc-visualizor').draggable();
 
@@ -222,4 +239,11 @@ Object.defineProperties(Writer,{
 , visualizor:{
     get:function(){return $('#writer-doc-visualizor')}
   }
+, header:{
+    get:function(){return $('#section-writer .header')}
+  }
+, footer:{
+    get:function(){return $('#section-writer .footer')}
+  }
+
 })

@@ -6,6 +6,11 @@ body {
   background-color:#BBBBBB;
 }
 
+/* On entoure jamais les boutons focussés */
+button:focus {
+  outline:none;
+}
+
 .no-user-selection,
 button, select, option, label
 {
@@ -132,10 +137,6 @@ table.video-controller button.controller {
   vertical-align:middle;
   text-align:center;
 }
-table.video-controller button:focus {
-  outline:none;
-}
-
 table.video-controller button.main {
   padding-bottom:2px;
   background-color:#CCFFCC;
