@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-* [BUG] Avec le Writer, OK pour passer d'un document à l'autre (même s'il vaudrait mieux créer autant d'instance qu'on veut), mais quand on change de document, soit on demande quoi faire des changements, soit on serve bien le contenu pour le remettre.
-
 * Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
   - ÇA MARCHE !
   - Quand c'est une scène, mettre la balise {{scene:...}} plutôt.

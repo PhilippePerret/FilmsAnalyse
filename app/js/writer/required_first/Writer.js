@@ -87,17 +87,24 @@ const Writer = {
      */
   , onChooseTheme:function(e,theme){
       if(undefined === theme) theme = $('#section-writer #writer-theme').val()
-      this.docField.removeClass(this.currentTheme).addClass(theme)
-      $('#section-writer .body').removeClass(this.currentTheme).addClass(theme)
-      this.currentTheme = theme
+      this.applyTheme(theme)
       // $('#section-writer #writer-theme').val('')
     }
     /**
-     * Méthode appelée lorsque le contenu du document est appelé
+     * Méthode qui applique le thème +theme+ à l'interface
+     */
+  , applyTheme(theme){
+      this.body.removeClass(this.currentTheme).addClass(theme)
+      this.docField.removeClass(this.currentTheme).addClass(theme)
+      this.menuThemes.val(theme)
+      this.currentTheme = theme
+    }
+
+    /**
+     * Méthode appelée lorsque le contenu du document est changé
      */
   , onContentsChange:function(){
       this.currentDoc.contents = this.docField.val()
-      this.currentDoc.displaySize()
     }
 
   , onFocusContents:function(){
@@ -119,8 +126,9 @@ const Writer = {
       this.docField.val('')
     }
     /**
-     * Ouverture du Writer. Cela correspond à masquer le Reader et autres
-     * éléments.
+     * Ouverture du Writer. Cela correspond à masquer le Reader.
+     *
+     * Noter que ce seront les « Eventers » qui afficheront les events
      */
   , OTHER_SECTIONS: ['#section-reader']
   , open:function(){
@@ -145,7 +153,7 @@ const Writer = {
       this.sectionVideoOriginalWidth = $('#section-video').width()
       this.rightColumnOriginallWidth = $('#section-reader').width()
       this.rightColumnMarginLeft = $('#right-column').css('margin-left')
-      $('#right-column').css({'width': '70%', 'margin-left': '30%'})
+      $('#right-column').css({'width': '70%', 'margin-left': '10%'})
       $('#section-video').css('width', '30%')
     }
   , unsetDimensions:function(){
@@ -223,9 +231,9 @@ const Writer = {
       // On observe le menu de choix d'un document
       m.on('change', this.onChooseTypeDoc.bind(this))
       // On observe le menu de choix d'un modèle de document
-      $('#section-writer select#modeles-doc').on('change', this.onChooseModeleDoc.bind(this))
+      this.menuModules.on('change', this.onChooseModeleDoc.bind(this))
       // On observe le menu qui choisit le thème
-      $('#section-writer #writer-theme').on('change', this.onChooseTheme.bind(this))
+      this.menuTheme.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
       this.docField.on('change', this.onContentsChange.bind(this))
@@ -266,8 +274,17 @@ Object.defineProperties(Writer,{
 , menuTypeDoc:{
     get:function(){return $('#section-writer .header select#document-type')}
   }
+, body:{
+    get:function(){return $('#section-writer .body')}
+  }
 , docField:{
     get:function(){return $('#section-writer .body textarea#document-contents')}
+  }
+, menuThemes:{
+    get:function(){return $('#section-writer #writer-theme')}
+  }
+, menuModules:{
+    get:function(){return $('#section-writer select#modeles-doc')}
   }
 , visualizor:{
     get:function(){return $('#writer-doc-visualizor')}
