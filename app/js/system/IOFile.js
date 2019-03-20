@@ -18,7 +18,9 @@ class IOFile {
    * en bon fichier tout en faisant un backup de l'original.
    */
   save(options){
+    if(undefined===options)options={}
     this.options = options
+    if(options.after) this.methodAfterSaving = options.after
     this.checkBackupFolder()
     try {
       this.saved = false
@@ -62,8 +64,10 @@ class IOFile {
    * Note : utiliser plutôt la méthode `loadIfExists` pour bénéficier de
    * toutes les protections et l'utilisation de backups
    */
-  load(){
+  load(options){
     var my = this
+    if (undefined === options) options = {}
+    if(options.after) this.methodAfterLoading = options.after
     my.loaded = false
     fs.readFile(this.path, 'utf8', (err, data) => {
       err ? F.error(err) : my.code = data
@@ -85,7 +89,7 @@ class IOFile {
       my.retrieveBackup()
     } else {
       // On peut charger
-      my.load()
+      my.load(options)
     }
     my = null
   }
@@ -151,18 +155,27 @@ class IOFile {
   set code(v){this._code = v}
   get code(){return this._code}
 
-  get dejsonedCode(){
-    if(undefined === this._dejsonedCode){
-      try {
-        this._dejsonedCode = JSON.parse(this.code)
-      } catch (e) {
-        console.log("ERROR JSON AVEC:", this.pathii)
-        F.error('Une erreur s’est produite en lisant le fichier '+this.path)
-        F.error(e)
-        this._dejsonedCode = null
+  /**
+    * Retourne le code décodé en fonction du format du fichier (défini par
+    * son extension ou explicitement en options)
+    */
+  get decodedCode(){return this.decodedCode || defP(this,'_decodedCode',this.decode())}
+  decode(){
+    try {
+      switch (this.format) {
+        case 'JSON':
+          return JSON.parse(this.code)
+        case 'YAML':
+          return YAML
+        default:
+          return this.code
       }
+    } catch (e) {
+      console.log(`ERROR ${this.format} AVEC:,` this.path)
+      F.error('Une erreur s’est produite en lisant le fichier '+this.path)
+      F.error(e)
+      return null
     }
-    return this._dejsonedCode
   }
 
   get size(){ return fs.statSync(this.path).size }
@@ -174,8 +187,32 @@ class IOFile {
   get methodAfterLoading(){return this._methodAfterLoading}
   set methodAfterLoading(v){this._methodAfterLoading = v}
 
+  /**
+   * Retourne le format du fichier, en fonction de son extension
+   */
+  get format(){return this._format||defP(this,'_format',this.getFormatFromExt())}
+
+
   // ---------------------------------------------------------------------
   //  Données de path
+
+  getFormatFromExt(){
+    switch (fs.extname(this.path).toLowerCase()) {
+      case '.json':
+        return 'JSON'
+      case '.yml':
+      case '.yaml':
+        return 'YAML'
+      case '.md':
+      case '.mmd':
+      case '.markdown':
+        return 'MARKDOWN'
+      case '.js':
+        return 'JAVASCRIPT'
+      default:
+        return null
+    }
+  }
 
   get folder(){
     return this._folder || defP(this,'_folder', path.dirname(this.path))

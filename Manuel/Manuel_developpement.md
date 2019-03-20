@@ -11,6 +11,7 @@
 * [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
 * [Documents de l'analyse](#documents_analyse)
+* [Sauvegarde protégée des documents](#saving_protected)
 
 
 ## Point d'entrée {#point_dentree}
@@ -226,3 +227,37 @@ Ces documents permettent de construire l'analyse de deux façons différentes :
 
 * en les rédigeant dans le *Writer* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
+
+## Sauvegarde protégée des documents {#saving_protected}
+
+La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.load()`.
+
+Exemple :
+
+```javascript
+var p = './mon/fichier/analyse.md'
+var iofile = new IOFile(p)
+
+// Pour sauver le document :
+iofile.save({
+    after: methode_apres_sauvegarde
+  , format: 'json' // ou 'yaml', 'markdown', etc. si pas bonne extension
+})
+
+```
+
+> Noter qu'on indique le format que si le fichier ne correspond pas.
+
+```javascript
+// ...
+
+function methode_apres_chargement(contenu_document){
+  // ...
+}
+// Pour récupérer le document
+iofile.load({
+  after: methode_apres_chargement // reçoit en argument le contenu du document
+})
+```
+
+Noter qu'il est inutile, pour la méthode `load`, de préciser que le contenu est en `json` puisque ça aura été précisé dans la méthode `save`.

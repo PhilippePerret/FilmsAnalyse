@@ -1,14 +1,13 @@
 {
-    "name": "filmsanalyse"
-  , "productName": "Film-Analyzer"
-  , "version": "0.3.1",
+    "name": "filmsanalyse",
+    "productName": "Film-Analyzer",
+    "version": "0.3.1",
     "description": "Application pour l'analyse de films",
     "main": "main.js",
     "scripts": {
-          "start": "electron ."
-        , "test": "MODE_TEST=true npm start"
-        , "pack:osx": "electron-packager . $npm_package_productName --overwrite --out=dist/osx --platform=darwin --arch=x64 --prune=true --icon=dist/icons/macos/icon.icns"
-
+        "start": "electron .",
+        "test": "MODE_TEST=true npm start",
+        "pack:osx": "electron-packager . $npm_package_productName --overwrite --out=dist/osx --platform=darwin --arch=x64 --prune=true --icon=dist/icons/macos/icon.icns"
     },
     "keywords": [
         "Films",
@@ -21,6 +20,7 @@
         "electron": "^4.0.7"
     },
     "dependencies": {
-        "jquery": "^3.3.1"
+        "jquery": "^3.3.1",
+        "js-yaml": "^3.12.2"
     }
 }

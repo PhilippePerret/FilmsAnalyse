@@ -1,11 +1,13 @@
 # SUR LE GRILL
 
 * faire une sauvegarde protégée des documents
+* Construire le PFA
 
 # EN COURS DE DÉVELOPPEMENT
 
 * L'état d'avancement de l'applicatio (analyse_state.js)
 * Le writer (dossier `writer`)
+* Construction du (des) PFA
 * La construction de l'analyse
 
 # TODO LIST
