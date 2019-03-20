@@ -93,11 +93,15 @@ class DOMHorloge {
     $('body').bind('mouseup', this.onEndMoving.bind(this))
     $('body').bind('mousemove', this.onMoving.bind(this))
     // console.log(ev)
-    this.startMoveX = ev.clientX
-    this.startMoveY = ev.clientY
-    this.movingStartTime  = parseFloat(this.time)
+    this.initStartMoving(ev, this.time)
     // console.log("this.movingStartTime=",this.movingStartTime)
     ev.stopPropagation() // pour empêcher de draguer la fenêtre
+  }
+
+  initStartMoving(ev, time){
+    this.startMoveX = ev.clientX
+    this.startMoveY = ev.clientY
+    this.movingStartTime  = parseFloat(time)
   }
   /**
    * Méthode appelée au déplacement de souris (sur le body)
@@ -105,10 +109,21 @@ class DOMHorloge {
   onMoving(ev){
     this.moveX = ev.clientX
     var divisor = function(e){
-      if (e.shiftKey) return 10
-      else if(e.ctrlKey) return 1000
+      if (e.shiftKey){
+        if(e.metaKey) return 0.1
+        else return 10
+      } else if(e.ctrlKey) return 1000
       else return 50
     }(ev)
+    var newCombKeys = 0
+    if(ev.shiftKey) newCombKeys += 1
+    if(ev.metaKey)  newCombKeys += 2
+    if(ev.ctrlKey)  newCombKeys += 4
+    if(newCombKeys != this.currentCombKeys){
+      // console.log("Changement de combinaisons de touches:", newCombKeys, this.currentCombKeys)
+      this.initStartMoving(ev, this.time)
+    }
+    this.currentCombKeys = newCombKeys
     this.time = this.movingStartTime + ((this.moveX - this.startMoveX) / divisor)
     this.showTime()
     if(this.synchroVideo) this.synchronizeVideo()

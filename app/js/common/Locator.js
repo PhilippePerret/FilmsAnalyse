@@ -277,9 +277,8 @@ class Locator {
   /**
   * Alias de this.currentTime pour retourner le temps vidéo courant
   **/
-  getTime(){
-    return this.currentTime
-  }
+  getTime(){ return this.currentTime }
+  
   /**
    * Méthode qui récupère le temps courant du film et retourne une instance
    * OTime

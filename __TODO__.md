@@ -1,4 +1,15 @@
-* Rendre l'horloge principale de la vidéo "horlogeable"
+# SUR LE GRILL
+
+* faire une sauvegarde protégée des documents
+
+# EN COURS DE DÉVELOPPEMENT
+
+* L'état d'avancement de l'applicatio (analyse_state.js)
+* Le writer (dossier `writer`)
+* La construction de l'analyse
+
+# TODO LIST
+
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse
 * Implémenter les infos générales du film
   - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
