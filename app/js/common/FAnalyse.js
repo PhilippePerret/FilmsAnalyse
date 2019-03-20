@@ -147,7 +147,6 @@ class FAnalyse {
       , filmEndTime:        this.filmEndTime
       , filmEndGenericFin:  this.filmEndGenericFin
       , videoPath:          this.videoPath
-      , diminutifs:         this.diminutifs
       , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
       , stopPoints:         (this.locator ? this.locator.stop_points : [])
     }
@@ -158,7 +157,6 @@ class FAnalyse {
     this.filmEndTime          = v.filmEndTime
     this.filmEndGenericFin    = v.filmEndGenericFin
     this._videoPath           = v.videoPath
-    this.diminutifs           = v.diminutifs  || {}
     this.lastCurrentTime      = v.lastCurrentTime || 0
     this.stopPoints           = v.stopPoints || []
   }
@@ -442,19 +440,6 @@ class FAnalyse {
     // Non trouvé (début)
     return 0
   }
-
-  /**
-   * Remplace les diminutifs de +txt+ par leur vraie valeur
-   */
-  deDim(txt){
-    if(!txt) return ''
-    for(var dim in this.diminutifs){
-      var reg = new RegExp(`@${dim}`,'g')
-      txt = txt.replace(reg,this.diminutifs[dim])
-    }
-    return txt
-  }
-
 
   /**
    * Retourne l'index de l'évènement qui se trouve juste après le temps +time+

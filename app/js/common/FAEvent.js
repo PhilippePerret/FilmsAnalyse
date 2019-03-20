@@ -28,6 +28,19 @@ class FAEvent {
   get link(){
     return `-&gt; <a onclick="current_analyse.locator.setRTime(${this.time})">E #${this.id}</a>`
   }
+  /**
+   * Retourne le lien vers l'event
+   * Pour remplacer par exemple une balise `event: <id>`
+   *
+   * Note : si ce texte est modifié, il faut aussi corriger les tests à :
+   * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
+   */
+  asLink(alt_text){
+    if(undefined === this._asLink){
+      this._asLink = `<a class="link-to-event" onclick="showEvent(${this.id})">__TIT__</a>`
+    }
+    return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
+  }
 
   // ---------------------------------------------------------------------
   //  Propriétés temporelles
@@ -217,9 +230,11 @@ class FAEvent {
     if('function' === typeof this.formateContenu){
       return this.formateContenu()
     } else {
-      return current_analyse.deDim(this.content)
+      return this.fatexte.deDim(this.content)
     }
   }
+
+  get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content))}
 
   /**
    * Les données qui seront enregistrées

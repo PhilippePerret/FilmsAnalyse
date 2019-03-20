@@ -1,7 +1,7 @@
 # SUR LE GRILL
 
-* Documenter owner pour les IOFiles
 * Charger les diminutifs depuis le fichier de données s'il existe
+  => Une classe FATexte pour gérer tous les textes
   - détruire l'autre façon de faire et la donnée dans FAnalyse.
 * Construire le PFA
 * Des thèmes différents pour l'affichage des documents
