@@ -535,8 +535,7 @@ class FAnalyse {
   saveFile(fpath, prop){
     var iofile = new IOFile(fpath)
     iofile.code = this[prop]
-    iofile.methodAfterSaving = this.setSaved.bind(this, fpath)
-    iofile.save({as_json: true})
+    iofile.save({after: this.setSaved.bind(this, fpath)})
     var isSaved = iofile.saved
     iofile = null
     return isSaved
@@ -615,14 +614,12 @@ class FAnalyse {
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
   loadFile(fpath, prop){
+    new IOFile(fpath).loadIfExists({after: this.endLoadingFile.bind(this, fpath, prop)})
+  }
+  endLoadingFile(fpath, prop, data){
     var my = this
-    var iofile = new IOFile(fpath)
-    iofile.loadIfExists({as_json: true}, (data) => {
-      // console.log(`Data retournées par iofile:${fpath}`, data)
-      my[prop] = data
-      my.onLoaded.bind(my)(fpath)
-    })
-    iofile  = null
+    my[prop] = data
+    my.onLoaded.bind(my)(fpath)
   }
 
   /**

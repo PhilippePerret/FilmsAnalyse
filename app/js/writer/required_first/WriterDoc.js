@@ -42,7 +42,10 @@ class WriterDoc {
 
   // Pour charger le texte du document
   load(){
-    this.contents = fs.readFileSync(this.path, 'utf8')
+    this.iofile.loadIfExists({after: this.endLoading.bind(this)})
+  }
+  endLoading(code){
+    this.setContent(code)
     this.loaded   = true
     this.displaySize()
     this.modified = false
@@ -50,12 +53,19 @@ class WriterDoc {
 
   // Pour sauver le document
   save(){
+    if(this.saving) return
+    this.saving = true
     Writer.message('Sauvegarde en cours…')
-    this.getContents()
+    this.getContents() // actualise le contenu
+    this.iofile.save({after: this.endSaving.bind(this)})
     fs.writeFileSync(this.path, this.contents, 'utf8')
     // TODO Utiliser plutôt les méthodes de sauvegarde protégées
     Writer.message()
     this.modified = false
+  }
+  endSaving(){
+
+    this.saving = false
   }
 
   /**
@@ -120,6 +130,7 @@ class WriterDoc {
    */
   exists(){ return fs.existsSync(this.path) }
 
+  get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this.path))}
   // Le path du document
   get path(){
     return this._path||defP(this,'_path',path.join(this.a.folderFiles,`${this.type}.md`))

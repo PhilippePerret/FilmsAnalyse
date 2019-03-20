@@ -230,7 +230,7 @@ Ces documents permettent de construire l'analyse de deux façons différentes :
 
 ## Sauvegarde protégée des documents {#saving_protected}
 
-La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.load()`.
+La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.loadIfExists()`.
 
 Exemple :
 
@@ -246,7 +246,7 @@ iofile.save({
 
 ```
 
-> Noter qu'on indique le format que si le fichier ne correspond pas.
+> Noter qu'on indique le format que si l'extension du fichier ne correspond pas.
 
 ```javascript
 // ...
@@ -255,9 +255,9 @@ function methode_apres_chargement(contenu_document){
   // ...
 }
 // Pour récupérer le document
-iofile.load({
+iofile.loadIfExists({
   after: methode_apres_chargement // reçoit en argument le contenu du document
 })
 ```
 
-Noter qu'il est inutile, pour la méthode `load`, de préciser que le contenu est en `json` puisque ça aura été précisé dans la méthode `save`.
+Noter qu'il est inutile, pour la méthode `loadIfExists`, de préciser que le contenu est en `json` puisque ça aura été précisé dans la méthode `save`. Le format sera tiré soit de l'extension du fichier (préférable), soit de la valeur de `options.format` fourni en argument de la méthode `save`.
