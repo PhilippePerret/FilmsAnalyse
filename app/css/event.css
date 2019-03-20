@@ -13,6 +13,7 @@
 /* Quand on le draggue */
 .event.myHighlight{
   border:2px solid red;
+  z-index: 1000;
 }
 
 .event div.scene-heading{

@@ -336,7 +336,8 @@ class FAEvent {
     BtnPlay.setAndWatch(this.jqReaderObj, this.id)
     o.draggable({
         revert: true
-      , zIndex: 5000
+      // , stack: 'section#section-eventers div.eventer div.pan-events'
+      // , start: function(event, ui) { $(this).css("z-index", a++); }
       , classes:{
           'ui-draggable-dragging': 'myHighlight'
         }

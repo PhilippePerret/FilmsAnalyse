@@ -111,8 +111,9 @@ const Writer = {
      * sur le champ de texte.
      */
   , onDropThing:function(e, ui){
-      console.log("-> onDropThing")
-      console.log("J'ai droppé l'event #", ui.helper.attr('data-id'))
+      var event_id = ui.helper.attr('data-id')
+      var balise = `{{event: ${event_id}}}`
+      this.docField.insertAtCaret(balise)
     }
   , reset:function(){
       this.docField.val('')

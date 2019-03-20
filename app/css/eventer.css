@@ -17,7 +17,6 @@ section#section-eventers .eventer {
   height:700px;
   max-height:700px;
   min-height:700px;
-  overflow:auto;
 }
 
 /* La boite à outil au-dessus de tout eventer */
