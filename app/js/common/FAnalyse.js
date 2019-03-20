@@ -147,7 +147,6 @@ class FAnalyse {
       , filmEndTime:        this.filmEndTime
       , filmEndGenericFin:  this.filmEndGenericFin
       , videoPath:          this.videoPath
-      , diminutifs:         this.diminutifs
       , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
       , stopPoints:         (this.locator ? this.locator.stop_points : [])
     }
@@ -158,7 +157,6 @@ class FAnalyse {
     this.filmEndTime          = v.filmEndTime
     this.filmEndGenericFin    = v.filmEndGenericFin
     this._videoPath           = v.videoPath
-    this.diminutifs           = v.diminutifs  || {}
     this.lastCurrentTime      = v.lastCurrentTime || 0
     this.stopPoints           = v.stopPoints || []
   }
@@ -237,6 +235,8 @@ class FAnalyse {
     this.setOptionsInMenus()
     this.videoController.init()
   }
+
+
   /**
    * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
    * où l'on est vraiment prêt.
@@ -273,10 +273,6 @@ class FAnalyse {
   // ---------------------------------------------------------------------
   //  MÉTHODES D'AFFICHAGE
 
-  displayInfosFilm(){
-    F.error("L'affichage des infos du film n'est pas encore implémenté")
-  }
-
   /**
    * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
    */
@@ -287,6 +283,23 @@ class FAnalyse {
       require('./js/tools/full_analyse_building.js')(format)
     // }
     // ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  }
+
+  displayPFA(){this.PFA.display()}
+
+  displayInfosFilm(){
+    var method = require('./js/tools/building/infos_film.js')
+    method.bind(this)()
+  }
+
+  displayFondamentales(){
+    var method = require('./js/tools/building/fondamentales.js')
+    method.bind(this)()
+  }
+
+  displayAnalyseState(){
+    var method = require('./js/tools/analyse_state.js')
+    method.bind(this)()
   }
 
   /**
@@ -303,8 +316,6 @@ class FAnalyse {
 
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
-
-  displayPFA(){this.PFA.display()}
 
   // ---------------------------------------------------------------------
   //  MÉTHODES D'EXPORT
@@ -431,19 +442,6 @@ class FAnalyse {
   }
 
   /**
-   * Remplace les diminutifs de +txt+ par leur vraie valeur
-   */
-  deDim(txt){
-    if(!txt) return ''
-    for(var dim in this.diminutifs){
-      var reg = new RegExp(`@${dim}`,'g')
-      txt = txt.replace(reg,this.diminutifs[dim])
-    }
-    return txt
-  }
-
-
-  /**
    * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
    *
    * La méthode permet principalement de placer les nouveaux évènements
@@ -529,8 +527,7 @@ class FAnalyse {
   saveFile(fpath, prop){
     var iofile = new IOFile(fpath)
     iofile.code = this[prop]
-    iofile.methodAfterSaving = this.setSaved.bind(this, fpath)
-    iofile.save({as_json: true})
+    iofile.save({after: this.setSaved.bind(this, fpath)})
     var isSaved = iofile.saved
     iofile = null
     return isSaved
@@ -609,14 +606,12 @@ class FAnalyse {
   // Charger le fichier +path+ pour la propriété +prop+ de façon
   // asynchrone.
   loadFile(fpath, prop){
+    new IOFile(fpath).loadIfExists({after: this.endLoadingFile.bind(this, fpath, prop)})
+  }
+  endLoadingFile(fpath, prop, data){
     var my = this
-    var iofile = new IOFile(fpath)
-    iofile.loadIfExists({as_json: true}, (data) => {
-      // console.log(`Data retournées par iofile:${fpath}`, data)
-      my[prop] = data
-      my.onLoaded.bind(my)(fpath)
-    })
-    iofile  = null
+    my[prop] = data
+    my.onLoaded.bind(my)(fpath)
   }
 
   /**

@@ -13,6 +13,12 @@ const FITAnalyse = {
   , setCurrent:function(folder, options, resolve){
       var my = this
       if(undefined === options){options = {}}
+      if(!fs.existsSync(path.join('.','analyses',folder))){
+        folder = `tests/${folder}`
+      }
+      if(!fs.existsSync(path.join('.','analyses',folder))){
+        throw("Dossier introuvable:",folder)
+      }
       window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options

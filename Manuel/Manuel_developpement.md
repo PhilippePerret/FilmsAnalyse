@@ -8,9 +8,10 @@
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
-* [Champs temporels](#temporal_fields)
+* [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
 * [Documents de l'analyse](#documents_analyse)
+* [Sauvegarde protégée des documents](#saving_protected)
 
 
 ## Point d'entrée {#point_dentree}
@@ -179,18 +180,32 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
 3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>')`.
 
 
-### Champs temporels {#temporal_fields}
+### Horloges et durées {#temporal_fields}
 
-On peut mettre `horlogeable` et `durationable` sur les input-text qui doivent être gérable au niveau des horloges (positions) et des durées.
+On peut mettre `horlogeable` et `durationable` sur les balises `<horloge></horloge>` qui doivent être gérable au niveau des horloges (positions) et des durées.
 
-Quand un champ input-text possède l'une de ces deux classes :
+Quand un champ input-text possède l'une de ces deux classes :
 
 * il est rendu inéditable (`disabled`)
 * il est sensible au déplacement de la souris pour augmenter/diminuer le temps
-* pour les horlogeable, un bouton est placé après le champ pour prendre le temps courant
 
-Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>)` ou `UI.setDurationable(<container>)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
+Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>, options)` ou `UI.setDurationable(<container>, options)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
 
+```javascript
+  var h = new DOMHorloge()
+  h.dispatch({
+        time: <le temps de départ>
+      , synchroVideo: true/false
+      , parentModifiable: true/false
+      , unmodifiable: true/false
+    }).showTime()
+```
+
+`options` peut contenir `{synchro_video: true}` pour que l'horloge soit synchronisée avec la vidéo. Inutile alors de dispatcher cette donnée.
+
+Si `unmodifiable` est mis à true, on n'indiquera pas lorsque l'horloge aura changé de temps. C'est le cas par exemple de l'horloge principale.
+
+On utilise `parentModifiable` en indiquant le conteneur, qui peut recevoir la classe `modified` pour indiquer qu'il est modifiable (*visuellement* modifiable). C'est le cas par exemple pour les horloges des formulaires d'events. Les formulaires sont les « containers modifiables », qui vont recevoir la class `modified` quand l'horloge sera modifiée, ce qui aura pour effet de mettre l'horloge dans une autre couleur ainsi que le header et le footer du formulaire.
 
 ## Aspect visuel {#visual_aspect}
 
@@ -212,3 +227,91 @@ Ces documents permettent de construire l'analyse de deux façons différentes :
 
 * en les rédigeant dans le *Writer* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
+
+## Sauvegarde protégée des documents {#saving_protected}
+
+La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.loadIfExists()`.
+
+@usage complet :
+
+```javascript
+
+  let iofile = new IOFile(cheminFichier[, objetProprietaire])
+
+  [iofile.code = monCodeFinal // si objetProprietaire n'est pas défini]
+  iofile.save({after: methode_appelee_apres_save})
+
+  function methode_appelee_apres_load(code){
+    // ...
+  }
+
+  iofile.loadIfExists(aflter: methode_appelee_apres_load_avec_code)
+
+```
+
+Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
+
+Exemple :
+
+```javascript
+
+class monObjet {
+  get contents(){ return this._contents }
+  get path() { return 'chemin/daccess/au/fichier.odt'}
+  get iofile(){ return this._iofile || defP(this,'_iofile', new IOFile(this))}
+
+  saveMe(){
+    this.iofile.save({after: this.afterSaving.bind(this)})
+  }
+  afterSaving(){
+    console.log("Le document est sauvé")
+  }
+  loadMe(){
+    this.iofile.loadIfExists({after: this.afterLoading.bind(this)})
+  }
+  afterLoading(code){
+    this._contents = code
+  }
+}
+
+```
+
+Si **le propriétaire n'est pas défini**, il faut explicitement définir le code de l'`iofile` :
+
+```javascript
+
+  this.iofile.code = "Mon code à enregistrer"
+  this.iofile.save({after: ...})
+  
+```
+
+> Noter qu'on indique le format que si l'extension du fichier ne correspond pas.
+
+```javascript
+// ...
+
+function methode_apres_chargement(contenu_document){
+  // ...
+}
+// Pour récupérer le document
+iofile.loadIfExists({
+  after: methode_apres_chargement // reçoit en argument le contenu du document
+})
+
+```
+
+Le format du contenu — JSON, YAML, etc. — n'a besoin d'être précisé que s'il ne correspond pas à l'extension du fichier (du `path`). On l'indique alors dans l'argument :
+
+```javascript
+
+  this.iofile.save({after: ..., format: 'json'})
+
+```
+
+On peut mettre au format `raw` lorsque le format est reconnaissable par l'extension du `path`, mais qu'on ne veut pas que le code soit interprété.
+
+```javascript
+
+  this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
+
+```

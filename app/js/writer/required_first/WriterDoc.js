@@ -3,6 +3,8 @@
  * Class WriterDoc
  * ---------------
  * Classe pour gérer les documents
+ *
+ *
  */
 
 class WriterDoc {
@@ -42,7 +44,10 @@ class WriterDoc {
 
   // Pour charger le texte du document
   load(){
-    this.contents = fs.readFileSync(this.path, 'utf8')
+    this.iofile.loadIfExists({after: this.endLoading.bind(this), format: 'raw'})
+  }
+  endLoading(code){
+    this.setContents(code)
     this.loaded   = true
     this.displaySize()
     this.modified = false
@@ -50,12 +55,16 @@ class WriterDoc {
 
   // Pour sauver le document
   save(){
+    if(this.saving) return
     Writer.message('Sauvegarde en cours…')
-    this.getContents()
-    fs.writeFileSync(this.path, this.contents, 'utf8')
-    // TODO Utiliser plutôt les méthodes de sauvegarde protégées
+    this.saving = true
+    this.getContents() // actualise le contenu
+    this.iofile.save({after: this.endSaving.bind(this)})
+  }
+  endSaving(){
     Writer.message()
     this.modified = false
+    this.saving   = false
   }
 
   /**
@@ -82,14 +91,14 @@ class WriterDoc {
   preparePerType(){
     var my = this
     var tempFolderPath = path.join('.','app','building', this.type)
-    var tempFilePath = `${tempFolderPath}.md`
+    var tempFilePath = `${tempFolderPath}.${this.extension}`
     if(fs.existsSync(tempFilePath)){
       // <= Un seul fichier
       // => On ne met dans le menu qu'un seul fichier
       this.afficheModeles([tempFilePath])
       my = null
     } else {
-      glob(`${tempFolderPath}/**/*.md`, (err, modeles) => {
+      glob(`${tempFolderPath}/**/*.${this.extension}`, (err, modeles) => {
         my.afficheModeles(modeles)
         my = null
       })
@@ -120,9 +129,19 @@ class WriterDoc {
    */
   exists(){ return fs.existsSync(this.path) }
 
+
+  get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
+
+  // Les données absolues, en fonction du type
+  get dataType(){return this._data||defP(this,'_data', DATA_DOCUMENTS[this.type])}
+
+  // L'extension (par défaut, 'md', sinon, définie dans DATA_DOCUMENTS)
+  get extension(){
+    return this._extension || defP(this,'_extension', this.dataType.format || 'md')
+  }
   // Le path du document
   get path(){
-    return this._path||defP(this,'_path',path.join(this.a.folderFiles,`${this.type}.md`))
+    return this._path||defP(this,'_path',path.join(this.a.folderFiles,`${this.type}.${this.extension}`))
   }
 
 }

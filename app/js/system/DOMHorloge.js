@@ -28,7 +28,7 @@ class DOMHorloge {
     this.domObj = domElement
 
     // Valeurs par défaut
-    this.synchroVideo = false
+    this.synchroVideo     = false
     this.parentModifiable = undefined
   }
 
@@ -45,8 +45,11 @@ class DOMHorloge {
   set modified(v){
     this._modified = v
     if(v && this.parentModifiable) this.parentModifiable.modified = true
-    this.jqObj[v?'addClass':'removeClass']('modified')
+    if(!this.unmodifiable) this.jqObj[v?'addClass':'removeClass']('modified')
   }
+
+  get unmodifiable(){return this._unmodifiable || false}
+  set unmodifiable(v){this._unmodifiable = v}
   get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.domObj))}
   get otime(){return this._otime || defP(this,'_otime', new OTime(this.time))}
 
@@ -90,11 +93,15 @@ class DOMHorloge {
     $('body').bind('mouseup', this.onEndMoving.bind(this))
     $('body').bind('mousemove', this.onMoving.bind(this))
     // console.log(ev)
-    this.startMoveX = ev.clientX
-    this.startMoveY = ev.clientY
-    this.movingStartTime  = parseFloat(this.time)
+    this.initStartMoving(ev, this.time)
     // console.log("this.movingStartTime=",this.movingStartTime)
     ev.stopPropagation() // pour empêcher de draguer la fenêtre
+  }
+
+  initStartMoving(ev, time){
+    this.startMoveX = ev.clientX
+    this.startMoveY = ev.clientY
+    this.movingStartTime  = parseFloat(time)
   }
   /**
    * Méthode appelée au déplacement de souris (sur le body)
@@ -102,10 +109,21 @@ class DOMHorloge {
   onMoving(ev){
     this.moveX = ev.clientX
     var divisor = function(e){
-      if (e.shiftKey) return 10
-      else if(e.ctrlKey) return 1000
+      if (e.shiftKey){
+        if(e.metaKey) return 0.1
+        else return 10
+      } else if(e.ctrlKey) return 1000
       else return 50
     }(ev)
+    var newCombKeys = 0
+    if(ev.shiftKey) newCombKeys += 1
+    if(ev.metaKey)  newCombKeys += 2
+    if(ev.ctrlKey)  newCombKeys += 4
+    if(newCombKeys != this.currentCombKeys){
+      // console.log("Changement de combinaisons de touches:", newCombKeys, this.currentCombKeys)
+      this.initStartMoving(ev, this.time)
+    }
+    this.currentCombKeys = newCombKeys
     this.time = this.movingStartTime + ((this.moveX - this.startMoveX) / divisor)
     this.showTime()
     if(this.synchroVideo) this.synchronizeVideo()

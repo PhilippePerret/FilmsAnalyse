@@ -42,7 +42,7 @@ const Writer = {
       this.currentDoc = this.writerDocs[dtype]
       this.currentDoc.display()
       if(!this.isOpened) this.open()
-      // On règle toujours le menu des types (après l'ouverture)
+      // On "referme" toujours le menu des types (après l'ouverture)
       this.menuTypeDoc.val(dtype)
     }
 
@@ -52,7 +52,6 @@ const Writer = {
   , updateVisuDoc:function(){
       this.currentDoc.getContents()
       var cmd = `echo "${this.currentDoc.contents.replace(/\"/g,'\\"')}" | pandoc`
-      // console.log("cmd:",cmd)
       exec(cmd, (err, stdout, stderr) => {
         if(err)throw(err)
         $('#writer-doc-visualizor').html(stdout)
@@ -136,6 +135,12 @@ const Writer = {
     }
 
     /**
+     * Sauvegarde du document courant
+     */
+  , saveCurrentDoc:function(){
+      this.currentDoc.save()
+    }
+    /**
      * Méthode d'autosauvegarde du document courant
      */
   , autoSaveCurrent:function(){
@@ -206,8 +211,8 @@ const Writer = {
       this.docField.on('focus', this.onFocusContents.bind(this))
       this.docField.on('blur', this.onBlurContents.bind(this))
 
-      // Le bouton pour sauver
-      $('button#btn-save-doc').on('click',this.currentDoc.save.bind(this.currentDoc))
+      // Le bouton pour sauver le document courant
+      $('button#btn-save-doc').on('click',this.saveCurrentDoc.bind(this))
       // On observe la case à cocher qui permet de sauvegarder automatiquement
       // le document
       $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))

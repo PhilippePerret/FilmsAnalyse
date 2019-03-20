@@ -40,7 +40,7 @@ class FAEstt extends FAEvent {
     if(this.note) str += `<div class="small">${this.note}</div>`
     // TODO Mettre des liens pour voir dans la structure ? (ou ça doit être fait
     // de façon générale pour tout event)
-    return this.analyse.deDim(str)
+    return this.fatexte.formate(str)
   }
 
   /**

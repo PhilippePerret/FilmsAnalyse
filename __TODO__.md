@@ -1,9 +1,27 @@
+# SUR LE GRILL
 
-* DOCUMENT
-  * Pour éviter les erreurs, on va ne mettre le menu des modèles que lorsque le document est vide ou n'existe pas.
+* Charger les diminutifs depuis le fichier de données s'il existe
+  => Une classe FATexte pour gérer tous les textes
+  - détruire l'autre façon de faire et la donnée dans FAnalyse.
+* Construire le PFA
+* Des thèmes différents pour l'affichage des documents
+  - et notamment : un thème "code" pour les fichiers de type "data"
+
+# EN COURS DE DÉVELOPPEMENT
+
+* L'état d'avancement de l'applicatio (analyse_state.js)
+* Le writer (dossier `writer`)
+* Construction du (des) PFA
+* La construction de l'analyse
+
+# TODO LIST
+
+* Construire les fondamentales (à partir du fichier data)
+* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
+* Implémenter les infos générales du film
+  - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
 
 * Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
-* Barre d'état en bas pour montrer l'état d'avancement de l'analyse
 * IL y a deux types de documents :
   1. Les documents "formatés" comme les 5 fondamentales
   2. Les documents "libres" comme un texte qui est inventé pour une analyse propre

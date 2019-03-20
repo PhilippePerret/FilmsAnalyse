@@ -3,10 +3,20 @@
  * Class File
  * -----------
  * Pour la gestion des fichiers
+ * Cf. le manuel de développement
+ *
  */
 class IOFile {
-  constructor(p){
-    this.path = p
+  // Cf. le manuel de développement
+  constructor(p_or_owner){
+    if('string' === typeof p_or_owner){
+      this.path   = p_or_owner
+      this.owner  = undefined
+    } else {
+      this.owner  = p_or_owner
+      this.path   = this.owner.path
+    }
+
   }
 
   // ---------------------------------------------------------------------
@@ -18,11 +28,13 @@ class IOFile {
    * en bon fichier tout en faisant un backup de l'original.
    */
   save(options){
+    if(undefined===options)options={}
     this.options = options
+    if(options.after) this.methodAfterSaving = options.after
     this.checkBackupFolder()
     try {
       this.saved = false
-      if(this.options.as_json) this.code = JSON.stringify(this.code)
+      this.code = this.encodeCode()
       this.code !== undefined || raise(T('code-to-save-is-undefined'))
       this.code !== null      || raise(T('code-to-save-is-null'))
       this.code.length > 0    || raise(T('code-to-save-is-empty'))
@@ -30,6 +42,7 @@ class IOFile {
       fs.writeFile(this.tempPath,this.code,'utf8', this.afterTempSaved.bind(this))
     } catch (e) { return F.error(e) }
   }
+
   afterTempSaved(err){
     try {
       if(err) throw(err)
@@ -62,8 +75,11 @@ class IOFile {
    * Note : utiliser plutôt la méthode `loadIfExists` pour bénéficier de
    * toutes les protections et l'utilisation de backups
    */
-  load(){
+  load(options){
     var my = this
+    if (undefined === options) options = {}
+    if(options.format)  this._format = options.format
+    if(options.after)   this.methodAfterLoading = options.after
     my.loaded = false
     fs.readFile(this.path, 'utf8', (err, data) => {
       err ? F.error(err) : my.code = data
@@ -85,15 +101,14 @@ class IOFile {
       my.retrieveBackup()
     } else {
       // On peut charger
-      my.load()
+      my.load(options)
     }
     my = null
   }
   endLoad(success){
     this.loaded = success
     if('function' === typeof this.methodAfterLoading){
-      // console.log("---> methodAfterLoading", this.options)
-      this.methodAfterLoading(this.options.as_json ? this.dejsonedCode : this.code)
+      this.methodAfterLoading(this.decodedCode /* ou raw code */)
     }
   }
 
@@ -113,7 +128,6 @@ class IOFile {
       if(this.backupExists()){
         fs.copyFile(my.backupPath,my.path, (err) => {
           if(err){ F.error(err) ; my.endLoad }
-          console.log("Fichier récupéré du backup:", my.path)
           // Puis on réessaye…
           return this.loadIfExists()
         })
@@ -149,20 +163,56 @@ class IOFile {
   set options(v){ this._options = v || {} }
 
   set code(v){this._code = v}
-  get code(){return this._code}
-
-  get dejsonedCode(){
-    if(undefined === this._dejsonedCode){
-      try {
-        this._dejsonedCode = JSON.parse(this.code)
-      } catch (e) {
-        console.log("ERROR JSON AVEC:", this.pathii)
-        F.error('Une erreur s’est produite en lisant le fichier '+this.path)
-        F.error(e)
-        this._dejsonedCode = null
-      }
+  get code(){
+    if (undefined === this.owner) {
+      return this._code
+    } else {
+      // Le code doit être défini dans la propriété `contents` ou `code`
+      // du propriétaire de l'instance
+      return this.owner.contents || this.owner.code || this._code
     }
-    return this._dejsonedCode
+  }
+
+  /**
+    * Retourne le code décodé en fonction du format du fichier (défini par
+    * son extension ou explicitement en options)
+    */
+  get decodedCode(){return this._decodedCode || defP(this,'_decodedCode',this.decode())}
+  decode(){
+    if(!this.code) return null // fichier inexistant, par exemple
+    try {
+      switch (this.format.toUpperCase()) {
+        case 'RAW':
+          return this.code // pour la clarté
+        case 'JSON':
+          return JSON.parse(this.code)
+        case 'YAML':
+          return YAML.safeLoad(this.code)
+        default:
+          return this.code
+      }
+    } catch (e) {
+      console.log(`ERROR ${this.format} AVEC:`, this.path)
+      F.error('Une erreur s’est produite en lisant le fichier '+this.path)
+      F.error(e)
+      return null
+    }
+  }
+  /**
+   * Encode le code au besoin, c'est-à-dire si un format particulier est
+   * utilisé (JSON ou YAML pour le moment) et si le code n'est pas du string.
+   */
+  encodeCode(){
+    if ( !this.code ) return null
+    if ('string' === typeof this.code) return this.code // déjà encodé
+    switch (this.format) {
+      case 'JSON':
+        return JSON.stringify(this.code, null, 2)
+      case 'YAML':
+        return YAML.safeDump(this.code)
+      default:
+        return this.code
+    }
   }
 
   get size(){ return fs.statSync(this.path).size }
@@ -174,8 +224,32 @@ class IOFile {
   get methodAfterLoading(){return this._methodAfterLoading}
   set methodAfterLoading(v){this._methodAfterLoading = v}
 
+  /**
+   * Retourne le format du fichier, en fonction de son extension
+   */
+  get format(){return this._format||defP(this,'_format',this.getFormatFromExt())}
+
+
   // ---------------------------------------------------------------------
   //  Données de path
+
+  getFormatFromExt(){
+    switch (path.extname(this.path).toLowerCase()) {
+      case '.json':
+        return 'JSON'
+      case '.yml':
+      case '.yaml':
+        return 'YAML'
+      case '.md':
+      case '.mmd':
+      case '.markdown':
+        return 'MARKDOWN'
+      case '.js':
+        return 'JAVASCRIPT'
+      default:
+        return null
+    }
+  }
 
   get folder(){
     return this._folder || defP(this,'_folder', path.dirname(this.path))

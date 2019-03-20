@@ -49,7 +49,7 @@ Tests.onFailure = function(msg){
 }
 
 Tests.tester  = function(str){console.log(RC+'%cÀ TESTER : '+str, REDBOLD)}
-Tests.given   = function(str){console.log(RC+'%c'+str+'…', BLUEBOLD)}
+Tests.given   = function(str){console.log(RC+INDENT+'%c'+str+'…', BLUEBOLD)}
 Tests.pending = function(str){
   this.nombre_pendings ++ ;
   this.log(RC+'%c'+(str||'TODO')+'…', 'color:orange;font-weight:bold;');

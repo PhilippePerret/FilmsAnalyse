@@ -1,0 +1,16 @@
+---
+title: TITRE DU FILM
+title_fr: TITRE FRANÇAIS # supprimer si non nécessaire
+date: JJ/MM/YYYY
+realisateurs:
+  - Nom, Prénom
+auteurs:
+  - Nom, Prénom
+  - Nom, Prénom
+
+# Concernant l'analyse
+analystes:
+  - Nom, Prénom
+  - Nom, Prénom
+date_debut: JJ/MM/YYYY
+date_fin: JJ/MM/YYYY
