@@ -1,6 +1,6 @@
 # SUR LE GRILL
 
-* Document owner pour les IOFiles
+* Documenter owner pour les IOFiles
 * Charger les diminutifs depuis le fichier de données s'il existe
   - détruire l'autre façon de faire et la donnée dans FAnalyse.
 * Construire le PFA

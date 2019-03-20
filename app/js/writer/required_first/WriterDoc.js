@@ -130,7 +130,7 @@ class WriterDoc {
   exists(){ return fs.existsSync(this.path) }
 
 
-  get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this.path, this))}
+  get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
   // Les données absolues, en fonction du type
   get dataType(){return this._data||defP(this,'_data', DATA_DOCUMENTS[this.type])}

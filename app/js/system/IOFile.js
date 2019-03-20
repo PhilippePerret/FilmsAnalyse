@@ -7,9 +7,16 @@
  *
  */
 class IOFile {
-  constructor(p, owner){
-    this.path   = p
-    this.owner  = owner
+  // Cf. le manuel de développement
+  constructor(p_or_owner){
+    if('string' === typeof p_or_owner){
+      this.path   = p_or_owner
+      this.owner  = undefined
+    } else {
+      this.owner  = p_or_owner
+      this.path   = this.owner.path
+    }
+
   }
 
   // ---------------------------------------------------------------------

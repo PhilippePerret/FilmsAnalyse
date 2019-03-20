@@ -232,18 +232,57 @@ Ces documents permettent de construire l'analyse de deux façons différentes :
 
 La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.loadIfExists()`.
 
+@usage complet :
+
+```javascript
+
+  let iofile = new IOFile(cheminFichier[, objetProprietaire])
+
+  [iofile.code = monCodeFinal // si objetProprietaire n'est pas défini]
+  iofile.save({after: methode_appelee_apres_save})
+
+  function methode_appelee_apres_load(code){
+    // ...
+  }
+
+  iofile.loadIfExists(aflter: methode_appelee_apres_load_avec_code)
+
+```
+
+Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
+
 Exemple :
 
 ```javascript
-var p = './mon/fichier/analyse.md'
-var iofile = new IOFile(p)
 
-// Pour sauver le document :
-iofile.save({
-    after: methode_apres_sauvegarde
-  , format: 'json' // ou 'yaml', 'markdown', etc. si pas bonne extension
-})
+class monObjet {
+  get contents(){ return this._contents }
+  get path() { return 'chemin/daccess/au/fichier.odt'}
+  get iofile(){ return this._iofile || defP(this,'_iofile', new IOFile(this))}
 
+  saveMe(){
+    this.iofile.save({after: this.afterSaving.bind(this)})
+  }
+  afterSaving(){
+    console.log("Le document est sauvé")
+  }
+  loadMe(){
+    this.iofile.loadIfExists({after: this.afterLoading.bind(this)})
+  }
+  afterLoading(code){
+    this._contents = code
+  }
+}
+
+```
+
+Si **le propriétaire n'est pas défini**, il faut explicitement définir le code de l'`iofile` :
+
+```javascript
+
+  this.iofile.code = "Mon code à enregistrer"
+  this.iofile.save({after: ...})
+  
 ```
 
 > Noter qu'on indique le format que si l'extension du fichier ne correspond pas.
@@ -258,27 +297,21 @@ function methode_apres_chargement(contenu_document){
 iofile.loadIfExists({
   after: methode_apres_chargement // reçoit en argument le contenu du document
 })
-```
-
-Noter qu'il est inutile, pour la méthode `loadIfExists`, de préciser que le contenu est en `json` puisque ça aura été précisé dans la méthode `save`. Le format sera tiré soit de l'extension du fichier (préférable), soit de la valeur de `options.format` fourni en argument de la méthode `save`.
-
-On peut également passer l'option `format: 'raw'` lorsque l'on veut charger un document sans le *décoder*. Par exemple pour afficher un document YAML tel qu'il est dans son fichier, sans le transformer en table, on va utiliser :
-
-```javascript
-
-  let iofile = new IOFile('mon/path/file.yml')
-  // Par défaut, le fichier de ce code sera parsé et une table serait
-  // retournée
-  iofile.loadIfExists({format:'raw', after: maMethode})
 
 ```
 
-Avant ce code sera bien sûr défini :
+Le format du contenu — JSON, YAML, etc. — n'a besoin d'être précisé que s'il ne correspond pas à l'extension du fichier (du `path`). On l'indique alors dans l'argument :
 
 ```javascript
 
-  function maMethode(code) {
-    // ... ici, +code+ est un string
-  }
+  this.iofile.save({after: ..., format: 'json'})
+
+```
+
+On peut mettre au format `raw` lorsque le format est reconnaissable par l'extension du `path`, mais qu'on ne veut pas que le code soit interprété.
+
+```javascript
+
+  this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
 
 ```
