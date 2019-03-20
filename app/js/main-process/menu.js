@@ -20,7 +20,8 @@ const ipc     = require('electron').ipcMain
 const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
-  'display-full-analyse', 'display-pfa', 'open-writer'
+  'display-full-analyse', 'display-pfa', 'display-fondamentales',
+  'open-writer'
 ]
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
@@ -41,11 +42,18 @@ const DATA_DOCS = require('../writer/required_first/min.js')
 function openDocInWriter(doc_id){
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
 }
+var curType = null
 for(var doc_id in DATA_DOCS){
   var ddoc = DATA_DOCS[doc_id]
   var menu_id = `open-doc-${doc_id}`
   CURRENT_THING_MENUS.push(menu_id)
   var method = openDocInWriter.bind(null, doc_id)
+  // On met un séparateur entre les données de type différents
+  if(curType && curType != ddoc.type){
+    WriterSubmenus.push({type:'separator'})
+  }
+  curType = ddoc.type
+  // Puis on rendre le document
   WriterSubmenus.push({
       label:    ddoc.hname
     , id:       menu_id
@@ -229,21 +237,7 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-                label: "Informations sur le film"
-              , id: 'display-infos-film'
-              , enabled: false
-              , click: () => {execJsOnCurrent('displayInfosFilm')}
-            }
-          , {type:'separator'}
-          , {
-                label: "Avancement de l'analyse"
-              , id: 'display-analyse-state'
-              , accelerator: 'CmdOrCtrl+Alt+S'
-              , click: () => {execJsOnCurrent('displayAnalyseState')}
-            }
-          , {type:'separator'}
-          , {
-                label: "Analyse complète"
+              label: "Analyse complète"
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Shift+A'
               , enabled: false
@@ -252,11 +246,31 @@ const DATA_MENUS = [
                 execJsOnCurrent('displayFullAnalyse')
               }
             }
+          , {type:'separator'}
+          , {
+                label: "Informations sur le film"
+              , id: 'display-infos-film'
+              , enabled: false
+              , click: () => {execJsOnCurrent('displayInfosFilm')}
+            }
           , {
                 label: "Paradigme de Field Augmenté"
               , id: 'display-pfa'
               , enabled: false
               , click: ()=>{execJsOnCurrent('displayPFA')}
+            }
+          , {
+                label: "Fondamentales"
+              , id: 'display-fondamentales'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayFondamentales')}
+            }
+          , {type:'separator'}
+          , {
+                label: "Avancement de l'analyse"
+              , id: 'display-analyse-state'
+              , accelerator: 'CmdOrCtrl+Alt+S'
+              , click: () => {execJsOnCurrent('displayAnalyseState')}
             }
       ]
     }

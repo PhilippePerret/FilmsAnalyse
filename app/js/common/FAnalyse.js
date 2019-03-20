@@ -275,10 +275,6 @@ class FAnalyse {
   // ---------------------------------------------------------------------
   //  MÉTHODES D'AFFICHAGE
 
-  displayInfosFilm(){
-    F.error("L'affichage des infos du film n'est pas encore implémenté")
-  }
-
   /**
    * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
    */
@@ -291,8 +287,21 @@ class FAnalyse {
     // ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
 
+  displayPFA(){this.PFA.display()}
+
+  displayInfosFilm(){
+    var method = require('./js/tools/building/infos_film.js')
+    method.bind(this)()
+  }
+
+  displayFondamentales(){
+    var method = require('./js/tools/building/fondamentales.js')
+    method.bind(this)()
+  }
+
   displayAnalyseState(){
-    require('./js/tools/analyse_state.js')()
+    var method = require('./js/tools/analyse_state.js')
+    method.bind(this)()
   }
 
   /**
@@ -309,8 +318,6 @@ class FAnalyse {
 
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
-
-  displayPFA(){this.PFA.display()}
 
   // ---------------------------------------------------------------------
   //  MÉTHODES D'EXPORT

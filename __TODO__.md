@@ -1,7 +1,11 @@
 # SUR LE GRILL
 
-* faire une sauvegarde protégée des documents
+* Document owner pour les IOFiles
+* Charger les diminutifs depuis le fichier de données s'il existe
+  - détruire l'autre façon de faire et la donnée dans FAnalyse.
 * Construire le PFA
+* Des thèmes différents pour l'affichage des documents
+  - et notamment : un thème "code" pour les fichiers de type "data"
 
 # EN COURS DE DÉVELOPPEMENT
 
@@ -12,6 +16,7 @@
 
 # TODO LIST
 
+* Construire les fondamentales (à partir du fichier data)
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse
 * Implémenter les infos générales du film
   - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
