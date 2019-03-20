@@ -1,15 +1,17 @@
 # SUR LE GRILL
 
-* Charger les diminutifs depuis le fichier de données s'il existe
-  => Une classe FATexte pour gérer tous les textes
-  - détruire l'autre façon de faire et la donnée dans FAnalyse.
 * Construire le PFA
-* Des thèmes différents pour l'affichage des documents
-  - et notamment : un thème "code" pour les fichiers de type "data"
+* Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
+* Quand on est dans le writer,
+  + la tabulation permet
+    - soit d'écrire deux espaces
+    - soit d'évaluer un snippet
+    - soit de passer à un champ de donnée suivant ?
+  + Le raccourci CMD S permet de sauver le texte (pas l'analyse)
 
 # EN COURS DE DÉVELOPPEMENT
 
-* L'état d'avancement de l'applicatio (analyse_state.js)
+* L'état d'avancement de l'application (analyse_state.js)
 * Le writer (dossier `writer`)
 * Construction du (des) PFA
 * La construction de l'analyse
@@ -17,10 +19,14 @@
 # TODO LIST
 
 * Construire les fondamentales (à partir du fichier data)
+* Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
+  - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse
+  - Il faudrait que ce developpement soit enregistré de façon "hot" pour pouvoir toujours apparaitre comme une jauge.
 * Implémenter les infos générales du film
   - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
 
+* Pouvoir avoir plusieurs writers pour éditer plusieurs documents en même temps
 * Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
 * IL y a deux types de documents :
   1. Les documents "formatés" comme les 5 fondamentales

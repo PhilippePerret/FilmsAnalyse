@@ -1,0 +1,65 @@
+
+/* ---------------------------------------------------------------------
+    Définition de l'aspect des events partout
+ */
+
+.event {
+  padding: 0.2em 0.5em;
+  width: 90%;
+  clear:both;
+  background-color:white;
+}
+
+/* Quand on le draggue */
+.event.myHighlight{
+  border:2px solid red;
+}
+
+.event div.scene-heading{
+  display:block;
+  font-weight: bold;
+  margin-top: 1em;
+  text-decoration: underline;
+}
+.event span.scene-resume {
+  display:block;
+  font-style:italic;
+  margin-left:1em;
+}
+
+.event.note {
+  font-style:italic;
+  margin-left:2em;
+  font-size:0.85em;
+}
+
+/* Les petits boutons au-dessus de l'event dans le reader */
+.event .e-tools {
+  text-align:right;
+  clear:right;
+  font-size: 9.1pt;
+  opacity:0.15;
+}
+.event  .e-tools:hover {
+  opacity:1;
+}
+.event  .horloge {
+  background-color:grey;
+  font-size: 9.1pt;
+}
+
+.event .e-tools button:not(.btnplay) {
+  position:relative;
+  width:22px;
+  height:22px;
+  line-height:22px;
+  text-align:center;
+  vertical-align:middle;
+  margin-right:8px;
+}
+.event .e-tools .btn { /* peut être une img */
+  width:16px;
+  position:absolute;
+  top:2px;
+  left:2px;
+}

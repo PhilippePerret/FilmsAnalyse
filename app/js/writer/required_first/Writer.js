@@ -83,6 +83,16 @@ const Writer = {
     }
 
     /**
+     * Quand on change de thème
+     */
+  , onChooseTheme:function(e,theme){
+      if(undefined === theme) theme = $('#section-writer #writer-theme').val()
+      this.docField.removeClass(this.currentTheme).addClass(theme)
+      $('#section-writer .body').removeClass(this.currentTheme).addClass(theme)
+      this.currentTheme = theme
+      // $('#section-writer #writer-theme').val('')
+    }
+    /**
      * Méthode appelée lorsque le contenu du document est appelé
      */
   , onContentsChange:function(){
@@ -95,6 +105,14 @@ const Writer = {
     }
   , onBlurContents:function(){
 
+    }
+    /**
+     * Méthode invoquée quand on drop un event (.event) ou un document (.doc)
+     * sur le champ de texte.
+     */
+  , onDropThing:function(e, ui){
+      console.log("-> onDropThing")
+      console.log("J'ai droppé l'event #", ui.helper.attr('data-id'))
     }
   , reset:function(){
       this.docField.val('')
@@ -205,11 +223,20 @@ const Writer = {
       m.on('change', this.onChooseTypeDoc.bind(this))
       // On observe le menu de choix d'un modèle de document
       $('#section-writer select#modeles-doc').on('change', this.onChooseModeleDoc.bind(this))
+      // On observe le menu qui choisit le thème
+      $('#section-writer #writer-theme').on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
       this.docField.on('change', this.onContentsChange.bind(this))
       this.docField.on('focus', this.onFocusContents.bind(this))
       this.docField.on('blur', this.onBlurContents.bind(this))
+      // On rend le champ de texte droppable pour pouvoir y déposer
+      // n'importe quel event
+      this.docField.droppable({
+          accept: '.event, .doc'
+        , tolerance: 'fit'
+        , drop: this.onDropThing.bind(this)
+      })
 
       // Le bouton pour sauver le document courant
       $('button#btn-save-doc').on('click',this.saveCurrentDoc.bind(this))

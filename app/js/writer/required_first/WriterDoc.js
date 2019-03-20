@@ -90,6 +90,9 @@ class WriterDoc {
    */
   preparePerType(){
     var my = this
+    // Thème par défaut
+    Writer.onChooseTheme(null, this.themePerType)
+    // Templates à proposer
     var tempFolderPath = path.join('.','app','building', this.type)
     var tempFilePath = `${tempFolderPath}.${this.extension}`
     if(fs.existsSync(tempFilePath)){
@@ -129,7 +132,15 @@ class WriterDoc {
    */
   exists(){ return fs.existsSync(this.path) }
 
-
+  get themePerType(){
+    if(undefined === this._themePerType){
+      this._themePerType = {
+          'real': 'real-theme'
+        , 'data': 'data-theme'
+      }[this.dataType.type] || 'real-theme'
+    }
+    return this._themePerType
+  }
   get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
   // Les données absolues, en fonction du type

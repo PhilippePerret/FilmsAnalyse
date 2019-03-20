@@ -313,7 +313,18 @@ class FAnalyse {
     }
     Writer.openDoc(dtype)
   }
-
+  /**
+   * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
+   * des events.
+   */
+  createNewEventer(){
+    if('undefined' === typeof Eventer){
+      var fn_callback = this.createNewEventer.bind(this)
+      System.loadJSFolders('./app/js/eventer', ['required_first', 'required_then'], fn_callback)
+      return
+    }
+    Eventer.createNew()
+  }
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
 

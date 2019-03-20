@@ -21,7 +21,7 @@ const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-pfa', 'display-fondamentales',
-  'open-writer'
+  'new-eventer', 'open-writer'
 ]
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
@@ -329,6 +329,39 @@ const DATA_MENUS = [
         ]
     }
   /**
+    * Menu des events
+    */
+  , {
+    label: 'Events'
+  , submenu: [
+        {
+            label: 'Nouvel Eventer…'
+          , id: 'new-eventer'
+          , enabled: false
+          , click: () => {execJsOnCurrent('createNewEventer')}
+        }
+      , {type:'separator'}
+      , {
+            label: 'Nouveau…'
+          , submenu: [
+                {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
+              , {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent('scene')}}
+              , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
+              , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('act')}}
+              , {label: 'Procédé', accelerator: 'CmdOrCtrl+Alt+P', click: ()=>{createEvent('proc')}}
+              , {label: 'Note', accelerator: 'CmdOrCtrl+Alt+N', click: ()=>{createEvent('note')}}
+              , {label: 'P/P', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent('pp')}}
+              , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent('qdr')}}
+              , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent('info')}}
+              , {type: 'separator'}
+              , {label: 'Diminutif', click: ()=>{createEvent('dim')}}
+              , {label: 'Brin', click: ()=>{createEvent('brin')}}
+            ]
+        }
+    ]
+  }
+
+  /**
    *
    */
   , {
@@ -380,29 +413,6 @@ const DATA_MENUS = [
                 }
             }
         ]
-    }
-  , {
-        label: 'Events'
-      , submenu: [
-            {
-                label: 'Nouveau…'
-              , submenu: [
-                    {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
-                  , {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent('scene')}}
-                  , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
-                  , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('act')}}
-                  , {label: 'Procédé', accelerator: 'CmdOrCtrl+Alt+P', click: ()=>{createEvent('proc')}}
-                  , {label: 'Note', accelerator: 'CmdOrCtrl+Alt+N', click: ()=>{createEvent('note')}}
-                  , {label: 'P/P', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent('pp')}}
-                  , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent('qdr')}}
-                  , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent('info')}}
-                  , {type: 'separator'}
-                  , {label: 'Diminutif', click: ()=>{createEvent('dim')}}
-                  , {label: 'Brin', click: ()=>{createEvent('brin')}}
-                ]
-            }
-        ]
-
     }
 ]
 
