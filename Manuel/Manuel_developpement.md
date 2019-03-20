@@ -184,12 +184,24 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
 
 On peut mettre `horlogeable` et `durationable` sur les balises `<horloge></horloge>` qui doivent être gérable au niveau des horloges (positions) et des durées.
 
-Quand un champ input-text possède l'une de ces deux classes :
+Une horloge (balise `<horloge>`) doit obligatoirement posséder un identifiant unique dans la page.
+
+Quand un champ possède l'une de ces deux classes :
 
 * il est rendu inéditable (`disabled`)
 * il est sensible au déplacement de la souris pour augmenter/diminuer le temps
 
 Noter qu'il faut utiliser la méthode `UI.setHorlogeable(<container>, options)` ou `UI.setDurationable(<container>, options)` pour que les observers soient placés. **ATTENTION** de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.
+
+On peut récupérer les horloges qui sont renvoyées et les régler :
+
+```javascript
+  var horloges = UI.setHorlogeable(<container>[, <option>])
+  var h = horloges[<id horloge>]
+  h.dispatch({time: <temps de départ>, ...})
+```
+
+On peut aussi implémenter soi-même l'horloge :
 
 ```javascript
   var h = new DOMHorloge()
@@ -282,7 +294,7 @@ Si **le propriétaire n'est pas défini**, il faut explicitement définir le cod
 
   this.iofile.code = "Mon code à enregistrer"
   this.iofile.save({after: ...})
-  
+
 ```
 
 > Noter qu'on indique le format que si l'extension du fichier ne correspond pas.

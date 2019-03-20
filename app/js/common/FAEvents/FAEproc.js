@@ -1,6 +1,23 @@
 'use strict'
 
 class FAEproc extends FAEvent {
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Pour dispatcher les données propre au type
+  // Note : la méthode est appelée en fin de fichier
+  static dispatchData(){
+    for(var prop in this.dataType) this[prop] = this.dataType[prop]
+  }
+  static get dataType(){
+    return {
+        hname: 'Procédé'
+      , short_hname: 'Procédé'
+      , type: 'proc'
+    }
+  }
+  // ---------------------------------------------------------------------
+  //  INSTANCE
   constructor(analyse, data){
     super(analyse, data)
     this.type         = 'proc'
@@ -33,3 +50,4 @@ class FAEproc extends FAEvent {
     return n
   }
 }
+FAEproc.dispatchData()

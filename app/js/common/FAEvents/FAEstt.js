@@ -2,6 +2,23 @@
 
 
 class FAEstt extends FAEvent {
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Pour dispatcher les données propre au type
+  // Note : la méthode est appelée en fin de fichier
+  static dispatchData(){
+    for(var prop in this.dataType) this[prop] = this.dataType[prop]
+  }
+  static get dataType(){
+    return {
+        hname: 'Nœud structurel'
+      , short_hname: 'Nœud Stt'
+      , type: 'stt'
+    }
+  }
+  // ---------------------------------------------------------------------
+  //  INSTANCE
   constructor(analyse, data){
     super(analyse, data)
     this.type   = 'stt'
@@ -52,3 +69,4 @@ class FAEstt extends FAEvent {
     this.sttNode.event = this
   }
 }
+FAEstt.dispatchData()

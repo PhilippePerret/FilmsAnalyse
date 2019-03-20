@@ -34,7 +34,7 @@ class DOMHorloge {
 
   // ID de l'horloge = ID du DomElement
   get id(){return this._id || defP(this,'_id', this.domObj.id)}
-  get time(){return this._time}
+  get time(){return this._time || 0}
   set time(v){
     this._time = v
     this.domObj.setAttribute('value', v)

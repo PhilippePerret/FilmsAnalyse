@@ -14,6 +14,10 @@ section#section-eventers .eventer {
   border-radius:0.5em;
   background-color:white;
   padding:0;
+  height:700px;
+  max-height:700px;
+  min-height:700px;
+  overflow:auto;
 }
 
 /* La boite à outil au-dessus de tout eventer */
@@ -24,6 +28,16 @@ section#section-eventers .eventer {
   padding:0.3em;
 }
 
-.eventer .events {
+.eventer .pan-events {
   padding:0.2em;
+}
+
+/* Tab du filtre */
+.eventer .pan-filter {
+  padding:1em;
+}
+.eventer .pan-filter .cb-type {
+  display:inline-block;
+  width:128px;
+  /* border:1px dashed blue; */
 }
