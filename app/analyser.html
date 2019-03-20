@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="./css/analyzer.css" />
     <link rel="stylesheet" href="./css/reader.css" />
     <link rel="stylesheet" href="./css/writer.css" />
+    <link rel="stylesheet" href="./css/eventer.css" />
+    <link rel="stylesheet" href="./css/event.css" />
     <link rel="stylesheet" href="./css/form.css" />
     <link rel="stylesheet" href="./css/DOMHorloge.css" />
   </head>
@@ -124,6 +126,9 @@
         <div id="reader"></div>
       </section>
 
+      <!-- EVENTER -->
+      <section id="section-eventers"></section>
+
       <!-- WRITER -->
       <section id="section-writer" style="display:none;">
         <div id="writer-doc-visualizor" style="display:none;">
@@ -143,6 +148,12 @@
         </div>
         <div class="footer">
           <label id="writer-message">...</label>
+          <select class="fleft" id="writer-theme">
+            <option value="">Thème…</option>
+            <option value="real-theme">Normal</option>
+            <option value="data-theme">Données</option>
+            <option value="musical-theme">Musical</option>
+          </select>
           <label class="fleft">Taille du texte : </label><span id="text-size" class="fleft">...</span>
           <label for="cb-auto-visualize">Visualiser</label>
           <input id="cb-auto-visualize" type="checkbox" />

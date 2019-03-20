@@ -334,6 +334,14 @@ class FAEvent {
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
     BtnPlay.setAndWatch(this.jqReaderObj, this.id)
+    o.draggable({
+        revert: true
+      // , stack: 'section#section-eventers div.eventer div.pan-events'
+      // , start: function(event, ui) { $(this).css("z-index", a++); }
+      , classes:{
+          'ui-draggable-dragging': 'myHighlight'
+        }
+    })
   }
 
   get locator(){return this.analyse.locator}

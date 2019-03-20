@@ -104,7 +104,10 @@ form.form-edit-event section.footer span.event-type {
   text-transform:small-caps;
 }
 
-
+div.buttons {
+  text-align:right;
+  margin-top:1.5em;
+}
 
 div#buttons-new-event {
   width:300px;

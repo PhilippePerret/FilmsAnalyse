@@ -10,6 +10,7 @@
   * [Comportement du bouton STOP](#le_bouton_stop)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
 * [Les Documents](#les_documents)
+  * [Diminutifs](#les_diminutifs)
   * [Variables dans les documents](#variables_dans_les_documents)
 
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
@@ -86,6 +87,39 @@ Une fois suffisamment de nœud définis, on peut demander l'affichage du paradig
 
 
 ## Les Documents {#les_documents}
+
+### Les Diminutifs {#les_diminutifs}
+
+Les diminutifs du film, par exemple les noms de personnage, se définissent dans le document « Diminutifs » qu'on peut atteindre par le menu « Documents ».
+
+Dans le texte, il suffit de précéder ce diminutif d'un arobase.
+
+Si l'on définit le diminutif suivant dans `diminutifs.yaml` :
+
+```yaml
+
+diM_24: |
+  Un diminutif peut contenir des lettres maj/min, des chiffres
+  et le caractère underscore.
+DIM_24: Il est sensible à la casse
+
+```
+Alors on peut utiliser dans le texte :
+
+```text
+
+  C'est @dim_24 et @DIM_24.
+
+```
+
+… qui sera remplacé par :
+
+```text
+
+  C'est Un diminutif peut contenir des lettres maj/min, des chiffres
+  et le caractère underscore et Il est sensible à la casse.
+
+```
 
 ### Variables dans les documents {#variables_dans_les_documents}
 

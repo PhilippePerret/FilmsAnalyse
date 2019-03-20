@@ -1,6 +1,23 @@
 'use strict'
 
 class FAEpp extends FAEvent {
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Pour dispatcher les données propre au type
+  // Note : la méthode est appelée en fin de fichier
+  static dispatchData(){
+    for(var prop in this.dataType) this[prop] = this.dataType[prop]
+  }
+  static get dataType(){
+    return {
+        hname: 'Préparation/paiement'
+      , short_hname: 'Prép/Pai.'
+      , type: 'pp'
+    }
+  }
+  // ---------------------------------------------------------------------
+  //  INSTANCE
   constructor(analyse, data){
     super(analyse, data)
     this.type         = 'pp'
@@ -32,3 +49,4 @@ class FAEpp extends FAEvent {
     return n
   }
 }
+FAEpp.dispatchData()

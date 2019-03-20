@@ -1,6 +1,23 @@
 'use strict'
 
 class FAEqrd extends FAEvent {
+  // ---------------------------------------------------------------------
+  //  CLASSE
+
+  // Pour dispatcher les données propre au type
+  // Note : la méthode est appelée en fin de fichier
+  static dispatchData(){
+    for(var prop in this.dataType) this[prop] = this.dataType[prop]
+  }
+  static get dataType(){
+    return {
+        hname: 'Question/rép. dramatique'
+      , short_hname: 'Q/R Drama'
+      , type: 'qrd'
+    }
+  }
+  // ---------------------------------------------------------------------
+  //  INSTANCE
   constructor(analyse, data){
     super(analyse, data)
     this.type         = 'qrd'
@@ -32,3 +49,4 @@ class FAEqrd extends FAEvent {
     return n
   }
 }
+FAEqrd.dispatchData()
