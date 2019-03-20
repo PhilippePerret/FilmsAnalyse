@@ -261,3 +261,24 @@ iofile.loadIfExists({
 ```
 
 Noter qu'il est inutile, pour la méthode `loadIfExists`, de préciser que le contenu est en `json` puisque ça aura été précisé dans la méthode `save`. Le format sera tiré soit de l'extension du fichier (préférable), soit de la valeur de `options.format` fourni en argument de la méthode `save`.
+
+On peut également passer l'option `format: 'raw'` lorsque l'on veut charger un document sans le *décoder*. Par exemple pour afficher un document YAML tel qu'il est dans son fichier, sans le transformer en table, on va utiliser :
+
+```javascript
+
+  let iofile = new IOFile('mon/path/file.yml')
+  // Par défaut, le fichier de ce code sera parsé et une table serait
+  // retournée
+  iofile.loadIfExists({format:'raw', after: maMethode})
+
+```
+
+Avant ce code sera bien sûr défini :
+
+```javascript
+
+  function maMethode(code) {
+    // ... ici, +code+ est un string
+  }
+
+```

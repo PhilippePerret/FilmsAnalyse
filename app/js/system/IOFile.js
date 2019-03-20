@@ -3,10 +3,13 @@
  * Class File
  * -----------
  * Pour la gestion des fichiers
+ * Cf. le manuel de développement
+ *
  */
 class IOFile {
-  constructor(p){
-    this.path = p
+  constructor(p, owner){
+    this.path   = p
+    this.owner  = owner
   }
 
   // ---------------------------------------------------------------------
@@ -98,7 +101,7 @@ class IOFile {
   endLoad(success){
     this.loaded = success
     if('function' === typeof this.methodAfterLoading){
-      this.methodAfterLoading(this.decodedCode)
+      this.methodAfterLoading(this.decodedCode /* ou raw code */)
     }
   }
 
@@ -118,7 +121,6 @@ class IOFile {
       if(this.backupExists()){
         fs.copyFile(my.backupPath,my.path, (err) => {
           if(err){ F.error(err) ; my.endLoad }
-          console.log("Fichier récupéré du backup:", my.path)
           // Puis on réessaye…
           return this.loadIfExists()
         })
@@ -154,7 +156,15 @@ class IOFile {
   set options(v){ this._options = v || {} }
 
   set code(v){this._code = v}
-  get code(){return this._code}
+  get code(){
+    if (undefined === this.owner) {
+      return this._code
+    } else {
+      // Le code doit être défini dans la propriété `contents` ou `code`
+      // du propriétaire de l'instance
+      return this.owner.contents || this.owner.code || this._code
+    }
+  }
 
   /**
     * Retourne le code décodé en fonction du format du fichier (défini par
@@ -164,7 +174,9 @@ class IOFile {
   decode(){
     if(!this.code) return null // fichier inexistant, par exemple
     try {
-      switch (this.format) {
+      switch (this.format.toUpperCase()) {
+        case 'RAW':
+          return this.code // pour la clarté
         case 'JSON':
           return JSON.parse(this.code)
         case 'YAML':
@@ -184,7 +196,7 @@ class IOFile {
    * utilisé (JSON ou YAML pour le moment) et si le code n'est pas du string.
    */
   encodeCode(){
-    if (this.code == null) return null
+    if ( !this.code ) return null
     if ('string' === typeof this.code) return this.code // déjà encodé
     switch (this.format) {
       case 'JSON':

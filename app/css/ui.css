@@ -102,6 +102,7 @@ div#waiting-loop {
   background-color:white;
   max-width:250px;
   padding:1em;
+  z-index:5000;
 }
 img#waiting-loop {
   width:70px;

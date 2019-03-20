@@ -7,9 +7,14 @@
 /**
  * Données des documents
  * ---------------------
+ *
+ *  Note : le +format+ doit correspondre impérativement à l'extension du
+ *  fichier et du fichier modèle.
  */
 const DATA_DOCUMENTS = {
-  introduction:   {hname: 'Introduction', len: 1000}
+
+  infos:          {hname: 'Informations film/analyse', len: 1000, format: 'yaml'}
+, introduction:   {hname: 'Introduction', len: 1000}
 , synopsis:       {hname: 'Synopsis', len: 1000}
 , fondamentales:  {hname: 'Fondamentales', len: 1000}
 , au_fil_du_film: {hname: 'Commentaires au fil du film', len: 50000}
