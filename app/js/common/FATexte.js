@@ -75,6 +75,7 @@ class FATexte {
     if(undefined === str) str = this.raw_string
     else this.raw_string = str
     str = this.deEventTags(str)
+    str = this.deSceneTags(str)
     str = this.deDim(str)
     return str
   }
@@ -86,19 +87,36 @@ class FATexte {
    */
   static get REGEXP_EVENT_TAG(){
     if(undefined==this._regexp_event_tag){
-      var r = '\\{\\{event: ?(?<event_id>[0-9]+)(\\|(?<alt_text>[^\\}]+))?\\}\\}'
-      this._regexp_event_tag = new RegExp(r, 'gi')
+      this._regexp_event_tag = new RegExp(this.defineRegExpTag('event'), 'gi')
     }
     return this._regexp_event_tag
   }
+  static get REGEXP_SCENE_TAG(){
+    if(undefined==this._regexp_scene_tag){
+      this._regexp_scene_tag = new RegExp(this.defineRegExpTag('scene'), 'gi')
+    }
+    return this._regexp_scene_tag
+  }
+  static defineRegExpTag(tag_type){
+    return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+) ?(\\|(?<alt_text>[^\\}]+))?\\}\\}`
+  }
+
   deEventTags(str){
     if(undefined === str) str = this.raw_string
     else this.raw_string = str
-    var founds = str.match(FATexte.REGEXP_EVENT_TAG)
-    if(!founds) return str
     str = str.replace(FATexte.REGEXP_EVENT_TAG, function(){
       var groups = arguments[arguments.length - 1]
       return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
+    })
+    // console.log(founds)
+    return str
+  }
+  deSceneTags(str){
+    if(undefined === str) str = this.raw_string
+    else this.raw_string = str
+    str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
+      var groups = arguments[arguments.length - 1]
+      return current_analyse.ids[groups.event_id].asLinkScene(groups.alt_text)
     })
     // console.log(founds)
     return str
