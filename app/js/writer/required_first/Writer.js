@@ -118,10 +118,12 @@ const Writer = {
      * sur le champ de texte.
      */
   , onDropThing:function(e, ui){
-      var event_id = ui.helper.attr('data-id')
-      var balise = `{{event: ${event_id}}}`
+      var event_id = parseInt(ui.helper.attr('data-id'),10)
+      var isScene = current_analyse.ids[event_id].type == 'scene'
+      var balise = `{{${isScene?'scene':'event'}: ${event_id}}}`
       this.docField.insertAtCaret(balise)
     }
+
   , reset:function(){
       this.docField.val('')
     }
@@ -233,7 +235,7 @@ const Writer = {
       // On observe le menu de choix d'un modèle de document
       this.menuModules.on('change', this.onChooseModeleDoc.bind(this))
       // On observe le menu qui choisit le thème
-      this.menuTheme.on('change', this.onChooseTheme.bind(this))
+      this.menuThemes.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
       this.docField.on('change', this.onContentsChange.bind(this))

@@ -1,5 +1,11 @@
 # SUR LE GRILL
 
+* EVENTER
+  - Pourquoi se remet-il au milieu (ou presque) quand on ouvre ou ferme un document ?
+  - quand on commence à dragguer l'event (start), on enlève la propriété overflow-y, et on la remet quand on finit de dragguer (stop)
+
+* Utiliser le button.btn-close pour tous les boutons de fermeture
+
 * Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
   - ÇA MARCHE !
   - Quand c'est une scène, mettre la balise {{scene:...}} plutôt.

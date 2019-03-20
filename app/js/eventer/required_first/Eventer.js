@@ -118,6 +118,7 @@ class Eventer {
     })
     return checkedList
   }
+
   /**
    * Construction de l'eventeur
    */
@@ -128,6 +129,7 @@ class Eventer {
     div.className = 'eventer'
     div.innerHTML = `
     <div class="toolbox">
+      <button type="button" class="btn-close"></button>
       <button type="button" class="small btn-filtre">Filtre</button>
     </div>
     <div class="pan-events"></div>
@@ -186,7 +188,8 @@ class Eventer {
   }
   observe(){
     this.jqObj.draggable()
-    this.jqObj.find('.toolbox .btn-filtre').on('click', this.onToggleFiltre.bind(this))
+    this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
+    this.btnClose.on('click', this.close.bind(this))
     var horloges = UI.setHorlogeable(DGet(this.domId))
     var dataHorloge = {
         // time: 0
@@ -202,5 +205,7 @@ class Eventer {
 
   get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
   get jqEventList(){return this._jqEventList||defP(this,'_jqEventList',this.jqObj.find('div.pan-events'))}
+  get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
+  get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
   get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}
 }
