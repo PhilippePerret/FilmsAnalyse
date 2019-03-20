@@ -29,6 +29,8 @@ section#section-eventers .eventer {
 
 .eventer .pan-events {
   padding:0.2em;
+  height:640px;
+  overflow:auto;
 }
 
 /* Tab du filtre */

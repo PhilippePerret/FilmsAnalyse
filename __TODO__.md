@@ -2,7 +2,6 @@
 
 * EVENTER
   - Pourquoi se remet-il au milieu (ou presque) quand on ouvre ou ferme un document ?
-  - quand on commence à dragguer l'event (start), on enlève la propriété overflow-y, et on la remet quand on finit de dragguer (stop)
 
 * Utiliser le button.btn-close pour tous les boutons de fermeture
 

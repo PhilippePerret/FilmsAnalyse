@@ -48,7 +48,7 @@ class Eventer {
    */
   peuple(){
     var my  = this
-      , o   = my.jqEventList
+      , o   = my.jqPanEvents
       ;
     o.html('')
     this.analyse.forEachEvent(function(ev){
@@ -59,7 +59,7 @@ class Eventer {
       }
       o.append(ev.div)
       ev.show()
-      ev.observe()
+      ev.observe(o)
     })
   }
 
@@ -87,7 +87,7 @@ class Eventer {
     if(showList) this.applyFilter()
     this.jqObj.find('.pan-events')[showList?'show':'hide']()
     this.jqObj.find('.pan-filter')[showList?'hide':'show']()
-    this.jqObj.find('.toolbox .btn-filtre').html(showList?'Filtre':'Liste')
+    this.btnFiltre.html(showList?'Filtre':'Liste')
     this.filtreDisplayed = !this.filtreDisplayed
   }
 
@@ -204,7 +204,7 @@ class Eventer {
   }
 
   get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
-  get jqEventList(){return this._jqEventList||defP(this,'_jqEventList',this.jqObj.find('div.pan-events'))}
+  get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
   get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
   get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
   get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}
