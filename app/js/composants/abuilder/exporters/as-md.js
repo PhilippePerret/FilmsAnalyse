@@ -22,13 +22,15 @@ ABuilder.prototype.appendContenuOf = function(key_doc) {
   var ca = my.analyse
 
   // Le document template, dans le cas où le document original n'existerait pas
+  // On l'utilise s'il est demandé par le script de construction.
   var tempPath  = ca.tempFilePathOf(key_doc)
   var anaPath   = ca.filePathOf(key_doc)
-  var contenu = null
   if(fs.existsSync(anaPath)) {
-    fs.appendFileSync(ca.md_path, fs.readFileSync(anaPath) + DRC, 'utf8')
+    var itexte = new FATexte(fs.readFileSync(anaPath, 'utf8'))
+    fs.appendFileSync(ca.md_path, itexte.formate() + DRC, 'utf8')
+    itexte = null
   } else if (fs.existsSync(tempPath)) {
-    fs.appendFileSync(ca.md_path, fs.readFileSync(tempPath) + DRC, 'utf8')
+    fs.appendFileSync(ca.md_path, fs.readFileSync(tempPath, 'utf8') + DRC, 'utf8')
   } else {
     // Aucun des deux fichiers n'a été trouvé, on ne fait rien
     console.log("Fichier non trouvé : ", key_doc)

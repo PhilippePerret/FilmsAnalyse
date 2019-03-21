@@ -8,4 +8,7 @@ function stopEvent(e){
   return false
 }
 
-const KTAB = 9 // keycode
+const KTAB      = 9 // keycode
+const KRETURN   = 13 // keyCode
+
+const K_S       = 91 //

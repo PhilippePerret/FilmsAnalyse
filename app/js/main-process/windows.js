@@ -29,7 +29,7 @@ const FAWindows = {
         pubW.loadURL(`file://${path.resolve('./app/blank_publisher.html')}`)
         if (MODE_TEST) pubW.toggleDevTools();
         // ou pour débuguer
-        pubW.toggleDevTools();
+        // pubW.toggleDevTools();
 
         // ---------------------------------------------------------------------
         //  Méthodes évènement

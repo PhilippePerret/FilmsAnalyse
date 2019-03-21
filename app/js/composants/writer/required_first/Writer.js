@@ -116,8 +116,13 @@ const Writer = {
     }
   , onKeyUp:function(e){
       // console.log("-> onKeyUp dans textarea du writer")
-      if(e.keyCode === KTAB){
-        console.log('TABULATION!')
+      // console.log("which, KeyCode, charCode, metaKey", e.which, e.keyCode, e.charCode, e.metaKey)
+      if(e.which === 91){
+        // <= CMD S
+        // => On doit sauver le texte
+        this.currentDoc.save()
+        return stopEvent(e)
+      } else if(e.keyCode === KTAB){
         if(this.selector.before() == RC){
           // => suivant le type
           // console.log("Un retour chariot juste avant")

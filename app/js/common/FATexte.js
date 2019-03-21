@@ -3,6 +3,12 @@
  * Class FATexte
  * -------------
  * Pour la gestion des textes
+ *
+ *  @usage
+ *
+ *    let itexte = new FATexte(str)
+ *
+ *    itexte.formate() => retourne le texte entièrement corrigé
  */
 
 class FATexte {
@@ -25,12 +31,29 @@ class FATexte {
     })
     return str
   }
+
+  static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9–\-]+)\}\}','g')}
+  static deVar(str){
+    var my = this
+    if(my.table_vars === null) return str // pas de variables définies
+    str = str.replace(my.VAR_REGEXP, function(){
+      var groups = arguments[arguments.length-1]
+      var key = groups.key
+      return my.table_vars[key]
+    })
+    return str
+  }
   /**
    * Grande table contenant tous les diminutifs et leur expression régulière
    * préparé. Chaque élément se trouve sous la forme :
    *  {dim: <le diminutif>, regexp: <l'expression régulière>, value: <valeur à donner>}
    */
   static get table_dims(){return this._table_dims||defP(this,'_table_dims',this.defineTableDims())}
+  /**
+  * Grande table contenant les variables et leur expression régulière
+  * Cf. table_dims ci-dessus
+  **/
+  static get table_vars(){return this._table_vars||defP(this,'_table_vars',this.defineTableVars())}
 
   // Prépare la table des diminutifs du film
   static defineTableDims(){
@@ -41,6 +64,11 @@ class FATexte {
       tbl[dim] = {dim: dim, value: `${this.dimsData[dim]}$1`, regexp: reg}
     }
     return tbl
+  }
+
+  static defineTableVars(){
+    if(false == fs.existsSync(this.varsPath)) return null
+    return YAML.safeLoad(fs.readFileSync(this.varsPath,'utf8'))
   }
 
   static get dimsData(){
@@ -55,6 +83,10 @@ class FATexte {
   }
   static get dimsPath(){
     return this._dimsPath||defP(this,'_dimsPath',path.join(current_analyse.folderFiles,'diminutifs.yaml'))
+  }
+
+  static get varsPath(){
+    return this._varsPath||defP(this,'_varsPath',path.join(current_analyse.folderFiles,'infos.yaml'))
   }
 
   /** ---------------------------------------------------------------------
@@ -76,6 +108,7 @@ class FATexte {
     else this.raw_string = str
     str = this.deEventTags(str)
     str = this.deSceneTags(str)
+    str = this.deVar(str)
     str = this.deDim(str)
     return str
   }
@@ -135,7 +168,16 @@ class FATexte {
    */
   deDim(str){
     if (undefined === str) str = this.raw_string
+    else this.raw_string = str
     return FATexte.deDim(str)
+  }
+  /**
+  * Remplacement des balises dite double-crochets simples : {{variable}}
+  **/
+  deVar(str){
+    if(undefined === str) str = this.raw_string
+    else this.raw_string = str
+    return FATexte.deVar(str)
   }
 
 }

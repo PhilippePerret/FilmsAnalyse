@@ -283,9 +283,9 @@ class FAnalyse {
    * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être
    * qu'il y aura un menu particulier pour le faire
    */
-  displayFullAnalyse(){
+  displayFullAnalyse(forcer){
     if('undefined' === typeof ABuilder) return this.loadABuilder(this.displayFullAnalyse.bind(this))
-    ABuilder.createNew().show()
+    ABuilder.createNew().show({force_update: !!forcer})
   }
 
   loadABuilder(fn_callback){

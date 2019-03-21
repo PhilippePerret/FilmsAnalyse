@@ -20,8 +20,8 @@ const ipc     = require('electron').ipcMain
 const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
-  'display-full-analyse', 'display-pfa', 'display-fondamentales',
-  'new-eventer', 'open-writer'
+  'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
+  'display-fondamentales', 'new-eventer', 'open-writer'
 ]
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
@@ -242,6 +242,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Shift+A'
               , enabled: false
               , click: () => {execJsOnCurrent('displayFullAnalyse')}
+            }
+          , {
+              label: "Analyse complète (actualiser)"
+              , id: 'display-full-analyse-forcer'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+A'
+              , enabled: false
+              , click: () => {execJsOnCurrent('displayFullAnalyse', true)}
             }
           , {type:'separator'}
           , {
