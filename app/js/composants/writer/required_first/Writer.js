@@ -108,16 +108,28 @@ const Writer = {
     }
 
   , onKeyDown:function(e){
-      console.log("-> onKeyDown dans textarea du writer")
+      // console.log("-> onKeyDown dans textarea du writer")
       if(e.keyCode === KTAB){
         return stopEvent(e)
       }
       return true
     }
   , onKeyUp:function(e){
-      console.log("-> onKeyUp dans textarea du writer")
+      // console.log("-> onKeyUp dans textarea du writer")
       if(e.keyCode === KTAB){
         console.log('TABULATION!')
+        if(this.selector.before() == RC){
+          // => suivant le type
+          // console.log("Un retour chariot juste avant")
+          if(this.currentDoc.dataType.type == 'data'){
+            this.selector.insert('  ')
+          } else {
+            this.selector.insert('* ')
+          }
+        } else {
+          console.log("Pas de retour chariot juste avant")
+          // => Check snippet
+        }
         return stopEvent(e)
       }
     }
@@ -293,7 +305,16 @@ const Writer = {
     }
 }
 Object.defineProperties(Writer,{
-  section:{
+  /**
+   * Le selecteur, pour gérer la sélection
+   */
+  selector:{
+    get:function(){
+      if(undefined === this._selector) this._selector = new Selector(this.docField)
+      return this._selector
+    }
+  }
+, section:{
     get:function(){return $('#section-writer')}
   }
 , menuTypeDoc:{
