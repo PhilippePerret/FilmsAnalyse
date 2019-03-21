@@ -3,7 +3,7 @@
  * Export de l'analyse au format Markdown
  *
  * Contrairement aux autres formats d'export (exception fait de HTML), cet
- * export doit construire l'analyse courante, à partir de tous ses éléments.
+ * export construit en fait l'analyse courante, à partir de tous ses éléments.
  * Le format Markdown permettra de générer les autres format
  */
 
@@ -46,8 +46,11 @@ function appendContenuOf(key_doc) {
   }
 }
 
-module.exports = options => {
-  var my = current_analyse
+module.exports = function(options){
+  var my = this // instance ABuilder
+
+  // Existe-t-il un scénario de construction ?
+  
 
   appendContenuOf('introduction')
   appendContenuOf('synopsis')

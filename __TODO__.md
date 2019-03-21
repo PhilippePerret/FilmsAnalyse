@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-* Utiliser le button.btn-close pour tous les boutons de fermeture
-
 * Construire l'analyse
   - Appeler l'objet qui le fait le ABuilder et le charger comme le Writer et l'Eventer
 * Construire le PFA
@@ -22,6 +20,14 @@
 
 # TODO LIST
 
+* Peut-être, pour particulariser chaque analyse, faut-il faire un "scénario" de construction qui explique comment procéder. Par exemple :
+    - mettre introduction
+    - mettre PFA
+    - passer une page
+    - mettre fil du film
+    - mettre document <id/name>
+    etc.
+  Ce serait un document de type 'data'
 * Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
 * Construire les fondamentales (à partir du fichier data)
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.

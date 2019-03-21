@@ -274,15 +274,18 @@ class FAnalyse {
   //  MÉTHODES D'AFFICHAGE
 
   /**
-   * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
+   * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
+   *
+   * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être
+   * qu'il y aura un menu particulier pour le faire
    */
-  displayFullAnalyse(format){
-    // TODO Pour le moment, on refait chaque fois l'analyse complète. Ensuite,
-    // il faudra prévoir un bouton ou un menu pour actualisation l'analyse.
-    // if(!fs.existsSync(this.html_path)){
-      require('./js/tools/full_analyse_building.js')(format)
-    // }
-    // ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  displayFullAnalyse(){
+    if('undefined' === typeof ABuilder){
+      var fn_callback = this.displayFullAnalyse.bind(this)
+      System.loadJSFolders('./app/js/composants/abuilder', ['required_first', 'required_then'], fn_callback)
+      return
+    }
+    ABuilder.createNew().show()
   }
 
   displayPFA(){this.PFA.display()}
@@ -308,7 +311,7 @@ class FAnalyse {
   openDocInWriter(dtype){
     if('undefined' === typeof Writer){
       var fn_callback = this.openDocInWriter.bind(this, dtype)
-      System.loadJSFolders('./app/js/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
+      System.loadJSFolders('./app/js/composants/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
       return
     }
     Writer.openDoc(dtype)
@@ -320,20 +323,13 @@ class FAnalyse {
   createNewEventer(){
     if('undefined' === typeof Eventer){
       var fn_callback = this.createNewEventer.bind(this)
-      System.loadJSFolders('./app/js/eventer', ['required_first', 'required_then'], fn_callback)
+      System.loadJSFolders('./app/js/composants/eventer', ['required_first', 'required_then'], fn_callback)
       return
     }
     Eventer.createNew()
   }
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
-
-  // ---------------------------------------------------------------------
-  //  MÉTHODES D'EXPORT
-
-  exportAs(format){
-    require('./js/tools/export_analyse.js')(format)
-  }
 
   // ---------------------------------------------------------------------
   // MÉTHODES OPTIONS
