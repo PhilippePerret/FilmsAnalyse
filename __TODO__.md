@@ -1,8 +1,5 @@
 # SUR LE GRILL
 
-* EVENTER
-  - Pourquoi se remet-il au milieu (ou presque) quand on ouvre ou ferme un document ?
-
 * Utiliser le button.btn-close pour tous les boutons de fermeture
 
 * Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
@@ -12,7 +9,7 @@
 * Construire le PFA
 
 * Quand on est dans le writer,
-  + la tabulation permet
+  + la tabulation permet :
     - soit d'écrire deux espaces
     - soit d'évaluer un snippet
     - soit de passer à un champ de donnée suivant ?
@@ -27,6 +24,7 @@
 
 # TODO LIST
 
+* Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
 * Construire les fondamentales (à partir du fichier data)
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
   - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
