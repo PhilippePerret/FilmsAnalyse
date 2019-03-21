@@ -66,7 +66,7 @@ class WriterDoc {
     this.iofile.save({after: this.endSaving.bind(this)})
   }
   endSaving(){
-    Writer.message()
+    Writer.message('')
     this.modified = false
     this.saving   = false
   }

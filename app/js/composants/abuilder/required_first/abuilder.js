@@ -27,14 +27,11 @@ class ABuilder {
   /**
    * Pour afficher l'analyse construite
    */
-  show(){
-    if(true /*!this.isUpToDate*/) this.build() //TODO corriger
-    F.notify("Je vais afficher l'analyse construite.")
-    // L'analyse s'affiche dans une nouvelle fenêtre, on demande au main process
-    // de l'ouvrir
-    // TODO : libérer :
-    // ipc.send('display-analyse')
-    // ipc.send('load-url-in-pubwindow', {path: my.html_path})
+  show(options){
+    if(undefined === options) options = {}
+    if(false == this.isUpToDate || options.force_update) this.build(options)
+    ipc.send('display-analyse')
+    ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
   /**
    * Fonction principale construisant l'analyse
@@ -43,18 +40,22 @@ class ABuilder {
    * Markdown rassemblant tous les éléments.
    */
   build(options){
+    this.building = true
     this.log('*** Construction de l’analyse…')
     var my = this
     if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
+    if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
     this.exportAs('md', options)
+    this.exportAs('html', options)
     this.log('=== Fin de la construction de l’analyse')
+    this.building = false
     my = null
   }
 
   exportAs(format, options){
     var my = this
     my.log(`* exportAs "${format}". Options:`, options)
-    if(this.isUpToDate){this.build()}
+    if(!this.building && !this.isUpToDate) this.build()
     var method = require(`./js/composants/abuilder/exporters/as-${format}.js`).bind(this)
     method(options)
   }

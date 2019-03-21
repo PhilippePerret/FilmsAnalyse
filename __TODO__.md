@@ -1,12 +1,5 @@
 # SUR LE GRILL
 
-* Quand on est dans le writer,
-+ la tabulation permet :
-- soit d'écrire deux espaces
-- soit d'évaluer un snippet
-- soit de passer à un champ de donnée suivant ?
-+ Le raccourci CMD S permet de sauver le texte (pas l'analyse)
-
 * Construire l'analyse
   - Corriger les textes
   - Faire la distinction entre 3 types de documents :
