@@ -127,8 +127,15 @@ const Writer = {
             this.selector.insert('* ')
           }
         } else {
-          console.log("Pas de retour chariot juste avant")
           // => Check snippet
+          // On prend les lettres juste avant la sélection pour voir
+          // si c'est un snippet.
+          var snip = this.selector.beforeUpTo(' ', false)
+          var remp = Snippet.check(snip)
+          if( remp ){
+            this.selector.set(this.selector.startOffset - snip.length, null)
+            this.selector.insert(remp)
+          }
         }
         return stopEvent(e)
       }

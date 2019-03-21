@@ -73,6 +73,12 @@ class Selector {
     return this.fieldValue.substring(this.endOffset, this.endOffset + len)
   }
 
+  set(start, end){
+    if (null !== start) this.domObj.selectionStart = start
+    if (null !== end)   this.domObj.selectionEnd   = end
+    this.jqObj.focus()
+  }
+
   /**
    * Retourne le texte avant jusqu'au signe +sig+
    */
