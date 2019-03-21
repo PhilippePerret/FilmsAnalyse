@@ -2,10 +2,8 @@
 
 * Utiliser le button.btn-close pour tous les boutons de fermeture
 
-* Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
-  - ÇA MARCHE !
-  - Quand c'est une scène, mettre la balise {{scene:...}} plutôt.
-
+* Construire l'analyse
+  - Appeler l'objet qui le fait le ABuilder et le charger comme le Writer et l'Eventer
 * Construire le PFA
 
 * Quand on est dans le writer,
