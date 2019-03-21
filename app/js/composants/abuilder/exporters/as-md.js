@@ -45,8 +45,39 @@ ABuilder.prototype.appendBuildingOf = function(what){
   var my = this
   var ca = my.analyse
   var finalCode = ""
-  finalCode += `<!-- BUILD ${what} -->`
+  finalCode += `<!-- BUILD ${what} -->${RC}`
+  switch (what.toUpperCase()) {
+    case 'INFOS FILM':
+      finalCode += my.loadAndRunBuilder('infos_film')
+      break
+    case 'FONDAMENTALES':
+      finalCode += my.loadAndRunBuilder('fondamentales')
+      break
+    case 'PFA':
+      finalCode +=  my.loadAndRunBuilder('pfa')
+      break;
+    case 'DIAGRAMME DRAMATIQUE':
+      finalCode +=  my.loadAndRunBuilder('diagramme_dramatique')
+      break
+    case 'DIAGRAMME QRD':
+      finalCode +=  my.loadAndRunBuilder('diagramme_qrd')
+      break
+    case 'STATISTIQUES':
+      finalCode +=  my.loadAndRunBuilder('statistiques')
+      break
+    default:
+
+  }
   fs.appendFileSync(ca.md_path, finalCode + DRC, 'utf8')
+}
+
+/**
+* Méthode qui charge le builder du +composant+ et lance
+* sa construction.
+* Retourne le code construit.
+**/
+ABuilder.prototype.loadAndRunBuilder = function(composant){
+  return '' // pour le moment
 }
 
 module.exports = function(options){

@@ -1,8 +1,6 @@
 # SUR LE GRILL
 
-* [BUG] Toutes les touches avec CMD semblent sauver le texte du writer
-
-* Programme l'utilisation de CTRL+CMD+ARROW pour monter et descendre le paragraphe
+* Voir comment sauver le texte avec CMD-S
 
 * Construire l'analyse
   - Faire la distinction entre 3 types de documents :

@@ -23,7 +23,7 @@ const DATA_DOCUMENTS = {
   infos:            {hname: 'Informations', len: 1000, format: 'yaml', type: 'data'}
 , fondamentales:    {hname: 'Fondamentales', len: 1000, format: 'yaml', type: 'data'}
 , diminutifs:       {hname: 'Diminutifs', len: 0, format: 'yaml', type: 'data'}
-, building_script:  {hname: 'Script d’assemblage', len:0, format: 'yaml', type: 'data'}
+, building_script:  {hname: 'Script d’assemblage', len:0, format: 'md', type: 'data'}
 
 , introduction:     {hname: 'Introduction', len: 1000, type: 'real'}
 , synopsis:         {hname: 'Synopsis', len: 1000, type: 'real'}
