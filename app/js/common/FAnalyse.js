@@ -273,6 +273,10 @@ class FAnalyse {
   // ---------------------------------------------------------------------
   //  MÉTHODES D'AFFICHAGE
 
+  exportAs(format){
+    if('undefined'===typeof ABuilder) return this.loadABuilder(this.exportAs.bind(this,format))
+    ABuilder.createNew().exportAs(format)
+  }
   /**
    * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
    *
@@ -280,12 +284,12 @@ class FAnalyse {
    * qu'il y aura un menu particulier pour le faire
    */
   displayFullAnalyse(){
-    if('undefined' === typeof ABuilder){
-      var fn_callback = this.displayFullAnalyse.bind(this)
-      System.loadJSFolders('./app/js/composants/abuilder', ['required_first', 'required_then'], fn_callback)
-      return
-    }
+    if('undefined' === typeof ABuilder) return this.loadABuilder(this.displayFullAnalyse.bind(this))
     ABuilder.createNew().show()
+  }
+
+  loadABuilder(fn_callback){
+    System.loadJSFolders('./app/js/composants/abuilder', ['required_first', 'required_then'], fn_callback)
   }
 
   displayPFA(){this.PFA.display()}
@@ -671,11 +675,14 @@ class FAnalyse {
     }
     return this._data_file_path
   }
-  get vignettesScenesFolder(){
-    if(undefined === this._vignettesScenesFolder){
-      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
+  get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+
+  get folderVignettesScenes(){
+    if(undefined === this._folderVignettesScenes){
+      if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+      this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
     }
-    return this._vignettesScenesFolder
+    return this._folderVignettesScenes
   }
 
   get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
@@ -697,6 +704,21 @@ class FAnalyse {
     return {path: p, name: n}
   }
 
+  // Retourne le path au fichier analyse (dans 'analyse_files') du fichier
+  // de nom ou de chemin relatif +fname+
+  // Note : par défaut (d'extension), on considère que ça doit être un document
+  // markdown
+  filePathOf(fname){
+    if(!fname.match(/\./)) fname += '.md'
+    return path.join(this.folderFiles,fname)
+  }
+  // Le path au template du fichier d'analyse (dans 'app/analyse_files')
+  // Note : par défaut (d'extension), on considère que ça doit être un document
+  // markdown
+  tempFilePathOf(fname){
+    if(!fname.match(/\./)) fname += '.md'
+    return path.join(APPFOLDER,'app','analyse_files',fname)
+  }
   get folderFiles(){
     if(undefined === this._folderFiles){
       this._folderFiles = path.join(this.folder,'analyse_files')

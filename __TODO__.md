@@ -1,22 +1,29 @@
 # SUR LE GRILL
 
+* Quand on est dans le writer,
++ la tabulation permet :
+- soit d'écrire deux espaces
+- soit d'évaluer un snippet
+- soit de passer à un champ de donnée suivant ?
++ Le raccourci CMD S permet de sauver le texte (pas l'analyse)
+
 * Construire l'analyse
-  - Appeler l'objet qui le fait le ABuilder et le charger comme le Writer et l'Eventer
+  - Corriger les textes
+
 * Construire le PFA
 
-* Quand on est dans le writer,
-  + la tabulation permet :
-    - soit d'écrire deux espaces
-    - soit d'évaluer un snippet
-    - soit de passer à un champ de donnée suivant ?
-  + Le raccourci CMD S permet de sauver le texte (pas l'analyse)
+* Pour la sortie en PDF
+  - il faudrait ajouter l'image de couverture au HTML
+  - il faut partir du HTML pour faire le PDF
+  - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
 # EN COURS DE DÉVELOPPEMENT
 
 * L'état d'avancement de l'application (analyse_state.js)
 * Le writer (dossier `writer`)
 * Construction du (des) PFA
-* La construction de l'analyse
+* Construction des Fondamentales
+* Construction des statistiques de fin
 
 # TODO LIST
 

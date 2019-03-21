@@ -97,7 +97,7 @@ class WriterDoc {
     // Thème par défaut
     Writer.applyTheme(this.themePerType)
     // Templates à proposer
-    var tempFolderPath = path.join('.','app','building', this.type)
+    var tempFolderPath = path.join('.','app','analyse_files', this.type)
     var tempFilePath = `${tempFolderPath}.${this.extension}`
     if(fs.existsSync(tempFilePath)){
       // <= Un seul fichier
