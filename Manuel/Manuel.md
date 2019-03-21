@@ -12,6 +12,7 @@
 * [Les Documents](#les_documents)
   * [Diminutifs](#les_diminutifs)
   * [Variables dans les documents](#variables_dans_les_documents)
+* [Publication online](#publication_online)
 
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
 
@@ -148,3 +149,26 @@ On trouve :
 
 `{{date}}`
 : Date du film.
+
+## Publication online {#publication_online}
+
+Sur Kindle, la page de couverture ne doit pas être jointe au .mobi. Elle doit être :
+
+* format JPEG ou TIFF
+* ratio hauteur:largeur de 1.6:1 (c'est-à-dire 1600 en hauteur pour 1000 en largeur)
+  Préconisé : 2560px x 1600px (mais 4500 pour les tablettes…)
+* < 50Mo
+* Détail : [Aide KDP](https://kdp.amazon.com/fr_FR/help/topic/G200645690)
+
+Taille recommandé par Apple (à vérifier) :
+
+*  1400x1873 pixels
+
+Rapport pour les smartphones :
+
+* 11/18
+
+Pour la couverture de l'epub :
+
+* cover.jpg (obligatoire)
+* 600 x 1000 environ

@@ -273,16 +273,23 @@ class FAnalyse {
   // ---------------------------------------------------------------------
   //  MÉTHODES D'AFFICHAGE
 
+  exportAs(format){
+    if('undefined'===typeof ABuilder) return this.loadABuilder(this.exportAs.bind(this,format))
+    ABuilder.createNew().exportAs(format)
+  }
   /**
-   * Méthode appelée quand on clique sur le menu "Affichager > Analyse complète"
+   * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
+   *
+   * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être
+   * qu'il y aura un menu particulier pour le faire
    */
-  displayFullAnalyse(format){
-    // TODO Pour le moment, on refait chaque fois l'analyse complète. Ensuite,
-    // il faudra prévoir un bouton ou un menu pour actualisation l'analyse.
-    // if(!fs.existsSync(this.html_path)){
-      require('./js/tools/full_analyse_building.js')(format)
-    // }
-    // ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  displayFullAnalyse(){
+    if('undefined' === typeof ABuilder) return this.loadABuilder(this.displayFullAnalyse.bind(this))
+    ABuilder.createNew().show()
+  }
+
+  loadABuilder(fn_callback){
+    System.loadJSFolders('./app/js/composants/abuilder', ['required_first', 'required_then'], fn_callback)
   }
 
   displayPFA(){this.PFA.display()}
@@ -308,7 +315,7 @@ class FAnalyse {
   openDocInWriter(dtype){
     if('undefined' === typeof Writer){
       var fn_callback = this.openDocInWriter.bind(this, dtype)
-      System.loadJSFolders('./app/js/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
+      System.loadJSFolders('./app/js/composants/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
       return
     }
     Writer.openDoc(dtype)
@@ -320,20 +327,13 @@ class FAnalyse {
   createNewEventer(){
     if('undefined' === typeof Eventer){
       var fn_callback = this.createNewEventer.bind(this)
-      System.loadJSFolders('./app/js/eventer', ['required_first', 'required_then'], fn_callback)
+      System.loadJSFolders('./app/js/composants/eventer', ['required_first', 'required_then'], fn_callback)
       return
     }
     Eventer.createNew()
   }
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
-
-  // ---------------------------------------------------------------------
-  //  MÉTHODES D'EXPORT
-
-  exportAs(format){
-    require('./js/tools/export_analyse.js')(format)
-  }
 
   // ---------------------------------------------------------------------
   // MÉTHODES OPTIONS
@@ -675,11 +675,14 @@ class FAnalyse {
     }
     return this._data_file_path
   }
-  get vignettesScenesFolder(){
-    if(undefined === this._vignettesScenesFolder){
-      this._vignettesScenesFolder = path.join(this.folder,'vignettes_scenes')
+  get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+
+  get folderVignettesScenes(){
+    if(undefined === this._folderVignettesScenes){
+      if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+      this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
     }
-    return this._vignettesScenesFolder
+    return this._folderVignettesScenes
   }
 
   get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
@@ -701,6 +704,21 @@ class FAnalyse {
     return {path: p, name: n}
   }
 
+  // Retourne le path au fichier analyse (dans 'analyse_files') du fichier
+  // de nom ou de chemin relatif +fname+
+  // Note : par défaut (d'extension), on considère que ça doit être un document
+  // markdown
+  filePathOf(fname){
+    if(!fname.match(/\./)) fname += '.md'
+    return path.join(this.folderFiles,fname)
+  }
+  // Le path au template du fichier d'analyse (dans 'app/analyse_files')
+  // Note : par défaut (d'extension), on considère que ça doit être un document
+  // markdown
+  tempFilePathOf(fname){
+    if(!fname.match(/\./)) fname += '.md'
+    return path.join(APPFOLDER,'app','analyse_files',fname)
+  }
   get folderFiles(){
     if(undefined === this._folderFiles){
       this._folderFiles = path.join(this.folder,'analyse_files')

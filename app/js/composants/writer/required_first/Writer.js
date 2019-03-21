@@ -87,40 +87,89 @@ const Writer = {
      */
   , onChooseTheme:function(e,theme){
       if(undefined === theme) theme = $('#section-writer #writer-theme').val()
-      this.docField.removeClass(this.currentTheme).addClass(theme)
-      $('#section-writer .body').removeClass(this.currentTheme).addClass(theme)
-      this.currentTheme = theme
+      this.applyTheme(theme)
       // $('#section-writer #writer-theme').val('')
     }
     /**
-     * Méthode appelée lorsque le contenu du document est appelé
+     * Méthode qui applique le thème +theme+ à l'interface
+     */
+  , applyTheme(theme){
+      this.body.removeClass(this.currentTheme).addClass(theme)
+      this.docField.removeClass(this.currentTheme).addClass(theme)
+      this.menuThemes.val(theme)
+      this.currentTheme = theme
+    }
+
+    /**
+     * Méthode appelée lorsque le contenu du document est changé
      */
   , onContentsChange:function(){
       this.currentDoc.contents = this.docField.val()
-      this.currentDoc.displaySize()
+    }
+
+  , onKeyDown:function(e){
+      // console.log("-> onKeyDown dans textarea du writer")
+      if(e.keyCode === KTAB){
+        return stopEvent(e)
+      }
+      return true
+    }
+  , onKeyUp:function(e){
+      // console.log("-> onKeyUp dans textarea du writer")
+      if(e.keyCode === KTAB){
+        console.log('TABULATION!')
+        if(this.selector.before() == RC){
+          // => suivant le type
+          // console.log("Un retour chariot juste avant")
+          if(this.currentDoc.dataType.type == 'data'){
+            this.selector.insert('  ')
+          } else {
+            this.selector.insert('* ')
+          }
+        } else {
+          // => Check snippet
+          // On prend les lettres juste avant la sélection pour voir
+          // si c'est un snippet.
+          var snip = this.selector.beforeUpTo(' ', false)
+          var remp = Snippet.check(snip)
+          if( remp ){
+            this.selector.set(this.selector.startOffset - snip.length, null)
+            this.selector.insert(remp)
+          }
+        }
+        return stopEvent(e)
+      }
     }
 
   , onFocusContents:function(){
-      this.message()
+      this.message('')
+      // TODO Activer les raccourcis 'keyup/keydown' propre au textarea du writer
+      // this.docField.on('keydown', this.onKeyDown.bind(this))
+      // this.docField.on('keyup', this.onKeyUp.bind(this))
     }
   , onBlurContents:function(){
-
+      // TODO Remettre les anciens raccourcis 'keyup/keydown'
+      // this.docField.off('keydown', this.onKeyDown.bind(this))
+      // this.docField.off('keyup', this.onKeyUp.bind(this))
     }
     /**
      * Méthode invoquée quand on drop un event (.event) ou un document (.doc)
      * sur le champ de texte.
      */
   , onDropThing:function(e, ui){
-      var event_id = ui.helper.attr('data-id')
-      var balise = `{{event: ${event_id}}}`
+      var event_id = parseInt(ui.helper.attr('data-id'),10)
+      var isScene = current_analyse.ids[event_id].type == 'scene'
+      var balise = `{{${isScene?'scene':'event'}: ${event_id}}}`
       this.docField.insertAtCaret(balise)
     }
+
   , reset:function(){
       this.docField.val('')
     }
     /**
-     * Ouverture du Writer. Cela correspond à masquer le Reader et autres
-     * éléments.
+     * Ouverture du Writer. Cela correspond à masquer le Reader.
+     *
+     * Noter que ce seront les « Eventers » qui afficheront les events
      */
   , OTHER_SECTIONS: ['#section-reader']
   , open:function(){
@@ -145,7 +194,7 @@ const Writer = {
       this.sectionVideoOriginalWidth = $('#section-video').width()
       this.rightColumnOriginallWidth = $('#section-reader').width()
       this.rightColumnMarginLeft = $('#right-column').css('margin-left')
-      $('#right-column').css({'width': '70%', 'margin-left': '30%'})
+      $('#right-column').css({'width': '70%', 'margin-left': '10%'})
       $('#section-video').css('width', '30%')
     }
   , unsetDimensions:function(){
@@ -223,14 +272,17 @@ const Writer = {
       // On observe le menu de choix d'un document
       m.on('change', this.onChooseTypeDoc.bind(this))
       // On observe le menu de choix d'un modèle de document
-      $('#section-writer select#modeles-doc').on('change', this.onChooseModeleDoc.bind(this))
+      this.menuModules.on('change', this.onChooseModeleDoc.bind(this))
       // On observe le menu qui choisit le thème
-      $('#section-writer #writer-theme').on('change', this.onChooseTheme.bind(this))
+      this.menuThemes.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
-      this.docField.on('change', this.onContentsChange.bind(this))
-      this.docField.on('focus', this.onFocusContents.bind(this))
-      this.docField.on('blur', this.onBlurContents.bind(this))
+      this.docField.on('change',  this.onContentsChange.bind(this))
+      this.docField.on('focus',   this.onFocusContents.bind(this))
+      this.docField.on('blur',    this.onBlurContents.bind(this))
+      this.docField.on('keydown', this.onKeyDown.bind(this))
+      this.docField.on('keyup',   this.onKeyUp.bind(this))
+
       // On rend le champ de texte droppable pour pouvoir y déposer
       // n'importe quel event
       this.docField.droppable({
@@ -260,14 +312,32 @@ const Writer = {
     }
 }
 Object.defineProperties(Writer,{
-  section:{
+  /**
+   * Le selecteur, pour gérer la sélection
+   */
+  selector:{
+    get:function(){
+      if(undefined === this._selector) this._selector = new Selector(this.docField)
+      return this._selector
+    }
+  }
+, section:{
     get:function(){return $('#section-writer')}
   }
 , menuTypeDoc:{
     get:function(){return $('#section-writer .header select#document-type')}
   }
+, body:{
+    get:function(){return $('#section-writer .body')}
+  }
 , docField:{
     get:function(){return $('#section-writer .body textarea#document-contents')}
+  }
+, menuThemes:{
+    get:function(){return $('#section-writer #writer-theme')}
+  }
+, menuModules:{
+    get:function(){return $('#section-writer select#modeles-doc')}
   }
 , visualizor:{
     get:function(){return $('#writer-doc-visualizor')}

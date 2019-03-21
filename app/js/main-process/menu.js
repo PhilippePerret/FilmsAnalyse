@@ -37,7 +37,7 @@ const WriterSubmenus = [
     , {type:'separator'}
   ]
 
-const DATA_DOCS = require('../writer/required_first/min.js')
+const DATA_DOCS = require('../composants/writer/required_first/min.js')
 
 function openDocInWriter(doc_id){
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
@@ -241,10 +241,7 @@ const DATA_MENUS = [
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Shift+A'
               , enabled: false
-              , click: () => {
-                FAWindows.displayAnalyse()
-                execJsOnCurrent('displayFullAnalyse')
-              }
+              , click: () => {execJsOnCurrent('displayFullAnalyse')}
             }
           , {type:'separator'}
           , {
@@ -502,6 +499,9 @@ ipc.on('set-option', (ev, data) => {
   m[data.property] = data.value
 })
 
+ipc.on('display-analyse', ev => {
+  FAWindows.displayAnalyse()
+})
 ipc.on('current-analyse-exist', (ev, yesOrNo) => {
   ObjMenus.setMenuCurrentThing(yesOrNo)
 })

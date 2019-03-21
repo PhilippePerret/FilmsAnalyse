@@ -1,29 +1,47 @@
 # SUR LE GRILL
 
-* [BUG] Avec le Writer, OK pour passer d'un document à l'autre (même s'il vaudrait mieux créer autant d'instance qu'on veut), mais quand on change de document, soit on demande quoi faire des changements, soit on serve bien le contenu pour le remettre.
+* Quand on est dans le writer,
++ la tabulation permet :
+- soit d'écrire deux espaces
+- soit d'évaluer un snippet
+- soit de passer à un champ de donnée suivant ?
++ Le raccourci CMD S permet de sauver le texte (pas l'analyse)
 
-* Mettre en place le système des drags & drops d'events qui créent les balises `{{...}}` dans le texte.
-  - ÇA MARCHE !
-  - Quand c'est une scène, mettre la balise {{scene:...}} plutôt.
+* Construire l'analyse
+  - Corriger les textes
+  - Faire la distinction entre 3 types de documents :
+    1. Les documents entièrement rédigés (introduction, synopsis)
+    2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
+    3. Les documents entièrement automatisés (PFA, au fil du film)
+  - Ajoute le type de document "building_script" qui doit guider la construction de l'analyse
+    -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse sont bien utilisés
 
 * Construire le PFA
 
-* Quand on est dans le writer,
-  + la tabulation permet
-    - soit d'écrire deux espaces
-    - soit d'évaluer un snippet
-    - soit de passer à un champ de donnée suivant ?
-  + Le raccourci CMD S permet de sauver le texte (pas l'analyse)
+* Pour la sortie en PDF
+  - il faudrait ajouter l'image de couverture au HTML
+  - il faut partir du HTML pour faire le PDF
+  - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
 # EN COURS DE DÉVELOPPEMENT
 
 * L'état d'avancement de l'application (analyse_state.js)
 * Le writer (dossier `writer`)
 * Construction du (des) PFA
-* La construction de l'analyse
+* Construction des Fondamentales
+* Construction des statistiques de fin
 
 # TODO LIST
 
+* Peut-être, pour particulariser chaque analyse, faut-il faire un "scénario" de construction qui explique comment procéder. Par exemple :
+    - mettre introduction
+    - mettre PFA
+    - passer une page
+    - mettre fil du film
+    - mettre document <id/name>
+    etc.
+  Ce serait un document de type 'data'
+* Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
 * Construire les fondamentales (à partir du fichier data)
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
   - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)

@@ -10,6 +10,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
+  * [Boutons de fermeture](#boutons_close)
 * [Documents de l'analyse](#documents_analyse)
 * [Sauvegarde protégée des documents](#saving_protected)
 
@@ -230,6 +231,18 @@ Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans
 Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
+
+### Boutons de fermeture {#boutons_close}
+
+Pour faire un bouton rouge de fermeture « à la Mac », il suffit de placer dans l'entête de l'élément un `button` de classe `btn-close` :
+
+```html
+
+  <button type="button" class="btn-close"></button>
+
+```
+
+Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture. Il faut cependant l'observer pour saisir son click.
 
 ## Documents de l'analyse {#documents_analyse}
 

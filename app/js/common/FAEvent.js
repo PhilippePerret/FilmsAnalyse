@@ -330,16 +330,35 @@ class FAEvent {
     return this._btnPlayETools || defP(this,'_btnPlayETools', this.jqReaderObj.find('.e-tools .btn-play'))
   }
 
-  observe(){
+  observe(container){
     var o = this.jqReaderObj
     o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
     BtnPlay.setAndWatch(this.jqReaderObj, this.id)
+
+    /**
+     * On rend l'event draggable pour pouvoir le déplacer sur un élément
+     * dans lequel il doit être ajouté.
+     * Mais pour que ça fonctionne, il faut le overflow du container soit
+     * momentanément retiré, sinon l'event passe "en dessous" quand on le
+     * déplace.
+     */
     o.draggable({
         revert: true
       // , stack: 'section#section-eventers div.eventer div.pan-events'
       // , start: function(event, ui) { $(this).css("z-index", a++); }
       , classes:{
           'ui-draggable-dragging': 'myHighlight'
+        }
+      , start: ev => {
+          if(container){
+            container.old_overflow = container.css('overflow')
+            container.css('overflow','visible')
+          }
+        }
+      , stop: ev => {
+          if(container){
+            container.css('overflow', container.old_overflow)
+          }
         }
     })
   }

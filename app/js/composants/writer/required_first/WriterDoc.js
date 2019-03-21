@@ -24,8 +24,9 @@ class WriterDoc {
   get contents(){return this._contents}
   set contents(v){
     this._contents = v
+    this.displaySize()
     this.modified = true
-    this.setMenuModeles()
+    this.toggleMenuModeles()
   }
 
   // Affiche le document
@@ -34,9 +35,12 @@ class WriterDoc {
     this.preparePerType() // préparer le writer en fonction du type
     if (!this.exists()) return // rien à charger
     else if (!this.loaded) this.load()
-    Writer.docField.val(this.contents)
+    this.displayContents()
   }
 
+  displayContents(){
+    Writer.docField.val(this.contents)
+  }
   // Pour afficher la taille du document dans l'interface (gadget)
   displaySize(){
     $('#section-writer #text-size').html(this.contents.length)
@@ -73,7 +77,7 @@ class WriterDoc {
   setContents(code){
     this.contents = code
     this.loaded   = true
-    Writer.docField.val(this.contents)
+    this.displayContents()
     this.displaySize()
   }
   /**
@@ -91,9 +95,9 @@ class WriterDoc {
   preparePerType(){
     var my = this
     // Thème par défaut
-    Writer.onChooseTheme(null, this.themePerType)
+    Writer.applyTheme(this.themePerType)
     // Templates à proposer
-    var tempFolderPath = path.join('.','app','building', this.type)
+    var tempFolderPath = path.join('.','app','analyse_files', this.type)
     var tempFilePath = `${tempFolderPath}.${this.extension}`
     if(fs.existsSync(tempFilePath)){
       // <= Un seul fichier
@@ -109,7 +113,7 @@ class WriterDoc {
   }
   // Le menu des modèles ne doit être affiché que si le contenu du document
   // est vide.
-  setMenuModeles(){
+  toggleMenuModeles(){
     var doit = this.contents.trim() == ''
     $('#section-writer .header span.modeles')[doit?'show':'hide']()
   }
@@ -133,14 +137,15 @@ class WriterDoc {
   exists(){ return fs.existsSync(this.path) }
 
   get themePerType(){
-    if(undefined === this._themePerType){
-      this._themePerType = {
-          'real': 'real-theme'
-        , 'data': 'data-theme'
-      }[this.dataType.type] || 'real-theme'
+    if (this.dataType.type == 'data'){
+      if (Writer.currentTheme != 'data-theme') return 'data-theme'
+    } else {
+      if ( ! Writer.currentTheme ) return 'real-theme'
+      else if (Writer.currentTheme == 'data-theme') return 'real-theme'
+      else return Writer.currentTheme
     }
-    return this._themePerType
   }
+
   get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
   // Les données absolues, en fonction du type

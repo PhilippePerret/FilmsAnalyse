@@ -6,10 +6,10 @@ module.exports = function(ev){
   var sceneNumber = current_analyse.currentScene ? current_analyse.currentScene.number : 1
   var imgName = `scene-${sceneNumber}.jpeg`
   var vignettesFolder
-  if(!fs.existsSync(current_analyse.vignettesScenesFolder)){
-    fs.mkdirSync(current_analyse.vignettesScenesFolder)
+  if(!fs.existsSync(current_analyse.folderVignettesScenes)){
+    fs.mkdirSync(current_analyse.folderVignettesScenes)
   }
-  var imgPath = path.resolve(path.join(current_analyse.vignettesScenesFolder, imgName))
+  var imgPath = path.resolve(path.join(current_analyse.folderVignettesScenes, imgName))
   // var cmd = `ffmpeg -ss ${current_analyse.locator.getOTime().horloge_simple} -t 0.200 -i ${current_analyse.videoPath} -r 0.03 ${imgPath}`
   var cmd = `ffmpeg -ss ${current_analyse.locator.getOTime().horloge_simple} -i ${current_analyse.videoPath} -frames:v 1 -r 1 ${imgPath}`
   // -r 0.5 => prendre toutes les deux secondes
