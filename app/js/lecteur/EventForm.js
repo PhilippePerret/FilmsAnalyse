@@ -334,7 +334,8 @@ class EventForm {
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
-
+    // Bouton de fermeture
+    this.jqObj.find('.header .btn-close').on('click', my.cancel.bind(my))
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
     this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
@@ -535,6 +536,7 @@ const EVENT_FORM_TEMP = `
   <input type="hidden" id="event-__EID__-type" />
 
   <section class="header no-user-selection">
+    <button type="button" class="btn-close"></button>
     <span class="event-type">...</span>
   </section>
 
