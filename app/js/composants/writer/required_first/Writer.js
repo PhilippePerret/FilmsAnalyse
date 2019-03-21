@@ -107,43 +107,10 @@ const Writer = {
       this.currentDoc.contents = this.docField.val()
     }
 
+    // Cf. require_then/Writer_keyUp_keyDown.js
   , onKeyDown:function(e){
-      // console.log("-> onKeyDown dans textarea du writer")
-      if(e.keyCode === KTAB){
-        return stopEvent(e)
-      }
-      return true
     }
   , onKeyUp:function(e){
-      // console.log("-> onKeyUp dans textarea du writer")
-      // console.log("which, KeyCode, charCode, metaKey", e.which, e.keyCode, e.charCode, e.metaKey)
-      if(e.which === 91){
-        // <= CMD S
-        // => On doit sauver le texte
-        this.currentDoc.save()
-        return stopEvent(e)
-      } else if(e.keyCode === KTAB){
-        if(this.selector.before() == RC){
-          // => suivant le type
-          // console.log("Un retour chariot juste avant")
-          if(this.currentDoc.dataType.type == 'data'){
-            this.selector.insert('  ')
-          } else {
-            this.selector.insert('* ')
-          }
-        } else {
-          // => Check snippet
-          // On prend les lettres juste avant la sélection pour voir
-          // si c'est un snippet.
-          var snip = this.selector.beforeUpTo(' ', false)
-          var remp = Snippet.check(snip)
-          if( remp ){
-            this.selector.set(this.selector.startOffset - snip.length, null)
-            this.selector.insert(remp)
-          }
-        }
-        return stopEvent(e)
-      }
     }
 
   , onFocusContents:function(){
