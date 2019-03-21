@@ -107,11 +107,31 @@ const Writer = {
       this.currentDoc.contents = this.docField.val()
     }
 
+  , onKeyDown:function(e){
+      console.log("-> onKeyDown dans textarea du writer")
+      if(e.keyCode === KTAB){
+        return stopEvent(e)
+      }
+      return true
+    }
+  , onKeyUp:function(e){
+      console.log("-> onKeyUp dans textarea du writer")
+      if(e.keyCode === KTAB){
+        console.log('TABULATION!')
+        return stopEvent(e)
+      }
+    }
+
   , onFocusContents:function(){
-      this.message()
+      this.message('')
+      // TODO Activer les raccourcis 'keyup/keydown' propre au textarea du writer
+      // this.docField.on('keydown', this.onKeyDown.bind(this))
+      // this.docField.on('keyup', this.onKeyUp.bind(this))
     }
   , onBlurContents:function(){
-
+      // TODO Remettre les anciens raccourcis 'keyup/keydown'
+      // this.docField.off('keydown', this.onKeyDown.bind(this))
+      // this.docField.off('keyup', this.onKeyUp.bind(this))
     }
     /**
      * Méthode invoquée quand on drop un event (.event) ou un document (.doc)
@@ -238,9 +258,12 @@ const Writer = {
       this.menuThemes.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
-      this.docField.on('change', this.onContentsChange.bind(this))
-      this.docField.on('focus', this.onFocusContents.bind(this))
-      this.docField.on('blur', this.onBlurContents.bind(this))
+      this.docField.on('change',  this.onContentsChange.bind(this))
+      this.docField.on('focus',   this.onFocusContents.bind(this))
+      this.docField.on('blur',    this.onBlurContents.bind(this))
+      this.docField.on('keydown', this.onKeyDown.bind(this))
+      this.docField.on('keyup',   this.onKeyUp.bind(this))
+
       // On rend le champ de texte droppable pour pouvoir y déposer
       // n'importe quel event
       this.docField.droppable({

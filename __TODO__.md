@@ -9,6 +9,12 @@
 
 * Construire l'analyse
   - Corriger les textes
+  - Faire la distinction entre 3 types de documents :
+    1. Les documents entièrement rédigés (introduction, synopsis)
+    2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
+    3. Les documents entièrement automatisés (PFA, au fil du film)
+  - Ajoute le type de document "building_script" qui doit guider la construction de l'analyse
+    -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse sont bien utilisés
 
 * Construire le PFA
 
