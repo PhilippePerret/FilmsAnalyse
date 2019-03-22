@@ -7,8 +7,9 @@
 const Writer = {
     class: 'Writer'
 
+  , inited: false     // Pour savoir s'il a été initié
   , ready: false      // pour savoir s'il est préparé
-  , isOpened: false  // Pour savoir si le writer est ouvert ou fermé
+  , isOpened: false   // Pour savoir si le writer est ouvert ou fermé
 
   , currentDoc: undefined //l'instance WriterDoc courante (elle doit toujours exister)
 
@@ -54,7 +55,7 @@ const Writer = {
       var cmd = `echo "${this.currentDoc.contents.replace(/\"/g,'\\"')}" | pandoc`
       exec(cmd, (err, stdout, stderr) => {
         if(err)throw(err)
-        $('#writer-doc-visualizor').html(stdout)
+        this.visualizor.html(stdout)
       })
     }
   , checkCurrentDocModified:function(){
@@ -101,17 +102,17 @@ const Writer = {
     }
 
     /**
-     * Méthode appelée lorsque le contenu du document est changé
-     */
+    * Méthode appelée lorsque le contenu du document est changé
+    * C'est la seule procédure qui doit pouvoir changer le `contents` du
+    * document courant.
+    */
   , onContentsChange:function(){
       this.currentDoc.contents = this.docField.val()
     }
 
     // Cf. require_then/Writer_keyUp_keyDown.js
-  , onKeyDown:function(e){
-    }
-  , onKeyUp:function(e){
-    }
+  , onKeyDown:function(e){}
+  , onKeyUp:function(e){}
 
   , onFocusContents:function(){
       this.message('')
@@ -184,20 +185,18 @@ const Writer = {
      * Méthode d'autosauvegarde du document courant
      */
   , autoSaveCurrent:function(){
-      if(this.currentDoc.modified){
-        console.log("Document modifié, sauvegarde en cours")
-        this.currentDoc.save()
-      }else{
-        console.log("Document non modifié, pas de sauvegarde")
+      if(this.currentDoc.isModified()){
+        // Si le contenu a changé, on sauve
+        if (this.currentDoc.getContent()) this.currentDoc.save()
       }
     }
     /**
      * Pour définir l'autosauvegarde
      */
   , setAutoSave:function(){
-      this.autosave = DGet('cb-save-auto-doc').checked
-      $('#btn-save-doc').css('opacity',this.autosave ? '0.3' : '1')
-      if(this.autosave){
+      this.autoSave = DGet('cb-save-auto-doc').checked
+      $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
+      if(this.autoSave){
         this.autoSaveTimer = setInterval(this.autoSaveCurrent.bind(this), 2000)
       } else {
         if (this.autoSaveTimer){
@@ -236,8 +235,13 @@ const Writer = {
       for(var dType in DATA_DOCUMENTS){
         var ddoc = DATA_DOCUMENTS[dType]
         var opt = document.createElement('OPTION')
-        opt.value = dType
-        opt.innerHTML = ddoc.hname
+        if(ddoc === 'separator'){
+          opt.className = 'separator'
+          opt.disabled = true
+        } else {
+          opt.value = dType
+          opt.innerHTML = ddoc.hname
+        }
         m.append(opt)
       }
 
@@ -249,11 +253,11 @@ const Writer = {
       this.menuThemes.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
-      this.docField.on('change',  this.onContentsChange.bind(this))
-      this.docField.on('focus',   this.onFocusContents.bind(this))
-      this.docField.on('blur',    this.onBlurContents.bind(this))
-      this.docField.on('keydown', this.onKeyDown.bind(this))
-      this.docField.on('keyup',   this.onKeyUp.bind(this))
+      this.docField.on('change',    this.onContentsChange.bind(this))
+      this.docField.on('focus',     this.onFocusContents.bind(this))
+      this.docField.on('blur',      this.onBlurContents.bind(this))
+      this.docField.on('keydown',   this.onKeyDown.bind(this))
+      this.docField.on('keyup',     this.onKeyUp.bind(this))
 
       // On rend le champ de texte droppable pour pouvoir y déposer
       // n'importe quel event
@@ -276,7 +280,7 @@ const Writer = {
       // On rend le writer draggable
       this.section.draggable();
       // On rend le visualiseur draggable
-      $('div#writer-doc-visualizor').draggable();
+      this.visualizor.draggable();
 
       // Mettre la taille : non, ça doit se régler à chaque ouverture
 

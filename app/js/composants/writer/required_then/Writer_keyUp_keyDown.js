@@ -4,12 +4,12 @@
 **/
 
 Writer.onKeyDown = function(e){
-  console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
+  // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   let sel = this.selector, ret = true // retour par défaut
   if(e.keyCode === KTAB){
     return stopEvent(e)
   } else if (e.metaKey){
-    console.log("-> metaKey")
+    // console.log("-> metaKey")
     if (e.ctrlKey) {
       console.log("-> Meta + CTRL")
       if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
@@ -93,6 +93,15 @@ Writer.onKeyDown = function(e){
         // console.log(`Monter ou descendre le paragraphe "${parag}"`)
         ret = stopEvent(e)
       }
+    } else if (e.altKey ){
+      // META + ALT
+    } else if (e.shiftKey) {
+      // META + SHIFT
+    } else {
+      // META SEUL
+      if (e.which === K_S ){
+        if (this.currentDoc.isModified()) this.currentDoc.save()
+      }
     }
   }
   sel = null
@@ -100,8 +109,7 @@ Writer.onKeyDown = function(e){
 }
 
 Writer.onKeyUp = function(e){
-  // console.log("-> onKeyUp dans textarea du writer")
-  console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
+  // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   var sel = this.selector
   if(e.altKey){
     if(e.which === K_OCROCHET){ // note : avec altKey
@@ -131,11 +139,13 @@ Writer.onKeyUp = function(e){
       // => Check snippet
       // On prend les lettres juste avant la sélection pour voir
       // si c'est un snippet.
-      var snip = sel.beforeUpTo(' ', false)
-      var remp = Snippet.check(snip)
-      if( remp ){
-        sel.set(sel.startOffset - snip.length, null)
-        sel.insert(remp)
+      var snip = sel.beforeUpTo(' ', false, {endRC: true})
+      if (snip !== null){
+        var remp = Snippets.check(snip)
+        if( remp ){
+          sel.set(sel.startOffset - snip.length, null)
+          sel.insert(remp)
+        }
       }
     }
     stopEvent(e)

@@ -108,8 +108,9 @@ section#section-writer div#writer-doc-visualizor {
   width:400px;
   height: 600px;
   padding:1em;
-  border:9px solid teal;
-  border-radius:1em;
+  border:4px solid grey;
+  border-radius:0 0.3em 0.3em 0;
+  box-shadow:5px 5px 5px 0px #DDDDDD;
   background-color:white;
   overflow:auto;
   z-index:20;
@@ -117,5 +118,5 @@ section#section-writer div#writer-doc-visualizor {
 section#section-writer div#writer-doc-visualizor,
 section#section-writer div#writer-doc-visualizor *
 {
-  font-size:0.8em;
+  font-size:0.91em;
 }

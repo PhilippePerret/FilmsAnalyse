@@ -20,6 +20,7 @@ class WriterDoc {
     Writer.footer[v?'addClass':'removeClass']('modified')
     this._modified = v
   }
+  isModified(){return this._modified === true}
 
   get contents(){return this._contents}
   set contents(v){
@@ -60,15 +61,27 @@ class WriterDoc {
   // Pour sauver le document
   save(){
     if(this.saving) return
-    Writer.message('Sauvegarde en cours…')
     this.saving = true
-    this.getContents() // actualise le contenu
+    UI.startWait('Sauvegarde en cours…')
     this.iofile.save({after: this.endSaving.bind(this)})
   }
   endSaving(){
-    Writer.message('')
+    UI.stopWait()
+    this.afterSavingPerType()
     this.modified = false
     this.saving   = false
+  }
+
+  /**
+  * En fonction des types, des opérations peuvent être nécessaire.
+  * Par exemple, quand on change les snippets, on doit prendre en compte
+  * la nouvelle valeur.
+  **/
+  afterSavingPerType(){
+    switch (this.type) {
+      case 'snippets':
+        return Snippets.updateData(YAML.safeLoad(this.contents))
+    }
   }
 
   /**
@@ -82,9 +95,21 @@ class WriterDoc {
   }
   /**
    * Pour récupérer le contenu du textearea
+   *
+   * TODO Réfléchir à ça :
+   * Normalement, si un observeur onchange est placé sur le textarea, il
+   * est inutile d'actualiser le contenu quand on change de document (voir où
+  * on le fait ici).
+  *
+  * @return true si le contenu a changé, false otherwise.
    */
   getContents(){
-    this.contents = Writer.docField.val()
+    if(this.contents != Writer.docField.val()){
+      this.contents = Writer.docField.val()
+      return true
+    } else {
+      return false
+    }
   }
 
   /**

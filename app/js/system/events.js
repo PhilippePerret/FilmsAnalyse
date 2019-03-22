@@ -11,7 +11,7 @@ function stopEvent(e){
 const KTAB          = 9 // keycode
 const KRETURN       = 13 // keyCode
 
-const K_S           = 91 //
+const K_S           = 83 //
 const K_OCROCHET    = 53 // MAIS AVEC altKey
 const K_GUIL_DROIT  = 51
 

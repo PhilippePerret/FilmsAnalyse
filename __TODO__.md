@@ -1,5 +1,14 @@
 # SUR LE GRILL
 
+* [Writer]
+  * Au lieu de mettre l'entête et le footer modifié, mettre la section elle-même modifiée
+  * Utiliser Dialog pour faire la demande quand un document est modifié (avec les trois boutons "Ignorer", "Annuler", "Enregistrer")
+
+* Poursuivre l'installation de l'assemblage de l'analyse
+  - mettre les builders dans le dossier 'required_then' pour qu'ils soient
+    chargés et veiller simplement à mettre `ABuilder` à null en terminant.
+
+* Faire une document "Snippet" (comme les diminutifs) qui permet de définir les snippets de l'analyse.
 * Voir comment sauver le texte avec CMD-S
 
 * Construire l'analyse
