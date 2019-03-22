@@ -35,7 +35,7 @@ const Writer = {
      * Fait du document de type +dtype+ le document courant.
      */
   , makeCurrent:function(dtype){
-      this.checkCurrentDocModified()
+      if(false === this.checkCurrentDocModified()) return
       if(undefined === this.writerDocs) this.writerDocs = {}
       if(undefined === this.writerDocs[dtype]){
         this.writerDocs[dtype] = new WriterDoc(dtype)
@@ -43,6 +43,7 @@ const Writer = {
       this.currentDoc = this.writerDocs[dtype]
       this.currentDoc.display()
       if(!this.isOpened) this.open()
+      if(this.visualizeDoc) this.updateVisuDoc()
       // On "referme" toujours le menu des types (après l'ouverture)
       this.menuTypeDoc.val(dtype)
     }
@@ -51,17 +52,47 @@ const Writer = {
      * Actualise la visualisation du contenu Markdown dans le visualiseur
      */
   , updateVisuDoc:function(){
-      this.currentDoc.getContents()
-      var cmd = `echo "${this.currentDoc.contents.replace(/\"/g,'\\"')}" | pandoc`
+      var contenu
+      if (this.currentDoc.dataType.type === 'data'){
+        contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
+      } else {
+        contenu = new FATexte(this.docField.val()).formated
+      }
+      var cmd = `echo "${contenu.replace(/\"/g,'\\"')}" | pandoc`
       exec(cmd, (err, stdout, stderr) => {
         if(err)throw(err)
         this.visualizor.html(stdout)
       })
+      contenu = null
     }
+    /**
+    * La méthode vérifie que le document courant, s'il a été modifié, ait bien
+    * été enregistré.
+    *
+    * Dans le cas contraire, il demande à l'utilisateur ce qu'il veut faire :
+    *   - enregistrer les changements avant de poursuivre (return true)
+    *   - ignore les changements et poursuivre (return true)
+    *   - annuler, donc ne pas poursuire (return false)
+    **/
   , checkCurrentDocModified:function(){
-      if(this.currentDoc && this.currentDoc.modified){
-        if(confirm(T('ask-for-save-document-modified', {type: this.currentDoc.type}))){
-          this.currentDoc.save()
+      if(this.currentDoc && this.currentDoc.isModified()){
+        var choix = DIALOG.showMessageBox({
+            type:       'warning'
+          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+          , title:      "Document courant non sauvegardé"
+          , defaultId:  0
+          , cancelId:   1
+          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
+        })
+        switch (choix) {
+          case 0:
+            this.currentDoc.save()
+            return true
+          case 1: // annulation
+            return false
+          case 2: // on ignore les modifications
+            this.currentDoc.retreiveLastContents()
+            return true
         }
       }
     }
@@ -155,7 +186,7 @@ const Writer = {
       // OK
     }
   , close:function(){
-      this.checkCurrentDocModified()
+      if(false === this.checkCurrentDocModified()) return
       this.section.hide()
       this.unsetDimensions()
       this.isOpened = false
@@ -185,10 +216,8 @@ const Writer = {
      * Méthode d'autosauvegarde du document courant
      */
   , autoSaveCurrent:function(){
-      if(this.currentDoc.isModified()){
-        // Si le contenu a changé, on sauve
-        if (this.currentDoc.getContent()) this.currentDoc.save()
-      }
+      this.currentDoc.getContents()
+      this.currentDoc.isModified() && this.currentDoc.save()
     }
     /**
      * Pour définir l'autosauvegarde
@@ -207,15 +236,15 @@ const Writer = {
     }
 
   , setAutoVisualize:function(){
-      let autoVisu = DGet('cb-auto-visualize').checked
-      if (autoVisu){
+      this.visualizeDoc = DGet('cb-auto-visualize').checked
+      if (this.visualizeDoc){
         this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
         this.updateVisuDoc() // on commence tout de suite
       } else {
         clearInterval(this.autoVisuTimer)
         this.autoVisuTimer = null
       }
-      this.visualizor[autoVisu?'show':'hide']()
+      this.visualizor[this.visualizeDoc?'show':'hide']()
     }
 
   , setModified:function(mod){
@@ -271,7 +300,7 @@ const Writer = {
       })
 
       // Le bouton pour sauver le document courant
-      $('button#btn-save-doc').on('click',this.saveCurrentDoc.bind(this))
+      this.btnSave.on('click',this.saveCurrentDoc.bind(this))
       // On observe la case à cocher qui permet de sauvegarder automatiquement
       // le document
       $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
@@ -311,6 +340,9 @@ Object.defineProperties(Writer,{
   }
 , docField:{
     get:function(){return $('#section-writer .body textarea#document-contents')}
+  }
+, btnSave:{
+    get:function(){return $('#section-writer button#btn-save-doc')}
   }
 , menuThemes:{
     get:function(){return $('#section-writer #writer-theme')}

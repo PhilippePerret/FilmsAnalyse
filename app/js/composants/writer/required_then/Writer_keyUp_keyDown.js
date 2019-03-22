@@ -100,7 +100,15 @@ Writer.onKeyDown = function(e){
     } else {
       // META SEUL
       if (e.which === K_S ){
-        if (this.currentDoc.isModified()) this.currentDoc.save()
+        console.log("Enregistrement du document demandé.")
+        this.currentDoc.getContents()
+        if (this.currentDoc.isModified()){
+          console.log("Document modifié => enregistrement")
+          this.currentDoc.save()
+        } else {
+          console.log("Document non modifié, pas d'enregistrement.")
+        }
+        ret = stopEvent(e)
       }
     }
   }
@@ -120,12 +128,6 @@ Writer.onKeyUp = function(e){
     sel.set(sel.startOffset-1, null)
     sel.insert('«  »')
     sel.set(sel.startOffset-2, sel.startOffset-2)
-  } else if( e.which === 91 ){
-    // <= CMD S
-    // => On doit sauver le texte
-    console.log("On passe par le which 91")
-    // this.currentDoc.save()
-    stopEvent(e)
   } else if(e.keyCode === KTAB){
     if(sel.before() == RC){
       // => suivant le type

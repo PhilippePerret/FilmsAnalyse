@@ -23,10 +23,17 @@ class WriterDoc {
 
   get contents(){return this._contents}
   set contents(v){
+    if (v === this._contents) return
+    this._lastContents = `${this._contents}`
     this._contents = v
     this.displaySize()
     this.modified = true
     this.toggleMenuModeles()
+  }
+
+  retreiveLastContents(){
+    this._contents  = this._lastContents
+    this.modified   = false
   }
 
   // Affiche le document
@@ -138,7 +145,7 @@ class WriterDoc {
   // Le menu des modèles ne doit être affiché que si le contenu du document
   // est vide.
   toggleMenuModeles(){
-    var doit = this.contents.trim() == ''
+    var doit = Writer.docField.val().trim() == ''
     $('#section-writer .header span.modeles')[doit?'show':'hide']()
   }
   afficheModeles(modeles){

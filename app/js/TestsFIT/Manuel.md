@@ -189,6 +189,21 @@ t.case("Un cas d'attente", function(){
 
 ```
 
+### Méthode `waitFor`
+
+Attend qu'une condition soit vraie (premier argument) avant de poursuivre.
+
+```javascript
+
+  waitFor(this_condition_must_be_true[, options])
+  .then(fn_poursuivre)
+  .catch(fn_error)
+
+```
+
+`options` peut définir un `timeout` qui produira une erreur s'il est atteint. Sinon, on utilise le timeout général défini (`Tests.TIMEOUT`).
+
+
 ### Méthodes pratiques sur les fichiers/dossier {#handy_method_on_files}
 
 `removeFile(<fpath>[, <humanName>])`

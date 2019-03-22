@@ -113,6 +113,8 @@ class FATexte {
     return str
   }
 
+  get formated(){return this.formate()}
+
   /**
    * Transforme toutes les balises vers des events en texte correct
    *

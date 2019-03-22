@@ -11,6 +11,8 @@ window.REDBOLD = 'font-weight:bold;color:red;'
 window.BLUEBOLD = 'color:blue;font-weight:bold;'
 window.GREENBOLD = 'color:darkgreen;font-weight:bold;'
 
+Tests.TIMEOUT = 20000
+
 // Pour définir les méthodes à appeler avant et après tous les tests
 Tests.beforeTestsFunction = undefined
 Tests.afterTestsFunction  = undefined

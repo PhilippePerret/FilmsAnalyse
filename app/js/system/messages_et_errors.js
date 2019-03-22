@@ -7,7 +7,7 @@ const ERRORS = {
   "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 , "--- DOCUMENTS ---":""
-, "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ?\n\nLa touche « Annuler » signifie : on poursuit en perdant les changements."
+, "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"
 , "--- FILES ---": ""
 , "code-to-save-is-empty":"Le code à sauver est vide, malheureusement."
 , "error-while-saving-file": "Une erreur s'est produite à l'enregistrement du fichier. Il ne contient pas le bon nombre d'octets.<br>%{fpath}."

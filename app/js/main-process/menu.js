@@ -511,3 +511,10 @@ ipc.on('display-analyse', ev => {
 ipc.on('current-analyse-exist', (ev, yesOrNo) => {
   ObjMenus.setMenuCurrentThing(yesOrNo)
 })
+
+// Pour les tests, pour pouvoir simuler un choix de menu
+// Dans le test, on met :
+//  ipc.send('click-menu', {menu_id: <id du menu>})
+ipc.on('click-menu', (e, data) => {
+  ObjMenus.getMenu(data.menu_id).click()
+})
