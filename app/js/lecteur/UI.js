@@ -157,13 +157,17 @@ const UI = {
   // ---------------------------------------------------------------------
   // Méthode travaillant avec les boutons de l'UI, mais affectant l'analyse
   // courante (seulement si elle existe, donc)
-  // En fait, ce sont des raccourcis
+  // En fait, ce sont des raccourcis (sauf pour togglePlay, par exemple, qui
+  // initialise des valeurs)
+  , togglePlay:function(){
+      current_analyse.locator.resetEndTime()
+      this.runIfAnalyse('togglePlay')
+    }
   , runIfAnalyse:function(method, arg){
       current_analyse && current_analyse.locator[method].bind(current_analyse.locator)(arg)
     }
   , hideCurrentTime:function(){this.runIfAnalyse('hideCurrentTime')}
   , goToTime:function(){this.runIfAnalyse('goToTime')}
-  , togglePlay:function(){this.runIfAnalyse('togglePlay')}
   , stopAndRewind:function(){this.runIfAnalyse('stopAndRewind')}
   , goToFilmStart:function(){this.runIfAnalyse('goToFilmStart')}
   , goToNextStopPoint:function(){this.runIfAnalyse('goToNextStopPoint')}

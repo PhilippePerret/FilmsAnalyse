@@ -81,12 +81,6 @@ class Locator {
    * Méthode appelée quand on presse le bouton Play
    */
   togglePlay(ev){
-    // console.log("-> togglePlay")
-    // try {
-    //   raisepourvoir
-    // } catch (e) {
-    //   console.error(e)
-    // }
     var pauser = this.playing === true
     if (pauser) {
       this.video.pause()
@@ -250,6 +244,10 @@ class Locator {
     this.wantedEndTime = parseFloat(time)
     this.wantedEndTimeCallback = fnOnEndTime
   }
+  resetEndTime(){
+    this.wantedEndTime = null
+    this.wantedEndTimeCallback = null
+  }
   // ---------------------------------------------------------------------
 
   /**
@@ -278,7 +276,7 @@ class Locator {
   * Alias de this.currentTime pour retourner le temps vidéo courant
   **/
   getTime(){ return this.currentTime }
-  
+
   /**
    * Méthode qui récupère le temps courant du film et retourne une instance
    * OTime
