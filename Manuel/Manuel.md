@@ -133,9 +133,9 @@ On peut placer des variables dans les documents à l'aide de la syntaxe :
 
 ```
 
-Ces variables — pour le moment — ne concernent que les données générales de l'analyse.
+Ces variables concernent en tout premier lieu les données générales de l'analyse. Ils sont définis dans le document « Documents > Informations »
 
-On trouve :
+On trouve par exemple :
 
 `{{title}}`
 : Titre complet du film
@@ -150,6 +150,8 @@ On trouve :
 
 `{{date}}`
 : Date du film.
+
+Mais on peut trouver dans ce document toutes les variables qu'on jugera utile pour l'analyse courante.
 
 ## Assemblage de l'analyse finale {#assemblage_analyse}
 
