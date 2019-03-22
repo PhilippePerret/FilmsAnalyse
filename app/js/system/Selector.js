@@ -1,25 +1,48 @@
 'use strict'
 /**
- * Utilitaire pour manipuler la sélection dans un textarea/input[text]
- *
- *  var sel = new Selector(myTextareaField)
- *
- *  sel.contents        => le contenu de la sélection
- *  sel.length          => longueur de la sélection
- *  sel.before()        => Le caractère/signe juste avant la sélection
- *  sel.before(4)       => Les 4 caractères avant la sélection
- *  sel.beforeUpTo(sig) => les caractères avant, jusqu'au signe fourni
- *  sel.beforeUpTo(sig, false)    Même chose, mais sans le signe (on s'arrête avant)
- *  sel.after()         => Le caractère/signe juste après la sélection
- *  sel.after(4)        => les 4 caractères/signes après la sélection
- *  sel.afterUpTo(sig)  => Les caractères après, jusqu'au signe fourni
- *  sel.afterUpTo(sig, false)   Même chose, mais sans le signe (on s'arrête avant)
- *  sel.remplace(txt)   => Remplace la sélection par `txt`
- *  sel.insert(txt)     => alias de remplace
- *
- *  sel.startOffset     => le début de la sélection
- *  sel.endOffset       => la fin de la sélection
- */
+*
+* Utilitaire pour manipuler la sélection dans un textarea/input[text]
+*
+* Version 1.0.2
+*
+
+  var sel = new Selector(myTextareaField)
+
+  sel.contents        => le contenu de la sélection
+  sel.length          => longueur de la sélection
+  sel.before()        => Le caractère/signe juste avant la sélection
+  sel.before(4)       => Les 4 caractères avant la sélection
+  sel.beforeUpTo(sig) => les caractères avant, jusqu'au signe fourni
+  sel.beforeUpTo(sig, false)    Même chose, mais sans le signe (on s'arrête avant)
+  sel.beforeUpTo(sig, false/true, options)
+      +options+ peut contenir :
+           noRC      Rencontrer un retour chariot annule la recherche (null est
+                     retourné)
+           endRC     Un retour de chario peut être une fin de recherche. Si
+                     le 2e argument est true (compris), on renvoie le texte
+                     trouvé avec le retour chariot.
+  sel.after()         => Le caractère/signe juste après la sélection
+  sel.after(4)        => les 4 caractères/signes après la sélection
+  sel.afterUpTo(sig)  => Les caractères après, jusqu'au signe fourni
+  sel.afterUpTo(sig, false)   Même chose, mais sans le signe (on s'arrête avant)
+  sel.afterUpTo(sig, false, options) cf.beforeUpTo
+  sel.remplace(txt)   => Remplace la sélection par `txt`
+  sel.insert(txt)     => alias de remplace
+
+  sel.startOffset     => le début de la sélection
+  sel.endOffset       => la fin de la sélection
+
+Notes sur versions
+------------------
+
+# Version 1.0.0
+    Première mise en place efficace de l'objet Selector
+
+# Version 1.0.2
+    3e paramètre pour `beforeUpTo` et `afterUpTo` pour définir si un retour
+    chariot va annuler la recherche ou va la terminer.
+
+*/
 
 class Selector {
   constructor(domObj){
@@ -82,13 +105,23 @@ class Selector {
   /**
    * Retourne le texte avant jusqu'au signe +sig+
    */
-  beforeUpTo(sig, compris){
-    if(undefined === compris) compris = true
+  beforeUpTo(sig, compris, options){
+    [compris, options] = this.defaultize(compris, options)
     var hasBeenFound = false
     var textAvant = this.fieldValue.substring(0, this.startOffset)
     var len = textAvant.length, curSig, textFound = [], i = len - 1
     for(;i>=0;i--){
       curSig = textAvant.substring(i, i+1)
+      if ( curSig == RC ){
+        if (options.noRC){
+          hasBeenFound = false
+          break
+        } else if (options.endRC) {
+          hasBeenFound = true
+          compris && textFound.push(RC)
+          break
+        }
+      }
       if(compris) textFound.push(curSig)
       if (curSig == sig){
         hasBeenFound = true
@@ -106,12 +139,22 @@ class Selector {
   * Si +compris+ est true (défaut), le sign est renvoyé, sinon, on s'arrête
   * avant.
   **/
-  afterUpTo(sig, compris){
-    if(undefined === compris) compris = true
+  afterUpTo(sig, compris, options){
+    [compris, options] = this.defaultize(compris, options)
     var textApres = this.fieldValue.substring(this.endOffset, this.fieldValue.length)
     var textFound = '', curSig, hasBeenFound = false
     for(var i = 0, len = textApres.length; i < len ; ++i){
       curSig = textApres.substring(i, i + 1)
+      if ( curSig == RC ){
+        if (options.noRC){
+          hasBeenFound = false
+          break
+        } else if (options.endRC) {
+          hasBeenFound = true
+          compris && textFound.push(RC)
+          break
+        }
+      }
       if (compris) textFound += curSig
       if (curSig == sig){
         hasBeenFound = true
@@ -122,5 +165,11 @@ class Selector {
     textApres = null
     if (hasBeenFound) return textFound
     else return null
+  }
+  // Mettre les valeurs par défaut
+  defaultize(compris, options){
+    if(undefined === compris) compris = true
+    if(undefined === options) options = {}
+    return [compris, options]
   }
 }

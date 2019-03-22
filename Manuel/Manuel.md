@@ -12,6 +12,7 @@
 * [Les Documents](#les_documents)
   * [Diminutifs](#les_diminutifs)
   * [Variables dans les documents](#variables_dans_les_documents)
+* [Assemblage de l'analyse finale](#assemblage_analyse)
 * [Publication online](#publication_online)
 
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
@@ -132,9 +133,9 @@ On peut placer des variables dans les documents à l'aide de la syntaxe :
 
 ```
 
-Ces variables — pour le moment — ne concernent que les données générales de l'analyse.
+Ces variables concernent en tout premier lieu les données générales de l'analyse. Ils sont définis dans le document « Documents > Informations »
 
-On trouve :
+On trouve par exemple :
 
 `{{title}}`
 : Titre complet du film
@@ -149,6 +150,44 @@ On trouve :
 
 `{{date}}`
 : Date du film.
+
+Mais on peut trouver dans ce document toutes les variables qu'on jugera utile pour l'analyse courante.
+
+## Assemblage de l'analyse finale {#assemblage_analyse}
+
+L'assemblage de l'analyse finale se fait à partir du *script d'assemblage* défini dans les documents. S'il n'est pas défini, c'est le script par défaut qui sera utilisé (`./app/analyse_files/building_script.md`).
+
+Chaque ligne de ce *script d'assemblage* définit une commande à jouer. Cette commande est composée de la commande elle-même, qui est toujours le premier mot en majuscule, suivi des arguments à utiliser.
+
+Les deux premières type sont :
+
+* `FILE`. Elle permet d'inclure un texte dans l'analyse à l'endroit voulu.
+* `BUILD`. Elle demande la construction d'un composant de l'analyse, tel que le paradigme de Field, le diagramme dramatique ou autres statistiques.
+
+### Commande `FILE`
+
+En argument de la commande `FILE`, on peut trouver tous les types de document du menu des documents. On pourra donc faire, par exemple :
+
+```
+FILE Introduction
+FILE Lecon_tiree
+```
+
+En fait, ces fichiers se trouvent dans le dossier `analyse_files` de l'analyse. Tout fichier contenu par ce dossier peut être inclus de cette manière dans l'analyse. S'il existe par exemple un fichier s'appelant `grande_note.md`, alors on pourra utiliser la commande :
+
+```
+FILE Introduction
+FILE grande_note
+FILE Lecon_tiree
+```
+
+… pour le charger à l'endroit voulu dans le fichier, ici entre l'introduction et la leçon tirée du film. Toute hiérarchie peut être utilisée, si les documents se trouvent dans des sous-dossiers. Par exemple :
+
+```
+FILE dossier1/sous-dossier2/mon_fichier_markdown
+```
+
+La seule exigence pour le moment est que le fichier doit être au format Markdown (étendu).
 
 ## Publication online {#publication_online}
 

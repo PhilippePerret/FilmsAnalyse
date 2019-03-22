@@ -7,8 +7,9 @@
 const Writer = {
     class: 'Writer'
 
+  , inited: false     // Pour savoir s'il a été initié
   , ready: false      // pour savoir s'il est préparé
-  , isOpened: false  // Pour savoir si le writer est ouvert ou fermé
+  , isOpened: false   // Pour savoir si le writer est ouvert ou fermé
 
   , currentDoc: undefined //l'instance WriterDoc courante (elle doit toujours exister)
 
@@ -34,7 +35,7 @@ const Writer = {
      * Fait du document de type +dtype+ le document courant.
      */
   , makeCurrent:function(dtype){
-      this.checkCurrentDocModified()
+      if(false === this.checkCurrentDocModified()) return
       if(undefined === this.writerDocs) this.writerDocs = {}
       if(undefined === this.writerDocs[dtype]){
         this.writerDocs[dtype] = new WriterDoc(dtype)
@@ -42,6 +43,7 @@ const Writer = {
       this.currentDoc = this.writerDocs[dtype]
       this.currentDoc.display()
       if(!this.isOpened) this.open()
+      if(this.visualizeDoc) this.updateVisuDoc()
       // On "referme" toujours le menu des types (après l'ouverture)
       this.menuTypeDoc.val(dtype)
     }
@@ -50,17 +52,47 @@ const Writer = {
      * Actualise la visualisation du contenu Markdown dans le visualiseur
      */
   , updateVisuDoc:function(){
-      this.currentDoc.getContents()
-      var cmd = `echo "${this.currentDoc.contents.replace(/\"/g,'\\"')}" | pandoc`
+      var contenu
+      if (this.currentDoc.dataType.type === 'data'){
+        contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
+      } else {
+        contenu = new FATexte(this.docField.val()).formated
+      }
+      var cmd = `echo "${contenu.replace(/\"/g,'\\"')}" | pandoc`
       exec(cmd, (err, stdout, stderr) => {
         if(err)throw(err)
-        $('#writer-doc-visualizor').html(stdout)
+        this.visualizor.html(stdout)
       })
+      contenu = null
     }
+    /**
+    * La méthode vérifie que le document courant, s'il a été modifié, ait bien
+    * été enregistré.
+    *
+    * Dans le cas contraire, il demande à l'utilisateur ce qu'il veut faire :
+    *   - enregistrer les changements avant de poursuivre (return true)
+    *   - ignore les changements et poursuivre (return true)
+    *   - annuler, donc ne pas poursuire (return false)
+    **/
   , checkCurrentDocModified:function(){
-      if(this.currentDoc && this.currentDoc.modified){
-        if(confirm(T('ask-for-save-document-modified', {type: this.currentDoc.type}))){
-          this.currentDoc.save()
+      if(this.currentDoc && this.currentDoc.isModified()){
+        var choix = DIALOG.showMessageBox({
+            type:       'warning'
+          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+          , title:      "Document courant non sauvegardé"
+          , defaultId:  0
+          , cancelId:   1
+          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
+        })
+        switch (choix) {
+          case 0:
+            this.currentDoc.save()
+            return true
+          case 1: // annulation
+            return false
+          case 2: // on ignore les modifications
+            this.currentDoc.retreiveLastContents()
+            return true
         }
       }
     }
@@ -101,50 +133,17 @@ const Writer = {
     }
 
     /**
-     * Méthode appelée lorsque le contenu du document est changé
-     */
+    * Méthode appelée lorsque le contenu du document est changé
+    * C'est la seule procédure qui doit pouvoir changer le `contents` du
+    * document courant.
+    */
   , onContentsChange:function(){
       this.currentDoc.contents = this.docField.val()
     }
 
-  , onKeyDown:function(e){
-      // console.log("-> onKeyDown dans textarea du writer")
-      if(e.keyCode === KTAB){
-        return stopEvent(e)
-      }
-      return true
-    }
-  , onKeyUp:function(e){
-      // console.log("-> onKeyUp dans textarea du writer")
-      // console.log("which, KeyCode, charCode, metaKey", e.which, e.keyCode, e.charCode, e.metaKey)
-      if(e.which === 91){
-        // <= CMD S
-        // => On doit sauver le texte
-        this.currentDoc.save()
-        return stopEvent(e)
-      } else if(e.keyCode === KTAB){
-        if(this.selector.before() == RC){
-          // => suivant le type
-          // console.log("Un retour chariot juste avant")
-          if(this.currentDoc.dataType.type == 'data'){
-            this.selector.insert('  ')
-          } else {
-            this.selector.insert('* ')
-          }
-        } else {
-          // => Check snippet
-          // On prend les lettres juste avant la sélection pour voir
-          // si c'est un snippet.
-          var snip = this.selector.beforeUpTo(' ', false)
-          var remp = Snippet.check(snip)
-          if( remp ){
-            this.selector.set(this.selector.startOffset - snip.length, null)
-            this.selector.insert(remp)
-          }
-        }
-        return stopEvent(e)
-      }
-    }
+    // Cf. require_then/Writer_keyUp_keyDown.js
+  , onKeyDown:function(e){}
+  , onKeyUp:function(e){}
 
   , onFocusContents:function(){
       this.message('')
@@ -187,7 +186,7 @@ const Writer = {
       // OK
     }
   , close:function(){
-      this.checkCurrentDocModified()
+      if(false === this.checkCurrentDocModified()) return
       this.section.hide()
       this.unsetDimensions()
       this.isOpened = false
@@ -217,20 +216,16 @@ const Writer = {
      * Méthode d'autosauvegarde du document courant
      */
   , autoSaveCurrent:function(){
-      if(this.currentDoc.modified){
-        console.log("Document modifié, sauvegarde en cours")
-        this.currentDoc.save()
-      }else{
-        console.log("Document non modifié, pas de sauvegarde")
-      }
+      this.currentDoc.getContents()
+      this.currentDoc.isModified() && this.currentDoc.save()
     }
     /**
      * Pour définir l'autosauvegarde
      */
   , setAutoSave:function(){
-      this.autosave = DGet('cb-save-auto-doc').checked
-      $('#btn-save-doc').css('opacity',this.autosave ? '0.3' : '1')
-      if(this.autosave){
+      this.autoSave = DGet('cb-save-auto-doc').checked
+      $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
+      if(this.autoSave){
         this.autoSaveTimer = setInterval(this.autoSaveCurrent.bind(this), 2000)
       } else {
         if (this.autoSaveTimer){
@@ -241,17 +236,20 @@ const Writer = {
     }
 
   , setAutoVisualize:function(){
-      let autoVisu = DGet('cb-auto-visualize').checked
-      if (autoVisu){
+      this.visualizeDoc = DGet('cb-auto-visualize').checked
+      if (this.visualizeDoc){
         this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
         this.updateVisuDoc() // on commence tout de suite
       } else {
         clearInterval(this.autoVisuTimer)
         this.autoVisuTimer = null
       }
-      this.visualizor[autoVisu?'show':'hide']()
+      this.visualizor[this.visualizeDoc?'show':'hide']()
     }
 
+  , setModified:function(mod){
+      this.section[mod?'addClass':'removeClass']('modified')
+    }
 
     /**
      * Pour afficher un message propre au writer
@@ -269,8 +267,13 @@ const Writer = {
       for(var dType in DATA_DOCUMENTS){
         var ddoc = DATA_DOCUMENTS[dType]
         var opt = document.createElement('OPTION')
-        opt.value = dType
-        opt.innerHTML = ddoc.hname
+        if(ddoc === 'separator'){
+          opt.className = 'separator'
+          opt.disabled = true
+        } else {
+          opt.value = dType
+          opt.innerHTML = ddoc.hname
+        }
         m.append(opt)
       }
 
@@ -282,11 +285,11 @@ const Writer = {
       this.menuThemes.on('change', this.onChooseTheme.bind(this))
 
       // On observe le champ de texte
-      this.docField.on('change',  this.onContentsChange.bind(this))
-      this.docField.on('focus',   this.onFocusContents.bind(this))
-      this.docField.on('blur',    this.onBlurContents.bind(this))
-      this.docField.on('keydown', this.onKeyDown.bind(this))
-      this.docField.on('keyup',   this.onKeyUp.bind(this))
+      this.docField.on('change',    this.onContentsChange.bind(this))
+      this.docField.on('focus',     this.onFocusContents.bind(this))
+      this.docField.on('blur',      this.onBlurContents.bind(this))
+      this.docField.on('keydown',   this.onKeyDown.bind(this))
+      this.docField.on('keyup',     this.onKeyUp.bind(this))
 
       // On rend le champ de texte droppable pour pouvoir y déposer
       // n'importe quel event
@@ -297,7 +300,7 @@ const Writer = {
       })
 
       // Le bouton pour sauver le document courant
-      $('button#btn-save-doc').on('click',this.saveCurrentDoc.bind(this))
+      this.btnSave.on('click',this.saveCurrentDoc.bind(this))
       // On observe la case à cocher qui permet de sauvegarder automatiquement
       // le document
       $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
@@ -309,7 +312,7 @@ const Writer = {
       // On rend le writer draggable
       this.section.draggable();
       // On rend le visualiseur draggable
-      $('div#writer-doc-visualizor').draggable();
+      this.visualizor.draggable();
 
       // Mettre la taille : non, ça doit se régler à chaque ouverture
 
@@ -337,6 +340,9 @@ Object.defineProperties(Writer,{
   }
 , docField:{
     get:function(){return $('#section-writer .body textarea#document-contents')}
+  }
+, btnSave:{
+    get:function(){return $('#section-writer button#btn-save-doc')}
   }
 , menuThemes:{
     get:function(){return $('#section-writer #writer-theme')}

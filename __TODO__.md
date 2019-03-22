@@ -1,13 +1,15 @@
 # SUR LE GRILL
 
+* Poursuivre l'installation de l'assemblage de l'analyse
+  - mettre les builders dans le dossier 'required_then' pour qu'ils soient
+    chargés et veiller simplement à mettre `ABuilder` à null en terminant.
+
 * Construire l'analyse
-  - Corriger les textes
   - Faire la distinction entre 3 types de documents :
     1. Les documents entièrement rédigés (introduction, synopsis)
     2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
     3. Les documents entièrement automatisés (PFA, au fil du film)
-  - Ajoute le type de document "building_script" qui doit guider la construction de l'analyse
-    -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse sont bien utilisés
+  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse sont bien utilisés
 
 * Construire le PFA
 
@@ -15,6 +17,10 @@
   - il faudrait ajouter l'image de couverture au HTML
   - il faut partir du HTML pour faire le PDF
   - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
+
+* Développer les variables {{variable}} comme `{{title}}`
+  - traiter l'inscription d'un '{' dans le texte pour qu'il marque aussitôt un '{}'
+  - traiter l'inscription d'un '"' dans le texte pour qu'il marque aussitôt un '«  »' (avec insécable)
 
 # EN COURS DE DÉVELOPPEMENT
 

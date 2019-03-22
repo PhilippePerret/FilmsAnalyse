@@ -16,17 +16,24 @@ class WriterDoc {
 
   get modified(){return this._modified || false}
   set modified(v){
-    Writer.header[v?'addClass':'removeClass']('modified')
-    Writer.footer[v?'addClass':'removeClass']('modified')
+    Writer.setModified(v)
     this._modified = v
   }
+  isModified(){return this._modified === true}
 
   get contents(){return this._contents}
   set contents(v){
+    if (v === this._contents) return
+    this._lastContents = `${this._contents}`
     this._contents = v
     this.displaySize()
     this.modified = true
     this.toggleMenuModeles()
+  }
+
+  retreiveLastContents(){
+    this._contents  = this._lastContents
+    this.modified   = false
   }
 
   // Affiche le document
@@ -60,15 +67,27 @@ class WriterDoc {
   // Pour sauver le document
   save(){
     if(this.saving) return
-    Writer.message('Sauvegarde en cours…')
     this.saving = true
-    this.getContents() // actualise le contenu
+    UI.startWait('Sauvegarde en cours…')
     this.iofile.save({after: this.endSaving.bind(this)})
   }
   endSaving(){
-    Writer.message('')
+    UI.stopWait()
+    this.afterSavingPerType()
     this.modified = false
     this.saving   = false
+  }
+
+  /**
+  * En fonction des types, des opérations peuvent être nécessaire.
+  * Par exemple, quand on change les snippets, on doit prendre en compte
+  * la nouvelle valeur.
+  **/
+  afterSavingPerType(){
+    switch (this.type) {
+      case 'snippets':
+        return Snippets.updateData(YAML.safeLoad(this.contents))
+    }
   }
 
   /**
@@ -82,9 +101,21 @@ class WriterDoc {
   }
   /**
    * Pour récupérer le contenu du textearea
+   *
+   * TODO Réfléchir à ça :
+   * Normalement, si un observeur onchange est placé sur le textarea, il
+   * est inutile d'actualiser le contenu quand on change de document (voir où
+  * on le fait ici).
+  *
+  * @return true si le contenu a changé, false otherwise.
    */
   getContents(){
-    this.contents = Writer.docField.val()
+    if(this.contents != Writer.docField.val()){
+      this.contents = Writer.docField.val()
+      return true
+    } else {
+      return false
+    }
   }
 
   /**
@@ -114,7 +145,7 @@ class WriterDoc {
   // Le menu des modèles ne doit être affiché que si le contenu du document
   // est vide.
   toggleMenuModeles(){
-    var doit = this.contents.trim() == ''
+    var doit = Writer.docField.val().trim() == ''
     $('#section-writer .header span.modeles')[doit?'show':'hide']()
   }
   afficheModeles(modeles){

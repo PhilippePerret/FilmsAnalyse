@@ -21,3 +21,41 @@ window.wait = function(wTime, wMsg){
   if(undefined !== wMsg) Tests.log(wMsg)
   return new Promise(ok => {setTimeout(ok, wTime)})
 }
+
+Tests.testIfTrue = function(condition){
+  var my = Tests
+  // console.log("-> testIfTrue", this.optionsWaitFor)
+  let evaluation = eval(condition)
+  if (evaluation){
+    my.stopTimerWaitFor()
+    return my.okWaitFor()
+  } else if (my.optionsWaitFor.duration > my.optionsWaitFor.timeout) {
+    my.stopTimerWaitFor()
+    return my.koWaitFor('Attente déçue…')
+  } else {
+    my.optionsWaitFor.duration += 100
+  }
+}
+Tests.stopTimerWaitFor = function(){
+  clearInterval(this.waitForTimer)
+  delete this.waitForTimer
+}
+Tests.waitFor = function(condition, options){
+  var my = Tests
+  return new Promise((ok, ko) => {
+    my.okWaitFor      = ok
+    my.koWaitFor      = ko
+    options.duration  = 0
+    if (undefined === options.timeout) options.timeout = Tests.TIMEOUT
+    my.optionsWaitFor = options
+    if (my.testIfTrue.bind(my)(condition)) return true
+    else {
+      my.waitForTimer = setInterval(Tests.testIfTrue.bind(Tests, condition), 100)
+    }
+  })
+}
+
+window.waitFor = function(condition, options){
+  if(undefined === options) options = {duration: 0}
+  return Tests.waitFor(condition, options)
+}

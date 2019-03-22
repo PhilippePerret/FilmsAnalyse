@@ -318,6 +318,7 @@ class FAnalyse {
       System.loadJSFolders('./app/js/composants/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
       return
     }
+    if(!Writer.inited) Writer.init()
     Writer.openDoc(dtype)
   }
   /**

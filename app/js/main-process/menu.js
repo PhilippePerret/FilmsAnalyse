@@ -23,6 +23,7 @@ const CURRENT_THING_MENUS = [
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'new-eventer', 'open-writer'
 ]
+// Note : les ID des menus de documents seront ajoutés "à la volée"
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
 // de documents.
@@ -44,16 +45,14 @@ function openDocInWriter(doc_id){
 }
 var curType = null
 for(var doc_id in DATA_DOCS){
+  if (DATA_DOCS[doc_id] === 'separator'){
+    WriterSubmenus.push({type:'separator'})
+    continue
+  }
   var ddoc = DATA_DOCS[doc_id]
   var menu_id = `open-doc-${doc_id}`
   CURRENT_THING_MENUS.push(menu_id)
   var method = openDocInWriter.bind(null, doc_id)
-  // On met un séparateur entre les données de type différents
-  if(curType && curType != ddoc.type){
-    WriterSubmenus.push({type:'separator'})
-  }
-  curType = ddoc.type
-  // Puis on rendre le document
   WriterSubmenus.push({
       label:    ddoc.hname
     , id:       menu_id
@@ -511,4 +510,11 @@ ipc.on('display-analyse', ev => {
 })
 ipc.on('current-analyse-exist', (ev, yesOrNo) => {
   ObjMenus.setMenuCurrentThing(yesOrNo)
+})
+
+// Pour les tests, pour pouvoir simuler un choix de menu
+// Dans le test, on met :
+//  ipc.send('click-menu', {menu_id: <id du menu>})
+ipc.on('click-menu', (e, data) => {
+  ObjMenus.getMenu(data.menu_id).click()
 })
