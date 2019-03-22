@@ -218,6 +218,9 @@ const Writer = {
       this.visualizor[autoVisu?'show':'hide']()
     }
 
+  , setModified:function(mod){
+      this.section[mod?'addClass':'removeClass']('modified')
+    }
 
     /**
      * Pour afficher un message propre au writer

@@ -16,8 +16,7 @@ class WriterDoc {
 
   get modified(){return this._modified || false}
   set modified(v){
-    Writer.header[v?'addClass':'removeClass']('modified')
-    Writer.footer[v?'addClass':'removeClass']('modified')
+    Writer.setModified(v)
     this._modified = v
   }
   isModified(){return this._modified === true}

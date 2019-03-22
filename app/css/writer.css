@@ -4,18 +4,19 @@ section#section-writer {
   border:4px solid grey;
 }
 
-section#section-writer div.header {
-  background-color:#DFDFDF;
-  padding:0.2em 1em;
-}
-section#section-writer div.header.modified,
-section#section-writer div.header.modified *,
-section#section-writer div.footer.modified,
-section#section-writer div.footer.modified *
+section#section-writer.modified div.header,
+section#section-writer.modified div.header *,
+section#section-writer.modified div.footer,
+section#section-writer.modified div.footer *
 {
   background-color:#990022;
   color:white;
 }
+section#section-writer div.header {
+  background-color:#DFDFDF;
+  padding:0.2em 1em;
+}
+
 section#section-writer div.body {
   padding:1em;
   background-color:white;
