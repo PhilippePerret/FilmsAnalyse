@@ -3,6 +3,9 @@
 ---
 fondamentale_1:
   nature: Personnage Fondamental (PF/FD1)
+  pseudo: PSEUDO DU PERSONNAGE
+  prenom: FIRSTNAME
+  nom:    LASTNAME
   description: |
     DESCRIPTION DU PERSONNAGE.
   scenes: []
