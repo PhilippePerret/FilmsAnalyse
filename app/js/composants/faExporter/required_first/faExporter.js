@@ -17,8 +17,8 @@ class FAExporter {
   **/
   append(fpath, contents){
     var currentSize = this.currentSizeOf(fpath)
-    var expectedSize = currentSize + contents.length
-    fs.appendFileSync(fpath, 'utf8')
+    fs.appendFileSync(fpath, contents, 'utf8')
+    this.checkDiff(fpath, currentSize + Buffer.from(contents).length)
   }
 
   /**
@@ -29,6 +29,8 @@ class FAExporter {
     var curSize = this.currentSizeOf(fpath)
     if(curSize != expectedSize){
       throw(`La taille du fichier "${fpath}" devrait être de ${expectedSize} octets, elle est de ${curSize} octets.`)
+    } else {
+      FABuilder.log(`Taille du fichier OK : ${parseInt(expectedSize/10,10)/100} Ko.`)
     }
   }
 

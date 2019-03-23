@@ -286,10 +286,11 @@ class FAnalyse {
    * qu'il y aura un menu particulier pour le faire
    */
   displayFullAnalyse(forcer){
-    var callback = this.displayFullAnalyse.bind(this)
+    if(undefined === forcer) forcer = false
+    var callback = this.displayFullAnalyse.bind(this, forcer)
     if(NONE === typeof FABuilder) return this.loadBuilder(callback)
     if(NONE === typeof FAExporter)return this.loadExporter(callback)
-    FABuilder.createNew().show({force_update: !!forcer})
+    FABuilder.createNew().show({force_update: forcer})
     callback = null
   }
 

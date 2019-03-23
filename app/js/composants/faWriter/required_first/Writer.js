@@ -34,7 +34,7 @@ const FAWriter = {
     /**
      * Fait du document de type +dtype+ le document courant.
      */
-  , makeCurrent:function(dtype){
+  , makeCurrent(dtype){
       if(false === this.checkCurrentDocModified()) return
       if(undefined === this.writerDocs) this.writerDocs = {}
       if(undefined === this.writerDocs[dtype]){
@@ -51,7 +51,7 @@ const FAWriter = {
     /**
      * Actualise la visualisation du contenu Markdown dans le visualiseur
      */
-  , updateVisuDoc:function(){
+  , updateVisuDoc(){
       var contenu
       if (this.currentDoc.dataType.type === 'data'){
         contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
@@ -74,7 +74,7 @@ const FAWriter = {
     *   - ignore les changements et poursuivre (return true)
     *   - annuler, donc ne pas poursuire (return false)
     **/
-  , checkCurrentDocModified:function(){
+  , checkCurrentDocModified(){
       if(this.currentDoc && this.currentDoc.isModified()){
         var choix = DIALOG.showMessageBox({
             type:       'warning'
@@ -99,7 +99,7 @@ const FAWriter = {
     /**
      * Menu appelé quand on choisit un type de document dans le menu
      */
-  , onChooseTypeDoc:function(e){
+  , onChooseTypeDoc(e){
       this.makeCurrent(this.menuTypeDoc.val())
     }
 

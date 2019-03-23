@@ -9,7 +9,7 @@ const exec = require('child_process').exec
  *
  *
  */
-module.exports = function(options){
+module.exports = function(options, fn_callback){
   var my = this
 
   // Markdown -> HTML
@@ -20,6 +20,7 @@ module.exports = function(options){
     if(error)throw(error)
     my.log(`=== Création du format HTML (à partir du format Markdown) terminé avec succès.`)
     F.notify(`Création du format HTML (à partir du format Markdown) terminé avec succès.`)
+    fn_callback()
   });
 
 }

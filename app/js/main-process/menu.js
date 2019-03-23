@@ -114,7 +114,6 @@ const ObjMenus = {
      * Pour modifier le label d'un menu
      */
   , setLabelMenu:function(menu_id, menu_label){
-      console.log("-> setLabelMenu", menu_id, menu_label)
       var m = this.getMenu(menu_id).label = menu_label
       this.updateMenus();
       // var cloneM = m.clone()
@@ -123,10 +122,11 @@ const ObjMenus = {
 
 // Fonctions pratiques
 
-function execJsOnCurrent(method, ...args){
-  if(args){
-    // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${args}')`)
-    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}('${args}')`)
+function execJsOnCurrent(method, arg){
+  if(arg){
+    // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${arg}')`)
+    if ('string'==typeof arg) arg = `'${arg}'`
+    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}(${arg})`)
   } else {
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
   }

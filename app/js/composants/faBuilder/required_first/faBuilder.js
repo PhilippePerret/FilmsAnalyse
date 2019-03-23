@@ -29,7 +29,9 @@ class FABuilder {
    */
   show(options){
     if(undefined === options) options = {}
-    if(false == this.isUpToDate || options.force_update) this.build(options)
+    if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
+  }
+  showReally(){
     ipc.send('display-analyse')
     ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
@@ -39,25 +41,33 @@ class FABuilder {
    * "Construire l'analyse", pour le moment consiste à produire le document
    * Markdown rassemblant tous les éléments.
    */
-  build(options){
+  build(options, fn_callback){
     this.building = true
     this.log('*** Construction de l’analyse…')
     var my = this
     if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
     if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
-    this.exportAs('md', options)
-    this.exportAs('html', options)
+    this.buildAs('md', options)
+    this.exportAs('html', options, fn_callback)
     this.log('=== Fin de la construction de l’analyse')
     this.building = false
     my = null
   }
 
-  exportAs(format, options){
+  buildAs(format, options){
+    var my = this
+    my.log(`* buildAs "${format}". Options:`, options)
+    if(!this.building && !this.isUpToDate) this.build()
+    var method = require(`./js/composants/faBuilder/builders/as-${format}.js`).bind(this)
+    method(options)
+  }
+
+  exportAs(format, options, fn_callback){
     var my = this
     my.log(`* exportAs "${format}". Options:`, options)
     if(!this.building && !this.isUpToDate) this.build()
     var method = require(`./js/composants/faBuilder/exporters/as-${format}.js`).bind(this)
-    method(options)
+    method(options, fn_callback)
   }
 
 
@@ -127,7 +137,8 @@ class FABuilder {
   /**
    * Pour le log de la procédure
    */
-  log(msg, args){
+  log(msg, args){ this.constructor.log(msg, args) }
+  static log(msg, args){
     if(undefined === this.logs) this.logs = []
     this.logs.push({msg: msg, args: args})
     if (args) console.log(msg, args)
