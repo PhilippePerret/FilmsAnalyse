@@ -1,15 +1,13 @@
 # SUR LE GRILL
 
-* Poursuivre l'installation de l'assemblage de l'analyse
-  - mettre les builders dans le dossier 'required_then' pour qu'ils soient
-    chargés et veiller simplement à mettre `ABuilder` à null en terminant.
-
-* Construire l'analyse
-  - Faire la distinction entre 3 types de documents :
-    1. Les documents entièrement rédigés (introduction, synopsis)
+* Assemblage l'analyse
+  - Documenter la distinction entre 4 types de documents :
+    1. Les documents entièrement rédigés, littéraires (introduction, synopsis)
     2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
     3. Les documents entièrement automatisés (PFA, au fil du film)
-  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse sont bien utilisés
+    4. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
+    -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
+      - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
 
 * Construire le PFA
 

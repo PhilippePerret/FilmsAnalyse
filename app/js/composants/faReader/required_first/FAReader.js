@@ -5,7 +5,7 @@
  * Pour la lecture de l'analyse
  */
 
-class AReader {
+class FAReader {
 
   // Constante déterminant le temps qu'il faut laisser avant et après le
   // temps courant. Les events avant tempsCourant-TIME_AROUND et les events
@@ -26,7 +26,7 @@ class AReader {
   }
 
   /**
-   * Initialisation de l'instance AReader
+   * Initialisation de l'instance FAReader
    */
   init(){
 
@@ -37,7 +37,7 @@ class AReader {
    * Ne pas la confondre avec la méthode `resetBeyond` suivante
    */
   reset(){
-    AReader.reset()
+    FAReader.reset()
   }
 
   /**

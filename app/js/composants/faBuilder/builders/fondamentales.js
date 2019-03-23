@@ -1,6 +1,6 @@
 'use strict'
 
-ABuilder.prototype.builderFondamentales = function(options){
+FABuilder.prototype.builderFondamentales = function(options){
   my.log("* Construction des Fondamentales")
   let str = ''
 

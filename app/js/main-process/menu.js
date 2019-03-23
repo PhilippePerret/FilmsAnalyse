@@ -27,9 +27,9 @@ const CURRENT_THING_MENUS = [
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
 // de documents.
-const WriterSubmenus = [
+const FAWriterSubmenus = [
       {
-          label: "Ouvrir/fermer le Writer"
+          label: "Ouvrir/fermer le FAWriter"
         , id: 'open-writer'
         , accelerator: 'CmdOrCtrl+Shift+W'
         , enabled: false
@@ -38,7 +38,7 @@ const WriterSubmenus = [
     , {type:'separator'}
   ]
 
-const DATA_DOCS = require('../composants/writer/required_first/min.js')
+const DATA_DOCS = require('../composants/faWriter/required_first/min.js')
 
 function openDocInWriter(doc_id){
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
@@ -46,14 +46,14 @@ function openDocInWriter(doc_id){
 var curType = null
 for(var doc_id in DATA_DOCS){
   if (DATA_DOCS[doc_id] === 'separator'){
-    WriterSubmenus.push({type:'separator'})
+    FAWriterSubmenus.push({type:'separator'})
     continue
   }
   var ddoc = DATA_DOCS[doc_id]
   var menu_id = `open-doc-${doc_id}`
   CURRENT_THING_MENUS.push(menu_id)
   var method = openDocInWriter.bind(null, doc_id)
-  WriterSubmenus.push({
+  FAWriterSubmenus.push({
       label:    ddoc.hname
     , id:       menu_id
     , enabled:  false
@@ -61,7 +61,7 @@ for(var doc_id in DATA_DOCS){
   })
 }
 
-// console.log("WriterSubmenus:", WriterSubmenus)
+// console.log("FAWriterSubmenus:", FAWriterSubmenus)
 
 const ObjMenus = {
     class: 'ObjMenus'
@@ -114,7 +114,6 @@ const ObjMenus = {
      * Pour modifier le label d'un menu
      */
   , setLabelMenu:function(menu_id, menu_label){
-      console.log("-> setLabelMenu", menu_id, menu_label)
       var m = this.getMenu(menu_id).label = menu_label
       this.updateMenus();
       // var cloneM = m.clone()
@@ -123,10 +122,11 @@ const ObjMenus = {
 
 // Fonctions pratiques
 
-function execJsOnCurrent(method, ...args){
-  if(args){
-    // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${args}')`)
-    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}('${args}')`)
+function execJsOnCurrent(method, arg){
+  if(arg){
+    // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${arg}')`)
+    if ('string'==typeof arg) arg = `'${arg}'`
+    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}(${arg})`)
   } else {
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
   }
@@ -283,7 +283,7 @@ const DATA_MENUS = [
   , {
         label: "Documents"
       , enabled: true
-      , submenu: WriterSubmenus
+      , submenu: FAWriterSubmenus
     }
   /**
    * MENU VIDÉO

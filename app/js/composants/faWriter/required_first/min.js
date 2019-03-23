@@ -1,6 +1,6 @@
 'use strict'
 /**
- * Ce module du Writer est le module minimum chargé tout le temps, qui
+ * Ce module du FAWriter est le module minimum chargé tout le temps, qui
  * contient les données minimum à connaitre.
  */
 

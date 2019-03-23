@@ -23,15 +23,15 @@ Le point d'entrée de l'analyser (`analyser.html`) se fait par `./app/js/lecteur
 
 On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, pour le moment, c'est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.
 
-Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `AReader`)
+Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `FAReader`)
 
 ## Chargement de dossier de modules {#loading_modules_folders}
 
 On peut charger des modules en inscrivant leur balise `<script>` dans le document grâce à la méthode `System.loadJSFolders(mainFolder, subFolders, fn_callback)`.
 
-L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `WriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
+L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FAWriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
 
-C'est cette formule qu'on utilise par exemple pour charger le *Writer* qui permet de rédiger les textes.
+C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui permet de rédiger les textes.
 
 ## Création/modification des events {#creation_event}
 
@@ -250,7 +250,7 @@ Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, 
 
 Ces documents permettent de construire l'analyse de deux façons différentes :
 
-* en les rédigeant dans le *Writer* (qui s'ouvre grâce au menu « Documents »)
+* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
 ## Sauvegarde protégée des documents {#saving_protected}

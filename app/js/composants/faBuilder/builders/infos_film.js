@@ -1,6 +1,6 @@
 'use strict'
 
-ABuilder.prototype.builderInfosFilm = function(options){
+FABuilder.prototype.builderInfosFilm = function(options){
   my.log("* Construction des infos du film…")
   let str = ''
 

@@ -2,9 +2,9 @@
 /**
  * Class WDocFondamentales
  * -----------------------
- * Extension de WriterDoc pour les fondamentales
+ * Extension de FAWriterDoc pour les fondamentales
  */
-class WDocFondamentales extends WriterDoc {
+class WDocFondamentales extends FAWriterDoc {
   constructor(data){
     super(data)
   }

@@ -11,17 +11,17 @@ t.case('Modification et enregistrement', () => {
   action("J'active le menu Documents > Synopsis", () => {
     ipc.send('click-menu', {menu_id: 'open-doc-synopsis'})
   })
-  return waitFor("'undefined' !== typeof(Writer) && Writer.isOpened === true", {timeout: 4000})
+  return waitFor("'undefined' !== typeof(FAWriter) && FAWriter.isOpened === true", {timeout: 4000})
   .then(()=>{
 
-    let curDoc = Writer.currentDoc
+    let curDoc = FAWriter.currentDoc
 
     // On se met dans le champ de texte
-    Writer.docField.focus()
-    Writer.docField.insertAtCaret('Super')
-    Writer.docField.blur()
+    FAWriter.docField.focus()
+    FAWriter.docField.insertAtCaret('Super')
+    FAWriter.docField.blur()
     // Malheureusement, le blur ne suffit pas à provoquer le change.
-    Writer.docField.trigger('change')
+    FAWriter.docField.trigger('change')
 
     assert_equal(
       true, curDoc._modified,
@@ -32,9 +32,9 @@ t.case('Modification et enregistrement', () => {
     )
 
     action("J'enregistre le document en cliquant sur le bouton…", ()=>{
-      Writer.btnSave.click()
+      FAWriter.btnSave.click()
     })
-    return waitFor("Writer.currentDoc._modified === false", {timeout: 6000})
+    return waitFor("FAWriter.currentDoc._modified === false", {timeout: 6000})
     .then(()=>{
       assert_equal(
         false, curDoc._modified,
@@ -44,18 +44,18 @@ t.case('Modification et enregistrement', () => {
         }
       )
 
-      Writer.docField.focus()
-      Writer.docField.insertAtCaret(RC + RC + "Nouveau texte")
+      FAWriter.docField.focus()
+      FAWriter.docField.insertAtCaret(RC + RC + "Nouveau texte")
 
       action("Je fais CMD-S depuis le champ de saisie", ()=>{
         var press = $.Event('keypress')
         press.which   = K_S
         press.metaKey = true
-        Writer.docField.trigger(press)
+        FAWriter.docField.trigger(press)
       })
 
       var expected  = `Super${RC}${RC}Nouveau texte`
-      var actual    = Writer.currentDoc.contents
+      var actual    = FAWriter.currentDoc.contents
       assert_equal(
         expected, actual,
         {

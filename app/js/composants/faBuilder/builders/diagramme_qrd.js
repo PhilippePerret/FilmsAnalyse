@@ -1,6 +1,6 @@
 'use strict'
 
-ABuilder.prototype.builderDiagrammeQRD = function(options){
+FABuilder.prototype.builderDiagrammeQRD = function(options){
   my.log("* Construction du diagramme QRD…")
   let str = ''
 
