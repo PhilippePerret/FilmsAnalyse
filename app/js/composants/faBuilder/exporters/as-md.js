@@ -17,7 +17,7 @@ const DRC = `
  *
  * +key_doc+ La clé, qui correspond à l'affixe du document. P.e. 'introduction'
  */
-ABuilder.prototype.appendContenuOf = function(key_doc) {
+FABuilder.prototype.appendContenuOf = function(key_doc) {
   var my = this
   var ca = my.analyse
 
@@ -41,7 +41,7 @@ ABuilder.prototype.appendContenuOf = function(key_doc) {
  * Pour la construction d'éléments à construire comme les fondamentales ou
  * le paradigme de Field augmenté
  */
-ABuilder.prototype.appendBuildingOf = function(what){
+FABuilder.prototype.appendBuildingOf = function(what){
   var my = this
   var ca = my.analyse
   var finalCode = ""
@@ -76,12 +76,12 @@ ABuilder.prototype.appendBuildingOf = function(what){
 * sa construction.
 * Retourne le code construit.
 **/
-ABuilder.prototype.loadAndRunBuilder = function(composant){
+FABuilder.prototype.loadAndRunBuilder = function(composant){
   return '' // pour le moment
 }
 
 module.exports = function(options){
-  var my = this // instance ABuilder
+  var my = this // instance FABuilder
 
   // Existe-t-il un scénario de construction ?
   var bScriptPath = my.a.filePathOf('building_script.md')

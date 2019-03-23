@@ -97,6 +97,8 @@ class FAnalyse {
     try {
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       UI.startWait(T('loading-analyse'))
+      // Chargement des composants nécessaires
+      if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
       window.current_analyse = new FAnalyse(aFolder)
       current_analyse.load()
       return true
@@ -225,7 +227,7 @@ class FAnalyse {
   onReady(){
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
-    this.reader  = new AReader(this)
+    this.reader  = new FAReader(this)
     this.init()
     this.locator.init()
     this.locator.stop_points = this.stopPoints
@@ -274,8 +276,8 @@ class FAnalyse {
   //  MÉTHODES D'AFFICHAGE
 
   exportAs(format){
-    if('undefined'===typeof ABuilder) return this.loadABuilder(this.exportAs.bind(this,format))
-    ABuilder.createNew().exportAs(format)
+    if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
+    FABuilder.createNew().exportAs(format)
   }
   /**
    * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
@@ -284,13 +286,13 @@ class FAnalyse {
    * qu'il y aura un menu particulier pour le faire
    */
   displayFullAnalyse(forcer){
-    if('undefined' === typeof ABuilder) return this.loadABuilder(this.displayFullAnalyse.bind(this))
-    ABuilder.createNew().show({force_update: !!forcer})
+    var callback = this.displayFullAnalyse.bind(this)
+    if(NONE === typeof FABuilder) return this.loadBuilder(callback)
+    if(NONE === typeof FAExporter)return this.loadExporter(callback)
+    FABuilder.createNew().show({force_update: !!forcer})
+    callback = null
   }
 
-  loadABuilder(fn_callback){
-    System.loadJSFolders('./app/js/composants/abuilder', ['required_first', 'required_then'], fn_callback)
-  }
 
   displayPFA(){this.PFA.display()}
 
@@ -313,23 +315,19 @@ class FAnalyse {
    * Méthode qui ouvre le writer
    */
   openDocInWriter(dtype){
-    if('undefined' === typeof Writer){
-      var fn_callback = this.openDocInWriter.bind(this, dtype)
-      System.loadJSFolders('./app/js/composants/writer', ['required_first', 'required_then', 'required_xfinaly'], fn_callback)
-      return
+    if( NONE === typeof FAWriter){
+      return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
     }
-    if(!Writer.inited) Writer.init()
-    Writer.openDoc(dtype)
+    if(!FAWriter.inited) FAWriter.init()
+    FAWriter.openDoc(dtype)
   }
   /**
    * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
    * des events.
    */
   createNewEventer(){
-    if('undefined' === typeof Eventer){
-      var fn_callback = this.createNewEventer.bind(this)
-      System.loadJSFolders('./app/js/composants/eventer', ['required_first', 'required_then'], fn_callback)
-      return
+    if( NONE === typeof Eventer){
+      return Systeme.loadComponant('faEventer', this.createNewEventer.bind(this))
     }
     Eventer.createNew()
   }
@@ -727,6 +725,19 @@ class FAnalyse {
     // On construit le fichier s'il n'existe pas
     if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
     return this._folderFiles
+  }
+
+  /**
+  * Chargement des composants
+  **/
+  loadBuilder(fn_callback){
+    return System.loadComponant('faBuilder', fn_callback)
+  }
+  loadExporter(fn_callback){
+    return System.loadComponant('faExporter', fn_callback)
+  }
+  static loadReader(fn_callback){
+    return System.loadComponant('faReader', fn_callback)
   }
 
 }

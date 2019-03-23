@@ -6,6 +6,19 @@
  */
 const System = {
 
+/**
+* Pour charger un composant de l'application.
+* Un composant :
+*   - se trouve dans le dossier app/js/composants
+*   - possède au minimum un dossier required_first
+*   - possède au minimum un dossier required_then
+*   - possède exceptionnellement un dossier required_xfinally
+*
+**/
+  loadComponant: function(compName, fn_callback){
+    this.loadJSFolders(`./app/js/composants/${compName}`, ['required_first', 'required_then', 'required_xfinally'], fn_callback)
+  }
+
     /**
      * Permet de charger des modules javascript dans le programme en inscrivant
      * leur balise <script> et en attendant que tout soit chargé.
@@ -15,7 +28,7 @@ const System = {
      * +subFolders+   'array' des sous-dossiers
      * +fn_callback+  'function' à appeler à la fin du chargement.
      */
-    loadJSFolders:function(mainFolder, subFolders, fn_callback){
+  , loadJSFolders:function(mainFolder, subFolders, fn_callback){
       this.folders = []
       for(var subFolder of subFolders){
         this.folders.push(path.join(mainFolder,subFolder))
@@ -25,7 +38,7 @@ const System = {
     }
   , loadNextFolder:function(){
       var folder = this.folders.shift()
-      if (undefined === folder){
+      if (undefined === folder || !fs.existsSync(folder) ){
         // <= On est arrivé à la fin des dossiers à charger
         // => On s'arrête là en appelant la méthode callback.
         return this.methodAfterLoadingFolders()

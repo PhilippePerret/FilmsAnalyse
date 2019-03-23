@@ -2,7 +2,7 @@
 
 * Poursuivre l'installation de l'assemblage de l'analyse
   - mettre les builders dans le dossier 'required_then' pour qu'ils soient
-    chargés et veiller simplement à mettre `ABuilder` à null en terminant.
+    chargés et veiller simplement à mettre `FABuilder` à null en terminant.
 
 * Construire l'analyse
   - Faire la distinction entre 3 types de documents :

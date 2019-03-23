@@ -1,9 +1,9 @@
 'use strict'
 /**
-* Extension de Writer pour gérer l'entrée dans le champ textarea du texte
+* Extension de FAWriter pour gérer l'entrée dans le champ textarea du texte
 **/
 
-Writer.onKeyDown = function(e){
+FAWriter.onKeyDown = function(e){
   // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   let sel = this.selector, ret = true // retour par défaut
   if(e.keyCode === KTAB){
@@ -116,7 +116,7 @@ Writer.onKeyDown = function(e){
   return ret
 }
 
-Writer.onKeyUp = function(e){
+FAWriter.onKeyUp = function(e){
   // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   var sel = this.selector
   if(e.altKey){

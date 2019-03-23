@@ -1,13 +1,13 @@
 'use strict'
 /**
- * Class WriterDoc
+ * Class FAWriterDoc
  * ---------------
  * Classe pour gérer les documents
  *
  *
  */
 
-class WriterDoc {
+class FAWriterDoc {
   constructor(dtype){
     this.type = dtype
   }
@@ -16,7 +16,7 @@ class WriterDoc {
 
   get modified(){return this._modified || false}
   set modified(v){
-    Writer.setModified(v)
+    FAWriter.setModified(v)
     this._modified = v
   }
   isModified(){return this._modified === true}
@@ -38,7 +38,7 @@ class WriterDoc {
 
   // Affiche le document
   display(){
-    Writer.reset() // pour vider le champ, notamment
+    FAWriter.reset() // pour vider le champ, notamment
     this.preparePerType() // préparer le writer en fonction du type
     if (!this.exists()) return // rien à charger
     else if (!this.loaded) this.load()
@@ -46,7 +46,7 @@ class WriterDoc {
   }
 
   displayContents(){
-    Writer.docField.val(this.contents)
+    FAWriter.docField.val(this.contents)
   }
   // Pour afficher la taille du document dans l'interface (gadget)
   displaySize(){
@@ -110,8 +110,8 @@ class WriterDoc {
   * @return true si le contenu a changé, false otherwise.
    */
   getContents(){
-    if(this.contents != Writer.docField.val()){
-      this.contents = Writer.docField.val()
+    if(this.contents != FAWriter.docField.val()){
+      this.contents = FAWriter.docField.val()
       return true
     } else {
       return false
@@ -126,7 +126,7 @@ class WriterDoc {
   preparePerType(){
     var my = this
     // Thème par défaut
-    Writer.applyTheme(this.themePerType)
+    FAWriter.applyTheme(this.themePerType)
     // Templates à proposer
     var tempFolderPath = path.join('.','app','analyse_files', this.type)
     var tempFilePath = `${tempFolderPath}.${this.extension}`
@@ -145,7 +145,7 @@ class WriterDoc {
   // Le menu des modèles ne doit être affiché que si le contenu du document
   // est vide.
   toggleMenuModeles(){
-    var doit = Writer.docField.val().trim() == ''
+    var doit = FAWriter.docField.val().trim() == ''
     $('#section-writer .header span.modeles')[doit?'show':'hide']()
   }
   afficheModeles(modeles){
@@ -169,11 +169,11 @@ class WriterDoc {
 
   get themePerType(){
     if (this.dataType.type == 'data'){
-      if (Writer.currentTheme != 'data-theme') return 'data-theme'
+      if (FAWriter.currentTheme != 'data-theme') return 'data-theme'
     } else {
-      if ( ! Writer.currentTheme ) return 'real-theme'
-      else if (Writer.currentTheme == 'data-theme') return 'real-theme'
-      else return Writer.currentTheme
+      if ( ! FAWriter.currentTheme ) return 'real-theme'
+      else if (FAWriter.currentTheme == 'data-theme') return 'real-theme'
+      else return FAWriter.currentTheme
     }
   }
 

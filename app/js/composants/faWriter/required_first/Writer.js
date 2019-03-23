@@ -1,22 +1,22 @@
 'use strict'
 /**
- * Ce module du Writer est le module minimum chargé tout le temps, qui
+ * Ce module du FAWriter est le module minimum chargé tout le temps, qui
  * contient les données minimum à connaitre.
  */
 
-const Writer = {
-    class: 'Writer'
+const FAWriter = {
+    class: 'FAWriter'
 
   , inited: false     // Pour savoir s'il a été initié
   , ready: false      // pour savoir s'il est préparé
   , isOpened: false   // Pour savoir si le writer est ouvert ou fermé
 
-  , currentDoc: undefined //l'instance WriterDoc courante (elle doit toujours exister)
+  , currentDoc: undefined //l'instance FAWriterDoc courante (elle doit toujours exister)
 
     /**
      * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
      */
-  , openDoc:function(dtype){
+  , openDoc(dtype){
       this.message(`Document de type "${dtype}" en préparation…`)
       if('' == dtype){
         if (this.isOpened){
@@ -38,7 +38,7 @@ const Writer = {
       if(false === this.checkCurrentDocModified()) return
       if(undefined === this.writerDocs) this.writerDocs = {}
       if(undefined === this.writerDocs[dtype]){
-        this.writerDocs[dtype] = new WriterDoc(dtype)
+        this.writerDocs[dtype] = new FAWriterDoc(dtype)
       }
       this.currentDoc = this.writerDocs[dtype]
       this.currentDoc.display()
@@ -141,7 +141,7 @@ const Writer = {
       this.currentDoc.contents = this.docField.val()
     }
 
-    // Cf. require_then/Writer_keyUp_keyDown.js
+    // Cf. require_then/FAWriter_keyUp_keyDown.js
   , onKeyDown:function(e){}
   , onKeyUp:function(e){}
 
@@ -171,7 +171,7 @@ const Writer = {
       this.docField.val('')
     }
     /**
-     * Ouverture du Writer. Cela correspond à masquer le Reader.
+     * Ouverture du FAWriter. Cela correspond à masquer le Reader.
      *
      * Noter que ce seront les « Eventers » qui afficheront les events
      */
@@ -319,7 +319,7 @@ const Writer = {
       this.ready = true
     }
 }
-Object.defineProperties(Writer,{
+Object.defineProperties(FAWriter,{
   /**
    * Le selecteur, pour gérer la sélection
    */

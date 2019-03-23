@@ -1,12 +1,12 @@
 'use strict'
 /**
- * Classe ABuilder  (pour "Analyze Builder")
+ * Classe FABuilder  (pour "Analyze Builder")
  * --------------
  * Pour construire l'analyse
  *
  */
 
-class ABuilder {
+class FABuilder {
   // ---------------------------------------------------------------------
   //  CLASSE
 
@@ -14,7 +14,7 @@ class ABuilder {
    * Créer une nouvelle instance de builder et la retourne (pour le chainage)
    */
   static createNew(){
-    this.currentBuilder = new ABuilder(current_analyse)
+    this.currentBuilder = new FABuilder(current_analyse)
     return this.currentBuilder
   }
 
@@ -56,7 +56,7 @@ class ABuilder {
     var my = this
     my.log(`* exportAs "${format}". Options:`, options)
     if(!this.building && !this.isUpToDate) this.build()
-    var method = require(`./js/composants/abuilder/exporters/as-${format}.js`).bind(this)
+    var method = require(`./js/composants/faBuilder/exporters/as-${format}.js`).bind(this)
     method(options)
   }
 

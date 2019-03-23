@@ -72,7 +72,7 @@ const UI = {
      * les parties qui n'ont pas pu encore l'être)
      */
   , reset:function(){
-      AReader.reset()
+      FAReader.reset()
       EventForm.reset() // notamment destruction des formulaires
     }
 
