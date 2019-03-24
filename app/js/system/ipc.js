@@ -17,3 +17,7 @@ ipc.on('current-image-for-current-scene', (ev) => {
   // require('./app/js/tools/vignette_current_scene.js')(ev)
   require('./js/tools/vignette_current_scene.js')(ev)
 })
+
+ipc.on('set-video-speed', (e, data) => {
+  current_analyse.videoController.setSpeed(data.speed)
+})

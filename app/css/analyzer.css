@@ -22,6 +22,33 @@
   width: 210px;
 }
 
+#section-video div.mark-parts,
+#section-video div.mark-parts *
+{
+  color:white;
+  font-size:9.4pt;
+}
+#section-video div.mark-parts {
+  display:inline-block;
+  width:214px;
+  height:38px;
+  border:1px solid #666666;
+  padding-top:3px;
+
+}
+#section-video div.mark-parts > span {
+  display:block;
+  text-align:left;
+  padding-left:12px;
+}
+
+#section-video div.mark-parts > span.mark-main-part {
+  color:palevioletred;
+}
+#section-video div.mark-parts > span.mark-sub-part {
+  color:darkseagreen;
+}
+
 #section-video fieldset.time-tools {
   width:500px;
 }

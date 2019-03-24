@@ -11,13 +11,24 @@ Object.assign(PFA, {
      *
      * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
      */
-  , node:function(nid){
+  , node(nid){
       if(undefined === this.nodes) this.nodes = {}
       if(undefined === this.nodes[nid]){
         this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
       }
       return this.nodes[nid]
     }
+
+    /**
+    * Boucle sur tous les nœuds structurels
+    *
+    * On peut interrompre la boucle en renvoyant false (et très exactement
+    * false)
+    **/
+  , forEachNode(method){
+      var kstt
+      for(kstt in this.DATA_STT_NODES){ if (false === method(this.node(kstt))) break}
+  }
 
   // ---------------------------------------------------------------------
   //  Méthodes d'entrée sorties

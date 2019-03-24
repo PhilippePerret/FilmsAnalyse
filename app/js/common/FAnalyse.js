@@ -181,6 +181,7 @@ class FAnalyse {
     var endt = null
     if(this.videoPath){
       this._filmEndTime = this.videoController.controller.duration
+      endt = this._filmEndTime
     }
     return endt
   }
@@ -279,6 +280,15 @@ class FAnalyse {
     if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
     FABuilder.createNew().exportAs(format)
   }
+
+  /**
+  * Pour afficher la Timeline
+  **/
+  displayTimeline(){
+    if(NONE == typeof FATimeline)return this.loadTimeline(this.displayTimeline.bind(this))
+    FATimeline.toggle()
+  }
+
   /**
    * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
    *
@@ -736,6 +746,9 @@ class FAnalyse {
   }
   loadExporter(fn_callback){
     return System.loadComponant('faExporter', fn_callback)
+  }
+  loadTimeline(fn_callback){
+    return System.loadComponant('faTimeline', fn_callback)
   }
   static loadReader(fn_callback){
     return System.loadComponant('faReader', fn_callback)

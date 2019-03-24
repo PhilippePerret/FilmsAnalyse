@@ -43,6 +43,7 @@ class Locator {
   init(){
     var my = this
 
+    this.videoController = this.analyse.videoController
     this.video = this.analyse.videoController.controller
 
     // Le bouton pour rejoindre le début du film. Il n'est défini que si
@@ -206,6 +207,9 @@ class Locator {
     var rtime = this.getRTime(time)
     this.analyse.reader.resetBeyond(rtime - FAReader.TIME_AROUND, rtime + FAReader.TIME_AROUND)
     this.showEventsAt(rtime)
+    // Définir la zone structurelle absolue et relative dans laquelle on se
+    // trouve
+    this.defineNextZonesStt(rtime)
     // Définir la scène courante de l'analyse
     this.analyse.currentScene = Scene.sceneAt(rtime)
   }
@@ -223,6 +227,129 @@ class Locator {
     }
   }
 
+  /**
+  * Méthode qui affiche, en direct, la partie du film dans laquelle on se
+  * trouve, au niveau absolu et relatif.
+  * La partie absolue est toujours définie, la partie relative dépend des
+  * events fournis concernant le film courant.
+  *
+  * Pour fonctionner facilement, on mémorise dans une table les prochaines
+  * parties et leur temps. Dès qu'on arrive à ce temps, on les affiche et on
+  * recherche le prochain temps.
+  *
+  * +rtime+ Le temps "réel" dans le film, c'est-à-dire pas le temps exact de
+  *         la vidéo.
+  **/
+  showCurrentZoneStt(rtime){
+    var my = this
+    if(undefined === this._nextZonesStt) this.defineNextZonesStt(rtime)
+
+    if(my._nextZonesStt.curSubPartAbs && rtime >= my._nextZonesStt.curSubPartAbs.absEndAt){
+      // On doit effacer cette sous-partie
+      my.videoController.markSubPartAbs.html('')
+      my._nextZonesStt.curSubPartAbs = null
+    }
+    // Si on a dépassé un des prochains temps
+    if(my._nextZonesStt.nextMainPartAbs && rtime >= my._nextZonesStt.nextMainPartAbs.absStartAt ){
+      // Afficher la partie
+      my.videoController.markMainPartAbs.html(my._nextZonesStt.nextMainPartAbs.hname.toUpperCase())
+      // Mettre la partie next en partie courante
+      my._nextZonesStt.curMainPartAbs = my._PFA.node(my._nextZonesStt.nextMainPartAbs.id)
+      // On doit renseigner le prochain noeud
+      if(my._nextZonesStt.nextMainPartAbs.next){
+        my._nextZonesStt.nextMainPartAbs = my._PFA.node(my._nextZonesStt.nextMainPartAbs.next)
+      } else {
+        my._nextZonesStt.nextMainPartAbs = null
+      }
+    }
+    if(my._nextZonesStt.nextSubPartAbs && rtime >= my._nextZonesStt.nextSubPartAbs.absStartAt){
+      // Afficher la sous-partie
+      my.videoController.markSubPartAbs.html(my._nextZonesStt.nextSubPartAbs.hname.toUpperCase())
+      // Mettre cette sous-partie en partie courante
+      my._nextZonesStt.curSubPartAbs = my._PFA.node(my._nextZonesStt.nextSubPartAbs.id)
+      // Renseigner la prochaine sous-partie (if any)
+      if( my._nextZonesStt.nextSubPartAbs.next){
+        // <= Il y a une sous-partie suivante
+        // => On doit la prendre en compte
+        my._nextZonesStt.nextSubPartAbs = my._PFA.node(my._nextZonesStt.nextSubPartAbs.next)
+      } else {
+        // <= Il n'y a pas de sous-partie suivante
+        // => on met null
+        my._nextZonesStt.nextSubPartAbs = null
+      }
+    }
+  }
+
+  /**
+  * Méthode, utilisée pour la précédente, qui détermine au moment de la
+  * lecture (actuelle) les zones courantes absolues et relatives qui vont
+  * s'afficher à côté de l'horloge.
+  **/
+  defineNextZonesStt(rtime){
+    console.log("-> defineNextZonesStt")
+    var my = this
+    // console.log("-> this._nextZonesStt (définition)", rtime)
+    my._PFA = my.analyse.PFA
+    my._nextZonesStt = {
+        curSubPartAbs:    null    // pour connaitre le temps de fin de zone
+      , nextMainPartAbs:  null    // p.e. 'EXPOSITION'
+      , nextSubPartAbs:   null    // p.e. 'ZONE DE REFUS'
+      , curSubPartRel:    null
+      , nextMainPartRel:  null
+      , nextSubPartRel:   null
+    }
+    my._PFA.forEachNode( nstt => {
+      // console.log("Comparaison:", nstt.absStartAt, rtime)
+
+      // Pour les valeurs absolues
+      if (nstt.absStartAt < rtime){
+        if ( nstt.isMainPart) {
+          my.videoController.markMainPartAbs.html(nstt.hname.toUpperCase())
+        } else {
+          my._nextZonesStt.curSubPartAbs = nstt
+          my.videoController.markSubPartAbs.html(nstt.hname.toUpperCase())
+        }
+      }
+
+      // Pour les valeurs relatives
+      if (nstt.relStartAt < rtime){
+        if ( nstt.isMainPart) {
+          my.videoController.markMainPartRel.html(nstt.hname.toUpperCase())
+        } else {
+          my._nextZonesStt.curSubPartRel = nstt
+          my.videoController.markSubPartRel.html(nstt.hname.toUpperCase())
+        }
+      }
+
+
+      if (nstt.absStartAt > rtime){
+        // => C'est le noeud suivant
+        if(nstt.isMainPart && !my._nextZonesStt.nextMainPartAbs){
+          my._nextZonesStt.nextMainPartAbs = nstt
+        } else if (!nstt.isMainPart && !my._nextZonesStt.nextSubPartAbs){
+          my._nextZonesStt.nextSubPartAbs = nstt
+        }
+      }
+
+      // Pour les valeurs relatives
+      if (undefined !== nstt.relStartAt && nstt.relStartAt > rtime){
+        // => C'est le noeud suivant
+        if(nstt.isMainPart && !my._nextZonesStt.nextMainPartRel){
+          my._nextZonesStt.nextMainPartRel = nstt
+        } else if (!nstt.isMainPart && !my._nextZonesStt.nextSubPartRel){
+          my._nextZonesStt.nextSubPartRel = nstt
+        }
+      }
+
+
+      if(my._nextZonesStt.nextMainPartAbs && my._nextZonesStt.nextSubPartAbs
+      && my._nextZonesStt.nextMainPartRel && my._nextZonesStt.nextSubPartRel){
+        console.log("J'ai trouvé les noeuds suivants, je breake.")
+        return false // pour breaker
+      }
+    }) // fin de la boucle sur tous les noeuds
+    console.log("my._nextZonesStt:", my._nextZonesStt)
+  }
   /**
    * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
    * défini pour le film
@@ -349,10 +476,15 @@ class Locator {
     this.horloge.innerHTML = this.getRealTime(curt)
     this.horloge_real.innerHTML = this.getRealTime(this.video.currentTime)
     this.oMainHorloge.time = curt
+    // Définir la zone structurelle absolue et relative dans laquelle on se
+    // trouve
+    this.showCurrentZoneStt(curt)
   }
 
   actualizeReader(){
+    // Afficher les events autour du temps courant
     this.showEventsAt(this.currentRTime)
+    // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
     if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
       this.togglePlay()
       if('function'===typeof this.wantedEndTimeCallback) this.wantedEndTimeCallback()
