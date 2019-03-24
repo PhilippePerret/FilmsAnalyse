@@ -56,7 +56,7 @@ Object.assign(PFA, {
      */
   , build:function(){
       require('./PFA_building.js').bind(this)()
-      document.body.appendNode(this._assembledPFAs)
+      document.body.insertAdjacentHTML('beforeend', this._assembledPFAs)
       this.built = true
     }
   // ---------------------------------------------------------------------

@@ -55,14 +55,25 @@ function buildRelativePFA(pfa_id){
   `
 }
 
+// Retourne les styles propres, calculés en fonction du film
+function styles(){
+  return `
+<style type="text/css">
+${fs.readFileSync('./app/js/common/PFA/PFA.css', 'utf8')}
+</style>
+  `
+}
+
   /**
    * Assemblage des deux PFA du film, absolu et relatif
    *
    * => Production de this._assembledPFAs
    */
 function assemblePFAs(pfa_id){
-    this._assembledPFAs = `<section id="section-pfa-${pfa_id}" class="section-pfa">`
-    this._assembledPFAs += this._buildAbsolutePFA
+    this._assembledPFAs = ""
+    this._assembledPFAs += styles()
+    this._assembledPFAs += `<section id="section-pfa-${pfa_id}" class="section-pfa">`
+    this._assembledPFAs += this._absolutePFA
     this._assembledPFAs += this._relativePFA
     this._assembledPFAs += '</section>'
 }

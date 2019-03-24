@@ -1,0 +1,15 @@
+section.section-pfa {
+  position:absolute;
+  top:20px;
+  left:20px;
+  z-index:500;
+  background-color:white;
+  min-height:50px;
+  width:90%;
+}
+
+
+section.section-pfa section.pfa div.pfa-part {
+  display:inline-block;
+  width:24%;
+}
