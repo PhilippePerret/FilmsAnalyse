@@ -16,7 +16,6 @@ class SttNode {
   // +nid+ sert uniquement pour les dépendances
   static calcZone(sttnode){
     var czone = sttnode.cZone
-    if(undefined === current_analyse.duration) return
     // Durée et divisions, pour calculer les zones des Nœuds
     var duree = this._duree || this.initDuree('duree', current_analyse.duration)
     var moiti = this._moiti || this.initDuree('moiti', duree/2)
@@ -82,21 +81,45 @@ class SttNode {
   get hname(){ return this._hname }
   get shortHname(){return this._shortHname}
   get cZone(){ return this._cZone }
+  // True si c'est un noeud qui définit une main-part, c'est-à-dire
+  // l'exposition, le développement ou le dénouement.
+  get main(){return this._main}
+  // ID du noeud structurel suivant
+  // Note : il y a deux niveaux, les main-parts et les sub-parts
+  get next(){return this._next}
+
+  // ---------------------------------------------------------------------
+  //  Pour des noms qui signifient plus de choses sémantiquement
+  // Début et fin absolus, en fonction de la durée du film
+  get absStartAt(){return this.zoneStart}
+  get absEndAt(){return this.zoneEnd}
+
+  // Début et fin relatifs, en fonction des noeuds définis
+  get relStartAt(){return this.startAt}
+  get relEndAt(){return this.endAt}
 
 
   // ---------------------------------------------------------------------
   //  Méthodes de données relatives (du film courant)
 
   /**
-   * ID de l'event associé
+   * ID de l'event associé, s'il est défini
    */
   // Note : pas de `set`, on utilise `this.event = `
   get event_id(){ return this._event_id}
 
+  // Le début et la fin du noeud réel dans le film courant
   get startAt() { return this._startAt }
   set startAt(v){ this._startAt = v ; this.resetDependencies() }
   get endAt()   { return this._endAt }
   set endAt(v)  { this._endAt = v ; this.resetDependencies() }
+
+  // ---------------------------------------------------------------------
+  //  Méthodes de données absolues
+
+  get zone(){return this._zone || defP(this,'_zone',SttNode.calcZone(this))}
+  get zoneStart() { return this.zone[0] }
+  get zoneEnd()   { return this.zone[1] }
 
   // ---------------------------------------------------------------------
   //  Méthodes de données volatiles
@@ -104,24 +127,28 @@ class SttNode {
   get modified(){return this._modified }
   set modified(v){this._modified = true ; current_analyse.PFA.modified = true }
 
-  reset(props){
-    if(undefined===props)props=['zone']
-    for(var i=0,len=props.length;i<len;++i){this[`_${props[i]}`] = undefined}
-  }
-
-  get zone(){return this._zone || defP(this,'_zone',SttNode.calcZone(this))}
-
-  get zoneStart() { return this.zone[0] }
-  get zoneEnd()   { return this.zone[1] }
-
   get scene(){ return this._scene }
 
-  get event(){return this._event || defP(this,'_event',current_analyse.ids[this.event_id])}
+  get event(){return this._event || defP(this,'_event', this.defineEventIfExists())}
   set event(v){
     this._event = v
     this._event_id = v ? v.id : undefined
     this.resetDependencies()
     this.modified = true
+  }
+  defineEventIfExists(){
+    if(undefined === this._event_id) return undefined
+    else return current_analyse.ids[this.event_id]
+  }
+
+  get isMainPart(){return this._isMainPart || defP(this,'_isMainPart', this.main === true)}
+
+  // ---------------------------------------------------------------------
+  //  Méthodes fonctionnelles
+
+  reset(props){
+    if(undefined===props)props=['zone']
+    for(var i=0,len=props.length;i<len;++i){this[`_${props[i]}`] = undefined}
   }
 
   resetDependencies(){

@@ -1,5 +1,8 @@
 # SUR LE GRILL
 
+* Pouvoir accélérer (rate ?)
+  playbackRate (when playing)
+  defaultPlaybackRate (à l'arrêt) 0.07 à 16
 
 * Construire le PFA
 
@@ -25,7 +28,9 @@
 
 # TODO LIST
 
-* À côté du chrono qui défile, il faudrait trouver deux cases, qui indiqueraient là où on se trouve par rapport à la structure du film. La première case serait la position absolu (le démarrage absolu du développement, de la clé de voûte, etc.) et la seconde case indiquerait la position relative définie pour le film, si elle l'est.
+* Les indications de parties, à côté de l'horloge principale, doivent permettre aussi de se déplacer dans le film, dans sa structure. Quand on clique dessus (par exemple sur 'EXPOSITION') on ouvre un menu pour choisir les autres éléments (p.e. 'DÉVELOPPEMENT PART 1', 'DÉVELOPPEMENT PART 2', 'DÉNOUEMENT').
+Le faire bien sûr pour les positions absolues et les positions réelles.
+  - être plus "fin" pour l'affichage : 10 secondes avant un changement de partie, on l'indique par un voyant rouge à côté de la partie, puis on change de partie.
 
 * Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
 

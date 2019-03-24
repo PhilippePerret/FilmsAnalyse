@@ -1,9 +1,9 @@
 /* Styles pour la timeline */
 #timeline {
-  position:absolute;
+  position:fixed;
   border:2px solid;
   left:25px;
-  top:250px;
+  bottom:10px;
   z-index:2000;
 }
 #timeline #timeline-slider {
