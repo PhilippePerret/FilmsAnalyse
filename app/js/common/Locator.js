@@ -209,7 +209,7 @@ class Locator {
     this.showEventsAt(rtime)
     // Définir la zone structurelle absolue et relative dans laquelle on se
     // trouve
-    this.defineNextZonesStt(rtime)
+    this.defineNextZonesStt()
     // Définir la scène courante de l'analyse
     this.analyse.currentScene = Scene.sceneAt(rtime)
   }
@@ -241,43 +241,74 @@ class Locator {
   *         la vidéo.
   **/
   showCurrentZoneStt(rtime){
-    var my = this
     if(undefined === this._nextZonesStt) this.defineNextZonesStt(rtime)
+    // // Paradigme absolu
+    // this.currentTimeReachEndZone('Sub', 'Abs') && this.resetMarkPart('Sub', 'Abs')
+    // this.currentTimeReachEndZone('Sub', 'Rel') && this.resetMarkPart('Sub', 'Rel')
+    else this.setAllPartMarksIfTime()
+  }
 
-    if(my._nextZonesStt.curSubPartAbs && rtime >= my._nextZonesStt.curSubPartAbs.absEndAt){
-      // On doit effacer cette sous-partie
-      my.videoController.markSubPartAbs.html('')
-      my._nextZonesStt.curSubPartAbs = null
+  setAllPartMarksIfTime(){
+    for(var ma of ['Main','Sub']){
+      for(var ar of ['Abs','Rel']){
+        this.setMarkPartIfTime(ma, ar)
+      }
     }
-    // Si on a dépassé un des prochains temps
-    if(my._nextZonesStt.nextMainPartAbs && rtime >= my._nextZonesStt.nextMainPartAbs.absStartAt ){
+  }
+  /**
+  * Écrit la marque de la partie si son temps est atteint
+  **/
+  setMarkPartIfTime(mainSub, absRel){
+    // Si une partie courant est définie, il faut commencer par la marquer
+    if(this._nextZonesStt[`cur${mainSub}Part${absRel}`]){
+      var zone = this._nextZonesStt[`cur${mainSub}Part${absRel}`]
       // Afficher la partie
-      my.videoController.markMainPartAbs.html(my._nextZonesStt.nextMainPartAbs.hname.toUpperCase())
-      // Mettre la partie next en partie courante
-      my._nextZonesStt.curMainPartAbs = my._PFA.node(my._nextZonesStt.nextMainPartAbs.id)
-      // On doit renseigner le prochain noeud
-      if(my._nextZonesStt.nextMainPartAbs.next){
-        my._nextZonesStt.nextMainPartAbs = my._PFA.node(my._nextZonesStt.nextMainPartAbs.next)
-      } else {
-        my._nextZonesStt.nextMainPartAbs = null
+      this.videoController.setMarkPart(mainSub, absRel, zone)
+
+    } else if(this.currentTimeReachPart(mainSub, absRel)){
+
+      this.setMarkPart(mainSub, absRel)
+      var propZone = `next${mainSub}Part${absRel}`
+      var zone = this._nextZonesStt[propZone]
+      if(zone){
+        // Mettre la partie next en partie courante
+        this._nextZonesStt[`cur${mainSub}Part${absRel}`] = this._PFA.node(zone.id)
+        // On doit renseigner le prochain noeud
+        this._nextZonesStt[propZone] = zone.next ? this._PFA.node(zone.next) : null
       }
-    }
-    if(my._nextZonesStt.nextSubPartAbs && rtime >= my._nextZonesStt.nextSubPartAbs.absStartAt){
-      // Afficher la sous-partie
-      my.videoController.markSubPartAbs.html(my._nextZonesStt.nextSubPartAbs.hname.toUpperCase())
-      // Mettre cette sous-partie en partie courante
-      my._nextZonesStt.curSubPartAbs = my._PFA.node(my._nextZonesStt.nextSubPartAbs.id)
-      // Renseigner la prochaine sous-partie (if any)
-      if( my._nextZonesStt.nextSubPartAbs.next){
-        // <= Il y a une sous-partie suivante
-        // => On doit la prendre en compte
-        my._nextZonesStt.nextSubPartAbs = my._PFA.node(my._nextZonesStt.nextSubPartAbs.next)
-      } else {
-        // <= Il n'y a pas de sous-partie suivante
-        // => on met null
-        my._nextZonesStt.nextSubPartAbs = null
-      }
-    }
+    } else if(this.currentTimeReachEndZone(mainSub, absRel)) this.resetMarkPart(mainSub, absRel)
+  }
+
+  /**
+  * Retourne true si le temps courant atteint ou dépasse la partie désignée
+  * par +mainSub+ et +absRel+
+  **/
+  currentTimeReachPart(mainSub, absRel){
+    var zoneDef = this._nextZonesStt[`next${mainSub}Part${absRel}`]
+    return zoneDef && this.currentRTime >= zoneDef[`startAt${absRel}`]
+  }
+  /**
+  * Retourne true si le temps courant atteint ou dépasser le temps défini
+  * pour la zone +zone_id+ (property in this._nextZonesStt)
+  **/
+  currentTimeReachEndZone(mainSub, absRel){
+    var zone = this._nextZonesStt[`cur${mainSub}Part${absRel}`]
+    return zone && this.currentRTime >= zone[`endAt${absRel}`]
+  }
+  resetMarkPart(mainSub, absRel){
+    var markController = this.videoController[`mark${mainSub}Part${absRel}`]
+    markController.html('...')
+    // IL FAUT absolument laisser le stt-id dans le champ, même s'il est vide,
+    // pour pouvoir trouver le noeud suivant
+    // markController.attr('data-stt-id', '')
+    this._nextZonesStt[`cur${mainSub}Part${absRel}`] = null
+  }
+  setMarkPart(mainSub, absRel){
+    var propZone = `next${mainSub}Part${absRel}`
+    var zone = this._nextZonesStt[propZone]
+    if(!zone) return
+    // Afficher la partie
+    this.videoController.setMarkPart(mainSub, absRel, zone)
   }
 
   /**
@@ -287,68 +318,46 @@ class Locator {
   **/
   defineNextZonesStt(rtime){
     console.log("-> defineNextZonesStt")
-    var my = this
+    var my = this, kstt
+    if(undefined === rtime) rtime = this.currentRTime
+    console.log("Temps courant dans Locator#defineNextZonesStt:", rtime)
     // console.log("-> this._nextZonesStt (définition)", rtime)
     my._PFA = my.analyse.PFA
-    my._nextZonesStt = {
-        curSubPartAbs:    null    // pour connaitre le temps de fin de zone
-      , nextMainPartAbs:  null    // p.e. 'EXPOSITION'
-      , nextSubPartAbs:   null    // p.e. 'ZONE DE REFUS'
-      , curSubPartRel:    null
-      , nextMainPartRel:  null
-      , nextSubPartRel:   null
-    }
+    my._nextZonesStt = {}
     my._PFA.forEachNode( nstt => {
-      // console.log("Comparaison:", nstt.absStartAt, rtime)
+      // console.log("Comparaison:", nstt.startAtAbs, rtime)
 
       // Pour les valeurs absolues
-      if (nstt.absStartAt < rtime){
-        if ( nstt.isMainPart) {
-          my.videoController.markMainPartAbs.html(nstt.hname.toUpperCase())
-        } else {
-          my._nextZonesStt.curSubPartAbs = nstt
-          my.videoController.markSubPartAbs.html(nstt.hname.toUpperCase())
-        }
+      // Si le temps courant est supérieur au noeud traité, on prend le noeud
+      // traité comme noeud courant. Noter qu'on passera en revue tous les
+      // noeud avant de trouver le dernier, donc le vrai noeud courant
+      if (nstt.startAtAbs <= rtime){
+        my._nextZonesStt[`cur${nstt.isMainPart?'Main':'Sub'}PartAbs`] = nstt
+        // console.log(`[define] cur${nstt.isMainPart?'Main':'Sub'}PartAbs mis à`, nstt.id, nstt.startAtAbs, rtime)
       }
 
       // Pour les valeurs relatives
-      if (nstt.relStartAt < rtime){
-        if ( nstt.isMainPart) {
-          my.videoController.markMainPartRel.html(nstt.hname.toUpperCase())
-        } else {
-          my._nextZonesStt.curSubPartRel = nstt
-          my.videoController.markSubPartRel.html(nstt.hname.toUpperCase())
-        }
+      if (nstt.startAtRel < rtime){
+        my._nextZonesStt[`cur${nstt.isMainPart?'Main':'Sub'}PartRel`] = nstt
+        // console.log(`[define] cur${nstt.isMainPart?'Main':'Sub'}PartRel mis à`, nstt.id)
       }
 
-
-      if (nstt.absStartAt > rtime){
-        // => C'est le noeud suivant
-        if(nstt.isMainPart && !my._nextZonesStt.nextMainPartAbs){
-          my._nextZonesStt.nextMainPartAbs = nstt
-        } else if (!nstt.isMainPart && !my._nextZonesStt.nextSubPartAbs){
-          my._nextZonesStt.nextSubPartAbs = nstt
-        }
+      kstt = `next${nstt.isMainPart?'Main':'Sub'}PartAbs`
+      if (!my._nextZonesStt[kstt] && nstt.startAtAbs > rtime){
+        my._nextZonesStt[kstt] = nstt
+        console.log(`[define] ${kstt} mis à`, nstt.id)
       }
 
       // Pour les valeurs relatives
-      if (undefined !== nstt.relStartAt && nstt.relStartAt > rtime){
-        // => C'est le noeud suivant
-        if(nstt.isMainPart && !my._nextZonesStt.nextMainPartRel){
-          my._nextZonesStt.nextMainPartRel = nstt
-        } else if (!nstt.isMainPart && !my._nextZonesStt.nextSubPartRel){
-          my._nextZonesStt.nextSubPartRel = nstt
-        }
-      }
-
-
-      if(my._nextZonesStt.nextMainPartAbs && my._nextZonesStt.nextSubPartAbs
-      && my._nextZonesStt.nextMainPartRel && my._nextZonesStt.nextSubPartRel){
-        console.log("J'ai trouvé les noeuds suivants, je breake.")
-        return false // pour breaker
+      // On en peut traiter que si elle existe
+      kstt = `next${nstt.isMainPart}PartRel`
+      if (!my._nextZonesStt[kstt] && nstt.startAtRel && nstt.startAtRel > rtime){
+        my._nextZonesStt[kstt] = nstt
+        console.log(`[define] ${kstt} mis à`, nstt.id)
       }
     }) // fin de la boucle sur tous les noeuds
-    console.log("my._nextZonesStt:", my._nextZonesStt)
+
+    this.setAllPartMarksIfTime()
   }
   /**
    * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
@@ -479,6 +488,8 @@ class Locator {
     // Définir la zone structurelle absolue et relative dans laquelle on se
     // trouve
     this.showCurrentZoneStt(curt)
+    // Placer le curseur de position
+    this.videoController.positionIndicator.positionneAt(curt)
   }
 
   actualizeReader(){

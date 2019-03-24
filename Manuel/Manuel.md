@@ -4,10 +4,12 @@
 * [Videos](#concernant_la_video)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
+  * [Déplacements par parties/zones](#move_by_parts_and_zones)
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
   * [Réglage du temps et de la durée de l'event](#set_event_time)
 * [L'Interface](#linterface)
+  * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
 * [Les Documents](#les_documents)
@@ -38,6 +40,12 @@ On peut l'afficher en activant le menu « Affichage > Timeline » (ou en jouan
 ![Image de la Timeline]()
 
 La Timeline se présente comme une longue bande représentant l'écoulement le temps, du départ du film à gauche à la fin à droite. Il suffit de glisser la souris sur la partie inférieure de cette bande pour se déplacer dans le temps.
+
+### Déplacements par parties/zones {#move_by_parts_and_zones}
+
+À côté de l'horloge principale de la vidéo se trouve l'[indication des parties et zones](#indication_parties_zones_courantes) dans lesquelles on se trouve. Pour passer d'une partie à l'autre, on peut cliquer sur le nom, soit en haut (grands actes), soit en bas (zones), en fonction du paradigme absolu (à gauche) ou du paradigment relatif (à droite) s'il est défini.
+
+En tenant la touche `CMD` pressée, on parcourt les parties et les zones en arrière.
 
 
 ### Passer en revue les 3 derniers points d'arrêt {#passe_revue_stop_points}
@@ -86,6 +94,13 @@ On peut régler la durée d'un event quelconque en modifiant son horloge de dur�
 
 
 ## Interface {#linterface}
+
+### Indication des parties et zones courantes {#indication_parties_zones_courantes}
+
+À côté de l'horloge principale de la vidée se trouve l'indication de la partie (haut) et de la zone (bas) dans laquelle on se trouve dans le film. La première colonne, à gauche, indique les parties et les zones de façon absolue, dans le Paradigme de Field Augmenté, tandis que la seconde, à droite, indique ces parties et ces zones par rapport au film courant, si ces éléments sont définis.
+
+Voir comment se [déplacer par parties/zones](#move_by_parts_and_zones) grâce à ces indications, en cliquant dessus.
+
 
 ### Comportement du bouton STOP {#le_bouton_stop}
 

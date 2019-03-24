@@ -65,13 +65,32 @@ class SttNode {
   // ---------------------------------------------------------------------
   //  INSTANCE
   constructor(nid, data){
+    if(undefined == nid) throw("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
     this.id = nid
+    // console.log("data:", data)
     for(var p in data){this[`_${p}`] = data[p]}
     // Par exemple, on définit `this._cZone`
 
     // Les nœuds dépendants de ce noeud (au niveau des temps). Ils seront
     // définis dans la méthode de classe `calcZone`
     this.dependencies = []
+
+    if (this.next){
+      if(undefined === current_analyse.PFA.nodes[this.next]){
+        current_analyse.PFA.DATA_STT_NODES[this.next].previous = this.id
+      } else {
+        current_analyse.PFA.node(this.next)._previous = this.id
+      }
+    }
+
+    if (this.first){
+      if(undefined === current_analyse.PFA.nodes[this.first]){
+        current_analyse.PFA.DATA_STT_NODES[this.first].last = this.id
+      } else {
+        current_analyse.PFA.node(this.first)._last = this.id
+      }
+    }
+
   }
 
 
@@ -87,16 +106,24 @@ class SttNode {
   // ID du noeud structurel suivant
   // Note : il y a deux niveaux, les main-parts et les sub-parts
   get next(){return this._next}
+  get previous(){return this._previous}
+  // Pour gérer les boucles sur tous les noeuds, on utilise cette propriété
+  // pour indiquer de où il faut repartir quand on arrive au dernier mot. Pour
+  // le dénouement, cette propriété vaut 'EXPO' et pour la desinence, elle vaut
+  // 'preamb'
+  get first(){return this._first}
+  // Idem, mais à l'envers
+  get last(){return this._last}
 
   // ---------------------------------------------------------------------
   //  Pour des noms qui signifient plus de choses sémantiquement
   // Début et fin absolus, en fonction de la durée du film
-  get absStartAt(){return this.zoneStart}
-  get absEndAt(){return this.zoneEnd}
+  get startAtAbs(){return this.zoneStart}
+  get endAtAbs()  {return this.zoneEnd}
 
   // Début et fin relatifs, en fonction des noeuds définis
-  get relStartAt(){return this.startAt}
-  get relEndAt(){return this.endAt}
+  get startAtRel(){return this.startAt}
+  get endAtRel(){return this.endAt}
 
 
   // ---------------------------------------------------------------------
