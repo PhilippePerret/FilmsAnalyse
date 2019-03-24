@@ -1,5 +1,7 @@
 # SUR LE GRILL
 
+* Un indicateur de position, sur la timeline mais aussi sous la vidéo
+
 * Construire le PFA
 
 * Assemblage de l'analyse
@@ -24,7 +26,7 @@
 
 # TODO LIST
 
-* Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -` 
+* Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 * Les indications de parties, à côté de l'horloge principale, doivent permettre aussi de se déplacer dans le film, dans sa structure. Quand on clique dessus (par exemple sur 'EXPOSITION') on ouvre un menu pour choisir les autres éléments (p.e. 'DÉVELOPPEMENT PART 1', 'DÉVELOPPEMENT PART 2', 'DÉNOUEMENT').
 Le faire bien sûr pour les positions absolues et les positions réelles.
   - être plus "fin" pour l'affichage : 10 secondes avant un changement de partie, on l'indique par un voyant rouge à côté de la partie, puis on change de partie.

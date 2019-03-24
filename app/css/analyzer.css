@@ -27,6 +27,7 @@
 {
   color:white;
   font-size:9.4pt;
+  cursor:pointer;
 }
 #section-video div.mark-parts {
   display:inline-block;

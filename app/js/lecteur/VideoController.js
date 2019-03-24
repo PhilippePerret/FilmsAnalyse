@@ -42,6 +42,8 @@ class VideoController {
     // met la taille médium.
     this.setSize(null, this.analyse.options.get('video_size')||'medium')
 
+    this.observe()
+
     this.inited = true
   }
   // /fin init
@@ -121,6 +123,52 @@ class VideoController {
     toggleVisible('#fs-new-event', visible)
   }
 
+  /**
+  * Quand on clique sur les marques de partie à côté de l'horloge principale,
+  * on peut se rendre aux parties choisies. Chaque clic passe à la partie
+  * suivante.
+  **/
+  onClickMarkPart(mainSub, absRel, e){
+    // L'objet jQuery de la marque
+    var mk = this[`mark${mainSub}Part${absRel}`]
+    // l'identifiant structure de la partie courant (peut-être indéfini)
+    var stt_id = mk.attr('data-stt-id')
+    var node = this.a.PFA.node(stt_id)
+    var other_node
+    if (e.metaKey){
+      other_node = this.a.PFA.node(node.previous || node.last)
+    } else {
+      other_node = this.a.PFA.node(node.next || node.first)
+    }
+    console.log("Nœud suivant/précédent:", other_node)
+    console.log("temps suivant dans VideController#onClickMarkPart:", other_node[`startAt${absRel}`])
+    this.a.locator.setRTime(other_node[`startAt${absRel}`])
+    // this.a.locator.defineNextZonesStt sera automatiquement appelé par
+    // setTime < setRTime
+  }
+
+  /**
+  * Met le nom de la partie courant dans le champ à côté de l'horloge
+  * principale, en réglant son attribut data-stt-id conservant son id
+  * structurel
+  **/
+  setMarkPart(mainSub, absRel, zone){
+    var mk = this[`mark${mainSub}Part${absRel}`]
+    mk.html(zone.hname.toUpperCase())
+    mk.attr('data-stt-id', zone.id)
+  }
+
+  /**
+  * On place les observeurs sur le video-controleur
+  **/
+  observe(){
+    this.markMainPartAbs.on('click', this.onClickMarkPart.bind(this, 'Main', 'Abs'))
+    this.markSubPartAbs.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Abs'))
+    this.markMainPartRel.on('click', this.onClickMarkPart.bind(this, 'Main', 'Rel'))
+    this.markSubPartRel.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Rel'))
+  }
+
+  get a(){return this.analyse}//raccourci
   get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
   get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
   get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
