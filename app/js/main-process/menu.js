@@ -314,6 +314,21 @@ const DATA_MENUS = [
                   , {label: 'Large',    id: 'size-video-large', type:'radio', click:()=>{setVideoSize('large')}}
                 ]
             }
+          , {
+                label: 'Vitesse de lecture'
+              , submenu: [
+                    {label: 'Image/image', id: 'video-speed-rx009', type:'radio', click:()=>{setVideoSpeed(0.07)}}
+                  , {label: 'Ralenti / 8', id: 'video-speed-rx010', type:'radio', click:()=>{setVideoSpeed(0.12)}}
+                  , {label: 'Ralenti / 4', id: 'video-speed-rx025', type:'radio', click:()=>{setVideoSpeed(0.25)}}
+                  , {label: 'Ralenti / 2', id: 'video-speed-rx05', type:'radio', click:()=>{setVideoSpeed(0.5)}}
+                  , {label: 'Normale', id: 'video-speed-x1', type:'radio', click:()=>{setVideoSpeed(1)}, selected: true}
+                  , {label: 'x 2', id: 'video-speed-x2', type:'radio', click:()=>{setVideoSpeed(2)}}
+                  , {label: 'x 4', id: 'video-speed-x4', type:'radio', click:()=>{setVideoSpeed(4)}}
+                  , {label: 'x 8', id: 'video-speed-x8', type:'radio', click:()=>{setVideoSpeed(8)}}
+                  , {label: 'x 12', id: 'video-speed-x12', type:'radio', click:()=>{setVideoSpeed(12)}}
+                  , {label: 'x 16', id: 'video-speed-x16', type:'radio', click:()=>{setVideoSpeed(16)}}
+                ]
+            }
           , {type: 'separator'}
           , {
                 label: 'Temps courant…'
@@ -461,8 +476,10 @@ if (process.platform === 'darwin') {
 }
 
 function setVideoSize(size){
-  mainW.webContents.send('set-video-size', {size: size})
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('video_size','${size}')`)
+}
+function setVideoSpeed(speed){
+  mainW.webContents.send('set-video-speed', {speed: speed})
 }
 function createEvent(type){
   mainW.webContents.send('create-event', {type: type})

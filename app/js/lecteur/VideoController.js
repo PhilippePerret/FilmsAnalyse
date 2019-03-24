@@ -70,6 +70,13 @@ class VideoController {
   }
 
   /**
+  * Pour définir la vitesse de la vidéo
+  **/
+  setSpeed(speed){
+    this.controller.defaultPlaybackRate = speed
+    this.controller.playbackRate = speed
+  }
+  /**
    * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
    * de l'écran.
    */
