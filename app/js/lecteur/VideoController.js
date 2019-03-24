@@ -44,6 +44,10 @@ class VideoController {
 
     this.observe()
 
+    // On appelle juste l'indicateur de position pour l'initialiser
+    this.positionIndicator.init()
+
+
     this.inited = true
   }
   // /fin init
@@ -168,6 +172,13 @@ class VideoController {
     this.markSubPartRel.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Rel'))
   }
 
+  // Pour l'indicateur de position
+  get positionIndicator(){
+    if(undefined === this._positionIndicator){
+      this._positionIndicator = new FAPositionIndicator(this, 1)
+    }
+    return this._positionIndicator
+  }
   get a(){return this.analyse}//raccourci
   get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
   get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}

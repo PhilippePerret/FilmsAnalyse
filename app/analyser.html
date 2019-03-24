@@ -37,6 +37,12 @@
         <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
       </video>
 
+      <!-- Indicateur de position -->
+      <div id="position-indicator-1-container" class="position-indicator-container">
+        <span class="horloge">0:00:00.0</span>
+        <div id="position-indicator-1-cursor-1" class="position-indicator-cursor"></div>
+      </div>
+
       <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
       <div id="div-nav-video-buttons" class="no-user-selection">
         <span id="horloge_real" class="horloge mini fleft">0:00:00.00</span>
@@ -234,6 +240,7 @@
     <script type="text/javascript" src="./js/common/Scene.js"></script>
     <script type="text/javascript" src="./js/common/Locator.js"></script>
     <script type="text/javascript" src="./js/common/BtnPlay.js"></script>
+    <script type="text/javascript" src="./js/lecteur/PositionIndicator.js"></script>
     <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
 
     <script type="text/javascript" src="./js/common/FAEvents/FAEscene.js"></script>

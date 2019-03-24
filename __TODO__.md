@@ -14,8 +14,6 @@
   - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
 * Développer les variables {{variable}} comme `{{title}}`
-  - traiter l'inscription d'un '{' dans le texte pour qu'il marque aussitôt un '{}'
-  - traiter l'inscription d'un '"' dans le texte pour qu'il marque aussitôt un '«  »' (avec insécable)
 
 # EN COURS DE DÉVELOPPEMENT
 
@@ -27,9 +25,6 @@
 # TODO LIST
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
-* Les indications de parties, à côté de l'horloge principale, doivent permettre aussi de se déplacer dans le film, dans sa structure. Quand on clique dessus (par exemple sur 'EXPOSITION') on ouvre un menu pour choisir les autres éléments (p.e. 'DÉVELOPPEMENT PART 1', 'DÉVELOPPEMENT PART 2', 'DÉNOUEMENT').
-Le faire bien sûr pour les positions absolues et les positions réelles.
-  - être plus "fin" pour l'affichage : 10 secondes avant un changement de partie, on l'indique par un voyant rouge à côté de la partie, puis on change de partie.
 
 * Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
 

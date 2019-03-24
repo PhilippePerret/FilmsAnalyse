@@ -67,7 +67,7 @@ class SttNode {
   constructor(nid, data){
     if(undefined == nid) throw("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
     this.id = nid
-    console.log("data:", data)
+    // console.log("data:", data)
     for(var p in data){this[`_${p}`] = data[p]}
     // Par exemple, on définit `this._cZone`
 

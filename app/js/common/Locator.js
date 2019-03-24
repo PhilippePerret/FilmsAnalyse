@@ -488,6 +488,8 @@ class Locator {
     // Définir la zone structurelle absolue et relative dans laquelle on se
     // trouve
     this.showCurrentZoneStt(curt)
+    // Placer le curseur de position
+    this.videoController.positionIndicator.positionneAt(curt)
   }
 
   actualizeReader(){
