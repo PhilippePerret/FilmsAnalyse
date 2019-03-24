@@ -12,7 +12,12 @@
 * [Aspect visuel](#visual_aspect)
   * [Boutons de fermeture](#boutons_close)
 * [Documents de l'analyse](#documents_analyse)
-* [Sauvegarde protégée des documents](#saving_protected)
+  * [Sauvegarde protégée des documents](#saving_protected)
+* [Assemblage de l'analyse](#assemblage_analyse)
+  * [Script d'assemblage](#script_assemblage_analyse)
+
+<!-- Définition des liens courants -->
+[script d'assemblage]: #script_assemblage_analyse
 
 
 ## Point d'entrée {#point_dentree}
@@ -246,14 +251,24 @@ Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture. Il fau
 
 ## Documents de l'analyse {#documents_analyse}
 
-Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/writer`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
 
 Ces documents permettent de construire l'analyse de deux façons différentes :
 
 * en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
-## Sauvegarde protégée des documents {#saving_protected}
+### Quatre types de documents
+
+Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessibles depuis le menu « Documents » de l'application.
+
+1. Les documents entièrement rédigés, littéraires (introduction, synopsis). Ils peuvent être coller tels quels dans l'analyse, grâce à la commande `FILE` du [script d'assemblage][].
+2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
+3. Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d'informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.
+4. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
+
+
+### Sauvegarde protégée des documents {#saving_protected}
 
 La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'utilisation est simple : on crée une instance `IOFile` du document en envoyant son path et on peut le sauver et le charger en utilisant `<instance>.save()` et `<instance>.loadIfExists()`.
 
@@ -340,3 +355,13 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
   this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
 
 ```
+
+# Assemblage de l'analyse {#assemblage_analyse}
+
+Cette partie traite de l'assemblage de l'analyse côté programmation.
+
+Pour assembler l'analyse, l'application se sert principalement de la classe `FABuilder` et de la classe `FAExporter`.
+
+## Script d'assemblage {#script_assemblage_analyse}
+
+Le « script d'assemblage » définit la façon d'assembler les différents composants de l'analyse pour composer le document final.

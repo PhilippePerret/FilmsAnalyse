@@ -159,11 +159,13 @@ table.video-controller button.main {
   background-color:#CCFFCC;
 }
 table.video-controller button:active {
-  background-color:green;
+  /* background-color:green; */
+  background-color:#31d300;
   /* transition-duration:0.4s; */
 }
 table.video-controller button.actived {
-  background-color:green;
+  /* background-color:green; */
+  background-color:#31d300;
 }
 table.video-controller button.main img {
   width:40px;

@@ -1,0 +1,18 @@
+/* Styles pour la timeline */
+#timeline {
+  position:absolute;
+  border:2px solid;
+  left:25px;
+  top:250px;
+  z-index:2000;
+}
+#timeline #timeline-slider {
+  height:20px;
+  background-color:#660000;
+  width:100%;
+}
+#timeline #timeline-header {
+  min-height:20px;
+  width:100%
+  background-color:rgba(200,200,255,0.3)
+}

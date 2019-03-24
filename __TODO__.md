@@ -1,15 +1,11 @@
 # SUR LE GRILL
 
-* Assemblage l'analyse
-  - Documenter la distinction entre 4 types de documents :
-    1. Les documents entièrement rédigés, littéraires (introduction, synopsis)
-    2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
-    3. Les documents entièrement automatisés (PFA, au fil du film)
-    4. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
-    -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
-      - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
 
 * Construire le PFA
+
+* Assemblage de l'analyse
+  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
+  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
 
 * Pour la sortie en PDF
   - il faudrait ajouter l'image de couverture au HTML
@@ -23,12 +19,15 @@
 # EN COURS DE DÉVELOPPEMENT
 
 * L'état d'avancement de l'application (analyse_state.js)
-* Le writer (dossier `writer`)
 * Construction du (des) PFA
 * Construction des Fondamentales
 * Construction des statistiques de fin
 
 # TODO LIST
+
+* À côté du chrono qui défile, il faudrait trouver deux cases, qui indiqueraient là où on se trouve par rapport à la structure du film. La première case serait la position absolu (le démarrage absolu du développement, de la clé de voûte, etc.) et la seconde case indiquerait la position relative définie pour le film, si elle l'est.
+
+* Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
 
 * Peut-être, pour particulariser chaque analyse, faut-il faire un "scénario" de construction qui explique comment procéder. Par exemple :
     - mettre introduction

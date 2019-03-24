@@ -21,7 +21,8 @@ const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
-  'display-fondamentales', 'new-eventer', 'open-writer'
+  'display-fondamentales', 'new-eventer', 'open-writer',
+  'display-timeline', 'display-analyse-state'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -274,6 +275,13 @@ const DATA_MENUS = [
               , id: 'display-analyse-state'
               , accelerator: 'CmdOrCtrl+Alt+S'
               , click: () => {execJsOnCurrent('displayAnalyseState')}
+            }
+          , {type:'separator'}
+          , {
+                label: 'Afficher/masquer la Timeline'
+              , id: 'display-timeline'
+              , accelerator: 'CmdOrCtrl+Shift+T'
+              , click: () => {execJsOnCurrent('displayTimeline')}
             }
       ]
     }

@@ -3,6 +3,7 @@
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)
 * [Gestion des temps](#gestion_des_temps)
+  * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
   * [Réglage du temps et de la durée de l'event](#set_event_time)
@@ -10,8 +11,11 @@
   * [Comportement du bouton STOP](#le_bouton_stop)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
 * [Les Documents](#les_documents)
+  * [Quatre types de documents](#types_de_documents)
   * [Diminutifs](#les_diminutifs)
   * [Variables dans les documents](#variables_dans_les_documents)
+  * [Les snippets](#les_snippets)
+  * [Rédaction des documents](#redaction_documents)
 * [Assemblage de l'analyse finale](#assemblage_analyse)
 * [Publication online](#publication_online)
 
@@ -24,6 +28,17 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 ## Gestion des temps {#gestion_des_temps}
+
+### Déplacements à l'aide de la Timeline {#move_with_timeline}
+
+Le moyen le plus rapide pour se déplacer dans le film — donc dans la vidéo — est sans doute la « Timeline », la ligne de temps.
+
+On peut l'afficher en activant le menu « Affichage > Timeline » (ou en jouant CMD-MAJ-T).
+
+![Image de la Timeline]()
+
+La Timeline se présente comme une longue bande représentant l'écoulement le temps, du départ du film à gauche à la fin à droite. Il suffit de glisser la souris sur la partie inférieure de cette bande pour se déplacer dans le temps.
+
 
 ### Passer en revue les 3 derniers points d'arrêt {#passe_revue_stop_points}
 
@@ -90,6 +105,22 @@ Une fois suffisamment de nœud définis, on peut demander l'affichage du paradig
 
 ## Les Documents {#les_documents}
 
+Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de [documents](#types_de_documents) de types différents. On peut tous les atteindre depuis le menu « Documents » de l'application **Film-Analyzer**.
+
+### Quatre types de documents {#types_de_documents}
+
+Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessibles depuis le menu « Documents » de l'application.
+
+1. **Documents TEXTUELS**. Ce sont des documents entièrement rédigés, littéraires (introduction, synopsis). Ils peuvent être coller tels quels dans l'analyse, grâce à la commande `FILE` du [script d'assemblage][].
+2. **Documents SEMI-TEXTUELS**. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
+3. **Documents AUTOMATISÉS**. Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d'informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.
+4. **Documents DATA**. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
+
+Quels que soient les documents textuels, leur toute première ligne doit définir leur titre, après un signe dièse (« # »).
+
+Tous les documents peuvent utiliser des [variables](#variables_dans_les_documents) ou des [diminutifs](#les_diminutifs) qui simplifient grandement la rédaction et évitent certaines erreurs.
+
+
 ### Les Diminutifs {#les_diminutifs}
 
 Les diminutifs du film, par exemple les noms de personnage, se définissent dans le document « Diminutifs » qu'on peut atteindre par le menu « Documents ».
@@ -152,6 +183,22 @@ On trouve par exemple :
 : Date du film.
 
 Mais on peut trouver dans ce document toutes les variables qu'on jugera utile pour l'analyse courante.
+
+### Les snippets {#les_snippets}
+
+Les snippets permettent de rédiger beaucoup plus vite le texte en permettant d'écrire le simple début d'un mot, et d'en obtenir la suite en jouant la touche TABULATION. Par exemple, si le snippet `f:film` est défini, il suffit de taper « f » suivi de la touche TABULATION pour écrire « film ».
+
+Les snippets se définissent dans le document de même nom, qu'on peut atteindre par le menu « Documents ». On en définit autant qu'on veut, pour chaque analyse. Si l'on veut utiliser les snippets d'une autre analyse, il suffit de l'ouvrir et de copier-coller le code des snippets dans la nouvelle.
+
+### Rédaction des documents {#redaction_documents}
+
+Le `Writer` de l'application permet de rédiger tous les documents de l'analyse. Il suffit de le choisir dans le menu « Documents » et il s'ouvre en édition. Tous les [types de documents](#types_de_documents) peuvent s'ouvrir de cette manière.
+
+On utilisera des [variables](#variables_dans_les_documents) les [diminutifs](#les_diminutifs) et les [snippets](#les_snippets) pour se faciliter l'écriture et éviter certaines erreurs.
+
+Pour faire référence à des *events* de tout type, il suffit de prendre ces *events* et de les glisser dans le texte. Une référence sera écrite au curseur. La nature et l'aspect de cette référence est fonction du type de l'*event* et peut varier beaucoup d'un type à l'autre. On reconnait les balises à leur forme `{{event: <id de l'event>}}`. Si l'*event* est une scène, il apparaitra de cette manière : `{{scene: <id event>}}` (noter que ça n'est pas le *numéro de la scène*, mais bien l'*identifiant de l'event* qui est inscrit).
+
+ASTUCE : On peut voir tout de suite l'aspect que prendra la référence — et la modifier au besoin — en demandant la visualisation en direct du texte (case à cocher « Visualiser » dans le pied de page du `Writer`).
 
 ## Assemblage de l'analyse finale {#assemblage_analyse}
 
