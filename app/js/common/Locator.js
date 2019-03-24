@@ -317,10 +317,8 @@ class Locator {
   * s'afficher à côté de l'horloge.
   **/
   defineNextZonesStt(rtime){
-    console.log("-> defineNextZonesStt")
     var my = this, kstt
     if(undefined === rtime) rtime = this.currentRTime
-    console.log("Temps courant dans Locator#defineNextZonesStt:", rtime)
     // console.log("-> this._nextZonesStt (définition)", rtime)
     my._PFA = my.analyse.PFA
     my._nextZonesStt = {}
@@ -333,7 +331,6 @@ class Locator {
       // noeud avant de trouver le dernier, donc le vrai noeud courant
       if (nstt.startAtAbs <= rtime){
         my._nextZonesStt[`cur${nstt.isMainPart?'Main':'Sub'}PartAbs`] = nstt
-        // console.log(`[define] cur${nstt.isMainPart?'Main':'Sub'}PartAbs mis à`, nstt.id, nstt.startAtAbs, rtime)
       }
 
       // Pour les valeurs relatives
@@ -345,7 +342,6 @@ class Locator {
       kstt = `next${nstt.isMainPart?'Main':'Sub'}PartAbs`
       if (!my._nextZonesStt[kstt] && nstt.startAtAbs > rtime){
         my._nextZonesStt[kstt] = nstt
-        console.log(`[define] ${kstt} mis à`, nstt.id)
       }
 
       // Pour les valeurs relatives
@@ -353,7 +349,6 @@ class Locator {
       kstt = `next${nstt.isMainPart}PartRel`
       if (!my._nextZonesStt[kstt] && nstt.startAtRel && nstt.startAtRel > rtime){
         my._nextZonesStt[kstt] = nstt
-        console.log(`[define] ${kstt} mis à`, nstt.id)
       }
     }) // fin de la boucle sur tous les noeuds
 

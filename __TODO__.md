@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-* Un indicateur de position, sur la timeline mais aussi sous la vidéo
-
 * Construire le PFA
 
 * Assemblage de l'analyse
@@ -13,7 +11,6 @@
   - il faut partir du HTML pour faire le PDF
   - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
-* Développer les variables {{variable}} comme `{{title}}`
 
 # EN COURS DE DÉVELOPPEMENT
 
