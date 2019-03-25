@@ -54,7 +54,10 @@
   width:500px;
 }
 
-#section-video .position-indicator-container {
+.timeline {
+  position:relative;
+}
+.timeline .timeline-cursors {
   position:relative;
   width:100%;
   height:10px;
@@ -64,14 +67,14 @@
   border-width:1px 0;
   cursor:pointer;
 }
-#section-video .position-indicator-container .position-indicator-cursor {
+.timeline .timeline-cursors .cursor {
   width:4px;
   height:10px;
   background-color:red;
   position:absolute;
   left:0px;
 }
-#section-video .position-indicator-container span.horloge {
+.timeline span.timeline-horloge {
   position:absolute;
   top:-24px;
   right:0px;
@@ -79,6 +82,6 @@
   font-family:monospace;
   visibility:hidden;
 }
-#section-video .position-indicator-container:hover span.horloge {
+.timeline:hover span.timeline-horloge {
   visibility:visible;
 }

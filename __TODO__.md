@@ -1,8 +1,12 @@
 # SUR LE GRILL
 
-* Un indicateur de position, sur la timeline mais aussi sous la vidéo
+* La classe FATimeline doit être utilisée pour :
+  - la Timeline principale
+  - Le Paradigme de Field
+  - La bande sous la vidéo [OK]
 
-* Construire le PFA
+* Pour la FATimeline
+  - faire des instances FACursor
 
 * Assemblage de l'analyse
   -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
@@ -13,12 +17,13 @@
   - il faut partir du HTML pour faire le PDF
   - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
-* Développer les variables {{variable}} comme `{{title}}`
 
 # EN COURS DE DÉVELOPPEMENT
 
+* Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
+  - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 * L'état d'avancement de l'application (analyse_state.js)
-* Construction du (des) PFA
+* Construction du (des) PFA (poursuivre en mettant des éléments propres à l'analyse, et en stylisant — pour le moment, le PFA n'est pas encore présentable.)
 * Construction des Fondamentales
 * Construction des statistiques de fin
 

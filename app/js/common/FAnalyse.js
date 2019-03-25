@@ -284,10 +284,7 @@ class FAnalyse {
   /**
   * Pour afficher la Timeline
   **/
-  displayTimeline(){
-    if(NONE == typeof FATimeline)return this.loadTimeline(this.displayTimeline.bind(this))
-    FATimeline.toggle()
-  }
+  displayTimeline(){MainTimeline.toggle()}
 
   /**
    * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
@@ -315,6 +312,10 @@ class FAnalyse {
   displayFondamentales(){
     var method = require('./js/tools/building/fondamentales.js')
     method.bind(this)()
+  }
+  displayStatistiques(){
+    // TODO
+    F.error("Les Statistiques ne sont pas encore implémentées.")
   }
 
   displayAnalyseState(){

@@ -64,6 +64,7 @@ class SttNode {
 
   // ---------------------------------------------------------------------
   //  INSTANCE
+
   constructor(nid, data){
     if(undefined == nid) throw("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
     this.id = nid
@@ -186,8 +187,25 @@ class SttNode {
   }
 
   // ---------------------------------------------------------------------
-  // Méthodes de calculs
+  // Méthodes d'Helper
 
+/**
+* Méthode qui retourne l'élément DOM pour ce noeud
+* en version absolue, d'après un coefficiant +coef+
+**/
+inAbsPFA(coefT2P){
+  var s = document.createElement('SPAN')
+  var left = this.startAtAbs * coefT2P
+  var width = (this.endAtAbs - this.startAtAbs) * coefT2P
+  s.style = `left:${left}px;width:${width}px;`
+  s.className = `pfa-part-${this.isMainPart?'part':'zone'}`
+  s.innerHTML = this.isMainPart?this.hname:this.shortHname
+  return s
+}
+
+inRelPFA(coefT2P){
+  return null
+}
 
 }
 

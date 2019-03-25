@@ -21,7 +21,7 @@ const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
-  'display-fondamentales', 'new-eventer', 'open-writer',
+  'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
@@ -239,14 +239,14 @@ const DATA_MENUS = [
             {
               label: "Analyse complète"
               , id: 'display-full-analyse'
-              , accelerator: 'CmdOrCtrl+Shift+A'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+A'
               , enabled: false
               , click: () => {execJsOnCurrent('displayFullAnalyse')}
             }
           , {
               label: "Analyse complète (actualiser)"
               , id: 'display-full-analyse-forcer'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+A'
+              , accelerator: 'CmdOrCtrl+Shift+A'
               , enabled: false
               , click: () => {execJsOnCurrent('displayFullAnalyse', true)}
             }
@@ -257,17 +257,27 @@ const DATA_MENUS = [
               , enabled: false
               , click: () => {execJsOnCurrent('displayInfosFilm')}
             }
+          , {type:'separator'}
           , {
                 label: "Paradigme de Field Augmenté"
               , id: 'display-pfa'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+P'
               , enabled: false
               , click: ()=>{execJsOnCurrent('displayPFA')}
             }
           , {
                 label: "Fondamentales"
               , id: 'display-fondamentales'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+F'
               , enabled: false
               , click: ()=>{execJsOnCurrent('displayFondamentales')}
+            }
+          , {
+                label: "Statistiques"
+              , id: 'display-statistiques'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+S'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayStatistiques')}
             }
           , {type:'separator'}
           , {

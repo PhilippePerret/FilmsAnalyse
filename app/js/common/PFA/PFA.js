@@ -56,6 +56,7 @@ Object.assign(PFA, {
      */
   , build:function(){
       require('./PFA_building.js').bind(this)()
+      document.body.appendChild(this._output)
       this.built = true
     }
   // ---------------------------------------------------------------------

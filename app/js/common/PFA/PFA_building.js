@@ -2,81 +2,141 @@
 
 const DUREE_FILM = current_analyse.duration
 
+
+const PFABuilder = {
 /**
-  * Méthodes de construction du PFA
-  **/
-  /**
-   * Construction du PFA absolu, en fonction de la longueur du film
-   *
-   * => Production de this._absolutePFA
-   */
-function buildAbsolutePFA(pfa_id){
-  // Soit on fait un pourcentage, soit on fait par valeur fixe en calculant
-  // le coefficiant par rapport à la durée.
-  //
-  this._absolutePFA = `
-  <section id="absolute-pfa-${pfa_id}" class="pfa absolute-pfa">
-  <div class="pfa-part pfa-exposition">
-    <span class="pfa-part-name">EXPOSITION</span>
-  </div>
-  <div class="pfa-part pfa-develop-part1">
-    <span class="pfa-part-name">DÉV. PART 1</span>
-  </div>
-  <div class="pfa-part pfa-develop-part2">
-    <span class="pfa-part-name">DÉV. PART 2</span>
-  </div>
-  <div class="pfa-part pfa-denouement">
-    <span class="pfa-part-name">DÉNOUEMENT</span>
-  </div>
-  </section>
-  `
+* Retourne le code du PFA absolu
+**/
+  get absolutePFA(){
+    var s = document.createElement('SECTION')
+    s.id = `pfa-absolute`
+    s.className = 'pfa'
+    s.appendChild(this.divAbsParts)
+    s.appendChild(this.divAbsZones)
+    return s
 }
-  /**
-   * Construction du PFA relatif
-   *
-   * => Production de this._relativePFA
-   */
-function buildRelativePFA(pfa_id){
-  this._relativePFA = `
-  <section id="relative-pfa-${pfa_id}" class="pfa relative-pfa">
-  <div class="pfa-part pfa-exposition">
-    <span class="pfa-part-name">EXPOSITION</span>
-  </div>
-  <div class="pfa-part pfa-develop-part1">
-    <span class="pfa-part-name">DÉV. PART 1</span>
-  </div>
-  <div class="pfa-part pfa-develop-part2">
-    <span class="pfa-part-name">DÉV. PART 2</span>
-  </div>
-  <div class="pfa-part pfa-denouement">
-    <span class="pfa-part-name">DÉNOUEMENT</span>
-  </div>
-  </section>
-  `
+, get relativePFA(){
+    var s = document.createElement('SECTION')
+    s.id = `pfa-relative`
+    s.className = 'pfa'
+    s.appendChild(this.divRelParts)
+    // s.appendChild(this.divRelZones)
+    return s
+}
+, get divAbsParts(){
+    var div = this.divParts('Abs')
+    return div
+}
+, get divRelParts(){
+  var div = this.divParts('Rel')
+  return div
+}
+, divParts(dimT /* 'Abs' ou 'Rel'*/ ){
+  var  div, zoneId, node, span
+  div = document.createElement('DIV')
+  div.className = 'pfa-div-parts'
+  div.style = `width:${this.plain}px;`
+  div.id = `pfa-div-parts-${dimT}`
+  for(zoneId of this.partsIds){
+    node = this.a.PFA.node(zoneId)
+    span = node[`in${dimT}PFA`](this.coefT2P)
+    span && div.appendChild(span)
+  }
+  node = null
+  return div
 }
 
-  /**
-   * Assemblage des deux PFA du film, absolu et relatif
-   *
-   * => Production de this._assembledPFAs
-   */
-function assemblePFAs(pfa_id){
-    this._assembledPFAs = `<section id="section-pfa-${pfa_id}" class="section-pfa">`
-    this._assembledPFAs += this._buildAbsolutePFA
-    this._assembledPFAs += this._relativePFA
-    this._assembledPFAs += '</section>'
+, get divAbsZones(){
+    var div = this.divZones('Abs')
+    return div
 }
+, get divRelZones(){
+    var div = this.divZones('Rel')
+    return div
+}
+, divZones(dimT){
+    var div, zoneId, node, span
+    div = document.createElement('DIV')
+    div.className = 'pfa-div-zones'
+    div.id = `pfa-div-zones-${dimT}`
+    for(zoneId of this.zonesIds){
+      node = this.a.PFA.node(zoneId)
+      span = node[`in${dimT}PFA`](this.coefT2P)
+      span && div.appendChild(span)
+    }
+    return div
+}
+/**
+* Méthode qui calcule toutes les dimensions d'après la largeur voulue
+**/
+, calcDimsFor(larg){
+    this.quart  = this.qu = larg / 4
+    this.tiers  = this.ti = larg / 3
+    this.moitie = this.mo = larg / 2
+    this.troisquart = 3 * this.quart
+    this.plain  = larg
+}
+
+, get coefT2P(){
+    if(undefined === this._coefT2P){
+      this._coefT2P = this.plain / DUREE_FILM
+    }
+    return this._coefT2P
+}
+, get a(){return current_analyse}
+
+, get partsIds() {return this._partsIds || this.defineIds().parts}
+, get zonesIds() {return this._zonesIds || this.defineIds().zones}
+
+, defineIds(){
+  var ps = [], zs = [], kstt, dstt
+  for(kstt in this.a.PFA.DATA_STT_NODES){
+    dstt = this.a.PFA.DATA_STT_NODES[kstt]
+    if ( dstt.main ){
+      ps.push(kstt)
+    } else {
+      zs.push(kstt)
+    }
+  }
+  this._partsIds = ps
+  this._zonesIds    = zs
+  return {parts: ps, zones: zs}
+}
+
+}
+
+
+// Retourne les styles propres, calculés en fonction du film
+PFABuilder.styles = function(){
+  var sty = document.createElement('LINK')
+  sty.setAttribute('rel', "stylesheet")
+  sty.setAttribute('media', "screen")
+  sty.href = './js/common/PFA/PFA.css'
+  return sty
+}()
 
 module.exports = function(options){
   console.log("-> Construction du PFA")
-  var pfa_id = 1
-  this.buildAbsolutePFA = buildAbsolutePFA.bind(this)
-  this.buildRelativePFA = buildRelativePFA.bind(this)
-  this.assemblePFAs     = assemblePFAs.bind(this)
 
-  this.buildAbsolutePFA(pfa_id)
-  this.buildRelativePFA(pfa_id)
-  this.assemblePFAs(pfa_id)
+  var pfa_id = 1
+
+  PFABuilder.calcDimsFor(ScreenWidth - 200)
+
+  var pfas = document.createElement('SECTION')
+  pfas.id = 'pfas'
+  pfas.appendChild(PFABuilder.styles)
+  pfas.appendChild(PFABuilder.absolutePFA)
+  pfas.appendChild(PFABuilder.relativePFA)
+
+  this._output = pfas
+
+  // this.buildAbsolutePFA = buildAbsolutePFA.bind(this)
+  // this.buildRelativePFA = buildRelativePFA.bind(this)
+  // this.assemblePFAs     = assemblePFAs.bind(this)
+  //
+  // this.buildAbsolutePFA(pfa_id)
+  // this.buildRelativePFA(pfa_id)
+  // this.assemblePFAs(pfa_id)
 
   console.log("<- Construction du PFA")
 }
