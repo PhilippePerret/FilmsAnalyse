@@ -1,6 +1,5 @@
 # SUR LE GRILL
 
-
 * Faire une class qui pourra être utilisée partout où on doit pouvoir 1/glisser la souris et obtenir le temps (horloge apparaissan), 2/ cliquer et voir le passage du film, 3/double-cliquer et démarrer le film.
   Cette classe doit être utilisée pour :
   - la Timeline

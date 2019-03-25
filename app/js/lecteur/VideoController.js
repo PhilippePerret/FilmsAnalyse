@@ -172,10 +172,11 @@ class VideoController {
     this.markSubPartRel.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Rel'))
   }
 
-  // Pour l'indicateur de position
+  // Pour l'indicateur de position, une timeline sous
+  // la vidéo.
   get positionIndicator(){
     if(undefined === this._positionIndicator){
-      this._positionIndicator = new FAPositionIndicator(this, 1)
+      this._positionIndicator = new FATimeline(DGet('position-indicator-1-container'))
     }
     return this._positionIndicator
   }
