@@ -316,6 +316,10 @@ class FAnalyse {
     var method = require('./js/tools/building/fondamentales.js')
     method.bind(this)()
   }
+  displayStatistiques(){
+    // TODO
+    F.error("Les Statistiques ne sont pas encore implémentées.")
+  }
 
   displayAnalyseState(){
     var method = require('./js/tools/analyse_state.js')

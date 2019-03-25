@@ -1,15 +1,49 @@
-section.section-pfa {
+section#pfas {
+  z-index: 500;
   position:absolute;
-  top:20px;
-  left:20px;
-  z-index:500;
+  top:100px;
+  left:50px;
+  padding:2px;
+  border:3px solid orange;
   background-color:white;
-  min-height:50px;
-  width:90%;
+}
+section#pfas section.pfa {
+  display:block;
+  /* background-color:yellowgreen; */
+  min-height:40px;
+  border:2px solid red;
+  margin-top:8px;
+}
+section#pfas section.pfa div.pfa-div-parts,
+section#pfas section.pfa div.pfa-div-zones,
+section#pfas section.pfa div.pfa-div-events
+{
+  border:1px solid black;
+  position:relative;
+  height:24px;
 }
 
+section#pfas section.pfa div.pfa-div-parts span.pfa-part-part,
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone,
+section#pfas section.pfa div.pfa-div-events span.pfa-part-event
+{
+  position:absolute;
+}
 
-section.section-pfa section.pfa div.pfa-part {
-  display:inline-block;
-  width:24%;
+/* Marque de partie (absolute/relative) */
+section#pfas section.pfa div.pfa-div-parts span.pfa-part-part {
+  font-size:0.83em;
+  font-style:italic;
+  opacity:0.5;
+  border:1px solid;
+  text-align:center;
+}
+/* Marque de zone (absolute) */
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone {
+  font-size:0.8em;
+  border-bottom:2px solid red;
+}
+/* Marque d'event précis (relative) */
+section#pfas section.pfa div.pfa-div-events span.pfa-part-event {
+
 }
