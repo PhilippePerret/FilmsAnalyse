@@ -1,16 +1,12 @@
 # SUR LE GRILL
 
-* Faire une class qui pourra être utilisée partout où on doit pouvoir 1/glisser la souris et obtenir le temps (horloge apparaissan), 2/ cliquer et voir le passage du film, 3/double-cliquer et démarrer le film.
-  Cette classe doit être utilisée pour :
-  - la Timeline
-  - Le paradigme de Field
-  - La bande sous la vidéo
-  - Tous les éléments timeline utilisés dans l'analyse.
+* La classe FATimeline doit être utilisée pour :
+  - la Timeline principale
+  - Le Paradigme de Field
+  - La bande sous la vidéo [OK]
 
-* Pour la FATimeline (ou plutôt pour la classe précédente, qui pose une classe Timeline sur un élément)
+* Pour la FATimeline
   - faire des instances FACursor
-  - désactiver le mousemove lorsque l'on met en route le lecteur
-  - double clic met en route
 
 * Assemblage de l'analyse
   -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
@@ -24,6 +20,8 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
+* Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
+  - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 * L'état d'avancement de l'application (analyse_state.js)
 * Construction du (des) PFA (poursuivre en mettant des éléments propres à l'analyse, et en stylisant — pour le moment, le PFA n'est pas encore présentable.)
 * Construction des Fondamentales

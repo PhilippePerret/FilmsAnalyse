@@ -51,9 +51,12 @@ class FATimeline {
 **/
   onClickOnSlider(e){
     this.locator.setRTime(this.otime.seconds)
+    this.positionneAt(this.otime.seconds)
+    if(this.locator.playing) this.locator.togglePlay()
 }
   onDoubleClickOnSlider(e){
     this.locator.togglePlay()
+    this.positionneAt(this.otime.seconds)
 }
 
 /**
