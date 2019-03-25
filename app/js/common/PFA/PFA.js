@@ -43,41 +43,54 @@ Object.assign(PFA, {
     }
 
   // Méthodes d'affichage
-  , display:function(){
+  , display(){
       console.log("-> PFA.display")
-      if(!this.built) this.build()
+      if(!this.built) this.build().observe()
+      console.log("<- PFA.display")
     }
 
   // ---------------------------------------------------------------------
   //  Méthodes de construction
 
-    /**
-     * Méthode principale de construction du PFA du film.
-     */
-  , build:function(){
-      require('./PFA_building.js').bind(this)()
-      document.body.appendChild(this._output)
-      this.built = true
-    }
-  // ---------------------------------------------------------------------
-  //  Méthodes de calculs
+  /**
+   * Méthode principale de construction du PFA du film.
+   */
+, build(){
+    require('./PFA_building.js').bind(this)()
+    document.body.appendChild(this._output)
+    this.built = true
+    return this // chainage
+  }
+// ---------------------------------------------------------------------
+//  Méthodes de calculs
 
+, observe(){
+    // On colle un FATimeline
+    var tml = new FATimeline(this.jqObj[0])
+    tml.init({height:40, only_slider_sensible: true})
+
+    // On rend le PFA draggable
+    this.jqObj.draggable()
+}
 })
 Object.defineProperties(PFA,{
-    modified:{
-        get:function(){return this._modified}
-      , set:function(v){this._modified = v}
-    }
-    //Retourne la class SttNode de l'incident perturbateur
-  , incPer:{
-        get:function(){return this._incPer}
-      , set:function(e){this._incPer = e}
-    }
-  // Retourne l'incident déclencheur, comme SttNode
-  , incDec:{
-        get:function(){return this._incDec}
-      , set:function(e){this._incDec = e}
-    }
+  jqObj:{
+    get(){return this._jqObj||defP(this,'_jqObj',$('#pfas'))}
+  }
+, modified:{
+    get(){return this._modified}
+  , set(v){this._modified = v}
+}
+  //Retourne la class SttNode de l'incident perturbateur
+, incPer:{
+      get:function(){return this._incPer}
+    , set:function(e){this._incPer = e}
+  }
+// Retourne l'incident déclencheur, comme SttNode
+, incDec:{
+      get:function(){return this._incDec}
+    , set:function(e){this._incDec = e}
+  }
 })
 
 

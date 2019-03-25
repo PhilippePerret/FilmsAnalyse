@@ -18,11 +18,21 @@ class FATimeline {
     this.analyse      = analyse || current_analyse
 }
 
-  init(){
+/**
+* Initialisation
+*
+* +options+ Pour poser quelques options :
+*   :height   (nombre pixels) Hauteur à appliquer, plutôt que la hauteur
+*             par défaut.
+*   :only_slider_sensible      Si true, seul la bande (le slider) est sensible
+*                         au déplacement de souris.
+**/
+  init(options){
+    if(undefined === options) options = {}
     // Construire les éléments (p.e. l'horloge)
-    this.build()
+    this.build(options)
     // Placer les observers
-    this.observe()
+    this.observe(options)
     this.inited = true
 }
   /**
@@ -36,13 +46,17 @@ class FATimeline {
 *
 * Pour le moment, on ne fait qu'arrêter la vidéo et se mettre en place
 **/
-  onHoverSlider(e){
-    if(this.locator.playing) this.locator.stop()
-    this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
-    stopEvent(e)
+onHoverSlider(e){
+  this.horloge.css('visibility', 'visible')
+  return stopEvent(e)
+}
+onMouseOutSlider(e){
+  this.horloge.css('visibility', 'hidden')
+  return stopEvent(e)
 }
   onMoveOnSlider(e){
     this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
+    this.horloge.css('visibility', 'visible')
     this.horloge.html(this.otime.horloge)
     stopEvent(e)
 }
@@ -62,19 +76,22 @@ class FATimeline {
 /**
 * Construction de la Timeline
 **/
-  build(){
+  build(options){
     var ho = document.createElement('span')
     ho.className = 'timeline-horloge horloge'
+    ho.style = 'visibility:hidden;'
     this.container.appendChild(ho)
 
     // Le div qui va permettre de placer les
-    // cursors
+    // cursors. C'est le slider.
     var di = document.createElement('div')
     di.className = 'timeline-cursors'
+    if(options.height) di.style = `height:${options.height}px;`
 
     // Le div du curseur principal
     var cu = document.createElement('div')
     cu.className = 'cursor timeline-maincursor'
+    if(options.height) cu.style = `height:${options.height}px;`
     di.appendChild(cu)
 
     this.container.appendChild(di)
@@ -84,10 +101,19 @@ class FATimeline {
 
     return this // pour le chainage
 }
-  observe(){
-    this.jqContainer.on('click',      this.onClickOnSlider.bind(this))
-    this.jqContainer.on('dblclick',   this.onDoubleClickOnSlider.bind(this))
-    this.jqContainer.on('mousemove',  this.onMoveOnSlider.bind(this))
+  observe(options){
+    var container
+    if(options.only_slider_sensible){
+      container = this.jqContainer.find('.timeline-cursors')
+    } else {
+      container = this.jqContainer
+    }
+
+    container.on('click',     this.onClickOnSlider.bind(this))
+    container.on('dblclick',  this.onDoubleClickOnSlider.bind(this))
+    container.on('mousemove', this.onMoveOnSlider.bind(this))
+    container.on('mouseover', this.onHoverSlider.bind(this))
+    container.on('mouseout',  this.onMouseOutSlider.bind(this))
 }
 
   get a(){return this.analyse}
@@ -95,7 +121,6 @@ class FATimeline {
 
   get mainCursor(){return this._mainCursor || defP(this,'_mainCursor', this.jqContainer.find('.timeline-maincursor'))}
   get locator(){return this._locator || defP(this,'_locator',this.a.locator)}
-  get sliderObj(){return this.jqObj.find('#timeline-slider')}
   get horloge(){return this._horloge || defP(this,'_horloge',this.jqContainer.find('.timeline-horloge'))}
 
   get coefP2T(){

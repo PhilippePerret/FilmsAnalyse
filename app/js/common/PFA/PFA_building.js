@@ -130,13 +130,5 @@ module.exports = function(options){
 
   this._output = pfas
 
-  // this.buildAbsolutePFA = buildAbsolutePFA.bind(this)
-  // this.buildRelativePFA = buildRelativePFA.bind(this)
-  // this.assemblePFAs     = assemblePFAs.bind(this)
-  //
-  // this.buildAbsolutePFA(pfa_id)
-  // this.buildRelativePFA(pfa_id)
-  // this.assemblePFAs(pfa_id)
-
   console.log("<- Construction du PFA")
 }

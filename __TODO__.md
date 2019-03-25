@@ -1,10 +1,5 @@
 # SUR LE GRILL
 
-* La classe FATimeline doit être utilisée pour :
-  - la Timeline principale
-  - Le Paradigme de Field
-  - La bande sous la vidéo [OK]
-
 * Pour la FATimeline
   - faire des instances FACursor
 
