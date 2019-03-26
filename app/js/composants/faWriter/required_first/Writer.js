@@ -173,7 +173,7 @@ const FAWriter = {
     /**
      * Ouverture du FAWriter. Cela correspond à masquer le Reader.
      *
-     * Noter que ce seront les « Eventers » qui afficheront les events
+     * Noter que ce seront les «FAEventers» qui afficheront les events
      */
   , OTHER_SECTIONS: ['#section-reader']
   , open:function(){

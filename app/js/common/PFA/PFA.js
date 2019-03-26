@@ -2,82 +2,163 @@
 
 const PFA = require('./PFA-mini')
 Object.assign(PFA, {
-    class: 'PFA'
-  // ---------------------------------------------------------------------
-  //  Méthodes de données
+  class: 'PFA'
+, inited: false
+, visible: false // true quand le PAF est affiché
 
-    /**
-     * Retourne l'instance SttNode du noeud d'identifiant +nid+
-     *
-     * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
-     */
-  , node(nid){
-      if(undefined === this.nodes) this.nodes = {}
-      if(undefined === this.nodes[nid]){
-        this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
-      }
-      return this.nodes[nid]
+, init(){
+    this.load()
+    this.inited = true
+}
+// ---------------------------------------------------------------------
+//  Méthodes de données
+
+  // /**
+  //  * Retourne l'instance SttNode du noeud d'identifiant +nid+
+  //  *
+  //  * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
+  //  */
+, node(nid){
+    if(undefined === this.nodes) this.nodes = {}
+    if(undefined === this.nodes[nid]){
+      this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
     }
-
-    /**
-    * Boucle sur tous les nœuds structurels
-    *
-    * On peut interrompre la boucle en renvoyant false (et très exactement
-    * false)
-    **/
-  , forEachNode(method){
-      var kstt
-      for(kstt in this.DATA_STT_NODES){ if (false === method(this.node(kstt))) break}
+    return this.nodes[nid]
   }
 
-  // ---------------------------------------------------------------------
-  //  Méthodes d'entrée sorties
-  , saveIfModified:function(){
-      this.modified && this.save()
-    }
-  , save:function(){
-      F.error("La procédure d'enregistrement du PFA n'est pas encore implémentée")
-      return new Promise((ok,ko) => {
-        ok()
-      })
-    }
+  /**
+  * Boucle sur tous les nœuds structurels
+  *
+  * On peut interrompre la boucle en renvoyant false (et très exactement
+  * false)
+  **/
+, forEachNode(method){
+    var kstt
+    for(kstt in this.DATA_STT_NODES){ if (false === method(this.node(kstt))) break}
+}
 
-  // Méthodes d'affichage
-  , display:function(){
-      console.log("-> PFA.display")
-      if(!this.built) this.build()
+// ---------------------------------------------------------------------
+//  Méthodes d'entrée sorties
+, saveIfModified(){
+    this.modified && this.save()
+  }
+
+, save(){
+    var my = this
+    fs.writeFileSync(this.a.pfaFilePath, JSON.stringify(my.data), 'utf8')
+    this.modified = false
+  }
+, load(){
+    if(fs.existsSync(this.a.pfaFilePath)){
+      this.data = require(this.a.pfaFilePath)
+      // console.log("data PFA:", this.data)
+    } else {
+      this.getDataInEvents()
     }
+}
 
-  // ---------------------------------------------------------------------
-  //  Méthodes de construction
+// ---------------------------------------------------------------------
+// Méthodes d'affichage
+, toggle(){
+    this[this.visible?'hide':'show']()
+}
+, show(){
+    if(!this.built) this.build().observe()
+    else this.jqObj.show()
+    this.visible = true
+  }
+, hide(){
+    this.jqObj.hide()
+    this.visible = false
+}
+, update(){
+    this.built = false
+    this.jqObj.remove()
+    this.build().observe()
+    if(this.visible === false) this.hide()
+}
 
-    /**
-     * Méthode principale de construction du PFA du film.
-     */
-  , build:function(){
-      require('./PFA_building.js').bind(this)()
-      document.body.appendChild(this._output)
-      this.built = true
-    }
-  // ---------------------------------------------------------------------
-  //  Méthodes de calculs
+// ---------------------------------------------------------------------
+//  Méthodes de construction
 
+/**
+ * Méthode principale de construction du PFA du film.
+ */
+, build(){
+    require('./PFA_building.js').bind(this)()
+    document.body.appendChild(this._output)
+    this.built = true
+    return this // chainage
+  }
+// ---------------------------------------------------------------------
+//  Méthodes de calculs
+
+, observe(){
+    // On colle un FATimeline
+    var tml = new FATimeline(this.jqObj[0])
+    tml.init({height:40, only_slider_sensible: true})
+
+    // On rend le PFA draggable
+    this.jqObj.draggable()
+}
+, getDataInEvents(){
+    // console.log("-> PFA.getDataInEvents")
+    var my = this
+      , corrected = false
+      , data = {}
+    this.a.forEachEvent( ev => {
+      // console.log("Traitement de l'ev", ev.id)
+      if(ev.type === 'stt'){
+        // <= Un event de type structure a été trouvé
+        // => Il faut le prendre en compte
+        corrected = true
+        data[ev.sttID] = {event_id: ev.id, stt_id: ev.sttID}
+      }
+    })
+    this.data = data
+    corrected && this.save()
+    // console.log("data relevées : ", data)
+    return data
+}
 })
 Object.defineProperties(PFA,{
-    modified:{
-        get:function(){return this._modified}
-      , set:function(v){this._modified = v}
+  // Le 24ème de la durée du film, sert pour différentes
+  // opérations.
+  ieme24:{
+    get(){
+      return this._ieme24 || defP(this,'_ieme24', this.a.duration / 24)
     }
-    //Retourne la class SttNode de l'incident perturbateur
-  , incPer:{
-        get:function(){return this._incPer}
-      , set:function(e){this._incPer = e}
+  }
+, a:{
+    get(){return this.analyse || current_analyse}
+  }
+, jqObj:{
+    get(){return this._jqObj||defP(this,'_jqObj',$('#pfas'))}
+  }
+, modified:{
+    get(){return this._modified}
+  , set(v){this._modified = v}
+}
+, data:{
+    get() { return this._data }
+  , set(v){
+      this._data = v
+      // Il faut les dispatcher dans la donnée générale
+      for(var kstt in v){
+        this.DATA_STT_NODES[kstt].event_id = v[kstt].event_id
+      }
     }
-  // Retourne l'incident déclencheur, comme SttNode
-  , incDec:{
-        get:function(){return this._incDec}
-      , set:function(e){this._incDec = e}
-    }
+}
+//   //Retourne la class SttNode de l'incident perturbateur
+// , incPer:{
+//       get:function(){return this._incPer}
+//     , set:function(e){this._incPer = e}
+//   }
+// // Retourne l'incident déclencheur, comme SttNode
+// , incDec:{
+//       get:function(){return this._incDec}
+//     , set:function(e){this._incDec = e}
+//   }
 })
 
 

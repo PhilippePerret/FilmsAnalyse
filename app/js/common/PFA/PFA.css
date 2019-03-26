@@ -11,16 +11,15 @@ section#pfas section.pfa {
   display:block;
   /* background-color:yellowgreen; */
   min-height:40px;
-  border:2px solid red;
+  border-bottom:2px solid green;
   margin-top:8px;
 }
 section#pfas section.pfa div.pfa-div-parts,
 section#pfas section.pfa div.pfa-div-zones,
 section#pfas section.pfa div.pfa-div-events
 {
-  border:1px solid black;
   position:relative;
-  height:24px;
+  height:33px;
 }
 
 section#pfas section.pfa div.pfa-div-parts span.pfa-part-part,
@@ -30,18 +29,49 @@ section#pfas section.pfa div.pfa-div-events span.pfa-part-event
   position:absolute;
 }
 
+section#pfas section.pfa div.pfa-div-parts span.pfa-part-part.inzone,
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.inzone,
+section#pfas section.pfa div.pfa-div-events span.pfa-part-event.inzone
+{
+  background-color:green;
+}
+section#pfas section.pfa div.pfa-div-parts span.pfa-part-part.nearzone,
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.nearzone,
+section#pfas section.pfa div.pfa-div-events span.pfa-part-event.nearzone
+{
+  background-color:orange;
+}
+section#pfas section.pfa div.pfa-div-parts span.pfa-part-part.outzone,
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.outzone,
+section#pfas section.pfa div.pfa-div-events span.pfa-part-event.outzone
+{
+  background-color:red;
+}
+
 /* Marque de partie (absolute/relative) */
 section#pfas section.pfa div.pfa-div-parts span.pfa-part-part {
   font-size:0.83em;
-  font-style:italic;
   opacity:0.5;
   border:1px solid;
   text-align:center;
+  height:210px;
 }
 /* Marque de zone (absolute) */
 section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone {
-  font-size:0.8em;
-  border-bottom:2px solid red;
+  text-align:center;
+  border-radius:1em;
+  height:13.5px;
+  background-color:green;
+  margin-top:18px;
+}
+section#pfas section.pfa div.pfa-div-zones span.pfa-part-zone span.name {
+  position:absolute;
+  font-size:0.72em;
+  top:-16px;
+  left:0;
+  width:100%;
+  white-space:nowrap;
+  text-align:center;
 }
 /* Marque d'event précis (relative) */
 section#pfas section.pfa div.pfa-div-events span.pfa-part-event {

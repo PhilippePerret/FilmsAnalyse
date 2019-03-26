@@ -8,20 +8,24 @@ const PFABuilder = {
 * Retourne le code du PFA absolu
 **/
   get absolutePFA(){
-    var s = document.createElement('SECTION')
-    s.id = `pfa-absolute`
-    s.className = 'pfa'
-    s.appendChild(this.divAbsParts)
-    s.appendChild(this.divAbsZones)
-    return s
+    return DCreate('SECTION',{
+      id: `pfa-absolute`
+    , class: 'pfa'
+    , append: [
+        this.divAbsParts
+      , this.divAbsZones('top')
+      , this.divAbsZones('bottom')
+    ]})
 }
 , get relativePFA(){
-    var s = document.createElement('SECTION')
-    s.id = `pfa-relative`
-    s.className = 'pfa'
-    s.appendChild(this.divRelParts)
-    // s.appendChild(this.divRelZones)
-    return s
+    return DCreate('SECTION',{
+      id: `pfa-relative`
+    , class: 'pfa'
+    , append: [
+        this.divRelZones('bottom')
+      , this.divRelZones('top')
+      , this.divRelParts
+    ]})
 }
 , get divAbsParts(){
     var div = this.divParts('Abs')
@@ -33,10 +37,11 @@ const PFABuilder = {
 }
 , divParts(dimT /* 'Abs' ou 'Rel'*/ ){
   var  div, zoneId, node, span
-  div = document.createElement('DIV')
-  div.className = 'pfa-div-parts'
-  div.style = `width:${this.plain}px;`
-  div.id = `pfa-div-parts-${dimT}`
+  div = DCreate('DIV',{
+    id:    `pfa-div-parts-${dimT}`
+  , class: 'pfa-div-parts'
+  , style: `width:${this.plain}px;`
+  })
   for(zoneId of this.partsIds){
     node = this.a.PFA.node(zoneId)
     span = node[`in${dimT}PFA`](this.coefT2P)
@@ -46,20 +51,29 @@ const PFABuilder = {
   return div
 }
 
-, get divAbsZones(){
-    var div = this.divZones('Abs')
+/**
+* Il y a deux lignes de zones, une supérieure avec les nœuds les plus
+* importants et une ligne en dessous avec les noeuds moindres
+**/
+, divAbsZones(which){
+    var div = this.divZones('Abs', which)
     return div
 }
-, get divRelZones(){
-    var div = this.divZones('Rel')
+, divRelZones(which){
+    var div = this.divZones('Rel', which)
     return div
 }
-, divZones(dimT){
-    var div, zoneId, node, span
-    div = document.createElement('DIV')
+, divZones(dimT, which){
+    var div, zoneId, node, span, zoneIds
+    div = DCreate('DIV')
     div.className = 'pfa-div-zones'
     div.id = `pfa-div-zones-${dimT}`
-    for(zoneId of this.zonesIds){
+    if (which === 'top'){
+      zoneIds = this.a.PFA.MAIN_STTNODES
+    } else {
+      zoneIds = this.a.PFA.SUB_STTNODES
+    }
+    for(zoneId of zoneIds){
       node = this.a.PFA.node(zoneId)
       span = node[`in${dimT}PFA`](this.coefT2P)
       span && div.appendChild(span)
@@ -116,7 +130,7 @@ PFABuilder.styles = function(){
 }()
 
 module.exports = function(options){
-  console.log("-> Construction du PFA")
+  // console.log("-> Construction du PFA")
 
   var pfa_id = 1
 
@@ -130,13 +144,5 @@ module.exports = function(options){
 
   this._output = pfas
 
-  // this.buildAbsolutePFA = buildAbsolutePFA.bind(this)
-  // this.buildRelativePFA = buildRelativePFA.bind(this)
-  // this.assemblePFAs     = assemblePFAs.bind(this)
-  //
-  // this.buildAbsolutePFA(pfa_id)
-  // this.buildRelativePFA(pfa_id)
-  // this.assemblePFAs(pfa_id)
-
-  console.log("<- Construction du PFA")
+  // console.log("<- Construction du PFA")
 }

@@ -1,5 +1,8 @@
 'use strict'
 
+// TODO
+// Si un event détruit était un event structurel, il faut modifier
+// la données pfa.json
 const destroyEvent = function(event_id, form_instance){
   var ev = this.ids[event_id]
 
@@ -15,6 +18,15 @@ const destroyEvent = function(event_id, form_instance){
     // Cas particulier de la destruction d'un event de structure (qui doit
     // donc être en relation avec un sttNode)
     ev.sttNode.event = undefined
+  }
+
+  if(ev.type === 'stt'){
+    // Si l'event est un noeud structurel, il faut le supprimer
+    // des données du PFA (et peut-être actualiser le PFA s'il
+    // est affiché)
+    delete this.PFA.data[ev.sttID] // = undefined
+    this.PFA.save()
+    this.PFA.update()
   }
 
   // Destruction dans la liste events
@@ -34,7 +46,7 @@ const destroyEvent = function(event_id, form_instance){
   $(`#reader #revent-${event_id}`).remove()
 
   F.notify("Event détruit avec succès.")
-  
+
   this.modified = true
 }
 

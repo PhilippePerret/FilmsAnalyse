@@ -51,12 +51,16 @@ class FAEvent {
   // ---------------------------------------------------------------------
   //  Propriétés temporelles
 
-  // On utilise un getter et un setter pour réinitialiser d'autres propriétés
-  get time(){return this._time}
-  set time(v){ this._time = v ; delete this._horl ; delete this._otime }
+// Pour la correspondance de nom, aussi
+get startAt(){return this.time}
+get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duration)}
 
-  get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
-  get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
+// On utilise un getter et un setter pour réinitialiser d'autres propriétés
+get time(){return this._time}
+set time(v){ this._time = v ; delete this._horl ; delete this._otime }
+
+get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
+get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
 
   /**
    * Définition de la durée
