@@ -1,10 +1,5 @@
 # SUR LE GRILL
 
-* Regarder ce problème quand on ouvre un dossier non valide :
-  - si le dossier contient
-  
-* Quand on supprime un event, le supprimer aussi dans l'eventeur s'il y en a un d'ouvert
-  - en fait, pour que ce soit plus simple, il faudrait que tout ce qu'on fabrique qui a rapport avec l'event porte la classe "EVT<id event>" De cette manière, en supprimant un event, on pourrait faire `$('.EVT<id>').remove()` pour supprimer de l'affichage tous les events !
 
 * Implémenter la possibilité de créer d'autres documents
   - faire un document "Traitement du futur" pour Her

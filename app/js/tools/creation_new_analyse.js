@@ -11,7 +11,7 @@ const NewAnalyse = {
     if (!files) return false
     var analyseFolder = files[0]
     // Si c'est un dossier qui contient déjà une analyse, on produit une erreur
-    if(FAnalyse.isDossierAnalyseValid(analyseFolder)){
+    if(FAnalyse.isDossierAnalyseValid(analyseFolder, false /* pas de messages */)){
       return F.error(T('already-analyse-folder'))
     } else {
       return analyseFolder

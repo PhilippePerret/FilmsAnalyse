@@ -29,7 +29,7 @@ let addEvent = function(nev, whenLoading){
       d[nev.sttID] = {event_id: nev.id, stt_id: nev.sttID}
       this.PFA.data = d
       this.PFA.save()
-      this.PDA.update()
+      this.PFA.update() // seulement si déjà ouvert
     }
 
     // On place tout de suite l'évènement sur le lecteur

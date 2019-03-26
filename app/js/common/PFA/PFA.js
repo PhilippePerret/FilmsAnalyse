@@ -5,6 +5,7 @@ Object.assign(PFA, {
   class: 'PFA'
 , inited: false
 , visible: false // true quand le PAF est affiché
+, built:   false
 
 , init(){
     this.load()
@@ -72,10 +73,11 @@ Object.assign(PFA, {
     this.visible = false
 }
 , update(){
-    this.built = false
-    this.jqObj.remove()
-    this.build().observe()
-    if(this.visible === false) this.hide()
+    if(this.built){
+      this.jqObj.remove()
+      this.built = false
+    }
+    if(this.visible) this.show()
 }
 
 // ---------------------------------------------------------------------

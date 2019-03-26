@@ -114,7 +114,8 @@ class FAnalyse {
    * valide. Il doit contenir les fichiers de base. Sinon, proposer à
    * l'user de créer une nouvelle analyse.
    */
-  static isDossierAnalyseValid(folder){
+  static isDossierAnalyseValid(folder, withMessage){
+    if(undefined === withMessage) withMessage = true
     try {
       var eventsPath = path.join(folder,'events.json')
       var dataPath   = path.join(folder,'data.json')
@@ -122,7 +123,7 @@ class FAnalyse {
       fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
       return true
     } catch (e) {
-      console.log(e)
+      withMessage && console.log(e)
       return false
     }
   }
