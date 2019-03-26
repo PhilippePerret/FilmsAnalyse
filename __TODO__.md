@@ -1,6 +1,22 @@
 # SUR LE GRILL
 
+* Regarder ce problème quand on ouvre un dossier non valide :
+  - si le dossier contient
+  
 * Quand on supprime un event, le supprimer aussi dans l'eventeur s'il y en a un d'ouvert
+  - en fait, pour que ce soit plus simple, il faudrait que tout ce qu'on fabrique qui a rapport avec l'event porte la classe "EVT<id event>" De cette manière, en supprimant un event, on pourrait faire `$('.EVT<id>').remove()` pour supprimer de l'affichage tous les events !
+
+* Implémenter la possibilité de créer d'autres documents
+  - faire un document "Traitement du futur" pour Her
+
+* Un document doit être draggable
+  - on doit pouvoir le dragguer sur l'entête d'un évènement => il est ajouté aux `documents` de l'event (ajouter cette propriété), l'event est ajouté aux `events` du document.
+  - on doit pouvoir le dragguer sur un des champs de texte => on ajoute une marque `{{document:<id document>}}` au curseur. Ajout à `events` (du document) et à `documents` (de l'event)
+* la vidéo doit être draggable
+  - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
+  - faut-il que l'horloge principale aussi ? (qu'on penserait plus intuitivement à déplacer)
+  => Documenter ces utilisations
+
 
 * PFA
   - Pouvoir éditer l'event en cliquant dessus dans le PFA

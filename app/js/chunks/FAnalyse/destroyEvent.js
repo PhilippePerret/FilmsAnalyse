@@ -42,8 +42,9 @@ const destroyEvent = function(event_id, form_instance){
   // On peut détruire l'instance du formulaire
   form_instance = undefined
 
-  // On peut détruire l'élément dans le reader s'il est affiché
-  $(`#reader #revent-${event_id}`).remove()
+  // On peut détruire tous les clones qui seraient affichés en utilisant
+  // la classe 'EVT<id event>' faite pour ça
+  $(`.EVT${event_id}`).remove()
 
   F.notify("Event détruit avec succès.")
 

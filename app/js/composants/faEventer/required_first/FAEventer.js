@@ -44,7 +44,9 @@ class FAEventer {
   }
 
   /**
-   * On peuple l'eventer. Pour le moment, on met tous les events.
+   * On peuple l'eventer en respectant le filtre choisi
+   * TODO : à l'ouverture, il faudrait mettre le filtre de l'affichage
+   * des scènes seulement.
    */
   peuple(){
     var my  = this
@@ -57,7 +59,7 @@ class FAEventer {
         if(my.filter.fromTime && ev.time < my.filter.fromTime) return
         if(my.filter.toTime !== null && ev.time > my.filter.toTime) return
       }
-      o.append(ev.div)
+      o.append(ev.div) // TODO mettre dans ev.div la class EVT<id> pour remove plus simple
       ev.show()
       ev.observe(o)
     })
@@ -123,10 +125,8 @@ class FAEventer {
    * Construction de l'eventeur
    */
   build(){
-    var div = document.createElement('DIV')
     this.id = FAEventer.newId()
-    div.id = this.domId
-    div.className = 'eventer'
+    var div = DCreate('DIV', {id: this.domId, class: 'eventer'})
     div.innerHTML = `
     <div class="toolbox">
       <button type="button" class="btn-close"></button>
