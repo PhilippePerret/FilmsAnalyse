@@ -92,6 +92,26 @@ function DGet(DOMId){
 }
 
 /**
+* Faciliteur pour créer un élémnet DOM
+**/
+function DCreate(typeElement, params){
+  var e = document.createElement(typeElement)
+  if(undefined === params) return e
+  if(params.id)     e.id = params.id
+  if(params.class)  e.className = params.class
+  if(params.style)  e.style = params.style
+  if(params.inner)  e.innerHTML = params.inner
+  if(params.append){
+    if(Array.isArray(params.append)){
+      params.append.forEach(el => e.appendChild(el))
+    } else {
+      e.appendChild(params.append)
+    }
+  }
+  return e
+}
+
+/**
  * Pour rendre le selecteur +jqId+ visible (visibility)
  */
 function toggleVisible(jqId, v){

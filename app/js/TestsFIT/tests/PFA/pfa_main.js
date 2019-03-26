@@ -77,8 +77,8 @@ t.case("La zone d'un nœud qui dépend d'un autre nœud est bien calculé", ()=>
 
    // Maintenant, on affecte les noeuds incident déclencheur et pivot 1 pour
    // voir la zone changer
-   pfa.node('incDec').endAt   = HUITI
-   pfa.node('pivot1').startAt = QUART + 11
+   pfa.node('incDec').endAtAbs   = HUITI
+   pfa.node('pivot1').startAtAbs = QUART + 11
    var expected = [HUITI, QUART + 11]
    zrefus = pfa.node('zone_r')
    assert_match(

@@ -1,11 +1,11 @@
 'use strict'
 /**
- *  Classe Eventer
+ *  Classe FAEventer
  *  --------------
  *  Il permet d'afficher les events, filtrés ou non
  */
 
-class Eventer {
+class FAEventer {
   // ---------------------------------------------------------------------
   //  CLASSE
 
@@ -16,7 +16,7 @@ class Eventer {
 
   // Méthode principale appelée pour créer un nouvel eventer
   static createNew(){
-    var newEventer = new Eventer(current_analyse)
+    var newEventer = new FAEventer(current_analyse)
     newEventer.open()
   }
 
@@ -124,7 +124,7 @@ class Eventer {
    */
   build(){
     var div = document.createElement('DIV')
-    this.id = Eventer.newId()
+    this.id = FAEventer.newId()
     div.id = this.domId
     div.className = 'eventer'
     div.innerHTML = `

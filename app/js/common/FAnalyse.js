@@ -215,6 +215,7 @@ class FAnalyse {
     if(undefined === this._PFA){
       SttNode   = require('./js/common/PFA/SttNode.js')
       this._PFA = require('./js/common/PFA/PFA.js')
+      this._PFA.init()
     }
     return this._PFA
   }
@@ -302,7 +303,7 @@ class FAnalyse {
   }
 
 
-  displayPFA(){this.PFA.display()}
+  displayPFA(){this.PFA.toggle()}
 
   displayInfosFilm(){
     var method = require('./js/tools/building/infos_film.js')
@@ -338,10 +339,10 @@ class FAnalyse {
    * des events.
    */
   createNewEventer(){
-    if( NONE === typeof Eventer){
-      return Systeme.loadComponant('faEventer', this.createNewEventer.bind(this))
+    if( NONE === typeof FAEventer){
+      return System.loadComponant('faEventer', this.createNewEventer.bind(this))
     }
-    Eventer.createNew()
+    FAEventer.createNew()
   }
   // La version courante de l'analyse
   get hVersion(){return this._hversion || '0.0.1'}
@@ -674,27 +675,26 @@ class FAnalyse {
   get videoPath(){ return this._videoPath }
   set videoPath(v){ this._videoPath = v ; this.modified = true }
 
-  get eventsFilePath(){
-    if(undefined===this._events_file_path){
-      this._events_file_path = path.join(this.folder,'events.json')
-    }
-    return this._events_file_path
-  }
-  get dataFilePath(){
-    if(undefined===this._data_file_path){
-      this._data_file_path = path.join(this.folder,'data.json')
-    }
-    return this._data_file_path
-  }
-  get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+get eventsFilePath(){
+  return this._eventsFilePath || defP(this,'_eventsFilePath', this.pathOf('events.json'))
+}
+get dataFilePath(){
+  return this._dataFilePath || defP(this,'_dataFilePath', this.pathOf('data.json'))
+}
+get pfaFilePath(){
+  return this._pfaFilePath || defP(this,'_pfaFilePath', this.pathOf('pfa.json'))
+}
 
-  get folderVignettesScenes(){
-    if(undefined === this._folderVignettesScenes){
-      if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
-      this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
-    }
-    return this._folderVignettesScenes
+
+get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+
+get folderVignettesScenes(){
+  if(undefined === this._folderVignettesScenes){
+    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+    this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
   }
+  return this._folderVignettesScenes
+}
 
   get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
   get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
@@ -715,14 +715,19 @@ class FAnalyse {
     return {path: p, name: n}
   }
 
-  // Retourne le path au fichier analyse (dans 'analyse_files') du fichier
-  // de nom ou de chemin relatif +fname+
-  // Note : par défaut (d'extension), on considère que ça doit être un document
-  // markdown
-  filePathOf(fname){
-    if(!fname.match(/\./)) fname += '.md'
-    return path.join(this.folderFiles,fname)
-  }
+// Retourne le path au fichier analyse (dans 'analyse_files') du fichier
+// de nom ou de chemin relatif +fname+
+// Note : par défaut (d'extension), on considère que ça doit être un document
+// markdown
+filePathOf(fname){
+  if(!fname.match(/\./)) fname += '.md'
+  return path.join(this.folderFiles,fname)
+}
+/**
+* Un fichier dans le dossier principal
+**/
+pathOf(relpath){ return path.join(this.folder,relpath)}
+
   // Le path au template du fichier d'analyse (dans 'app/analyse_files')
   // Note : par défaut (d'extension), on considère que ça doit être un document
   // markdown

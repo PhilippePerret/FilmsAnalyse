@@ -1,5 +1,18 @@
 # SUR LE GRILL
 
+* Quand on supprime un event, le supprimer aussi dans l'eventeur s'il y en a un d'ouvert
+
+* PFA
+  - Pouvoir éditer l'event en cliquant dessus dans le PFA
+
+* Il faut qu'un cursor, dans une FATimeline, ait la hauteur de son contenu
+  - Quand on survole le slider, il faut mettre un cursor fantôme
+    (rouge plus clair) — note : sur toute la hauteur du container, là-aussi.
+
+* Aggrandir les champs de saisie à menu qu'on aggrandit le texte.
+  Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
+  Peut-être ne pas avoir le même textearea qui s'aggrandit, mais travailler avec un autre qui sert de bac à sable.
+
 * Pour la FATimeline
   - faire des instances FACursor
 
