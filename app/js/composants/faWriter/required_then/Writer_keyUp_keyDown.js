@@ -11,7 +11,7 @@ FAWriter.onKeyDown = function(e){
   } else if (e.metaKey){
     // console.log("-> metaKey")
     if (e.ctrlKey) {
-      console.log("-> Meta + CTRL")
+      // console.log("-> Meta + CTRL")
       if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
         var sOffset, decFromStart, parag
         // Prendre le paragraphe courant
@@ -100,13 +100,9 @@ FAWriter.onKeyDown = function(e){
     } else {
       // META SEUL
       if (e.which === K_S ){
-        console.log("Enregistrement du document demandé.")
         this.currentDoc.getContents()
         if (this.currentDoc.isModified()){
-          console.log("Document modifié => enregistrement")
           this.currentDoc.save()
-        } else {
-          console.log("Document non modifié, pas d'enregistrement.")
         }
         ret = stopEvent(e)
       }

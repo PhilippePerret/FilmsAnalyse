@@ -46,7 +46,8 @@ function openDocInWriter(doc_id){
 }
 var curType = null
 for(var doc_id in DATA_DOCS){
-  if (DATA_DOCS[doc_id] === 'separator'){
+  if (DATA_DOCS[doc_id].menu === false) continue
+  else if (DATA_DOCS[doc_id] === 'separator'){
     FAWriterSubmenus.push({type:'separator'})
     continue
   }

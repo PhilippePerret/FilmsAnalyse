@@ -11,7 +11,7 @@ const NewAnalyse = {
     if (!files) return false
     var analyseFolder = files[0]
     // Si c'est un dossier qui contient déjà une analyse, on produit une erreur
-    if(FAnalyse.isDossierAnalyseValid(analyseFolder)){
+    if(FAnalyse.isDossierAnalyseValid(analyseFolder, false /* pas de messages */)){
       return F.error(T('already-analyse-folder'))
     } else {
       return analyseFolder
@@ -52,15 +52,25 @@ module.exports = function(){
     videoPath = NewAnalyse.askForVideo()
     videoPath !== false || raise('Vidéo invalide')
     // Tout est OK, on peut initialiser une nouvelle analyse
-    var analyse = new FAnalyse(folderPath)
-    analyse.videoPath = videoPath
-    analyse._videoSize = 'medium'
-    analyse.save()
-    // console.log("analyse.data :", analyse.data)
-    window.current_analyse = analyse
-    UI.reset()
+    // Cela correspond à lui enregistrer des infos minimales et la charger
+    var dataNew = {
+      folder: folderPath
+    , title:  null
+    , filmStartTime: null
+    , filmEndTime: null
+    , filmEndGenericFin: null
+    , videoPath: videoPath
+    , lastCurrentTime: 0
+    , stopPoints: []
+    }
+    fs.writeFileSync(path.join(folderPath,'data.json'), JSON.stringify(dataNew), 'utf8')
+    // Le fichier des events
+    fs.writeFileSync(path.join(folderPath,'events.json'), '[]', 'utf8')
+    // Le fichier options
+    fs.writeFileSync(path.join(folderPath,'options.json'), JSON.stringify(Options.DEFAULT_DATA), 'utf8')
     F.notify(T('conf-created-analyse'))
-    window.current_analyse.load()
+    // On peut charger cette analyse
+    FAnalyse.load(folderPath)
   } catch (e) {
     console.log(e)
   }

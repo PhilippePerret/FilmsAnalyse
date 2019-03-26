@@ -92,7 +92,17 @@ function DGet(DOMId){
 }
 
 /**
-* Faciliteur pour créer un élémnet DOM
+* Faciliteur pour créer un élément DOM (qui est retourné)
+*
+* +params+
+*     id      Identifiant à donner à l'élément
+*     class   La class CSS à appliquer
+*     style   L'attribut style
+*     inner   L'innerHTML, en dur
+*     append  Le ou les éléments DOM à ajouter
+*     value   La valeur, pour des OPTIONs par exemple
+*     attrs   Les attributs à définir (hash: attr: valeur, attr: valeur, ...)
+*
 **/
 function DCreate(typeElement, params){
   var e = document.createElement(typeElement)
@@ -101,11 +111,18 @@ function DCreate(typeElement, params){
   if(params.class)  e.className = params.class
   if(params.style)  e.style = params.style
   if(params.inner)  e.innerHTML = params.inner
+  if(undefined !== params.value)  e.value = params.value
+  if(undefined !== params.disabled)  e.disabled = params.disabled
   if(params.append){
     if(Array.isArray(params.append)){
       params.append.forEach(el => e.appendChild(el))
     } else {
       e.appendChild(params.append)
+    }
+  }
+  if(params.attrs){
+    for(var attr in params.attrs){
+      e.setAttribute(attr, params.attrs[attr])
     }
   }
   return e

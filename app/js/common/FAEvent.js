@@ -198,35 +198,25 @@ get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
 
   get div(){
     if (undefined === this._div){
-      var n = document.createElement('DIV')
-      n.className = `event ${this.type}`
-      n.id = this.domId
-      n.style.opacity = 0
-      n.setAttribute('data-time', this.time)
-      n.setAttribute('data-id', this.id)
+      // L'horloge des outils
+      var h = DCreate('SPAN',{
+        class:'horloge horloge-event'
+      , attrs:{'data-id': this.id}
+      , inner: this.otime.horloge
+      })
+      var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
+      var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
 
-      var etools = document.createElement('DIV')
-      etools.className = 'e-tools'
-      var h = document.createElement('SPAN')
-      h.className = "horloge horloge-event"
-      h.setAttribute('data-id', this.id)
-      h.innerHTML = this.otime.horloge
-      var be = document.createElement('BUTTON')
-      be.className = 'btn-edit'
-      be.innerHTML = '<img src="./img/btn/edit.png" class="btn" />'
-      var br = document.createElement('BUTTON')
-      br.className = 'btnplay left'
-      br.setAttribute('size', '22')
-      etools.append(br)
-      etools.append(be)
-      etools.append(h)
+      var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
+      var cont = DCreate('DIV', {class:'content', inner: this.contenu})
 
-      var cont = document.createElement('DIV')
-      cont.className = 'content'
-      cont.innerHTML = this.contenu
-      n.append(etools)
-      n.append(cont)
-      this._div = n
+      this._div = DCreate('DIV',{
+        id: this.domId
+      , class: `event ${this.type} EVT${this.id}`
+      , style: 'opacity:0;'
+      , attrs: {'data-time':this.time, 'data-id':this.id}
+      , append: [etools, cont]
+      })
     }
     return this._div
   }
