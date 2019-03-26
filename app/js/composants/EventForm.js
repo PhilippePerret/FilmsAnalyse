@@ -11,19 +11,21 @@
  */
 class EventForm {
 
-  static init(){
-    var my = this
+static init(){
+  var my = this
 
-    my = null
-  }
+  my = null
+}
 
-  static reset(){
-    delete this.currentForm
-    delete this._lastId
-    delete this._eventForms
-    this.videoWasPlaying = false
-    $('form.form-edit-event').remove()
-  }
+static get a(){return current_analyse}
+
+static reset(){
+  delete this.currentForm
+  delete this._lastId
+  delete this._eventForms
+  this.videoWasPlaying = false
+  $('form.form-edit-event').remove()
+}
 
   // Les formulaires déjà initiés (et donc cachés dans le DOM)
   static get eventForms(){
@@ -32,14 +34,14 @@ class EventForm {
   }
   // static set eventForms(v){this._eventForms = v}
 
-  static get videoController(){ return current_analyse.videoController }
+  static get videoController(){ return this.a.videoController }
 
   //
   static onClickNewEvent(ev, eventType){
     if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
     if (ev) ev.stopPropagation()
-    this.videoWasPlaying = !!current_analyse.locator.playing
-    if(current_analyse.locator.playing) current_analyse.locator.togglePlay()
+    this.videoWasPlaying = !!this.a.locator.playing
+    if(this.a.locator.playing) this.a.locator.togglePlay()
     if (eventType == 'scene' && this.notConfirmNewScene() ) return false
     var eForm = new EventForm(eventType)
     this.eventForms[eForm.id] = eForm
@@ -77,7 +79,7 @@ class EventForm {
    * Scene si une scène a été trouvée.
    */
   static filmHasSceneNearCurrentPos(){
-    var curtime = parseInt(current_analyse.locator.getRTime(),10)
+    var curtime = parseInt(this.a.locator.getRTime(),10)
     var sceneFound = null
     Scene.forEachScene(function(sc){
       if (sceneFound) return // pour accélérer
@@ -92,7 +94,7 @@ class EventForm {
 
   static editEvent(ev){
     var eForm
-    if(this.playing) this.analyse.locator.togglePlay()
+    if(this.playing) this.a.locator.togglePlay()
     if(undefined === this.eventForms[ev.id]){
       this.eventForms[ev.id] = new EventForm(ev)
     }
@@ -141,7 +143,7 @@ class EventForm {
    */
   constructor(foo){
     this.isNew    = false
-    this.analyse  = current_analyse // pourra être redéfini plus tard
+    this.analyse = this.a = current_analyse // pourra être redéfini plus tard
     switch (typeof foo) {
       case 'string':
         // <= Un type
@@ -149,18 +151,18 @@ class EventForm {
         this._id    = EventForm.newId()
         this._type  = foo
         this.isNew  = true
-        this._time  = this.analyse.locator.getRTime() || 0
+        this._time  = this.a.locator.getRTime() || 0
         break
       case 'number':
         // <= L'ID de l'évènement
         // => Il faut prendre ses données pour édition
-        this._event = current_analyse.getEventById(foo)
+        this._event = this.a.getEventById(foo)
         break
       case 'object':
         // <= Les données ou l'évènement lui-même
         // => Prendre les données si c'est l'évènement
         if('function'===typeof(foo.showDiffere)){ this._event = foo }
-        else { this._event = current_analyse.getEventById(ev.id) }
+        else { this._event = this.a.getEventById(ev.id) }
         break
       default:
         throw("Il faut penser à traiter les autres cas")
@@ -168,51 +170,51 @@ class EventForm {
     return this
   }
 
-  get inited(){ return this._initied || false}   // mis à true à l'initialisation
-  set inited(v){ this._inited = v }
+get inited(){ return this._initied || false}   // mis à true à l'initialisation
+set inited(v){ this._inited = v }
 
-  get modified(){return this._modified || false}
-  set modified(v){
-    this._modified = v
-    this.jqObj[v?'addClass':'removeClass']('modified')
+get modified(){return this._modified || false}
+set modified(v){
+  this._modified = v
+  this.jqObj[v?'addClass':'removeClass']('modified')
+}
+
+get event(){ return this._event }
+get id(){
+  if(undefined === this._id){this._id = this.event.id}
+  return this._id
+}
+get type(){
+  if(undefined === this._type){this._type = this.event.type}
+  return this._type
+}
+get time(){
+  if(undefined === this._time){this._time = this.event.time}
+  return this._time
+}
+
+/**
+ * Initialisation de l'objet, appelée quand l'analyse courante est
+ * prête.
+ */
+init(){
+  // console.log("-> EventForm#init")
+  if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
+  if(!this.built){
+    this.build()
+    this.observeForm()
   }
 
-  get event(){ return this._event }
-  get id(){
-    if(undefined === this._id){this._id = this.event.id}
-    return this._id
-  }
-  get type(){
-    if(undefined === this._type){this._type = this.event.type}
-    return this._type
-  }
-  get time(){
-    if(undefined === this._time){this._time = this.event.time}
-    return this._time
+  if (this.isNew){
+    if(this.type === 'scene') this.setNumeroScene()
+  } else {
+    this.setFormValues()
   }
 
-  /**
-   * Initialisation de l'objet, appelée quand l'analyse courante est
-   * prête.
-   */
-  init(){
-    // console.log("-> EventForm#init")
-    if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
-    if(!this.built){
-      this.build()
-      this.observeForm()
-    }
-
-    if (this.isNew){
-      if(this.type === 'scene') this.setNumeroScene()
-    } else {
-      this.setFormValues()
-    }
-
-    this.inited = true
-    // console.log("<- EventForm#init")
-    return true
-  }
+  this.inited = true
+  // console.log("<- EventForm#init")
+  return true
+}
 
 
     /**
@@ -255,7 +257,7 @@ class EventForm {
     this.jqField('type').val(this.type)
     this.jqField('is_new').val(this.isNew?'1':'0')
     this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
-    this.jqField('time').val(parseInt(this.analyse.locator.getRTime(),10))
+    this.jqField('time').val(parseInt(this.a.locator.getRTime(),10))
     this.jqObj.find('section.footer span.event-type').html(this.type.toUpperCase())
     this.jqObj.find('section.header span.event-type').html(this.type.toUpperCase())
     this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
@@ -286,18 +288,12 @@ class EventForm {
 
     // Si c'est pour un nœud structurel, il faut peupler le menu des types
     if (this.type === 'stt'){
-      var dataStt = (current_analyse._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
+      var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
       var mstt = this.jqObj.find('.event-sttID')
-      var o = document.createElement('OPTION')
-      o.value = ''
-      o.innerHTML = 'Choisir l’ID du nœud'
-      mstt.append(o)
+      mstt.append(DCreate('OPTION', {value: '', inner: 'Choisir l’ID du nœud'}))
       for(var nid in dataStt){
-        o = document.createElement('OPTION')
         var dstt = dataStt[nid]
-        o.value     = nid
-        o.innerHTML = dstt.hname
-        mstt.append(o)
+        mstt.append(DCreate('OPTION', {value: nid, inner: dstt.hname}))
       }
     }
 
@@ -324,7 +320,20 @@ class EventForm {
     return $(this.fieldID(prop))
   }
   domField(prop){
-    return document.getElementById(`event-${this.id}-${prop}`)
+    return DGet(`event-${this.id}-${prop}`)
+  }
+
+  // ---------------------------------------------------------------------
+  //  Méthodes d'évènement
+
+  onDropThing(e, ui){
+    var balise = this.a.associateDropped(this.event, ui.helper)
+    if(balise){
+      // console.log("Je vais ajouter la balise au champ", balise, e)
+      if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)){
+        $(e.target).insertAtCaret(balise)
+      }
+    }
   }
 
   observeForm(){
@@ -339,94 +348,105 @@ class EventForm {
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
     this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
+
+    var dataDrop = {
+      accept: '.event, .doc'
+    , tolerance: 'intersect'
+    , drop: this.onDropThing.bind(this)
+    , classes: {'ui-droppable-hover': 'survoled'}
+    }
+    // Les champs d'édition doit pouvoir recevoir des drops
+    this.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
+    this.jqObj.find('.header').droppable(dataDrop)
+
     my = null
   }
 
 
-  submit(){
-    var my = this
+submit(){
+  var my = this
 
-    // Si c'est une modification, on prend le temps initial pour savoir
-    // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
-    // dans l'analyse courante
-    var initTime = this.isNew ? null : parseInt(this.event.time,10)
+  // Si c'est une modification, on prend le temps initial pour savoir
+  // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
+  // dans l'analyse courante
+  var initTime = this.isNew ? null : parseInt(this.event.time,10)
 
-    var [data_min, other_data] = this.getFormValues()
+  var [data_min, other_data] = this.getFormValues()
 
-    // Création d'objet particulier, qui ne sont pas des sous-classes
-    // de FAEvent
-    switch (data_min.type) {
-      case 'dim':
-        // TODO Création d'un diminutif
-        throw("Je ne sais pas encore créer une DIMINUTIF")
-        return
-      case 'brin':
-        // TODO Création d'un brin
-        throw("Je ne sais pas encore créer un BRIN")
-        return
-    }
+  // Création d'objet particulier, qui ne sont pas des sous-classes
+  // de FAEvent
+  switch (data_min.type) {
+    case 'dim':
+      // TODO Création d'un diminutif
+      throw("Je ne sais pas encore créer une DIMINUTIF")
+      return
+    case 'brin':
+      // TODO Création d'un brin
+      throw("Je ne sais pas encore créer un BRIN")
+      return
+  }
 
 
-    // console.log("Champs trouvés:", fields)
-    // console.log("Data finale min:", data_min)
-    // console.log("Data finale autres:", other_data)
+  // console.log("Champs trouvés:", fields)
+  // console.log("Data finale min:", data_min)
+  // console.log("Data finale autres:", other_data)
 
-    // On crée ou on update l'évènement
+  // On crée ou on update l'évènement
+  if(this.isNew){
+    // CRÉATION
+    // On crée l'évènement du type voulu
+    var eClass = eval(`FAE${data_min.type}`)
+    this._event = new eClass(this.a, data_min)
+  } else {
+    this.event.data = data_min // ça va les dispatcher
+  }
+  // Et on dispatche les autres données
+  this.event.dispatch(other_data)
+  if (this.event.isValid) {
     if(this.isNew){
       // CRÉATION
-      // On crée l'évènement du type voulu
-      var eClass = eval(`FAE${data_min.type}`)
-      this._event = new eClass(current_analyse, data_min)
+      this.a.addEvent(this.event)
+      if('function'===this.event.onCreate) this.event.onCreate()
     } else {
-      this.event.data = data_min // ça va les dispatcher
+      // ÉDITION
+      this.a.updateEvent(this.event, {initTime: initTime})
+      if('function' === this.event.onModify) this.event.onModify()
     }
-    // Et on dispatche les autres données
-    this.event.dispatch(other_data)
-    if (this.event.isValid) {
-      if(this.isNew){
-        // CRÉATION
-        current_analyse.addEvent(this.event)
-        if('function'===this.event.onCreate) this.event.onCreate()
-      } else {
-        // ÉDITION
-        current_analyse.updateEvent(this.event, {initTime: initTime})
-        if('function' === this.event.onModify) this.event.onModify()
-      }
-    }
-
-    if (this.event.isValid){
-      this.isNew = false // il a été enregistré, maintenant
-      this.modified = false
-      this.endEdition()
-    } else if(this.event.firstErroredFieldId) {
-      // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
-      $(this.event.firstErroredFieldId).focus().select()
-    }
-
-
-    my = null
   }
 
-  /**
-   * Demande destruction de l'élément
-   */
-  destroy(){
-    if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
-    this.jqObj.remove()
-    this.analyse.destroyEvent(this.id, this)
-  }
-  /**
-   * En cas d'annulation de l'édition
-   */
-  cancel(){
-    // console.log("Je renonce à l'édition de l'event")
+  if (this.event.isValid){
+    this.isNew = false // il a été enregistré, maintenant
+    this.modified = false
     this.endEdition()
+  } else if(this.event.firstErroredFieldId) {
+    // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
+    $(this.event.firstErroredFieldId).focus().select()
   }
 
-  endEdition(){
-    this.hide()
-    this.videoWasPlaying && this.analyse.locator.togglePlay()
-  }
+
+  my = null
+}
+
+/**
+ * Demande destruction de l'élément
+ */
+destroy(){
+  if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
+  this.jqObj.remove()
+  this.a.destroyEvent(this.id, this)
+}
+/**
+ * En cas d'annulation de l'édition
+ */
+cancel(){
+  // console.log("Je renonce à l'édition de l'event")
+  this.endEdition()
+}
+
+endEdition(){
+  this.hide()
+  this.videoWasPlaying && this.a.locator.togglePlay()
+}
 
   // ---------------------------------------------------------------------
   //  Méthode pour les données dans le formulaire
@@ -466,7 +486,7 @@ class EventForm {
     if (this.isNew || !this.event.numero) {
       // <= C'est une scène et son numéro n'est pas défini
       // => Il faut définir le numéro de la scène en fonction de son temps
-      numero = 1 + current_analyse.getSceneNumeroAt(this.time)
+      numero = 1 + this.a.getSceneNumeroAt(this.time)
     } else {
       numero = this.event.numero
     }

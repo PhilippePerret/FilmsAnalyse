@@ -18,6 +18,12 @@ section#section-writer div.header {
   position:relative;
 }
 
+section#section-writer div.header div#writer-doc-title .writer-btn-drop {
+  all:unset;
+  font-size:30pt;
+  vertical-align:sub;
+}
+
 section#section-writer div.body {
   padding:1em;
   background-color:white;
@@ -37,6 +43,7 @@ section#section-writer div.header #writer-doc-title select option
 }
 section#section-writer div.header #writer-doc-title {
   margin-bottom: 0.5em;
+  position:relative;
 }
 /* Le bouton pour créer un nouveau document */
 section#section-writer div.header button#writer-btn-new-doc {

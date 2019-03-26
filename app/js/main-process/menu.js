@@ -372,8 +372,9 @@ const DATA_MENUS = [
     label: 'Events'
   , submenu: [
         {
-            label: 'Nouvel Eventer… (afficheur d’events)'
+            label: 'Nouvel Eventer…'
           , id: 'new-eventer'
+          , accelerator: 'CmdOrCtrl+Shift+E'
           , enabled: false
           , click: () => {execJsOnCurrent('createNewEventer')}
         }

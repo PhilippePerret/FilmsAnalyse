@@ -50,54 +50,54 @@ const FAWriter = {
     this.menuTypeDoc.val(kdoc)
   }
 
-    /**
-     * Actualise la visualisation du contenu Markdown dans le visualiseur
-     */
-  , updateVisuDoc(){
-      var contenu
-      if (this.currentDoc.dataType.type === 'data'){
-        contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
-      } else {
-        contenu = new FATexte(this.docField.val()).formated
-      }
-      var cmd = `echo "${contenu.replace(/\"/g,'\\"')}" | pandoc`
-      exec(cmd, (err, stdout, stderr) => {
-        if(err)throw(err)
-        this.visualizor.html(stdout)
+  /**
+   * Actualise la visualisation du contenu Markdown dans le visualiseur
+   */
+, updateVisuDoc(){
+    var contenu
+    if (this.currentDoc.dataType.type === 'data'){
+      contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
+    } else {
+      contenu = new FATexte(this.docField.val()).formated
+    }
+    var cmd = `echo "${contenu.replace(/\"/g,'\\"')}" | pandoc`
+    exec(cmd, (err, stdout, stderr) => {
+      if(err)throw(err)
+      this.visualizor.html(stdout)
+    })
+    contenu = null
+  }
+  /**
+  * La méthode vérifie que le document courant, s'il a été modifié, ait bien
+  * été enregistré.
+  *
+  * Dans le cas contraire, il demande à l'utilisateur ce qu'il veut faire :
+  *   - enregistrer les changements avant de poursuivre (return true)
+  *   - ignore les changements et poursuivre (return true)
+  *   - annuler, donc ne pas poursuire (return false)
+  **/
+, checkCurrentDocModified(){
+    if(this.currentDoc && this.currentDoc.isModified()){
+      var choix = DIALOG.showMessageBox({
+          type:       'warning'
+        , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+        , title:      "Document courant non sauvegardé"
+        , defaultId:  0
+        , cancelId:   1
+        , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
       })
-      contenu = null
-    }
-    /**
-    * La méthode vérifie que le document courant, s'il a été modifié, ait bien
-    * été enregistré.
-    *
-    * Dans le cas contraire, il demande à l'utilisateur ce qu'il veut faire :
-    *   - enregistrer les changements avant de poursuivre (return true)
-    *   - ignore les changements et poursuivre (return true)
-    *   - annuler, donc ne pas poursuire (return false)
-    **/
-  , checkCurrentDocModified(){
-      if(this.currentDoc && this.currentDoc.isModified()){
-        var choix = DIALOG.showMessageBox({
-            type:       'warning'
-          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
-          , title:      "Document courant non sauvegardé"
-          , defaultId:  0
-          , cancelId:   1
-          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
-        })
-        switch (choix) {
-          case 0:
-            this.currentDoc.save()
-            return true
-          case 1: // annulation
-            return false
-          case 2: // on ignore les modifications
-            this.currentDoc.retreiveLastContents()
-            return true
-        }
+      switch (choix) {
+        case 0:
+          this.currentDoc.save()
+          return true
+        case 1: // annulation
+          return false
+        case 2: // on ignore les modifications
+          this.currentDoc.retreiveLastContents()
+          return true
       }
     }
+  }
 
   /**
    * Menu appelé quand on choisit un type de document dans le menu
@@ -145,16 +145,16 @@ const FAWriter = {
   }
 
   // Cf. require_then/FAWriter_keyUp_keyDown.js
-, onKeyDown:function(e){}
-, onKeyUp:function(e){}
+, onKeyDown(e){}
+, onKeyUp(e){}
 
-, onFocusContents:function(){
+, onFocusContents(){
     this.message('')
     // TODO Activer les raccourcis 'keyup/keydown' propre au textarea du writer
     // this.docField.on('keydown', this.onKeyDown.bind(this))
     // this.docField.on('keyup', this.onKeyUp.bind(this))
   }
-, onBlurContents:function(){
+, onBlurContents(){
     // TODO Remettre les anciens raccourcis 'keyup/keydown'
     // this.docField.off('keydown', this.onKeyDown.bind(this))
     // this.docField.off('keyup', this.onKeyUp.bind(this))
@@ -164,14 +164,12 @@ const FAWriter = {
    * Méthode invoquée quand on drop un event (.event) ou un document (.doc)
    * sur le champ de texte.
    */
-, onDropThing:function(e, ui){
-    var event_id = parseInt(ui.helper.attr('data-id'),10)
-    var isScene = this.a.ids[event_id].type == 'scene'
-    var balise = `{{${isScene?'scene':'event'}: ${event_id}}}`
-    this.docField.insertAtCaret(balise)
+, onDropThing(e, ui){
+    var balise = this.a.associateDropped(this.currentDoc, ui.helper)
+    if (balise) this.docField.insertAtCaret(balise)
   }
 
-, reset:function(){
+, reset(){
     this.docField.val('')
   }
 
@@ -181,7 +179,7 @@ const FAWriter = {
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
 , OTHER_SECTIONS: ['#section-reader']
-, open:function(){
+, open(){
     if(this.isOpened) return this.close() // appelé par le menu
     if(!this.ready) this.prepare()
     for(var section of this.OTHER_SECTIONS){$(section).hide()}
@@ -190,7 +188,7 @@ const FAWriter = {
     this.isOpened = true
     // OK
   }
-, close:function(){
+, close(){
     if(false === this.checkCurrentDocModified()) return
     this.section.hide()
     this.unsetDimensions()
@@ -199,14 +197,14 @@ const FAWriter = {
   }
 
 
-, setDimensions:function(){
+, setDimensions(){
     this.sectionVideoOriginalWidth = $('#section-video').width()
     this.rightColumnOriginallWidth = $('#section-reader').width()
     this.rightColumnMarginLeft = $('#right-column').css('margin-left')
     $('#right-column').css({'width': '70%', 'margin-left': '10%'})
     $('#section-video').css('width', '30%')
   }
-, unsetDimensions:function(){
+, unsetDimensions(){
     $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
     $('#right-column').css({'width': `${this.rightColumnOriginallWidth}px`, 'margin-left':this.rightColumnMarginLeft})
   }
@@ -214,13 +212,13 @@ const FAWriter = {
   /**
    * Sauvegarde du document courant
    */
-, saveCurrentDoc:function(){
+, saveCurrentDoc(){
     this.currentDoc.save()
   }
   /**
    * Méthode d'autosauvegarde du document courant
    */
-, autoSaveCurrent:function(){
+, autoSaveCurrent(){
     this.currentDoc.getContents()
     this.currentDoc.isModified() && this.currentDoc.save()
   }
@@ -228,7 +226,7 @@ const FAWriter = {
   /**
    * Pour définir l'autosauvegarde
    */
-, setAutoSave:function(){
+, setAutoSave(){
     this.autoSave = DGet('cb-save-auto-doc').checked
     $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
     if(this.autoSave){
@@ -241,7 +239,7 @@ const FAWriter = {
     }
   }
 
-, setAutoVisualize:function(){
+, setAutoVisualize(){
     this.visualizeDoc = DGet('cb-auto-visualize').checked
     if (this.visualizeDoc){
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
@@ -300,11 +298,12 @@ const FAWriter = {
     this.docField.on('keyup',     this.onKeyUp.bind(this))
 
     // On rend le champ de texte droppable pour pouvoir y déposer
-    // n'importe quel event
+    // n'importe quel event ou n'importe quel autre document
     this.docField.droppable({
         accept: '.event, .doc'
-      , tolerance: 'fit'
+      , tolerance: 'intersect'
       , drop: this.onDropThing.bind(this)
+      , classes: {'ui-droppable-hover': 'survoled'}
     })
 
     // Le bouton pour sauver le document courant
@@ -323,6 +322,13 @@ const FAWriter = {
     this.section.draggable();
     // On rend le visualiseur draggable
     this.visualizor.draggable();
+    // On rend le petit bouton pour drag-dropper le document courant
+    // draggable
+    this.section.find('.header .writer-btn-drop').draggable({
+      revert: true
+    , zIndex: 5000
+    })
+
 
     // Mettre la taille : non, ça doit se régler à chaque ouverture
 

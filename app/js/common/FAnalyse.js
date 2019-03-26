@@ -9,29 +9,29 @@
 
 class FAnalyse {
 
-  // ---------------------------------------------------------------------
-  //  CLASSE
+// ---------------------------------------------------------------------
+//  CLASSE
 
-  // Retourne l'analyse courante
-  static get current(){return this._current||defP(this,'_current',current_analyse)}
-  static set current(v){this._current = v}
+// Retourne l'analyse courante
+static get current(){return this._current||defP(this,'_current',current_analyse)}
+static set current(v){this._current = v}
 
-  // Voir si les préférences demandent que la dernière analyse soit chargée
-  // et la charger si elle est définie.
-  static checkLast(){
-    var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
-    // console.log("prefs:", dprefs)
-    if (!dprefs['load_last_on_launching']) return
-    if (!dprefs['last_analyse_folder']) return
-    var apath = path.resolve(dprefs['last_analyse_folder'])
-    if(fs.existsSync(apath)){
-      this.load(apath)
-    } else {
-      // console.log("Impossible de trouver le dossier :", apath)
-      F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
-      Prefs.set({'last_analyse_folder':null})
-    }
+// Voir si les préférences demandent que la dernière analyse soit chargée
+// et la charger si elle est définie.
+static checkLast(){
+  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+  // console.log("prefs:", dprefs)
+  if (!dprefs['load_last_on_launching']) return
+  if (!dprefs['last_analyse_folder']) return
+  var apath = path.resolve(dprefs['last_analyse_folder'])
+  if(fs.existsSync(apath)){
+    this.load(apath)
+  } else {
+    // console.log("Impossible de trouver le dossier :", apath)
+    F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+    Prefs.set({'last_analyse_folder':null})
   }
+}
 
   /**
    * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
@@ -109,33 +109,76 @@ class FAnalyse {
 
 
 
-  /**
-   * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
-   * valide. Il doit contenir les fichiers de base. Sinon, proposer à
-   * l'user de créer une nouvelle analyse.
-   */
-  static isDossierAnalyseValid(folder, withMessage){
-    if(undefined === withMessage) withMessage = true
-    try {
-      var eventsPath = path.join(folder,'events.json')
-      var dataPath   = path.join(folder,'data.json')
-      fs.existsSync(eventsPath) || raise('Le fichier des events est introuvable.')
-      fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
-      return true
-    } catch (e) {
-      withMessage && console.log(e)
+/**
+ * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
+ * valide. Il doit contenir les fichiers de base. Sinon, proposer à
+ * l'user de créer une nouvelle analyse.
+ */
+static isDossierAnalyseValid(folder, withMessage){
+  if(undefined === withMessage) withMessage = true
+  try {
+    var eventsPath = path.join(folder,'events.json')
+    var dataPath   = path.join(folder,'data.json')
+    fs.existsSync(eventsPath) || raise('Le fichier des events est introuvable.')
+    fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
+    return true
+  } catch (e) {
+    withMessage && console.log(e)
+    return false
+  }
+}
+
+/**
+ * Instanciation de l'analyse à partir du path de son dossier
+ */
+constructor(pathFolder){
+  this._folder  = path.resolve(pathFolder)
+  this.events   = []
+}
+
+/**
+* Associateur
+* Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
+* peut être, en substance, n'importe quel élément de l'analyse.
+*
+* @return la balise qui sera peut-être à insérer dans le champ de saisie,
+* si c'est un champ qui a reçu le drop
+* Retourne null si un problème est survenu
+**/
+associateDropped(obj, domel){
+  var balise
+    , domel_type = domel.attr('data-type')
+    , domel_id
+  if(undefined === domel_type)throw("L'élément droppé devrait définir son data-type:", domel)
+  domel_id = domel.attr('data-id')
+  // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
+  // défini, quand on traite le document édité courant, par exemple
+
+  // On transforme toujours en entier un nombre string
+  if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
+
+  switch (domel_type) {
+    case 'document':
+      if(undefined === domel_id){
+        // => Le document édité
+        domel_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
+      }
+      if (false === obj.addDocument(domel_id)) return null
+      balise = `{{document:${domel_id}}}`
+      break
+    case 'event':
+      // Pour un event, il faut toujours que l'ID soit défini
+      if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
+      if (false === obj.addEvent(domel_id)) return null
+      var isScene = this.ids[domel_id].type == 'scene'
+      balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
+      break
+    default:
+      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domel_type)
       return false
-    }
   }
-
-  /**
-   * Instanciation de l'analyse à partir du path de son dossier
-   */
-  constructor(pathFolder){
-    this._folder  = path.resolve(pathFolder)
-    this.events   = []
-  }
-
+  return balise
+}
   // ---------------------------------------------------------------------
   //  Les données de l'analyse (dans le fichier data)
 

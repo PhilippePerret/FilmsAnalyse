@@ -40,6 +40,10 @@ constructor(dtype, id){
 
 get a() { return current_analyse }
 
+// Méthode pratique pour reconnaitre rapidement l'element
+get isAEvent(){return false}
+get isADocument(){return true}
+
 get modified(){return this._modified || false}
 set modified(v){
   FAWriter.setModified(v)
@@ -212,6 +216,35 @@ afficheModeles(modeles){
  * l'analyse.
  */
 exists(){ return fs.existsSync(this.path) }
+
+// ---------------------------------------------------------------------
+//  Méthodes d'association
+
+addDocument(id_or_type){
+  var meme_id = this.id && this.id == id_or_type
+  var meme_ty = this.type && this.type == id_or_type
+  if( meme_id || meme_ty ){
+    return F.error(T('same-document-no-association'))
+  } else {
+    // Pour le moment, on ne peut pas marquer l'association entre deux
+    // document. Le seul moyen de le faire est de l'associer dans le texte.
+    F.notify(T('no-association-between-docs'), {error: true})
+    this.modified = true
+  }
+  return true
+}
+/**
+* On passe ici quand on glisse un event dans le texte du document (dans le
+* writer)
+**/
+addEvent(event_id){
+  // TODO Comment marquer l'association à un event ? (ligne de commentaire de fin ?)
+  this.modified = true
+  return true
+}
+
+// ---------------------------------------------------------------------
+//  Propriétés
 
 get themePerType(){
   if(undefined === this.dataType) throw(`Impossible de trouver les données du type "${this.type}"`)

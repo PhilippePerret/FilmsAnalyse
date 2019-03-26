@@ -9,6 +9,8 @@ const ERRORS = {
 , "--- DOCUMENTS ---":""
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"
 , "new-custom-document-created": "Document créé. Sa première ligne définit son titre."
+, "same-document-no-association": "Un document ne peut pas être associé avec lui-même, désolé."
+, "no-association-event-in-doc": "Pour lier un event à un document, il faut le glisser dans son texte."
 , "--- FILES ---": ""
 , "code-to-save-is-empty":"Le code à sauver est vide, malheureusement."
 , "error-while-saving-file": "Une erreur s'est produite à l'enregistrement du fichier. Il ne contient pas le bon nombre d'octets.<br>%{fpath}."
@@ -21,6 +23,8 @@ const ERRORS = {
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
 , "---- SCÈNES ---":""
 , "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
+, "---- EVENTS ----":""
+, "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
 }
 const MESSAGES = {
   "conf-created-analyse": "Nouvelle analyse créée avec succès."
@@ -29,6 +33,8 @@ const MESSAGES = {
 , "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
 , "--- messages SCÈNES ---":""
 , "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
+, "---- DOCUMENT ----":""
+, "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
 }
 
 /**

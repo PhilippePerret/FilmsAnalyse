@@ -8,12 +8,21 @@
   width: 90%;
   clear:both;
   background-color:white;
+  border:1px solid transparent;
 }
 
 /* Quand on le draggue */
 .event.myHighlight{
   border:2px solid red;
   z-index: 1000;
+}
+
+.survoled, .survoled * {
+  background-color:#EEFFEE;
+}
+
+.event.survoled {
+  border:1px dashed green;
 }
 
 .event div.scene-heading{

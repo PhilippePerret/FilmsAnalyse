@@ -1,15 +1,16 @@
 # SUR LE GRILL
 
+* Quand on clique sur les entêtes des writer, eventers, visualizor, etc. ils doivent passer au premier plan.
 
-* Implémenter la possibilité de créer d'autres documents
-  - faire un document "Traitement du futur" pour Her
+* Droppable
+  - Normalement, tout est en place. Il faut simplement vérifier que tout fonctionne.
+  - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
+  - puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
-* Un document doit être draggable
-  - on doit pouvoir le dragguer sur l'entête d'un évènement => il est ajouté aux `documents` de l'event (ajouter cette propriété), l'event est ajouté aux `events` du document.
-  - on doit pouvoir le dragguer sur un des champs de texte => on ajoute une marque `{{document:<id document>}}` au curseur. Ajout à `events` (du document) et à `documents` (de l'event)
 * la vidéo doit être draggable
   - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
-  - faut-il que l'horloge principale aussi ? (qu'on penserait plus intuitivement à déplacer)
+  - mettre en forme cette marque, avec un lien qui lance la vidéo (en mode analyse)
+  - faut-il que l'horloge principale aussi soit draggable ? (qu'on penserait plus intuitivement à déplacer)
   => Documenter ces utilisations
 
 
@@ -148,3 +149,4 @@
   - procédure de mise en forme
   - sortie en format Kindle ou autre livre en ligne
 * API qui permettrait de récupérer les data des films online (au format json).
+* On doit pouvoir rétrécir la largeur des eventers, writer, etc. Seul le visualisor, peut-être, doit être conserver pour donner l'apparence du document final.
