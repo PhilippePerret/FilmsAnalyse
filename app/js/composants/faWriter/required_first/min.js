@@ -40,6 +40,7 @@ const DATA_DOCUMENTS = {
 , conclusion:       {hname: 'Conclusion', len: 500, type: 'real'}
 , annexes:          {hname: 'Annexes', len: 1000, type: 'real'}
 
+, customdoc:        {hname: 'Personnalisé', len:0, type:'real', menu: false}
 }
 
 // Pour les menus
