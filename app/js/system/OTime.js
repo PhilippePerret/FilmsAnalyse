@@ -19,7 +19,7 @@ class OTime {
         this.seconds = v
         break
       case 'string':
-        if (v.match(/^[0-9]+$/)){this.seconds = parseInt(v,10)}
+        if (v.match(/^[0-9\.]+$/)){this.seconds = Math.round(v)}
         else {
           this.horloge = v
           this.seconds = this.h2s(v)
@@ -31,12 +31,7 @@ class OTime {
   }
 
   set horloge(v)  { this._horloge = v }
-  get horloge()   {
-    if(undefined === this._horloge){
-      this._horloge = this.s2h()
-    }
-    return this._horloge
-  }
+  get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
   get horloge_simple(){
     if(undefined === this._horloge_simple){
       this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
@@ -51,7 +46,7 @@ class OTime {
   get duration()  { return this.duration || 1 }
 
   get secondsInt() {
-    return parseInt(this.seconds,10)
+    return Math.round(this.seconds)
   }
   h2s(h){
     var d = h.split('.') // Séparer l'horloge de ses frames

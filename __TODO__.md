@@ -1,6 +1,7 @@
 # SUR LE GRILL
 
 * la vidéo doit être droppable
+  - en profiter pour apprendre à faire un objet draggable différent
   - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
   - mettre en forme cette marque, avec un lien qui lance la vidéo (en mode analyse)
   - faut-il que l'horloge principale aussi soit draggable ? (qu'on penserait plus intuitivement à déplacer)

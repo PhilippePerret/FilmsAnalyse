@@ -224,3 +224,11 @@ div#analyse-state button.close {
   padding:0;
   border:0;
 }
+
+/* Le clone qu'on déplace quand on bouge une horloge (comme sur un vidéo) */
+div.dropped-time {
+  background-color:red;
+  padding:4px 2px;
+  color:white;
+  font-family:monospace;
+}

@@ -376,7 +376,7 @@ observe(container){
   * ainsi que des documents
   **/
   o.droppable({
-    accept: '.event, .doc'
+    accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
   , drop: this.onDropThing.bind(this)
   , classes: {'ui-droppable-hover': 'survoled'}

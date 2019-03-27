@@ -5,6 +5,9 @@
   clear:both;
   border:1px dashed red;
 }
+#section-video #video {
+  position:relative; /* pour le helper de draggable */
+}
 #section-video .horloge.mini {
   font-size: 10.2pt;
   width: 80px;
