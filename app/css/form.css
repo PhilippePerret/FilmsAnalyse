@@ -3,15 +3,13 @@ select:hover {
 }
 
 form.form-edit-event {
-  position:absolute;
-  top:80px;
-  right:80px;
   width: 460px;
   background-color:#EEEEE9;
   border:4px solid slategrey;
   border-radius:0.5em;
   padding:0;
   z-index:50;
+  resize:horizontal;
 }
 
 
@@ -110,6 +108,7 @@ div.buttons {
 }
 
 div#buttons-new-event {
+  background-color:white;
   width:300px;
   border:1px solid grey;
   border-radius:1em;

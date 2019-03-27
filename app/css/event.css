@@ -5,10 +5,11 @@
 
 .event {
   padding: 0.2em 0.5em;
-  width: 90%;
+  width: 96%;
   clear:both;
   background-color:white;
   border:1px solid transparent;
+  margin-bottom:3px;
 }
 
 /* Quand on le draggue */

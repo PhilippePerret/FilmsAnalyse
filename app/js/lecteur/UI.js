@@ -57,13 +57,6 @@ const UI = {
         var videoWidth   = parseInt((ScreenWidth * 60) / 100,10)
         var readerWidth  = parseInt((ScreenWidth * 39) / 100,10)
         var readerHeight = parseInt((ScreenHeight * 50)/100,10)
-
-        $('div#right-column').css({
-            "width": `${readerWidth}px`
-          , "height":`${readerHeight}px`
-          , "margin-left": `${1 + videoWidth}px`
-        })
-
       }
 
     /**

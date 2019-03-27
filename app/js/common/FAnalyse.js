@@ -277,7 +277,7 @@ associateDropped(obj, domel){
     this.init()
     this.locator.init()
     this.locator.stop_points = this.stopPoints
-    this.reader.init()
+    this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
     EventForm.init()
     Scene.init()
     this.setOptionsInMenus()

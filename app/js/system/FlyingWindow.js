@@ -2,9 +2,42 @@
 /**
 * Pour gérer toutes les fenêtres
 
+USAGE
+=====
+
+var fwindow = new FWindow(<owner>, <data>)
+
+Avec <data> qui doit contenir au moins :
+  container   L'élément DOM/jQuery devant contenir la flying-window
+  Valeurs optionnelles
+  --------------------
+  id          Pour définir un ID précis. Sinon, c'est "fwindow-<X>" qui sera
+              utilisé, en incrémentant <X> au nombre de fenêtres à peu près.
+  class       La classe CSS à appliquer
+  x           Position horizontale (en pixels)
+  y           Position verticale (en pixels)
+
+Au minimum, le propriétaire, un objet, doit définir les méthodes :
+  - `build`   doit retourner l'élément DOM à insérer dans la f-window
+
+
+Méthodes particulières
+----------------------
+`observe`
+--------
+Méthode plaçant les observateurs d'évènements.
+
+`afterBuilding`
+--------------
 Si on doit procéder à une opération après la construction, par exemple
 le peuplement de menu, on peut utiliser la méthode `afterBuilding` dans
 le propriétaire, qui sera appelée avant la méthode `observe`.
+
+`onShow`, `onHide`
+-----------------
+Ces deux méthodes propriétaires sont appelées à la fin de `show` et
+de `hide` si elles existent. Elles permettent de faire un traitement particulier
+après la fermeture ou l'ouverture de la flying-window.
 
 **/
 
@@ -34,7 +67,10 @@ static setCurrent(wf, e){
     this.current = wf
     this.current.bringToFront()
   }
-  e && stopEvent(e)
+  // Surtout pas :
+  // e && stopEvent(e)
+  // car sinon, lorsqu'on clique sur un checkbox
+  // par exemple, c'est bloqué.
 }
 static unsetCurrent(wf){
   if(this.current.id !== wf.id) return
@@ -60,33 +96,35 @@ constructor(owner, data){
     owner || raise('fwindow-required-owner')
     ('function' === typeof owner.build) || raise('fwindow-owner-has-build-function')
     data || raise('fwindow-required-data')
+    if(undefined === data.container) data.container = $('body')
     data.container || raise('fwindow-required-container')
+    data.container = $(data.container)
     data.container.length || raise('fwindow-invalid-container')
     // owner.FWcontents || data.contents || raise('fwindow-contents-required')
   } catch (e) { throw(T(e)) }
 
   this.owner = owner
-  this.id    = this.constructor.newId()
+  for(var k in data){this[`_${k}`] = data[k]}
+  this.id    = data.id || this.constructor.newId()
+  if(data.id) this._domId = data.id
   this.built = false
 
-  for(var k in data){this[`_${k}`] = data[k]}
 }
 
 toggle(){
-  if(this.visible) this.hide()
-  else {
-    if(!this.built) this.build().observe()
-    this.show()
-  }
+  this[this.visible?'hide':'show']()
 }
 show(){
+  if(!this.built) this.build().observe()
   this.jqObj.show()
   this.constructor.setCurrent(this)
+  if ('function' === typeof this.owner.onShow) this.owner.onShow()
   this.visible = true
 }
 hide(){
   this.constructor.unsetCurrent(this)
   this.jqObj.hide()
+  if ('function' === typeof this.owner.onHide) this.owner.onHide()
   this.visible = false
 }
 // Pour mettre la Flying window en premier plan
@@ -101,10 +139,12 @@ bringToBack(){
 }
 
 build(){
+  // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate('DIV', {
     id: this.domId
-  , class: `fwindow ${this.class}`.trim()
+  , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
+  , style: `top:${this._y||0}px;left:${this._x||0}px;`
   })
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,
@@ -120,10 +160,12 @@ build(){
 
 observe(){
   // Une flying window est déplaçable par essence
+  // console.log("this.jqObj:", this.jqObj)
   this.jqObj.draggable({
     containment: 'document'
   })
   // Une flying window est cliquable par essence
+  // this.jqObj.find('header, body').on('click', FWindow.setCurrent.bind(FWindow, this))
   this.jqObj.on('click', FWindow.setCurrent.bind(FWindow, this))
 }
 

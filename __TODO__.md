@@ -1,6 +1,14 @@
 # SUR LE GRILL
 
-* Une classe FlyingWindow pour gérer toutes les fenêtres de la même manière (formulaire d'event, writer, eventer, etc.)
+
+* FWindow
+  - Utiliser un appel à setDimensions aussi pour le reader, qui se placera
+    en fonction de la vidéo (voir dans FAWriter.setDimension)
+  Mettre toutes les fenêtres dans le body (mais laisser la possibilité de définir un container, sans générer d'erreur en cas d'absence)
+  * Appliquer la classe FlyingWindow pour gérer
+    - le visualizeur (du writer, mais peut-être en faire un visualizor pour tout)
+    - report
+  * Il faudrait pouvoir changer la size (horizontale surtout)
 
 * Une class Report pour faire des rapports de toute sorte, qui peuvent s'afficher à l'écran (dans une flying window) ou s'enregistrer dans un fichier.
   - il permet d'utiliser des classes pour mettre en exergue, signaler des erreurs, etc.

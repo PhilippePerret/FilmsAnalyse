@@ -150,14 +150,8 @@ const FAWriter = {
 
 , onFocusContents(){
     this.message('')
-    // TODO Activer les raccourcis 'keyup/keydown' propre au textarea du writer
-    // this.docField.on('keydown', this.onKeyDown.bind(this))
-    // this.docField.on('keyup', this.onKeyUp.bind(this))
   }
 , onBlurContents(){
-    // TODO Remettre les anciens raccourcis 'keyup/keydown'
-    // this.docField.off('keydown', this.onKeyDown.bind(this))
-    // this.docField.off('keyup', this.onKeyUp.bind(this))
   }
 
   /**
@@ -178,35 +172,35 @@ const FAWriter = {
    *
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
-, OTHER_SECTIONS: ['#section-reader']
 , open(){
-    if(this.isOpened) return this.close() // appelé par le menu
-    if(!this.ready) this.prepare()
-    for(var section of this.OTHER_SECTIONS){$(section).hide()}
-    this.section.show()
+    if(this.isOpened) return this.fwindow.hide() // appelé par le menu
+    this.fwindow.show()
+  }
+, OTHER_SECTIONS: ['#section-reader']
+, onShow(){
+    // Les autres sections qu'il faut masquer quand on affiche
+    // le writer. Est-ce vraiment nécessaire ?…
+    // for(var section of this.OTHER_SECTIONS){$(section).hide()}
     this.setDimensions()
     this.isOpened = true
-    // OK
-  }
+}
 , close(){
     if(false === this.checkCurrentDocModified()) return
-    this.section.hide()
+    this.fwindow.hide()
+  }
+, onHide(){
     this.unsetDimensions()
     this.isOpened = false
     delete this.currentDoc
-  }
-
+}
 
 , setDimensions(){
     this.sectionVideoOriginalWidth = $('#section-video').width()
     this.rightColumnOriginallWidth = $('#section-reader').width()
-    this.rightColumnMarginLeft = $('#right-column').css('margin-left')
-    $('#right-column').css({'width': '70%', 'margin-left': '10%'})
     $('#section-video').css('width', '30%')
   }
 , unsetDimensions(){
     $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
-    $('#right-column').css({'width': `${this.rightColumnOriginallWidth}px`, 'margin-left':this.rightColumnMarginLeft})
   }
 
   /**
@@ -226,9 +220,10 @@ const FAWriter = {
   /**
    * Pour définir l'autosauvegarde
    */
-, setAutoSave(){
+   // TODO voir pourquoi ça n'est pas simple…
+   // Est-ce à cause du draggable ???
+, setAutoSave(e){
     this.autoSave = DGet('cb-save-auto-doc').checked
-    $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
     if(this.autoSave){
       this.autoSaveTimer = setInterval(this.autoSaveCurrent.bind(this), 2000)
     } else {
@@ -237,9 +232,12 @@ const FAWriter = {
         this.autoSaveTimer = null
       }
     }
+    $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
   }
 
-, setAutoVisualize(){
+// TODO voir pourquoi ça n'est pas simple…
+// Est-ce à cause du draggable ???
+, setAutoVisualize(e){
     this.visualizeDoc = DGet('cb-auto-visualize').checked
     if (this.visualizeDoc){
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
@@ -251,40 +249,113 @@ const FAWriter = {
     this.visualizor[this.visualizeDoc?'show':'hide']()
   }
 
-, setModified:function(mod){
+, setModified(mod){
     this.section[mod?'addClass':'removeClass']('modified')
   }
 
   /**
    * Pour afficher un message propre au writer
    */
-, message:function(msg){
+, message(msg){
     if(!msg) msg = ''
     this.section.find('#writer-message').html(msg)
   }
 
-  /**
-   * Pour préparer le writer
-   */
-, prepare:function(){
-    // Peupler la liste des types de document
-    var m = this.menuTypeDoc, dOpt
-    for(var dType in DATA_DOCUMENTS){
-      var ddoc = DATA_DOCUMENTS[dType]
-      if(ddoc.menu === false) continue
-      if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
-      else dOpt = {value: dType, inner: ddoc.hname}
-      m.append(DCreate('OPTION', dOpt))
-    }
-    // Pour séparer les documents propres à cette analyse
-    m.append(DCreate('OPTION', {class: 'separator', disabled: true}))
-    // La liste des documents propres à cette analyse
-    this.forEachUserDocument(function(wdoc){
-      m.append(DCreate('OPTION', {value: wdoc.id, inner: wdoc.title}))
+
+// Appelé par la FWindow
+, build(){
+    var spa, lab, sel
+
+    var btnClose = DCreate('BUTTON', {
+      id: 'btn-close-writer'
+    , class: 'btn-close'
+    , attrs:{type: 'button'}
+    })
+    spa = DCreate('SPAN', {
+      class: 'writer-btn-drop doc'
+    , attrs: {'data-type': 'document', 'title': "Pour glisser et déposer le document sur un event ou un texte."}
+    , inner: ' ⎆'
+    })
+    var doctitle = DCreate('DIV',{
+      id: 'writer-doc-title'
+    , append: [
+        DCreate('LABEL', {class: 'small', inner: 'DOCUMENT '})
+      , DCreate('SELECT', {id: 'document-type'})
+      , spa
+    ]
     })
 
+    var divmodeles = DCreate('DIV', {
+      class: 'modeles'
+    , append: [
+        DCreate('LABEL', {class: 'small', inner: 'MODÈLES '})
+      , DCreate('SELECT', {id: 'modeles-doc'})]
+    })
+
+    var btnNew = DCreate('BUTTON', {
+      id: 'writer-btn-new-doc'
+    , inner: '+'
+    , attrs: {'type': 'button'}
+    })
+
+    var header = DCreate('DIV',{
+      class: 'header'
+    , append: [btnClose, doctitle, divmodeles, btnNew]
+    })
+
+    var body = DCreate('DIV', {
+      class: 'body'
+    , append: [DCreate('TEXTAREA', {id: 'document-contents'})]
+    })
+
+    var opts = []
+    var themes = {'': 'Thème…', 'real-theme': 'Normal', 'data-theme':'Données', 'musical-theme':'Musical'}
+    for(var theme in themes){ opts.push(DCreate('OPTION', {value: theme, inner: themes[theme]}))}
+    var selThemes = DCreate('SELECT', {
+      id: 'writer-theme'
+    , class: 'fleft'
+    , append: opts
+    })
+
+    var footer = DCreate('DIV', {
+      class: 'footer',
+      append: [
+        DCreate('LABEL', {id: 'writer-message', inner: '...'})
+      , selThemes
+      , DCreate('LABEL', {class:'fleft', inner: 'Taille du texte : '})
+      , DCreate('SPAN', {id: 'text-size', class:'fleft', inner: '...'})
+      , DCreate('LABEL', {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
+      , DCreate('INPUT', {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
+      , DCreate('LABEL', {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
+      , DCreate('INPUT', {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
+      , DCreate('BUTTON', {id: 'btn-save-doc', inner: 'Enregistrer', attrs: {type: 'button'}})
+      ]
+    })
+
+    return [header, body, footer]
+}
+// Appelé par la FWindow
+, afterBuilding(){
+  // Peupler la liste des types de document
+  var m = this.menuTypeDoc, dOpt
+  for(var dType in DATA_DOCUMENTS){
+    var ddoc = DATA_DOCUMENTS[dType]
+    if(ddoc.menu === false) continue
+    if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
+    else dOpt = {value: dType, inner: ddoc.hname}
+    m.append(DCreate('OPTION', dOpt))
+  }
+  // Pour séparer les documents propres à cette analyse
+  m.append(DCreate('OPTION', {class: 'separator', disabled: true}))
+  // La liste des documents propres à cette analyse
+  this.forEachUserDocument(function(wdoc){
+    m.append(DCreate('OPTION', {value: wdoc.id, inner: wdoc.title}))
+  })
+}
+// Appelé par la FWindow
+, observe(){
     // On observe le menu de choix d'un document
-    m.on('change', this.onChooseTypeDoc.bind(this))
+    this.menuTypeDoc.on('change', this.onChooseTypeDoc.bind(this))
     // On observe le menu de choix d'un modèle de document
     this.menuModeles.on('change', this.onChooseModeleDoc.bind(this))
     // On observe le menu qui choisit le thème
@@ -311,24 +382,21 @@ const FAWriter = {
     // On observe la case à cocher qui permet de sauvegarder automatiquement
     // le document
     $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
-    // On observe la case à cocher pour visualiser régulièrement le document
-    $('input#cb-auto-visualize').on('click', this.setAutoVisualize.bind(this))
+    // // On observe la case à cocher pour visualiser régulièrement le document
+    $('input#cb-auto-visualize').on('change', this.setAutoVisualize.bind(this))
+
     // Bouton pour fermer le writer
     $('button#btn-close-writer').on('click', this.close.bind(this))
 
     // On observe le bouton pour créer un nouveau document
     $('button#writer-btn-new-doc').on('click', FAWriterDoc.new.bind(FAWriterDoc))
-    // On rend le writer draggable
-    this.section.draggable();
-    // On rend le visualiseur draggable
-    this.visualizor.draggable();
+
     // On rend le petit bouton pour drag-dropper le document courant
     // draggable
     this.section.find('.header .writer-btn-drop').draggable({
       revert: true
     , zIndex: 5000
     })
-
 
     // Mettre la taille : non, ça doit se régler à chaque ouverture
 
@@ -348,15 +416,15 @@ Object.defineProperties(FAWriter,{
   a:{
     get(){return current_analyse}
   }
+, fwindow:{
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section}))}
+  }
   /**
    * Le selecteur, pour gérer la sélection
    */
 , selector:{
-    get(){
-      if(undefined === this._selector) this._selector = new Selector(this.docField)
-      return this._selector
-    }
-  }
+   get(){return this._selector || defP(this,'_selector', new Selector(this.docField))}
+ }
 , customDocuments:{
     get(){
       if(undefined === this._customDocuments){
@@ -375,34 +443,34 @@ Object.defineProperties(FAWriter,{
     }
   }
 , section:{
-    get:function(){return $('#section-writer')}
+    get(){return $('#section-writer')}
   }
 , menuTypeDoc:{
-    get:function(){return $('#section-writer .header select#document-type')}
+    get(){return $('#section-writer .header select#document-type')}
   }
 , body:{
-    get:function(){return $('#section-writer .body')}
+    get(){return $('#section-writer .body')}
   }
 , docField:{
-    get:function(){return $('#section-writer .body textarea#document-contents')}
+    get(){return $('#section-writer .body textarea#document-contents')}
   }
 , btnSave:{
-    get:function(){return $('#section-writer button#btn-save-doc')}
+    get(){return $('#section-writer button#btn-save-doc')}
   }
 , menuThemes:{
-    get:function(){return $('#section-writer #writer-theme')}
+    get(){return $('#section-writer #writer-theme')}
   }
 , menuModeles:{
-    get:function(){return $('#section-writer select#modeles-doc')}
+    get(){return $('#section-writer select#modeles-doc')}
   }
 , visualizor:{
-    get:function(){return $('#writer-doc-visualizor')}
+    get(){return $('#writer-doc-visualizor')}
   }
 , header:{
-    get:function(){return $('#section-writer .header')}
+    get(){return $('#section-writer .header')}
   }
 , footer:{
-    get:function(){return $('#section-writer .footer')}
+    get(){return $('#section-writer .footer')}
   }
 
 })
