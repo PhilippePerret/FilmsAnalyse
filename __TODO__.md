@@ -1,5 +1,10 @@
 # SUR LE GRILL
 
+* Une classe FlyingWindow pour gérer toutes les fenêtres de la même manière (formulaire d'event, writer, eventer, etc.)
+
+* Une class Report pour faire des rapports de toute sorte, qui peuvent s'afficher à l'écran (dans une flying window) ou s'enregistrer dans un fichier.
+  - il permet d'utiliser des classes pour mettre en exergue, signaler des erreurs, etc.
+
 * Quand on clique sur les entêtes des writer, eventers, visualizor, etc. ils doivent passer au premier plan.
 
 * Droppable

@@ -25,22 +25,22 @@ static createNew(){
 //  INSTANCE
 
 constructor(analyse){
-  this.analyse  = analyse
+  this.analyse = this.a = analyse
+  this.id = FAEventer.newId()
 
   this.built    = false
 }
 
 open(){
-  if(false == this.built){
-    this.build()
-    this.observe()
-    this.peuple() // TODO Plus tard, on peuplera après avoir choisi le filtre
+  if(false === this.fwindow.built) {
+    this.fwindow.build().observe()
+    this.peuple()
   } else {
-    this.jqObj.show()
+    this.fwindow.show()
   }
 }
 close(){
-  this.jqObj.hide()
+  this.fwindow.hide()
 }
 
 /**
@@ -53,7 +53,7 @@ peuple(){
     , o   = my.jqPanEvents
     ;
   o.html('')
-  this.analyse.forEachEvent(function(ev){
+  this.a.forEachEvent(function(ev){
     if(my.filter){
       if(my.filter.eventTypes.indexOf(ev.type) < 0) return
       if(my.filter.fromTime && ev.time < my.filter.fromTime) return
@@ -126,8 +126,8 @@ getChosenTypes(){
  * Construction de l'eventeur
  */
 build(){
-  this.id = FAEventer.newId()
-  var div = DCreate('DIV', {id: this.domId, class: 'eventer'})
+  var div = DCreate('DIV', {id: this.domId})
+  // var div = DCreate('DIV', {id: this.domId, class: 'eventer'})
   div.innerHTML = `
   <div class="toolbox">
     <button type="button" class="btn-close"></button>
@@ -150,10 +150,15 @@ build(){
   </div>
   `
 
-  $('#section-eventers').append(div)
-  this.peupleTypesInFilter()
   this.built = true
+
+  return div // pour la FWindow
 }
+afterBuilding(){
+  this.peupleTypesInFilter()
+}
+
+get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
 
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
@@ -182,26 +187,26 @@ buildCbType(ocontainer, domid, libelle, type){
   ocontainer.append(span)
 }
 
-  observe(){
-    this.jqObj.draggable()
-    this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
-    this.btnClose.on('click', this.close.bind(this))
-    var horloges = UI.setHorlogeable(DGet(this.domId))
-    var dataHorloge = {
-        // time: 0
-        synchroVideo: true
-      , parentModifiable: false
-      , unmodifiable: true
-    }
-    this.horlogeFiltreFromTime = horloges[`${this.domId}-from-time`]
-    this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
-    this.horlogeFiltreFromTime.dispatch(dataHorloge)
-    this.horlogeFiltreToTime.dispatch(dataHorloge)
+observe(){
+  this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
+  this.btnClose.on('click', this.close.bind(this))
+  var horloges = UI.setHorlogeable(DGet(this.domId))
+  var dataHorloge = {
+      // time: 0
+      synchroVideo: true
+    , parentModifiable: false
+    , unmodifiable: true
   }
+  this.horlogeFiltreFromTime = horloges[`${this.domId}-from-time`]
+  this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
+  this.horlogeFiltreFromTime.dispatch(dataHorloge)
+  this.horlogeFiltreToTime.dispatch(dataHorloge)
+}
 
-  get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
-  get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
-  get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
-  get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
-  get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}
+get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
+get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
+get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
+get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
+get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}
+
 }

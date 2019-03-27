@@ -25,6 +25,13 @@ const ERRORS = {
 , "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
 , "---- EVENTS ----":""
 , "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
+, "--- FLYING WINDOW ---":""
+, "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
+, "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
+, "fwindow-required-container": "Pour instancier une Flying-window (FWindow), il faut fournir son container dans les data (l'élément DOM jQuery qui la contiendra)."
+, "fwindow-invalid-container": "Le container pour placer la flying-window est invalide (introuvable)"
+, "fwindow-contents-required": "Pour instancier une flying-window, il faut fournir le contenu HTML (noeud principal). On peut le faire soit par les data (propriété `contents`) soit en définissant `FWcontents` dans le propriétaire."
+, "fwindow-owner-has-build-function": "Le propriétaire d'une flying-window doit définir la méthode `build` qui doit construire le contenu de la fenêtre volante."
 }
 const MESSAGES = {
   "conf-created-analyse": "Nouvelle analyse créée avec succès."
