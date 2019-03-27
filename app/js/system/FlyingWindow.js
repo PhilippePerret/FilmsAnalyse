@@ -60,13 +60,10 @@ static newId(){
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
-  if(this.current && this.current.id == wf.id){
-    // La fenêtre est déjà courante
-  } else {
-    if(this.current) this.current.bringToBack()
-    this.current = wf
-    this.current.bringToFront()
-  }
+  if(this.current && this.current.id == wf.id) return
+  if(this.current) this.current.bringToBack()
+  this.current = wf
+  this.current.bringToFront()
   // Surtout pas :
   // e && stopEvent(e)
   // car sinon, lorsqu'on clique sur un checkbox

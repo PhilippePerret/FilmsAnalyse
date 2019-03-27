@@ -7,15 +7,19 @@
 **/
 
 class FATimeline {
-  /**
-  * Instanciation de l'objet Timeline, avec son container,
-  * qui sera la bande qui réagira aux souris.
-  **/
-  constructor(container, analyse){
-    this.container    = container
-    this.jqContainer  = $(container)
-    this.jqContainer.addClass('timeline')
-    this.analyse      = analyse || current_analyse
+
+// ---------------------------------------------------------------------
+//  INSTANCE
+
+/**
+* Instanciation de l'objet Timeline, avec son container,
+* qui sera la bande qui réagira aux souris.
+**/
+constructor(container, analyse){
+  this.container    = container
+  this.jqContainer  = $(container)
+  this.jqContainer.addClass('timeline')
+  this.analyse      = analyse || current_analyse
 }
 
 /**
@@ -27,19 +31,24 @@ class FATimeline {
 *   :only_slider_sensible      Si true, seul la bande (le slider) est sensible
 *                         au déplacement de souris.
 **/
-  init(options){
-    if(undefined === options) options = {}
-    // Construire les éléments (p.e. l'horloge)
-    this.build(options)
-    // Placer les observers
-    this.observe(options)
-    this.inited = true
+init(options){
+  if(undefined === options) options = {}
+  // Construire les éléments (p.e. l'horloge)
+  this.build(options)
+  // Placer les observers et faire quelques réglages
+  this.observe(options)
+  this.inited = true
 }
-  /**
-  * Positionne le cursor principal au temps voulu
-  **/
-  positionneAt(rtime){
-    this.mainCursor.css('left', `${(rtime * this.coefT2P)+4}px`)
+
+/**
+* Positionne le cursor principal au temps voulu
+**/
+positionneAt(rtime){
+  this.mainCursor.css('left', `${(rtime * this.coefT2P)+4}px`)
+}
+// Position le cursor fantôme
+positionneShadowAt(rtime){
+  this.shadowCursor.css('left', `${(rtime * this.coefT2P)+4}px`)
 }
 /**
 * Quand on arrive sur le slider
@@ -48,95 +57,128 @@ class FATimeline {
 **/
 onHoverSlider(e){
   this.horloge.css('visibility', 'visible')
+  this.shadowCursor.css('visibility', 'visible')
   return stopEvent(e)
 }
+
 onMouseOutSlider(e){
   this.horloge.css('visibility', 'hidden')
+  this.shadowCursor.css('visibility', 'hidden')
   return stopEvent(e)
 }
-  onMoveOnSlider(e){
-    this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
-    this.horloge.css('visibility', 'visible')
-    this.horloge.html(this.otime.horloge)
-    stopEvent(e)
+
+onMoveOnSlider(e){
+  this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
+  this.positionneShadowAt(this.otime.seconds)
+  this.horloge.css('visibility', 'visible')
+  this.horloge.html(this.otime.horloge)
+  stopEvent(e)
 }
-/**
-* Le clic sur le slider doit démarrer la vidéo.
-**/
-  onClickOnSlider(e){
-    this.locator.setRTime(this.otime.seconds)
-    this.positionneAt(this.otime.seconds)
-    if(this.locator.playing) this.locator.togglePlay()
+
+onClickOnSlider(e){
+  this.locator.setRTime(this.otime.seconds)
+  this.positionneAt(this.otime.seconds)
+  if(this.locator.playing) this.locator.togglePlay()
 }
-  onDoubleClickOnSlider(e){
-    this.locator.togglePlay()
-    this.positionneAt(this.otime.seconds)
+
+// C'est le double-clic qui démarre la vidéo
+onDoubleClickOnSlider(e){
+  this.locator.togglePlay()
+  this.positionneAt(this.otime.seconds)
 }
 
 /**
 * Construction de la Timeline
 **/
-  build(options){
-    var ho = document.createElement('span')
-    ho.className = 'timeline-horloge horloge'
-    ho.style = 'visibility:hidden;'
-    this.container.appendChild(ho)
-
-    // Le div qui va permettre de placer les
-    // cursors. C'est le slider.
-    var di = document.createElement('div')
-    di.className = 'timeline-cursors'
-    if(options.height) di.style = `height:${options.height}px;`
-
-    // Le div du curseur principal
-    var cu = document.createElement('div')
-    cu.className = 'cursor timeline-maincursor'
-    if(options.height) cu.style = `height:${options.height}px;`
-    di.appendChild(cu)
-
-    this.container.appendChild(di)
+build(options){
+  // var ho = document.createElement('span')
+  // ho.className = 'timeline-horloge horloge'
+  // ho.style = 'visibility:hidden;'
+  // this.container.appendChild(ho)
 
 
-    this.built = true
+  // Le div du curseur principal
+  var sty = '', cursorStyle
+  if(options.cursorHeight)  sty += `height:${options.cursorHeight}px;`
+  if(options.cursorTop)     sty += `top:${options.cursorTop}px;`
+  if(sty != '') cursorStyle = sty
 
-    return this // pour le chainage
+  var cu = DCreate('DIV', {
+    class: 'cursor timeline-maincursor'
+  , style: cursorStyle
+  })
+
+  var ho = DCreate('SPAN',{class:'timeline-horloge horloge', style: 'visibility:hidden;'})
+
+  var shcu = DCreate('DIV', {
+    class: 'cursor timeline-shadowcursor'
+  , style: cursorStyle
+  , append: [ho]
+  })
+
+  // Le div qui va permettre de placer les
+  // cursors. C'est le slider.
+  var di = DCreate('DIV', {
+    class: 'timeline-cursors'
+  , style: options.height ? `height:${options.height}px;` : undefined
+  , append: [cu, shcu]
+  })
+
+  this.container.appendChild(di)
+
+  this.built = true
+
+  return this // pour le chainage
 }
-  observe(options){
-    var container
-    if(options.only_slider_sensible){
-      container = this.jqContainer.find('.timeline-cursors')
-    } else {
-      container = this.jqContainer
-    }
-
-    container.on('click',     this.onClickOnSlider.bind(this))
-    container.on('dblclick',  this.onDoubleClickOnSlider.bind(this))
-    container.on('mousemove', this.onMoveOnSlider.bind(this))
-    container.on('mouseover', this.onHoverSlider.bind(this))
-    container.on('mouseout',  this.onMouseOutSlider.bind(this))
-}
-
-  get a(){return this.analyse}
-  get otime(){return this._otime||defP(this,'_otime', new OTime(0))}
-
-  get mainCursor(){return this._mainCursor || defP(this,'_mainCursor', this.jqContainer.find('.timeline-maincursor'))}
-  get locator(){return this._locator || defP(this,'_locator',this.a.locator)}
-  get horloge(){return this._horloge || defP(this,'_horloge',this.jqContainer.find('.timeline-horloge'))}
-
-  get coefP2T(){
-    if( undefined === this._coefP2T){
-      this._coefP2T = this.dureeFilm / this.widthContainer
-    }
-    return this._coefP2T
-}
-
-  get coefT2P(){
-  if(undefined === this._coefT2P){
-    this._coefT2P = this.widthContainer / this.dureeFilm
+observe(options){
+  var cont
+  if(options.only_slider_sensible){
+    cont = this.jqSlider
+  } else {
+    cont = this.jqContainer
   }
-  return this._coefT2P
+
+  cont.on('click',     this.onClickOnSlider.bind(this))
+  cont.on('dblclick',  this.onDoubleClickOnSlider.bind(this))
+  cont.on('mousemove', this.onMoveOnSlider.bind(this))
+  cont.on('mouseover', this.onHoverSlider.bind(this))
+  cont.on('mouseout',  this.onMouseOutSlider.bind(this))
+
+  // Taille du cursor (sauf si la vidéo principale)
+  if(!options.height && !this.container.parentNode.id === 'section-video'){
+    // console.log("this.container.parentNode",this.container.parentNode)
+    var contHeight = this.jqSlider.height()
+    var cursHeight = $(this.container).height()
+    this.mainCursor.css({height: `${cursHeight}px`, top: `-${cursHeight - contHeight}px`})
+    this.shadowCursor.css({height: `${cursHeight}px`, top: `-${cursHeight - contHeight}px`})
+    // console.log("container.parentNode()", $(this.container.parentNode).height() )
+  }
+
 }
-  get widthContainer(){return this.jqContainer.width()}
-  get dureeFilm(){return this._dureeFilm || defP(this, '_dureeFilm', this.a.duration)}
+
+get a(){return this.analyse}
+get otime(){return this._otime||defP(this,'_otime', new OTime(0))}
+
+get jqSlider(){return this._slider || defP(this,'_slider', this.jqContainer.find('.timeline-cursors'))}
+get shadowCursor(){return this._shadowCursor || defP(this,'_shadowCursor', this.jqContainer.find('.timeline-shadowcursor'))}
+get mainCursor(){return this._mainCursor || defP(this,'_mainCursor', this.jqContainer.find('.timeline-maincursor'))}
+get locator(){return this._locator || defP(this,'_locator',this.a.locator)}
+get horloge(){return this._horloge || defP(this,'_horloge',this.jqContainer.find('.timeline-horloge'))}
+
+get coefP2T(){
+  if( undefined === this._coefP2T){
+    this._coefP2T = this.dureeFilm / this.widthContainer
+  }
+  return this._coefP2T
+}
+
+get coefT2P(){
+if(undefined === this._coefT2P){
+  this._coefT2P = this.widthContainer / this.dureeFilm
+}
+return this._coefT2P
+}
+get widthContainer(){return this.jqContainer.width()}
+get dureeFilm(){return this._dureeFilm || defP(this, '_dureeFilm', this.a.duration)}
 
 }// /fin de FATimeline

@@ -98,7 +98,7 @@ Object.assign(PFA, {
 , observe(){
     // On colle un FATimeline
     var tml = new FATimeline(this.jqObj[0])
-    tml.init({height:40, only_slider_sensible: true})
+    tml.init({height: 40, cursorHeight:262, cursorTop: -222, only_slider_sensible: true})
 
     // On rend le PFA draggable
     this.jqObj.draggable()

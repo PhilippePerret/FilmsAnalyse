@@ -73,9 +73,16 @@
 .timeline .timeline-cursors .cursor {
   width:4px;
   height:10px;
-  background-color:red;
   position:absolute;
   left:0px;
+}
+.timeline .timeline-cursors .cursor.timeline-maincursor {
+  background-color:red;
+  z-index:20;
+}
+.timeline .timeline-cursors .cursor.timeline-shadowcursor {
+  background-color:#FF8888;
+  z-index:19;
 }
 .timeline span.timeline-horloge {
   position:absolute;
@@ -84,6 +91,7 @@
   font-size:11pt;
   font-family:monospace;
   visibility:hidden;
+  border:1px solid darkred;
 }
 .timeline:hover span.timeline-horloge {
   visibility:visible;

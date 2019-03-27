@@ -1,31 +1,17 @@
 # SUR LE GRILL
 
-* la vidéo doit être droppable
-  - en profiter pour apprendre à faire un objet draggable différent
-  - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
-  - mettre en forme cette marque, avec un lien qui lance la vidéo (en mode analyse)
-  - faut-il que l'horloge principale aussi soit draggable ? (qu'on penserait plus intuitivement à déplacer)
-  => Documenter ces utilisations
-
-
-* FWindow
-  * Quand on ouvre une nouveau fwindow, il faut la mettre en courante (essayer avec un eventer, et le reader ouvert)
-
 * Class Report
   - Faire la sortie en fichier
 
 * Droppable
   - Normalement, tout est en place. Il faut simplement vérifier que tout fonctionne.
   - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
-  - puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
+* puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
 * PFA
   - Pouvoir éditer l'event en cliquant dessus dans le PFA
 
-* Il faut qu'un cursor, dans une FATimeline, ait la hauteur de son contenu
-  - Quand on survole le slider, il faut mettre un cursor fantôme
-    (rouge plus clair) — note : sur toute la hauteur du container, là-aussi.
 
 * Aggrandir les champs de saisie à menu qu'on aggrandit le texte.
   Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
