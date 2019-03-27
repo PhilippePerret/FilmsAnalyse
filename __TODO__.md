@@ -1,5 +1,9 @@
 # SUR LE GRILL
 
+* PFA
+  - Pouvoir éditer l'event en cliquant dessus dans le PFA
+
+
 * Class Report
   - Faire la sortie en fichier
 
@@ -8,9 +12,6 @@
   - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
-
-* PFA
-  - Pouvoir éditer l'event en cliquant dessus dans le PFA
 
 
 * Aggrandir les champs de saisie à menu qu'on aggrandit le texte.

@@ -151,16 +151,6 @@ Object.defineProperties(PFA,{
       }
     }
 }
-//   //Retourne la class SttNode de l'incident perturbateur
-// , incPer:{
-//       get:function(){return this._incPer}
-//     , set:function(e){this._incPer = e}
-//   }
-// // Retourne l'incident déclencheur, comme SttNode
-// , incDec:{
-//       get:function(){return this._incDec}
-//     , set:function(e){this._incDec = e}
-//   }
 })
 
 

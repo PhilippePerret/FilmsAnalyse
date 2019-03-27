@@ -27,79 +27,79 @@ static reset(){
   $('form.form-edit-event').remove()
 }
 
-  // Les formulaires déjà initiés (et donc cachés dans le DOM)
-  static get eventForms(){
-    if(undefined===this._eventForms){this._eventForms = {}}
-    return this._eventForms
-  }
-  // static set eventForms(v){this._eventForms = v}
+// Les formulaires déjà initiés (et donc cachés dans le DOM)
+static get eventForms(){
+  if(undefined===this._eventForms){this._eventForms = {}}
+  return this._eventForms
+}
+// static set eventForms(v){this._eventForms = v}
 
-  static get videoController(){ return this.a.videoController }
+static get videoController(){ return this.a.videoController }
 
-  //
-  static onClickNewEvent(ev, eventType){
-    if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
-    if (ev) ev.stopPropagation()
-    this.videoWasPlaying = !!this.a.locator.playing
-    if(this.a.locator.playing) this.a.locator.togglePlay()
-    if (eventType == 'scene' && this.notConfirmNewScene() ) return false
-    var eForm = new EventForm(eventType)
-    this.eventForms[eForm.id] = eForm
-    eForm.toggleForm()
-  }
+//
+static onClickNewEvent(ev, eventType){
+  if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
+  if (ev) ev.stopPropagation()
+  this.videoWasPlaying = !!this.a.locator.playing
+  if(this.a.locator.playing) this.a.locator.togglePlay()
+  if (eventType == 'scene' && this.notConfirmNewScene() ) return false
+  var eForm = new EventForm(eventType)
+  this.eventForms[eForm.id] = eForm
+  eForm.toggleForm()
+}
 
-  /**
-   * Méthode appelée à la création d'une nouvelle scène, pour s'assurer
-   * qu'il n'en existe pas déjà une.
-   * @return  true si la scène est trop proche, false si la scène peut être
-   *          créée.
-   *
-   * Plus précisément, la fonction interdit de créer une scène à moins de
-   * 2 secondes. Mais si l'autre scène est entre 2 et 10 secondes, elle demande
-   * confirmation.
-   */
-  static notConfirmNewScene(){
-    var sceneFound = this.filmHasSceneNearCurrentPos()
-    if (sceneFound){
-      let [iScene, ecart] = sceneFound
-      if (ecart < 2) {
-        alert(T('scene-to-close'))
+/**
+ * Méthode appelée à la création d'une nouvelle scène, pour s'assurer
+ * qu'il n'en existe pas déjà une.
+ * @return  true si la scène est trop proche, false si la scène peut être
+ *          créée.
+ *
+ * Plus précisément, la fonction interdit de créer une scène à moins de
+ * 2 secondes. Mais si l'autre scène est entre 2 et 10 secondes, elle demande
+ * confirmation.
+ */
+static notConfirmNewScene(){
+  var sceneFound = this.filmHasSceneNearCurrentPos()
+  if (sceneFound){
+    let [iScene, ecart] = sceneFound
+    if (ecart < 2) {
+      alert(T('scene-to-close'))
+      return true
+    } else {
+      if(!confirm(T('confirm-scene-close',{ecart: ecart}))){
         return true
-      } else {
-        if(!confirm(T('confirm-scene-close',{ecart: ecart}))){
-          return true
-        }
       }
     }
-    return false
   }
-  /**
-   * Méthode qui renvoie NULL si le film ne possède pas de scène autour
-   * du temps courant (à 10 secondes près) et qui retourne l'instance
-   * Scene si une scène a été trouvée.
-   */
-  static filmHasSceneNearCurrentPos(){
-    var curtime = parseInt(this.a.locator.getRTime(),10)
-    var sceneFound = null
-    Scene.forEachScene(function(sc){
-      if (sceneFound) return // pour accélérer
-      if (curtime.between(sc.time - 5, sc.time + 5)){
-        sceneFound = sc
-      }
-    })
-    if (sceneFound) return [sceneFound, Math.abs(curtime - sceneFound.time)]
-    // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
-  }
+  return false
+}
 
-
-  static editEvent(ev){
-    var eForm
-    if(this.playing) this.a.locator.togglePlay()
-    if(undefined === this.eventForms[ev.id]){
-      this.eventForms[ev.id] = new EventForm(ev)
+/**
+ * Méthode qui renvoie NULL si le film ne possède pas de scène autour
+ * du temps courant (à 10 secondes près) et qui retourne l'instance
+ * Scene si une scène a été trouvée.
+ */
+static filmHasSceneNearCurrentPos(){
+  var curtime = parseInt(this.a.locator.getRTime(),10)
+  var sceneFound = null
+  Scene.forEachScene(function(sc){
+    if (sceneFound) return // pour accélérer
+    if (curtime.between(sc.time - 5, sc.time + 5)){
+      sceneFound = sc
     }
-    this.eventForms[ev.id].toggleForm()
+  })
+  if (sceneFound) return [sceneFound, Math.abs(curtime - sceneFound.time)]
+  // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
+}
+
+static editEvent(ev){
+  var eForm
+  if(this.playing) this.a.locator.togglePlay()
+  if(undefined === this.eventForms[ev.id]){
+    this.eventForms[ev.id] = new EventForm(ev)
   }
+  this.eventForms[ev.id].toggleForm()
+}
 
   // Pour obtenir un nouvel identifiant
   static newId(){

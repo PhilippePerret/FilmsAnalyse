@@ -119,6 +119,7 @@ inRelPFA(coefT2P){
     class: `pfa-part-${this.isMainPart?'part':'zone'} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
   , append: this.aSpanName
+  , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
   })
 }
 

@@ -7,15 +7,15 @@ const PFABuilder = {
 /**
 * Retourne le code du PFA absolu
 **/
-  get absolutePFA(){
-    return DCreate('SECTION',{
-      id: `pfa-absolute`
-    , class: 'pfa'
-    , append: [
-        this.divAbsParts
-      , this.divAbsZones('top')
-      , this.divAbsZones('bottom')
-    ]})
+get absolutePFA(){
+  return DCreate('SECTION',{
+    id: `pfa-absolute`
+  , class: 'pfa'
+  , append: [
+      this.divAbsParts
+    , this.divAbsZones('top')
+    , this.divAbsZones('bottom')
+  ]})
 }
 , get relativePFA(){
     return DCreate('SECTION',{
