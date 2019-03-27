@@ -66,6 +66,8 @@ Ce bouton permet de passer en revue les trois derniers points d'arrêt de la vid
 
 Pour coller rapidement un temps courant dans un champ d'édition, il suffit de cliquer sur le bouton « Temps courant » qui affiche le résultat et le colle dans le presse-papier.
 
+Mais il y a même plus simple en glissant la vidéo (qui se transforme en horloge) sur le champ de saisie voulu. Cela place une balise `{{time: <le temps>}}` qui sera ensuite formatée convenablement suivant le support voulu.
+
 ### Réglage du temps de l'event {#set_event_time}
 
 #### Réglage du temps

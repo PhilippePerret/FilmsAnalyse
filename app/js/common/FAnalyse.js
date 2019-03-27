@@ -139,7 +139,8 @@ constructor(pathFolder){
 /**
 * Associateur
 * Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
-* peut être, en substance, n'importe quel élément de l'analyse.
+* peut être, en substance, n'importe quel élément de l'analyse, un event, un
+* document, etc.
 *
 * @return la balise qui sera peut-être à insérer dans le champ de saisie,
 * si c'est un champ qui a reçu le drop
@@ -152,7 +153,8 @@ associateDropped(obj, domel){
   if(undefined === domel_type)throw("L'élément droppé devrait définir son data-type:", domel)
   domel_id = domel.attr('data-id')
   // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
-  // défini, quand on traite le document édité courant, par exemple
+  // défini, quand on traite le document édité courant, par exemple, ou que
+  // c'est un temps qu'on draggue.
 
   // On transforme toujours en entier un nombre string
   if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
@@ -173,6 +175,9 @@ associateDropped(obj, domel){
       var isScene = this.ids[domel_id].type == 'scene'
       balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
       break
+    case 'time':
+      balise = `{{time:${this.locator.getRTimeRound()}}}`
+      break;
     default:
       throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domel_type)
       return false

@@ -318,7 +318,7 @@ observe(){
   this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
 
   var dataDrop = {
-    accept: '.event, .doc'
+    accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
   , drop: this.onDropThing.bind(this)
   , classes: {'ui-droppable-hover': 'survoled'}

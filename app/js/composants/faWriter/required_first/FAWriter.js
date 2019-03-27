@@ -195,12 +195,12 @@ const FAWriter = {
 }
 
 , setDimensions(){
-    this.sectionVideoOriginalWidth = $('#section-video').width()
-    this.rightColumnOriginallWidth = $('#section-reader').width()
-    $('#section-video').css('width', '30%')
+    // this.sectionVideoOriginalWidth = $('#section-video').width()
+    // this.rightColumnOriginallWidth = $('#section-reader').width()
+    // $('#section-video').css('width', '30%')
   }
 , unsetDimensions(){
-    $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
+    // $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
   }
 
   /**
@@ -269,7 +269,7 @@ const FAWriter = {
     var btnClose = DCreate('BUTTON', {
       id: 'btn-close-writer'
     , class: 'btn-close'
-    , attrs:{type: 'button'}
+    , type: 'button'
     })
     spa = DCreate('SPAN', {
       class: 'writer-btn-drop doc'
@@ -295,7 +295,7 @@ const FAWriter = {
     var btnNew = DCreate('BUTTON', {
       id: 'writer-btn-new-doc'
     , inner: '+'
-    , attrs: {'type': 'button'}
+    , type: 'button'
     })
 
     var header = DCreate('DIV',{
@@ -328,7 +328,7 @@ const FAWriter = {
       , DCreate('INPUT', {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
       , DCreate('LABEL', {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
       , DCreate('INPUT', {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
-      , DCreate('BUTTON', {id: 'btn-save-doc', inner: 'Enregistrer', attrs: {type: 'button'}})
+      , DCreate('BUTTON', {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
       ]
     })
 
@@ -371,7 +371,7 @@ const FAWriter = {
     // On rend le champ de texte droppable pour pouvoir y déposer
     // n'importe quel event ou n'importe quel autre document
     this.docField.droppable({
-        accept: '.event, .doc'
+        accept: '.event, .doc, .dropped-time'
       , tolerance: 'intersect'
       , drop: this.onDropThing.bind(this)
       , classes: {'ui-droppable-hover': 'survoled'}
@@ -417,7 +417,7 @@ Object.defineProperties(FAWriter,{
     get(){return current_analyse}
   }
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: (ScreenWidth / 2)}))}
   }
   /**
    * Le selecteur, pour gérer la sélection

@@ -407,6 +407,7 @@ class Locator {
   * Alias de this.currentTime pour retourner le temps vidéo courant
   **/
   getTime(){ return this.currentTime }
+  getTimeRound(){ return Math.round(this.getTime() * 100) / 100 }
 
   /**
    * Méthode qui récupère le temps courant du film et retourne une instance
@@ -415,6 +416,15 @@ class Locator {
    */
   getOTime(){
     return new OTime(this.currentTime)
+  }
+  // Retourne une instance OTime du temps réel (actualisé chaque fois)
+  getROTime(){
+    if(undefined === this._getROTime){
+      this._getROTime = new OTime(this.getRTime())
+    } else {
+      this._getROTime.updateSeconds(this.getRTime())
+    }
+    return this._getROTime
   }
   /**
    * (Number) Retourne le temps rectifié. Il peut être négatif.
@@ -426,6 +436,10 @@ class Locator {
     if(undefined === t){ t = this.currentTime }
     if(this.hasStartTime){ t -= this.startTime }
     return t
+  }
+  // Version arrondi à seulement 2 décimales
+  getRTimeRound(t){
+    return Math.round(this.getRTime(t) * 100) / 100
   }
 
   // ---------------------------------------------------------------------
