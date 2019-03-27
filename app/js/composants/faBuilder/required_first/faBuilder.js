@@ -11,7 +11,7 @@ class FABuilder {
   //  CLASSE
 
   /**
-   * Créer une nouvelle instance de builder et la retourne (pour le chainage)
+   * Créer une nouvelle instance de builder et la retourner (pour le chainage)
    */
   static createNew(){
     this.currentBuilder = new FABuilder(current_analyse)
@@ -44,13 +44,16 @@ class FABuilder {
   build(options, fn_callback){
     this.building = true
     this.log('*** Construction de l’analyse…')
+    this.report.add('Début de la construction de l’analyse', 'title')
     var my = this
     if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
     if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
     this.buildAs('md', options)
     this.exportAs('html', options, fn_callback)
     this.log('=== Fin de la construction de l’analyse')
+    this.report.add('Fin de la construction de l’analyse', 'title')
     this.building = false
+    this.report.show()
     my = null
   }
 
@@ -151,5 +154,7 @@ class FABuilder {
   get a(){ return this.analyse }
   get md_path()   { return this.a.md_path }
   get html_path() { return this.a.html_path }
+
+  get report(){return this._report||defP(this,'_report', new FAReport('analyse-building'))}
 
 }

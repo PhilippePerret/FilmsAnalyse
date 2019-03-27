@@ -82,6 +82,8 @@ button.main-button {
 /* --------------------------------------------------------------------- */
 /* Les flying-windows */
 .fwindow {
+  position:absolute;
+  background-color:white; /* par defaut */
   display:inline-block;
 }
 

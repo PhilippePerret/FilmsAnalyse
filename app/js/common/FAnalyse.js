@@ -342,8 +342,15 @@ associateDropped(obj, domel){
     var callback = this.displayFullAnalyse.bind(this, forcer)
     if(NONE === typeof FABuilder) return this.loadBuilder(callback)
     if(NONE === typeof FAExporter)return this.loadExporter(callback)
+    if(NONE === typeof FAReport)return this.loadReporter(callback)
     FABuilder.createNew().show({force_update: forcer})
     callback = null
+  }
+
+  displayLastReport(){
+    var callback = this.displayLastReport.bind(this)
+    if(NONE === typeof FAReport)return this.loadReporter(callback)
+    FAReport.showLast()
   }
 
 
@@ -712,12 +719,9 @@ associateDropped(obj, domel){
     require('./js/tools/redefine_video_path.js')()
   }
 
-  get folder()  { return this._folder }
-  set folder(v) { this._folder = v}
-  get folderExport(){return path.join(this.folder,'exports')}
 
-  get videoPath(){ return this._videoPath }
-  set videoPath(v){ this._videoPath = v ; this.modified = true }
+get videoPath(){ return this._videoPath }
+set videoPath(v){ this._videoPath = v ; this.modified = true }
 
 get eventsFilePath(){
   return this._eventsFilePath || defP(this,'_eventsFilePath', this.pathOf('events.json'))
@@ -730,34 +734,25 @@ get pfaFilePath(){
 }
 
 
-get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
 
-get folderVignettesScenes(){
-  if(undefined === this._folderVignettesScenes){
-    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
-    this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
-  }
-  return this._folderVignettesScenes
+get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
+get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
+get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
+get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
+get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
+get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
+get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
+get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
+get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
+get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
+get kindle_path(){return this.mobi_path}
+get kindle_name(){return this.mobi_name}
+
+defExportPath(type){
+  var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
+  var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
+  return {path: p, name: n}
 }
-
-  get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
-  get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
-  get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
-  get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
-  get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
-  get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
-  get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
-  get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
-  get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
-  get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
-  get kindle_path(){return this.mobi_path}
-  get kindle_name(){return this.mobi_name}
-
-  defExportPath(type){
-    var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
-    var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
-    return {path: p, name: n}
-  }
 
 // Retourne le path au fichier analyse (dans 'analyse_files') du fichier
 // de nom ou de chemin relatif +fname+
@@ -772,36 +767,70 @@ filePathOf(fname){
 **/
 pathOf(relpath){ return path.join(this.folder,relpath)}
 
-  // Le path au template du fichier d'analyse (dans 'app/analyse_files')
-  // Note : par défaut (d'extension), on considère que ça doit être un document
-  // markdown
-  tempFilePathOf(fname){
-    if(!fname.match(/\./)) fname += '.md'
-    return path.join(APPFOLDER,'app','analyse_files',fname)
-  }
-  get folderFiles(){
-    if(undefined === this._folderFiles){
-      this._folderFiles = path.join(this.folder,'analyse_files')
-    }
-    // On construit le fichier s'il n'existe pas
-    if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
-    return this._folderFiles
-  }
 
-  /**
-  * Chargement des composants
-  **/
-  loadBuilder(fn_callback){
-    return System.loadComponant('faBuilder', fn_callback)
+// Le path au template du fichier d'analyse (dans 'app/analyse_files')
+// Note : par défaut (d'extension), on considère que ça doit être un document
+// markdown
+tempFilePathOf(fname){
+  if(!fname.match(/\./)) fname += '.md'
+  return path.join(APPFOLDER,'app','analyse_files',fname)
+}
+
+get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+
+get folderVignettesScenes(){
+  if(undefined === this._folderVignettesScenes){
+    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+    this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
   }
-  loadExporter(fn_callback){
-    return System.loadComponant('faExporter', fn_callback)
+  return this._folderVignettesScenes
+}
+
+get folderFiles(){
+  if(undefined === this._folderFiles){
+    this._folderFiles = path.join(this.folder,'analyse_files')
   }
-  loadTimeline(fn_callback){
-    return System.loadComponant('faTimeline', fn_callback)
+  // On construit le fichier s'il n'existe pas
+  if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
+  return this._folderFiles
+}
+get folderReports(){
+  if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
+  // On construit le dossier s'il n'existe pas
+  if(!fs.existsSync(this._folderReports)) fs.mkdirSync(this._folderReports)
+  return this._folderReports
+}
+
+get folder()  { return this._folder }
+set folder(v) { this._folder = v}
+get folderExport(){
+  if(undefined === this._folderExport){
+    this._folderExport = path.join(this.folder,'exports')
+    if(!fs.existsSync(this._folderExport)){
+      fs.mkdirSync(this._folderExport)
+    }
   }
-  static loadReader(fn_callback){
-    return System.loadComponant('faReader', fn_callback)
-  }
+  return this._folderExport
+}
+
+
+/** ---------------------------------------------------------------------
+* Chargement des composants
+**/
+loadBuilder(fn_callback){
+  return System.loadComponant('faBuilder', fn_callback)
+}
+loadExporter(fn_callback){
+  return System.loadComponant('faExporter', fn_callback)
+}
+loadReporter(fn_callback){
+  return System.loadComponant('faReport', fn_callback)
+}
+loadTimeline(fn_callback){
+  return System.loadComponant('faTimeline', fn_callback)
+}
+static loadReader(fn_callback){
+  return System.loadComponant('faReader', fn_callback)
+}
 
 }

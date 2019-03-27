@@ -22,7 +22,7 @@ const CURRENT_THING_MENUS = [
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
-  'display-timeline', 'display-analyse-state'
+  'display-timeline', 'display-analyse-state', 'display-last-report'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -286,6 +286,11 @@ const DATA_MENUS = [
               , id: 'display-analyse-state'
               , accelerator: 'CmdOrCtrl+Alt+S'
               , click: () => {execJsOnCurrent('displayAnalyseState')}
+            }
+          , {
+                label: "Dernier rapport produit"
+              , id: 'display-last-report'
+              , click: () => {execJsOnCurrent('displayLastReport')}
             }
           , {type:'separator'}
           , {

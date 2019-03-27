@@ -14,7 +14,6 @@ const DRC = `
 Object.assign(FABuilder.prototype, {
 
   appendContenuOf(key_doc){ // TODO Transformer en appendContentsOf
-    console.log("Je passe dans -> appendContenuOf")
     var my = this
     var ca = my.analyse
 

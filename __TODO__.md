@@ -1,30 +1,22 @@
 # SUR LE GRILL
 
+* la vidéo doit être droppable
+  - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
+  - mettre en forme cette marque, avec un lien qui lance la vidéo (en mode analyse)
+  - faut-il que l'horloge principale aussi soit draggable ? (qu'on penserait plus intuitivement à déplacer)
+  => Documenter ces utilisations
+
 
 * FWindow
-  - Utiliser un appel à setDimensions aussi pour le reader, qui se placera
-    en fonction de la vidéo (voir dans FAWriter.setDimension)
-  Mettre toutes les fenêtres dans le body (mais laisser la possibilité de définir un container, sans générer d'erreur en cas d'absence)
-  * Appliquer la classe FlyingWindow pour gérer
-    - le visualizeur (du writer, mais peut-être en faire un visualizor pour tout)
-    - report
-  * Il faudrait pouvoir changer la size (horizontale surtout)
+  * Quand on ouvre une nouveau fwindow, il faut la mettre en courante (essayer avec un eventer, et le reader ouvert)
 
-* Une class Report pour faire des rapports de toute sorte, qui peuvent s'afficher à l'écran (dans une flying window) ou s'enregistrer dans un fichier.
-  - il permet d'utiliser des classes pour mettre en exergue, signaler des erreurs, etc.
-
-* Quand on clique sur les entêtes des writer, eventers, visualizor, etc. ils doivent passer au premier plan.
+* Class Report
+  - Faire la sortie en fichier
 
 * Droppable
   - Normalement, tout est en place. Il faut simplement vérifier que tout fonctionne.
   - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
   - puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
-
-* la vidéo doit être draggable
-  - quand on la déplace dans un texte, ça ajoute une marque `{{time:<realtime>}}` au curseur.
-  - mettre en forme cette marque, avec un lien qui lance la vidéo (en mode analyse)
-  - faut-il que l'horloge principale aussi soit draggable ? (qu'on penserait plus intuitivement à déplacer)
-  => Documenter ces utilisations
 
 
 * PFA
@@ -66,14 +58,8 @@
 
 * Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
 
-* Peut-être, pour particulariser chaque analyse, faut-il faire un "scénario" de construction qui explique comment procéder. Par exemple :
-    - mettre introduction
-    - mettre PFA
-    - passer une page
-    - mettre fil du film
-    - mettre document <id/name>
-    etc.
-  Ce serait un document de type 'data'
+* Généraliser le visualeur qui devra pouvoir tout afficher comme si c'était dans le livre final, PFA, documents (déjà fait), Fondamentales, etc.
+
 * Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
 * Construire les fondamentales (à partir du fichier data)
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
@@ -83,6 +69,7 @@
 * Implémenter les infos générales du film
   - note : pour faire simple, ça pourrait être un fichier document, avec l'extension ".md" mais qui serait en fait un YAML, qui serait édité comme les autres.
 
+* Rapports (class FAReport). Pouvoir recharger des rapports qui se trouvent dans le dossier 'reports' de l'analyse.
 * Pouvoir avoir plusieurs writers pour éditer plusieurs documents en même temps
 * Penser aux "notes générales" qui permettent d'annoter n'importe quoi. Peut-être que c'est un type particulier de document, qui peut être multiple, et qui ont une cible (target) définie, qui peut être le film dans sa globalité, ou un personnage en particulier, ou un thème, etc., tout élément qui ne peut pas être trouvé seulement au fil du texte.
 * IL y a deux types de documents :
@@ -145,6 +132,7 @@
 * Pouvoir utiliser intensivement le DRAG & DROP pour lier ou insérer des évènements
 * Utiliser un moyen de sauvegarder les derniers évènements sauvés (modifiés ou créés dans un fichier séparé pour ne pas surcharger la sauvegarde et surtout avoir un moyen de récupérer les données en cas de plantage)
 
+* On doit pouvoir changer la taille horizontale/verticale des flying-windows (deux pictos, peut-être ajoutés dans le 'header' du code construit dans le owner, qui permettent de le faire ? ou alors une bordure plus grande ?)
 * Toutes les données absolues du formulaire (les types, les catégories, etc.) doivent être enregistrées dans des fichiers JSON et les éléments du formulaire doivent être construits à la volée.
   Bien se servir du type de l'évènement pour régler la class du tag
   Faire un script pour les prendre en compte après changement
