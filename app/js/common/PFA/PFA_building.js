@@ -4,10 +4,11 @@ const DUREE_FILM = current_analyse.duration
 
 
 const PFABuilder = {
+    class: 'PFABuilder'
 /**
 * Retourne le code du PFA absolu
 **/
-get absolutePFA(){
+, get absolutePFA(){
   return DCreate('SECTION',{
     id: `pfa-absolute`
   , class: 'pfa'
@@ -36,8 +37,8 @@ get absolutePFA(){
   return div
 }
 , divParts(dimT /* 'Abs' ou 'Rel'*/ ){
-  var  div, zoneId, node, span
-  div = DCreate('DIV',{
+  var div, zoneId, node, span
+  div = DCreate('DIV', {
     id:    `pfa-div-parts-${dimT}`
   , class: 'pfa-div-parts'
   , style: `width:${this.plain}px;`
@@ -64,26 +65,29 @@ get absolutePFA(){
     return div
 }
 , divZones(dimT, which){
-    var div, zoneId, node, span, zoneIds
-    div = DCreate('DIV')
-    div.className = 'pfa-div-zones'
-    div.id = `pfa-div-zones-${dimT}`
-    if (which === 'top'){
-      zoneIds = this.a.PFA.MAIN_STTNODES
-    } else {
-      zoneIds = this.a.PFA.SUB_STTNODES
-    }
+    var div
+      , zoneId
+      , span
+      , pfa = this.a.PFA
+      , zoneIds = pfa[which === 'top'?'MAIN_STTNODES':'SUB_STTNODES']
+      , spans = []
+      ;
+
     for(zoneId of zoneIds){
-      node = this.a.PFA.node(zoneId)
-      span = node[`in${dimT}PFA`](this.coefT2P)
-      span && div.appendChild(span)
+      span = pfa.node(zoneId)[`in${dimT}PFA`](this.coefT2P)
+      span && spans.push(span)
     }
-    return div
+
+    return DCreate('DIV', {
+      id:     `pfa-div-zones-${dimT}`
+    , class:  'pfa-div-zones'
+    , append: spans
+    })
 }
 /**
 * Méthode qui calcule toutes les dimensions d'après la largeur voulue
 **/
-, calcDimsFor(larg){
+,  calcDimsFor(larg){
     this.quart  = this.qu = larg / 4
     this.tiers  = this.ti = larg / 3
     this.moitie = this.mo = larg / 2
@@ -122,11 +126,9 @@ get absolutePFA(){
 
 // Retourne les styles propres, calculés en fonction du film
 PFABuilder.styles = function(){
-  var sty = document.createElement('LINK')
-  sty.setAttribute('rel', "stylesheet")
-  sty.setAttribute('media', "screen")
-  sty.href = './js/common/PFA/PFA.css'
-  return sty
+  return DCreate('LINK', {
+    attrs: {rel: "stylesheet", media: 'screen', href: './js/common/PFA/PFA.css'}
+  })
 }()
 
 module.exports = function(options){

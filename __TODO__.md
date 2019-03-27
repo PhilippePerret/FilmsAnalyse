@@ -1,8 +1,9 @@
 # SUR LE GRILL
 
 * PFA
-  - Pouvoir éditer l'event en cliquant dessus dans le PFA
-
+  Utiliser le FWindow pour lui aussi
+  - voir si, quand on édite un event en cliquant dessus dans le PFA, la fenêtre
+    d'édition passe bien au-dessus de la fenêtre du PFA
 
 * Class Report
   - Faire la sortie en fichier
