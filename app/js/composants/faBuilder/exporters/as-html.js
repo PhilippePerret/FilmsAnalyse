@@ -13,7 +13,25 @@ module.exports = function(options, fn_callback){
   var my = this
 
   // Markdown -> HTML
-  var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} ./exports/${my.a.md_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2 --epub-cover-image='./exports/img/cover.jpg'`
+
+  var cmd_metadata = ''
+  if(fs.existsSync(path.resolve(my.a.folder,'exports','metadata.yaml'))){
+    cmd_metadata = " --metadata-file=./exports/metadata.yaml"
+    my.report.add("Méta-données définies dans le fichier './exports/metadata.yaml'.")
+  } else {
+    my.report.add("Pas de méta-données définies. Vous devriez le faire dans le fichier './exports/metadata.yaml'.", 'warning')
+  }
+
+  var cmd_epub_cover = ''
+  if(fs.existsSync(path.resolve(my.a.folder,'exports','img','cover.jpg'))){
+    cmd_epub_cover = " --epub-cover-image='./exports/img/cover.jpg'"
+    my.report.add("Image de couverture ajoutée (./exports/img/cover.jpg)")
+  } else {
+    my.report.add("Pas d'image de couverture (./exports/img/cover.jpg)", 'warning')
+  }
+
+
+  var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} ./exports/${my.a.md_name}${cmd_metadata} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2${cmd_epub_cover}`
 
   // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {

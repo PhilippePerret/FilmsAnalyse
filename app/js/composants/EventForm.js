@@ -11,19 +11,21 @@
  */
 class EventForm {
 
-  static init(){
-    var my = this
+static init(){
+  var my = this
 
-    my = null
-  }
+  my = null
+}
 
-  static reset(){
-    delete this.currentForm
-    delete this._lastId
-    delete this._eventForms
-    this.videoWasPlaying = false
-    $('form.form-edit-event').remove()
-  }
+static get a(){return current_analyse}
+
+static reset(){
+  delete this.currentForm
+  delete this._lastId
+  delete this._eventForms
+  this.videoWasPlaying = false
+  $('form.form-edit-event').remove()
+}
 
   // Les formulaires déjà initiés (et donc cachés dans le DOM)
   static get eventForms(){
@@ -32,14 +34,14 @@ class EventForm {
   }
   // static set eventForms(v){this._eventForms = v}
 
-  static get videoController(){ return current_analyse.videoController }
+  static get videoController(){ return this.a.videoController }
 
   //
   static onClickNewEvent(ev, eventType){
     if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
     if (ev) ev.stopPropagation()
-    this.videoWasPlaying = !!current_analyse.locator.playing
-    if(current_analyse.locator.playing) current_analyse.locator.togglePlay()
+    this.videoWasPlaying = !!this.a.locator.playing
+    if(this.a.locator.playing) this.a.locator.togglePlay()
     if (eventType == 'scene' && this.notConfirmNewScene() ) return false
     var eForm = new EventForm(eventType)
     this.eventForms[eForm.id] = eForm
@@ -77,7 +79,7 @@ class EventForm {
    * Scene si une scène a été trouvée.
    */
   static filmHasSceneNearCurrentPos(){
-    var curtime = parseInt(current_analyse.locator.getRTime(),10)
+    var curtime = parseInt(this.a.locator.getRTime(),10)
     var sceneFound = null
     Scene.forEachScene(function(sc){
       if (sceneFound) return // pour accélérer
@@ -92,7 +94,7 @@ class EventForm {
 
   static editEvent(ev){
     var eForm
-    if(this.playing) this.analyse.locator.togglePlay()
+    if(this.playing) this.a.locator.togglePlay()
     if(undefined === this.eventForms[ev.id]){
       this.eventForms[ev.id] = new EventForm(ev)
     }
@@ -101,7 +103,7 @@ class EventForm {
 
   // Pour obtenir un nouvel identifiant
   static newId(){
-    return ++ this.lastId // est-ce que ça fonctionne ?
+    return ++ this.lastId
   }
   static get lastId(){
     if (undefined === this._lastId){ this._lastId = -1 }
@@ -110,21 +112,6 @@ class EventForm {
   static set lastId(v){
     this._lastId = v
     // console.log("Last ID mis à ", this._lastId)
-  }
-
-  /**
-   * Met le formulaire +form+ (instance EventForm) en formulaire courant (donc
-   * devant)
-   */
-  static setCurrent(form){
-    if(this.currentForm) this.currentForm.bringToBack()
-    this.currentForm = form
-    this.currentForm.bringToFront()
-  }
-  static unsetCurrent(form){
-    if(this.currentForm == form){
-      this.currentForm = null
-    }
   }
 
   // ---------------------------------------------------------------------
@@ -141,7 +128,7 @@ class EventForm {
    */
   constructor(foo){
     this.isNew    = false
-    this.analyse  = current_analyse // pourra être redéfini plus tard
+    this.analyse = this.a = current_analyse // pourra être redéfini plus tard
     switch (typeof foo) {
       case 'string':
         // <= Un type
@@ -149,18 +136,18 @@ class EventForm {
         this._id    = EventForm.newId()
         this._type  = foo
         this.isNew  = true
-        this._time  = this.analyse.locator.getRTime() || 0
+        this._time  = this.a.locator.getRTime() || 0
         break
       case 'number':
         // <= L'ID de l'évènement
         // => Il faut prendre ses données pour édition
-        this._event = current_analyse.getEventById(foo)
+        this._event = this.a.getEventById(foo)
         break
       case 'object':
         // <= Les données ou l'évènement lui-même
         // => Prendre les données si c'est l'évènement
         if('function'===typeof(foo.showDiffere)){ this._event = foo }
-        else { this._event = current_analyse.getEventById(ev.id) }
+        else { this._event = this.a.getEventById(ev.id) }
         break
       default:
         throw("Il faut penser à traiter les autres cas")
@@ -168,365 +155,367 @@ class EventForm {
     return this
   }
 
-  get inited(){ return this._initied || false}   // mis à true à l'initialisation
-  set inited(v){ this._inited = v }
+get inited(){ return this._initied || false}   // mis à true à l'initialisation
+set inited(v){ this._inited = v }
 
-  get modified(){return this._modified || false}
-  set modified(v){
-    this._modified = v
-    this.jqObj[v?'addClass':'removeClass']('modified')
+get modified(){return this._modified || false}
+set modified(v){
+  this._modified = v
+  this.jqObj[v?'addClass':'removeClass']('modified')
+}
+
+get event(){ return this._event }
+get id(){
+  if(undefined === this._id){this._id = this.event.id}
+  return this._id
+}
+get type(){
+  if(undefined === this._type){this._type = this.event.type}
+  return this._type
+}
+get time(){
+  if(undefined === this._time){this._time = this.event.time}
+  return this._time
+}
+
+/**
+ * Initialisation de l'objet, appelée quand l'analyse courante est
+ * prête.
+ */
+init(){
+  // console.log("-> EventForm#init")
+  if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
+  if(!this.built) this.fwindow.build().observe()
+  if (this.isNew){
+    if(this.type === 'scene') this.setNumeroScene()
+  } else {
+    this.setFormValues()
   }
 
-  get event(){ return this._event }
-  get id(){
-    if(undefined === this._id){this._id = this.event.id}
-    return this._id
-  }
-  get type(){
-    if(undefined === this._type){this._type = this.event.type}
-    return this._type
-  }
-  get time(){
-    if(undefined === this._time){this._time = this.event.time}
-    return this._time
-  }
+  this.inited = true
+  // console.log("<- EventForm#init")
+  return true
+}
+
 
   /**
-   * Initialisation de l'objet, appelée quand l'analyse courante est
-   * prête.
+   * Pour basculer des boutons d'évènements au formulaire
    */
-  init(){
-    // console.log("-> EventForm#init")
-    if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
-    if(!this.built){
-      this.build()
-      this.observeForm()
+toggleForm(){
+  if(!this.inited){this.init()}
+  this.fwindow.toggle.bind(this.fwindow)()
+}
+
+onShow(){
+  this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
+}
+
+/**
+ * Méthode qui construit le formulaire pour l'évènement
+ */
+build(){
+  return DCreate('FORM', {
+    id: `form-edit-event-${this.id}`
+  , class: 'form-edit-event'
+  , inner: EVENT_FORM_TEMP.replace(/__EID__/g, this.id).replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
+  })
+}
+afterBuilding(){
+  var jqo = this.jqObj
+    , jqf = this.jqField.bind(this)
+    , typ = this.type
+    , eid = this.id
+    ;
+  // --- Champs à voir et à masquer --
+  jqo.find('.ff').hide()
+  jqo.find(`.f${typ}`).show()
+  jqo.find(`.fall`).show()
+  jqo.find(`.-f${typ}`).hide()
+
+  // --- Valeurs définies ---
+  jqf('id').val(eid)
+  jqf('type').val(typ)
+  jqf('is_new').val(this.isNew?'1':'0')
+  jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
+  jqf('time').val(parseInt(this.a.locator.getRTime(),10))
+  jqo.find('.footer .event-type').html(typ.toUpperCase())
+  jqo.find('.header .event-type').html(typ.toUpperCase())
+  jqo.find('.footer .event-id').html(`event #${eid}`)
+  jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
+
+  // On règle les boutons Play (mais seulement si l'event est défini)
+  this.isNew || BtnPlay.setAndWatch(jqo, eid)
+
+  // On rend les champs horlogeable et durationables
+  let horloges = UI.setHorlogeable(jqo[0])
+  // L'horloge de position de l'évènement
+  this.horlogePosition = horloges[`event-${eid}-time`]
+  this.horlogePosition.dispatch({
+      time: this.time
+    , synchroVideo: true
+    , parentModifiable: this
+  }).showTime()
+
+  let hdurees = UI.setDurationable(jqo[0])
+  // L'horloge de durée de l'évènement
+  this.horlogeDuration = hdurees[`event-${eid}-duration`]
+  this.horlogeDuration.dispatch({
+      duration: this.duration || 10
+    , startTime: parseFloat(this.time)
+    , synchroVideo: true
+    , parentModifiable: this
+  }).showTime()
+
+  // Si c'est pour un nœud structurel, il faut peupler le menu des types
+  if (typ === 'stt'){
+    var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
+    var mstt = jqo.find('.event-sttID')
+    mstt.append(DCreate('OPTION', {value: '', inner: 'Choisir l’ID du nœud'}))
+    for(var nid in dataStt){
+      var dstt = dataStt[nid]
+      mstt.append(DCreate('OPTION', {value: nid, inner: dstt.hname}))
     }
+  }
 
-    if (this.isNew){
-      if(this.type === 'scene') this.setNumeroScene()
-    } else {
-      this.setFormValues()
+  jqo = jqf = eid = typ = null
+  this.built = true
+}
+
+// Retourne l'ID du champ pour la propriété (ou autre) +prop+
+// Par convention, tous les champs ont un ID : "event-<id event>-<property>"
+fieldID(prop){
+  return `#event-${this.id}-${prop}`
+}
+jqField(prop){
+  return $(this.fieldID(prop))
+}
+domField(prop){
+  return DGet(`event-${this.id}-${prop}`)
+}
+
+// ---------------------------------------------------------------------
+//  Méthodes d'évènement
+
+onDropThing(e, ui){
+  var balise = this.a.associateDropped(this.event, ui.helper)
+  if(balise){
+    // console.log("Je vais ajouter la balise au champ", balise, e)
+    if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)){
+      $(e.target).insertAtCaret(balise)
     }
+  }
+}
 
-    this.inited = true
-    // console.log("<- EventForm#init")
-    return true
+observe(){
+  var my = this
+  this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
+  this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
+  this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
+  // Bouton de fermeture
+  this.jqObj.find('.header .btn-close').on('click', my.cancel.bind(my))
+  // Toutes les modifications de texte doivent entrainer une activation du
+  // bouton de sauvegarde
+  this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
+
+  var dataDrop = {
+    accept: '.event, .doc'
+  , tolerance: 'intersect'
+  , drop: this.onDropThing.bind(this)
+  , classes: {'ui-droppable-hover': 'survoled'}
+  }
+  // Les champs d'édition doit pouvoir recevoir des drops
+  this.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
+  this.jqObj.find('.header').droppable(dataDrop)
+
+  my = null
+}
+
+
+submit(){
+  var my = this
+
+  // Si c'est une modification, on prend le temps initial pour savoir
+  // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
+  // dans l'analyse courante
+  var initTime = this.isNew ? null : parseInt(this.event.time,10)
+
+  var [data_min, other_data] = this.getFormValues()
+
+  // Création d'objet particulier, qui ne sont pas des sous-classes
+  // de FAEvent
+  switch (data_min.type) {
+    case 'dim':
+      // TODO Création d'un diminutif
+      throw("Je ne sais pas encore créer une DIMINUTIF")
+      return
+    case 'brin':
+      // TODO Création d'un brin
+      throw("Je ne sais pas encore créer un BRIN")
+      return
   }
 
 
-    /**
-     * Pour basculer des boutons d'évènements au formulaire
-     */
-  toggleForm(){
-    if(!this.inited){this.init()}
-    this[this.visible?'hide':'show']()
+  // console.log("Champs trouvés:", fields)
+  // console.log("Data finale min:", data_min)
+  // console.log("Data finale autres:", other_data)
+
+  // On crée ou on update l'évènement
+  if(this.isNew){
+    // CRÉATION
+    // On crée l'évènement du type voulu
+    var eClass = eval(`FAE${data_min.type}`)
+    this._event = new eClass(this.a, data_min)
+  } else {
+    this.event.data = data_min // ça va les dispatcher
   }
-
-  show(){
-    this.jqObj.show()
-    this.visible = true
-    this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
-    EventForm.setCurrent(this)
-  }
-  hide(){
-    this.jqObj.hide()
-    this.visible = false
-    EventForm.unsetCurrent(this)
-  }
-  /**
-   * Méthode qui construit le formulaire pour l'évènement
-   */
-  build(){
-    var f = document.createElement('FORM')
-    f.id = `form-edit-event-${this.id}`
-    f.className = "form-edit-event"
-    document.body.appendChild(f)
-    f.innerHTML = EVENT_FORM_TEMP.replace(/__EID__/g, this.id).replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
-    // document.body.appendChild(EVENT_FORM_TEMP.replace(/__EID__/g, this.id))
-    // --- Champs à voir et à masquer --
-    this.jqObj.find('.ff').hide()
-    this.jqObj.find(`.f${this.type}`).show()
-    this.jqObj.find(`.fall`).show()
-    this.jqObj.find(`.-f${this.type}`).hide()
-
-    // --- Valeurs définies ---
-    this.jqField('id').val(this.id)
-    this.jqField('type').val(this.type)
-    this.jqField('is_new').val(this.isNew?'1':'0')
-    this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
-    this.jqField('time').val(parseInt(this.analyse.locator.getRTime(),10))
-    this.jqObj.find('section.footer span.event-type').html(this.type.toUpperCase())
-    this.jqObj.find('section.header span.event-type').html(this.type.toUpperCase())
-    this.jqObj.find('section.footer span.event-id').html(`event #${this.id}`)
-    this.jqObj.find('section.footer span.event-time').html(new OTime(this.time).horloge)
-
-    // On règle les boutons Play (mais seulement si l'event est défini)
-    this.isNew || BtnPlay.setAndWatch(this.jqObj, this.id)
-
-    // On rend les champs horlogeable et durationables
-    let horloges = UI.setHorlogeable(f)
-    // L'horloge de position de l'évènement
-    this.horlogePosition = horloges[`event-${this.id}-time`]
-    this.horlogePosition.dispatch({
-        time: this.time
-      , synchroVideo: true
-      , parentModifiable: this
-    }).showTime()
-
-    let hdurees = UI.setDurationable(f)
-    // L'horloge de durée de l'évènement
-    this.horlogeDuration = hdurees[`event-${this.id}-duration`]
-    this.horlogeDuration.dispatch({
-        duration: this.duration || 10
-      , startTime: parseFloat(this.time)
-      , synchroVideo: true
-      , parentModifiable: this
-    }).showTime()
-
-    // Si c'est pour un nœud structurel, il faut peupler le menu des types
-    if (this.type === 'stt'){
-      var dataStt = (current_analyse._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
-      var mstt = this.jqObj.find('.event-sttID')
-      var o = document.createElement('OPTION')
-      o.value = ''
-      o.innerHTML = 'Choisir l’ID du nœud'
-      mstt.append(o)
-      for(var nid in dataStt){
-        o = document.createElement('OPTION')
-        var dstt = dataStt[nid]
-        o.value     = nid
-        o.innerHTML = dstt.hname
-        mstt.append(o)
-      }
-    }
-
-    this.built = true
-    f = null
-  }
-
-  /**
-   * Méthode pour ramener le formulaire au premier plan
-   */
-  bringToFront(){
-    this.jqObj.css('z-index', '1000')
-  }
-  bringToBack(){
-    this.jqObj.css('z-index', '50')
-  }
-
-  // Retourne l'ID du champ pour la propriété (ou autre) +prop+
-  // Par convention, tous les champs ont un ID : "event-<id event>-<property>"
-  fieldID(prop){
-    return `#event-${this.id}-${prop}`
-  }
-  jqField(prop){
-    return $(this.fieldID(prop))
-  }
-  domField(prop){
-    return document.getElementById(`event-${this.id}-${prop}`)
-  }
-
-  observeForm(){
-    var my = this
-    this.jqObj.on('click', EventForm.setCurrent.bind(EventForm, my))
-    this.jqObj.draggable()
-    this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-    this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
-    this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
-    // Bouton de fermeture
-    this.jqObj.find('.header .btn-close').on('click', my.cancel.bind(my))
-    // Toutes les modifications de texte doivent entrainer une activation du
-    // bouton de sauvegarde
-    this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
-    my = null
-  }
-
-
-  submit(){
-    var my = this
-
-    // Si c'est une modification, on prend le temps initial pour savoir
-    // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
-    // dans l'analyse courante
-    var initTime = this.isNew ? null : parseInt(this.event.time,10)
-
-    var [data_min, other_data] = this.getFormValues()
-
-    // Création d'objet particulier, qui ne sont pas des sous-classes
-    // de FAEvent
-    switch (data_min.type) {
-      case 'dim':
-        // TODO Création d'un diminutif
-        throw("Je ne sais pas encore créer une DIMINUTIF")
-        return
-      case 'brin':
-        // TODO Création d'un brin
-        throw("Je ne sais pas encore créer un BRIN")
-        return
-    }
-
-
-    // console.log("Champs trouvés:", fields)
-    // console.log("Data finale min:", data_min)
-    // console.log("Data finale autres:", other_data)
-
-    // On crée ou on update l'évènement
+  // Et on dispatche les autres données
+  this.event.dispatch(other_data)
+  if (this.event.isValid) {
     if(this.isNew){
       // CRÉATION
-      // On crée l'évènement du type voulu
-      var eClass = eval(`FAE${data_min.type}`)
-      this._event = new eClass(current_analyse, data_min)
+      this.a.addEvent(this.event)
+      if('function'===this.event.onCreate) this.event.onCreate()
     } else {
-      this.event.data = data_min // ça va les dispatcher
+      // ÉDITION
+      this.a.updateEvent(this.event, {initTime: initTime})
+      if('function' === this.event.onModify) this.event.onModify()
     }
-    // Et on dispatche les autres données
-    this.event.dispatch(other_data)
-    if (this.event.isValid) {
-      if(this.isNew){
-        // CRÉATION
-        current_analyse.addEvent(this.event)
-        if('function'===this.event.onCreate) this.event.onCreate()
-      } else {
-        // ÉDITION
-        current_analyse.updateEvent(this.event, {initTime: initTime})
-        if('function' === this.event.onModify) this.event.onModify()
-      }
-    }
-
-    if (this.event.isValid){
-      this.isNew = false // il a été enregistré, maintenant
-      this.modified = false
-      this.endEdition()
-    } else if(this.event.firstErroredFieldId) {
-      // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
-      $(this.event.firstErroredFieldId).focus().select()
-    }
-
-
-    my = null
   }
 
-  /**
-   * Demande destruction de l'élément
-   */
-  destroy(){
-    if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
-    this.jqObj.remove()
-    this.analyse.destroyEvent(this.id, this)
-  }
-  /**
-   * En cas d'annulation de l'édition
-   */
-  cancel(){
-    // console.log("Je renonce à l'édition de l'event")
+  if (this.event.isValid){
+    this.isNew = false // il a été enregistré, maintenant
+    this.modified = false
     this.endEdition()
+  } else if(this.event.firstErroredFieldId) {
+    // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
+    $(this.event.firstErroredFieldId).focus().select()
   }
 
-  endEdition(){
-    this.hide()
-    this.videoWasPlaying && this.analyse.locator.togglePlay()
+
+  my = null
+}
+
+/**
+ * Demande destruction de l'élément
+ */
+destroy(){
+  if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
+  this.jqObj.remove()
+  this.a.destroyEvent(this.id, this)
+}
+/**
+ * En cas d'annulation de l'édition
+ */
+cancel(){
+  // console.log("Je renonce à l'édition de l'event")
+  this.endEdition()
+}
+
+endEdition(){
+  this.fwindow.hide()
+  this.videoWasPlaying && this.a.locator.togglePlay()
+}
+
+// ---------------------------------------------------------------------
+//  Méthode pour les données dans le formulaire
+
+/**
+ * Si c'est une édition, on doit mettre les valeurs courantes dans les
+ * champs.
+ */
+setFormValues(){
+  var prop, sufProp
+  // Les valeurs communes
+  for(prop of FAEvent.OWN_PROPS){
+    if(null === this.event[prop] || undefined === this.event[prop]) continue
+    this.jqField(prop).val(this.event[prop])
+    // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
   }
-
-  // ---------------------------------------------------------------------
-  //  Méthode pour les données dans le formulaire
-
-  /**
-   * Si c'est une édition, on doit mettre les valeurs courantes dans les
-   * champs.
-   */
-  setFormValues(){
-    var prop, sufProp
-    // Les valeurs communes
-    for(prop of FAEvent.OWN_PROPS){
-      if(null === this.event[prop] || undefined === this.event[prop]) continue
-      this.jqField(prop).val(this.event[prop])
-      // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
-    }
-    // Les valeurs propres au type d'event
-    for(prop of this.event.constructor.OWN_PROPS){
-      if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
-        sufProp = prop
-      } else {
-        [prop, sufProp] = prop
-      }
-      if(null === this.event[prop] || undefined === this.event[prop]) continue
-      this.jqField(sufProp).val(this.event[prop])
-      // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
-    }
-    if(this.type === 'stt'){
-      this.domField('sttID').disabled = true
-    }
-  }
-
-  setNumeroScene(){
-    // On ne numérote pas une scène "générique"
-    if(this.event && this.event.sceneType === 'generic') return
-    var numero
-    if (this.isNew || !this.event.numero) {
-      // <= C'est une scène et son numéro n'est pas défini
-      // => Il faut définir le numéro de la scène en fonction de son temps
-      numero = 1 + current_analyse.getSceneNumeroAt(this.time)
+  // Les valeurs propres au type d'event
+  for(prop of this.event.constructor.OWN_PROPS){
+    if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
+      sufProp = prop
     } else {
-      numero = this.event.numero
+      [prop, sufProp] = prop
     }
-    this.jqField('numero').val(numero)
-    // console.log("type/numero", this.type, numero)
-    numero = null
+    if(null === this.event[prop] || undefined === this.event[prop]) continue
+    this.jqField(sufProp).val(this.event[prop])
+    // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
   }
-
-  /**
-   * Méthode qui récupère les valeurs dans le formulaire
-   *
-   */
-  getFormValues(){
-    var my = this
-    // --- Les champs communs à tous les types ---
-    var data_min    = {}
-    var other_data  = {}
-
-    data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
-    data_min.titre    = getValOrNull(this.fieldID('titre'))
-    data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-    data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
-    data_min.content  = getValOrNull(this.fieldID('content'))
-    data_min.note     = getValOrNull(this.fieldID('note'))
-    data_min.time     = getValOrNull(this.fieldID('time'), {type: 'horloge'})
-    data_min.duration = getValOrNull(this.fieldID('duration'), {type: 'duree'})
-
-    // console.log("data_min:", data_min)
-
-    // On récupère toutes les données (ça consiste à passer en revue tous
-    // les éléments de formulaire qui ont la classe "f<type>")
-    var ftype = `f${data_min.type}`
-    var fields = []
-    var idSansPref = null
-    $('select,input[type="text"],textarea,input[type="checkbox"]')
-      .filter(function(){
-        return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
-      })
-      .each(function(){
-        idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
-        other_data[idSansPref] = getValOrNull(this.id)
-        // Pour vérification
-        fields.push(this.id)
-      })
-
-    my = null
-    return [data_min, other_data]
+  if(this.type === 'stt'){
+    this.domField('sttID').disabled = true
   }
-  //getFormValues
+}
 
-  // ---------------------------------------------------------------------
+setNumeroScene(){
+  // On ne numérote pas une scène "générique"
+  if(this.event && this.event.sceneType === 'generic') return
+  var numero
+  if (this.isNew || !this.event.numero) {
+    // <= C'est une scène et son numéro n'est pas défini
+    // => Il faut définir le numéro de la scène en fonction de son temps
+    numero = 1 + this.a.getSceneNumeroAt(this.time)
+  } else {
+    numero = this.event.numero
+  }
+  this.jqField('numero').val(numero)
+  // console.log("type/numero", this.type, numero)
+  numero = null
+}
 
-  get form(){
-    if(undefined===this._form){this._form = DGet(`form-edit-event-${this.id}`)}
-    return this._form
-  }
-  get jqObj(){
-    if(undefined === this._jqObj){this._jqObj = $(this.form)}
-    return this._jqObj
-  }
+/**
+ * Méthode qui récupère les valeurs dans le formulaire
+ *
+ */
+getFormValues(){
+  var my = this
+  // --- Les champs communs à tous les types ---
+  var data_min    = {}
+  var other_data  = {}
+
+  data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
+  data_min.titre    = getValOrNull(this.fieldID('titre'))
+  data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
+  data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
+  data_min.content  = getValOrNull(this.fieldID('content'))
+  data_min.note     = getValOrNull(this.fieldID('note'))
+  data_min.time     = getValOrNull(this.fieldID('time'), {type: 'horloge'})
+  data_min.duration = getValOrNull(this.fieldID('duration'), {type: 'duree'})
+
+  // console.log("data_min:", data_min)
+
+  // On récupère toutes les données (ça consiste à passer en revue tous
+  // les éléments de formulaire qui ont la classe "f<type>")
+  var ftype = `f${data_min.type}`
+  var fields = []
+  var idSansPref = null
+  $('select,input[type="text"],textarea,input[type="checkbox"]')
+    .filter(function(){
+      return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
+    })
+    .each(function(){
+      idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
+      other_data[idSansPref] = getValOrNull(this.id)
+      // Pour vérification
+      fields.push(this.id)
+    })
+
+  my = null
+  return [data_min, other_data]
+}
+//getFormValues
+
+// ---------------------------------------------------------------------
+
+// La flying-window contenant le formulaire
+get fwindow(){
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body}))
+}
+// Le formulaire lui-même
+get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
+// Idem, normalement, le formulaire
+get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.form))}
+
 }
 
 // Template du formulaire d'édition de l'évènement

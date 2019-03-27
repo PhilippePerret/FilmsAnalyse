@@ -110,6 +110,7 @@ function DCreate(typeElement, params){
   if(params.id)     e.id = params.id
   if(params.class)  e.className = params.class
   if(params.style)  e.style = params.style
+  if(params.type)   e.type = params.type
   if(params.inner)  e.innerHTML = params.inner
   if(undefined !== params.value)  e.value = params.value
   if(undefined !== params.disabled)  e.disabled = params.disabled

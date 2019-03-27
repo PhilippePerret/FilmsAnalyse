@@ -4,6 +4,9 @@ body, body * {
 }
 body {
   background-color:#BBBBBB;
+  margin:0;
+  padding:0;
+  height:4000px; /* pour pouvoir descendre les fwindows */
 }
 
 /* On entoure jamais les boutons focussés */
@@ -77,6 +80,14 @@ button.main-button {
 }
 
 /* --------------------------------------------------------------------- */
+/* Les flying-windows */
+.fwindow {
+  position:absolute;
+  background-color:white; /* par defaut */
+  display:inline-block;
+}
+
+/* --------------------------------------------------------------------- */
 /*
     Note : les largeurs (widths sont définies par UI.setUi )
  */
@@ -85,25 +96,13 @@ section#section-video {
   z-index:10;
 }
 
-div#right-column {
-  position:absolute;
-  top:0;
-  border: 1px dashed green;
-  padding:0;
-  background-color:#EEEEEE;
-  z-index:10;
-}
-
-div#right-column section#section-reader {
-  min-height: 600px;
-}
-
 section#section-footer {
-  position:absolute;
+  position:fixed;
   bottom:0;
-  background-color:white;
+  right:0;
+  left:0;
+  background-color:#CDCDCD;
   padding:1em;
-  width:100%;
   z-index:0;
 }
 

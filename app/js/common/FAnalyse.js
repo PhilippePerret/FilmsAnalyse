@@ -9,29 +9,29 @@
 
 class FAnalyse {
 
-  // ---------------------------------------------------------------------
-  //  CLASSE
+// ---------------------------------------------------------------------
+//  CLASSE
 
-  // Retourne l'analyse courante
-  static get current(){return this._current||defP(this,'_current',current_analyse)}
-  static set current(v){this._current = v}
+// Retourne l'analyse courante
+static get current(){return this._current||defP(this,'_current',current_analyse)}
+static set current(v){this._current = v}
 
-  // Voir si les préférences demandent que la dernière analyse soit chargée
-  // et la charger si elle est définie.
-  static checkLast(){
-    var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
-    // console.log("prefs:", dprefs)
-    if (!dprefs['load_last_on_launching']) return
-    if (!dprefs['last_analyse_folder']) return
-    var apath = path.resolve(dprefs['last_analyse_folder'])
-    if(fs.existsSync(apath)){
-      this.load(apath)
-    } else {
-      // console.log("Impossible de trouver le dossier :", apath)
-      F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
-      Prefs.set({'last_analyse_folder':null})
-    }
+// Voir si les préférences demandent que la dernière analyse soit chargée
+// et la charger si elle est définie.
+static checkLast(){
+  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+  // console.log("prefs:", dprefs)
+  if (!dprefs['load_last_on_launching']) return
+  if (!dprefs['last_analyse_folder']) return
+  var apath = path.resolve(dprefs['last_analyse_folder'])
+  if(fs.existsSync(apath)){
+    this.load(apath)
+  } else {
+    // console.log("Impossible de trouver le dossier :", apath)
+    F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+    Prefs.set({'last_analyse_folder':null})
   }
+}
 
   /**
    * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
@@ -109,33 +109,76 @@ class FAnalyse {
 
 
 
-  /**
-   * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
-   * valide. Il doit contenir les fichiers de base. Sinon, proposer à
-   * l'user de créer une nouvelle analyse.
-   */
-  static isDossierAnalyseValid(folder, withMessage){
-    if(undefined === withMessage) withMessage = true
-    try {
-      var eventsPath = path.join(folder,'events.json')
-      var dataPath   = path.join(folder,'data.json')
-      fs.existsSync(eventsPath) || raise('Le fichier des events est introuvable.')
-      fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
-      return true
-    } catch (e) {
-      withMessage && console.log(e)
+/**
+ * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
+ * valide. Il doit contenir les fichiers de base. Sinon, proposer à
+ * l'user de créer une nouvelle analyse.
+ */
+static isDossierAnalyseValid(folder, withMessage){
+  if(undefined === withMessage) withMessage = true
+  try {
+    var eventsPath = path.join(folder,'events.json')
+    var dataPath   = path.join(folder,'data.json')
+    fs.existsSync(eventsPath) || raise('Le fichier des events est introuvable.')
+    fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
+    return true
+  } catch (e) {
+    withMessage && console.log(e)
+    return false
+  }
+}
+
+/**
+ * Instanciation de l'analyse à partir du path de son dossier
+ */
+constructor(pathFolder){
+  this._folder  = path.resolve(pathFolder)
+  this.events   = []
+}
+
+/**
+* Associateur
+* Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
+* peut être, en substance, n'importe quel élément de l'analyse.
+*
+* @return la balise qui sera peut-être à insérer dans le champ de saisie,
+* si c'est un champ qui a reçu le drop
+* Retourne null si un problème est survenu
+**/
+associateDropped(obj, domel){
+  var balise
+    , domel_type = domel.attr('data-type')
+    , domel_id
+  if(undefined === domel_type)throw("L'élément droppé devrait définir son data-type:", domel)
+  domel_id = domel.attr('data-id')
+  // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
+  // défini, quand on traite le document édité courant, par exemple
+
+  // On transforme toujours en entier un nombre string
+  if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
+
+  switch (domel_type) {
+    case 'document':
+      if(undefined === domel_id){
+        // => Le document édité
+        domel_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
+      }
+      if (false === obj.addDocument(domel_id)) return null
+      balise = `{{document:${domel_id}}}`
+      break
+    case 'event':
+      // Pour un event, il faut toujours que l'ID soit défini
+      if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
+      if (false === obj.addEvent(domel_id)) return null
+      var isScene = this.ids[domel_id].type == 'scene'
+      balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
+      break
+    default:
+      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domel_type)
       return false
-    }
   }
-
-  /**
-   * Instanciation de l'analyse à partir du path de son dossier
-   */
-  constructor(pathFolder){
-    this._folder  = path.resolve(pathFolder)
-    this.events   = []
-  }
-
+  return balise
+}
   // ---------------------------------------------------------------------
   //  Les données de l'analyse (dans le fichier data)
 
@@ -234,7 +277,7 @@ class FAnalyse {
     this.init()
     this.locator.init()
     this.locator.stop_points = this.stopPoints
-    this.reader.init()
+    this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
     EventForm.init()
     Scene.init()
     this.setOptionsInMenus()
@@ -299,8 +342,15 @@ class FAnalyse {
     var callback = this.displayFullAnalyse.bind(this, forcer)
     if(NONE === typeof FABuilder) return this.loadBuilder(callback)
     if(NONE === typeof FAExporter)return this.loadExporter(callback)
+    if(NONE === typeof FAReport)return this.loadReporter(callback)
     FABuilder.createNew().show({force_update: forcer})
     callback = null
+  }
+
+  displayLastReport(){
+    var callback = this.displayLastReport.bind(this)
+    if(NONE === typeof FAReport)return this.loadReporter(callback)
+    FAReport.showLast()
   }
 
 
@@ -669,12 +719,9 @@ class FAnalyse {
     require('./js/tools/redefine_video_path.js')()
   }
 
-  get folder()  { return this._folder }
-  set folder(v) { this._folder = v}
-  get folderExport(){return path.join(this.folder,'exports')}
 
-  get videoPath(){ return this._videoPath }
-  set videoPath(v){ this._videoPath = v ; this.modified = true }
+get videoPath(){ return this._videoPath }
+set videoPath(v){ this._videoPath = v ; this.modified = true }
 
 get eventsFilePath(){
   return this._eventsFilePath || defP(this,'_eventsFilePath', this.pathOf('events.json'))
@@ -687,34 +734,25 @@ get pfaFilePath(){
 }
 
 
-get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
 
-get folderVignettesScenes(){
-  if(undefined === this._folderVignettesScenes){
-    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
-    this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
-  }
-  return this._folderVignettesScenes
+get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
+get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
+get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
+get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
+get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
+get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
+get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
+get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
+get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
+get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
+get kindle_path(){return this.mobi_path}
+get kindle_name(){return this.mobi_name}
+
+defExportPath(type){
+  var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
+  var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
+  return {path: p, name: n}
 }
-
-  get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
-  get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
-  get pdf_path(){return this._pdf_path||defP(this,'_pdf_path',this.defExportPath('pdf').path)}
-  get pdf_name(){return this._pdf_name||defP(this,'_pdf_name',this.defExportPath('pdf').name)}
-  get epub_path(){return this._epub_path||defP(this,'_epub_path',this.defExportPath('epub').path)}
-  get epub_name(){return this._epub_name||defP(this,'_epub_name',this.defExportPath('epub').name)}
-  get md_path(){return this._md_path||defP(this,'_md_path',this.defExportPath('md').path)}
-  get md_name(){return this._md_name||defP(this,'_md_name',this.defExportPath('md').name)}
-  get mobi_path(){return this._mobi_path||defP(this,'_mobi_path',this.defExportPath('mobi').path)}
-  get mobi_name(){return this._mobi_name||defP(this,'_mobi_name',this.defExportPath('mobi').name)}
-  get kindle_path(){return this.mobi_path}
-  get kindle_name(){return this.mobi_name}
-
-  defExportPath(type){
-    var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
-    var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
-    return {path: p, name: n}
-  }
 
 // Retourne le path au fichier analyse (dans 'analyse_files') du fichier
 // de nom ou de chemin relatif +fname+
@@ -729,36 +767,70 @@ filePathOf(fname){
 **/
 pathOf(relpath){ return path.join(this.folder,relpath)}
 
-  // Le path au template du fichier d'analyse (dans 'app/analyse_files')
-  // Note : par défaut (d'extension), on considère que ça doit être un document
-  // markdown
-  tempFilePathOf(fname){
-    if(!fname.match(/\./)) fname += '.md'
-    return path.join(APPFOLDER,'app','analyse_files',fname)
-  }
-  get folderFiles(){
-    if(undefined === this._folderFiles){
-      this._folderFiles = path.join(this.folder,'analyse_files')
-    }
-    // On construit le fichier s'il n'existe pas
-    if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
-    return this._folderFiles
-  }
 
-  /**
-  * Chargement des composants
-  **/
-  loadBuilder(fn_callback){
-    return System.loadComponant('faBuilder', fn_callback)
+// Le path au template du fichier d'analyse (dans 'app/analyse_files')
+// Note : par défaut (d'extension), on considère que ça doit être un document
+// markdown
+tempFilePathOf(fname){
+  if(!fname.match(/\./)) fname += '.md'
+  return path.join(APPFOLDER,'app','analyse_files',fname)
+}
+
+get folderImages(){return this._imgFolder||defP(this,'_imgFolder',path.join(this.folderExport,'img'))}
+
+get folderVignettesScenes(){
+  if(undefined === this._folderVignettesScenes){
+    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+    this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
   }
-  loadExporter(fn_callback){
-    return System.loadComponant('faExporter', fn_callback)
+  return this._folderVignettesScenes
+}
+
+get folderFiles(){
+  if(undefined === this._folderFiles){
+    this._folderFiles = path.join(this.folder,'analyse_files')
   }
-  loadTimeline(fn_callback){
-    return System.loadComponant('faTimeline', fn_callback)
+  // On construit le fichier s'il n'existe pas
+  if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
+  return this._folderFiles
+}
+get folderReports(){
+  if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
+  // On construit le dossier s'il n'existe pas
+  if(!fs.existsSync(this._folderReports)) fs.mkdirSync(this._folderReports)
+  return this._folderReports
+}
+
+get folder()  { return this._folder }
+set folder(v) { this._folder = v}
+get folderExport(){
+  if(undefined === this._folderExport){
+    this._folderExport = path.join(this.folder,'exports')
+    if(!fs.existsSync(this._folderExport)){
+      fs.mkdirSync(this._folderExport)
+    }
   }
-  static loadReader(fn_callback){
-    return System.loadComponant('faReader', fn_callback)
-  }
+  return this._folderExport
+}
+
+
+/** ---------------------------------------------------------------------
+* Chargement des composants
+**/
+loadBuilder(fn_callback){
+  return System.loadComponant('faBuilder', fn_callback)
+}
+loadExporter(fn_callback){
+  return System.loadComponant('faExporter', fn_callback)
+}
+loadReporter(fn_callback){
+  return System.loadComponant('faReport', fn_callback)
+}
+loadTimeline(fn_callback){
+  return System.loadComponant('faTimeline', fn_callback)
+}
+static loadReader(fn_callback){
+  return System.loadComponant('faReader', fn_callback)
+}
 
 }

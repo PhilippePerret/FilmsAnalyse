@@ -1,12 +1,16 @@
-
 /*
-
-  NB : pour la section-reader, cf. ui.css
+  Tout ce qui concerne le reader
 */
 
+section#section-reader {
+  width:      600px;
+  min-height: 800px;
+}
+
 #reader {
-  width: 95%;
+  display:block;
   max-height: 600px;
+  background-color:#EEEEFF;
   overflow: auto;
   padding:0;
 }

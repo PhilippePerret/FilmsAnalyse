@@ -247,7 +247,18 @@ Pour faire un bouton rouge de fermeture « à la Mac », il suffit de placer d
 
 ```
 
-Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture. Il faut cependant l'observer pour saisir son click.
+Avec les helpers :
+
+```javascript
+  var btn = DCreate('BUTTON', {class: 'btn-close', type:'button'})
+
+  // ... mettre dans le document
+
+  btn.on('click', this.closeTheBox.bind(this))
+
+```
+
+Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture et qu'il ferme la fenêtre voulue.
 
 ## Documents de l'analyse {#documents_analyse}
 

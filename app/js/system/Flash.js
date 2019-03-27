@@ -47,6 +47,7 @@ const Flash = {
       else { options.duration -= 0.5 } // laps ouverture/fermeture
       this.display(str, (options.error?'jqWarning':'jqNotice'), {no_buttons: true});
       this.timer = setTimeout($.proxy(Flash,'denotify'), options.duration*1000);
+      return !options.error
     }
   , denotify: function(){
       clearTimeout(this.timer);
@@ -64,6 +65,7 @@ const Flash = {
         str = str.message
       }
       this.display(str, 'jqWarning');
+      return false
     }
     // Pour poser une question
   , ask: function(msg, args){
