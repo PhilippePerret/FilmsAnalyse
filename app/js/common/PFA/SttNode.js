@@ -107,8 +107,8 @@ renseignePFA(){
 **/
 inAbsPFA(coefT2P){
   return DCreate('SPAN', {
-    class: `pfa-part-${this.isMainPart?'part':'zone'}`
-  , style: `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
+    class:  `pfa-part-${this.isMainPart?'part':'zone'}`
+  , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
   , append: [this.aSpanName]
   })
 }
@@ -116,11 +116,18 @@ inAbsPFA(coefT2P){
 inRelPFA(coefT2P){
   if(false === this.isDefined) return null
   return DCreate('SPAN', {
-    class: `pfa-part-${this.isMainPart?'part':'zone'} ${this.markGoodPos /* inzone, outzone, nearzone */}`
+    class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
-  , append: this.aSpanName
-  , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
+  , append: [this.aSpanName]
+  // , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
+  , attrs:  {'data-id': this.event_id, 'data-type': 'event'}
   })
+}
+get classNode(){
+  switch (this.isMainPart) {
+    case true:  return `pfa-part-part`
+    case false: return `pfa-part-zone event EVT${this.event_id}`
+  }
 }
 
 leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${parseInt(this.startAtAbs * coef,10)}px`)}

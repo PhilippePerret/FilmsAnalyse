@@ -28,6 +28,14 @@ const PFABuilder = {
       , this.divRelParts
     ]})
 }
+
+// Retourne les styles propres, calculés en fonction du film
+, get styles(){
+    return DCreate('LINK', {
+      attrs: {rel: "stylesheet", media: 'screen', href: './js/common/PFA/PFA.css'}
+    })
+}
+
 , get divAbsParts(){
     var div = this.divParts('Abs')
     return div
@@ -73,6 +81,10 @@ const PFABuilder = {
       , spans = []
       ;
 
+    // Fabrication du noeud, soit dans le paradigme absolu avec
+    // la méthode `SttNode.inAbsPFA` soit dans le relatif avec
+    // la méthode `SttNode.inRelPFA` définies dans l'instance
+    // SttNode.
     for(zoneId of zoneIds){
       span = pfa.node(zoneId)[`in${dimT}PFA`](this.coefT2P)
       span && spans.push(span)
@@ -117,34 +129,24 @@ const PFABuilder = {
     }
   }
   this._partsIds = ps
-  this._zonesIds    = zs
+  this._zonesIds = zs
   return {parts: ps, zones: zs}
 }
 
-}
+}// /PFABuilder
 
-
-// Retourne les styles propres, calculés en fonction du film
-PFABuilder.styles = function(){
-  return DCreate('LINK', {
-    attrs: {rel: "stylesheet", media: 'screen', href: './js/common/PFA/PFA.css'}
-  })
-}()
-
+// Doit retourner les éléments à ajouter à la flying-window,
+// dans le build()
 module.exports = function(options){
   // console.log("-> Construction du PFA")
 
-  var pfa_id = 1
-
   PFABuilder.calcDimsFor(ScreenWidth - 200)
 
-  var pfas = document.createElement('SECTION')
-  pfas.id = 'pfas'
-  pfas.appendChild(PFABuilder.styles)
-  pfas.appendChild(PFABuilder.absolutePFA)
-  pfas.appendChild(PFABuilder.relativePFA)
-
-  this._output = pfas
+  return [
+      PFABuilder.styles
+    , PFABuilder.absolutePFA
+    , PFABuilder.relativePFA
+  ]
 
   // console.log("<- Construction du PFA")
 }

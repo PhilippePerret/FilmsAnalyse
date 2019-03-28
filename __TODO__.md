@@ -1,9 +1,7 @@
 # SUR LE GRILL
 
-* PFA
-  Utiliser le FWindow pour lui aussi
-  - voir si, quand on édite un event en cliquant dessus dans le PFA, la fenêtre
-    d'édition passe bien au-dessus de la fenêtre du PFA
+* Voir pourquoi le paradigme s'affiche mal avec l'essai court
+* Régler le problème du reader qui s'affiche en tout petit (div ?)
 
 * Class Report
   - Faire la sortie en fichier

@@ -60,6 +60,7 @@ static newId(){
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
+  // console.log("On met cette fenêtre en fenêtre courante:", wf)
   if(this.current && this.current.id == wf.id) return
   if(this.current) this.current.bringToBack()
   this.current = wf
@@ -123,6 +124,10 @@ hide(){
   this.jqObj.hide()
   if ('function' === typeof this.owner.onHide) this.owner.onHide()
   this.visible = false
+}
+update(){
+  if(!this.built) return
+  this.jqObj.remove()
 }
 // Pour mettre la Flying window en premier plan
 // Ne pas appeler ces méthodes directement, appeler la méthode

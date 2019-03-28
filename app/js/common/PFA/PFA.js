@@ -4,8 +4,6 @@ const PFA = require('./PFA-mini')
 Object.assign(PFA, {
   class: 'PFA'
 , inited: false
-, visible: false // true quand le PAF est affiché
-, built:   false
 
 , init(){
     this.load()
@@ -61,23 +59,17 @@ Object.assign(PFA, {
 // ---------------------------------------------------------------------
 // Méthodes d'affichage
 , toggle(){
-    this[this.visible?'hide':'show']()
+    this.fwindow.toggle()
 }
 , show(){
-    if(!this.built) this.build().observe()
-    else this.jqObj.show()
-    this.visible = true
+    this.fwindow.show()
   }
 , hide(){
-    this.jqObj.hide()
-    this.visible = false
+    this.fwindow.hide()
 }
 , update(){
-    if(this.built){
-      this.jqObj.remove()
-      this.built = false
-    }
-    if(this.visible) this.show()
+    this.fwindow.update()
+    if(this.fwindow.visible) this.show()
 }
 
 // ---------------------------------------------------------------------
@@ -87,22 +79,33 @@ Object.assign(PFA, {
  * Méthode principale de construction du PFA du film.
  */
 , build(){
-    require('./PFA_building.js').bind(this)()
-    document.body.appendChild(this._output)
-    this.built = true
-    return this // chainage
+    return require('./PFA_building.js').bind(this)()
   }
 // ---------------------------------------------------------------------
 //  Méthodes de calculs
 
 , observe(){
     // On colle un FATimeline
-    var tml = new FATimeline(this.jqObj[0])
+    var ca  = this.a
+    var jqo = this.fwindow.jqObj
+    var tml = new FATimeline(jqo[0])
     tml.init({height: 40, cursorHeight:262, cursorTop: -222, only_slider_sensible: true})
-
-    // On rend le PFA draggable
-    this.jqObj.draggable()
+    // Dans le paradigme, on observe tous les events relatifs
+    // pour pouvoir 1) les dragguer pour les placer dans d'autres
+    // éléments et 2) les éditer en les cliquant.
+    jqo.find('.event')
+      .draggable({
+        containment:'document'
+      , helper: 'clone'
+      , revert: true
+      })
+      .on('click', function(e){
+        var event_id = parseInt($(this).attr('data-id'),10)
+        ca.editEvent.bind(ca, event_id)()
+        stopEvent(e)//sinon le pfa est remis au premier plan
+      })
 }
+
 , getDataInEvents(){
     // console.log("-> PFA.getDataInEvents")
     var my = this
@@ -133,6 +136,9 @@ Object.defineProperties(PFA,{
   }
 , a:{
     get(){return this.analyse || current_analyse}
+  }
+, fwindow:{
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'pfas'}))}
   }
 , jqObj:{
     get(){return this._jqObj||defP(this,'_jqObj',$('#pfas'))}
