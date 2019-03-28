@@ -1,6 +1,8 @@
 # SUR LE GRILL
 
-* Placer le formulaire d'event à 500/80
+* Quand on ouvre une nouvelle boite d'édition d'event, il faudrait qu'elle ne se place pas juste au-dessus d'une autre
+  => Peut-être, à l'ouverture d'une fwindow, passer en revue chaque fenêtre ouverte et si left = left, ajouter du left
+  et même chose avec top (ajouter du top)
 
 * Calcul du PFA
   - il faudrait empêcher les chevauchement,

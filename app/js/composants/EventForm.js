@@ -509,7 +509,7 @@ getFormValues(){
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: 500, y:80}))
 }
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
