@@ -1,6 +1,6 @@
 'use strict'
 
-FABuilder.prototype.builderFondamentales = function(options){
+module.exports = function(options){
   my.log("* Construction des Fondamentales")
   let str = ''
 

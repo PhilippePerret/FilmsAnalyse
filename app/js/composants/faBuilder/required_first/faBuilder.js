@@ -7,55 +7,63 @@
  */
 
 class FABuilder {
-  // ---------------------------------------------------------------------
-  //  CLASSE
+// ---------------------------------------------------------------------
+//  CLASSE
 
-  /**
-   * Créer une nouvelle instance de builder et la retourner (pour le chainage)
-   */
-  static createNew(){
-    this.currentBuilder = new FABuilder(current_analyse)
-    return this.currentBuilder
-  }
-
-  // ---------------------------------------------------------------------
-  //  INSTANCE
-  constructor(analyse){
-    this.analyse = analyse
-  }
-
-  /**
-   * Pour afficher l'analyse construite
-   */
-  show(options){
-    if(undefined === options) options = {}
-    if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
-  }
-  showReally(){
-    ipc.send('display-analyse')
-    ipc.send('load-url-in-pubwindow', {path: this.html_path})
-  }
 /**
- * Fonction principale construisant l'analyse
- *
- * "Construire l'analyse", pour le moment consiste à produire le document
- * Markdown rassemblant tous les éléments.
+ * Créer une nouvelle instance de builder et la retourner (pour le chainage)
  */
+static createNew(){
+  this.currentBuilder = new FABuilder(current_analyse)
+  return this.currentBuilder
+}
+
+// ---------------------------------------------------------------------
+//  INSTANCE
+constructor(analyse){
+  this.analyse = analyse
+}
+
+/**
+ * Pour afficher l'analyse construite
+ */
+show(options){
+  if(undefined === options) options = {}
+  if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
+}
+showReally(){
+  ipc.send('display-analyse')
+  ipc.send('load-url-in-pubwindow', {path: this.html_path})
+}
+/**
+* Fonction principale construisant l'analyse
+*
+* "Construire l'analyse", pour le moment consiste à produire le document
+* Markdown rassemblant tous les éléments.
+*/
 build(options, fn_callback){
   this.building = true
   this.log('*** Construction de l’analyse…')
   this.report.add('Début de la construction de l’analyse', 'title')
   var my = this
-  if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
-  if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
-  this.buildAs('md', options)
-  this.exportAs('html', options, fn_callback)
+  my.options = options
+  my.rebuildBaseFiles(fn_callback)
   this.log('=== Fin de la construction de l’analyse')
   this.report.add('Fin de la construction de l’analyse', 'title')
   this.building = false
   this.report.show()
   this.report.saveInFile()
   my = null
+}
+
+rebuildBaseFiles(fn_callback){
+  this.destroyBaseFiles()
+  this.buildAs('md', this.options)
+  this.exportAs('html', this.options, fn_callback)
+}
+destroyBaseFiles(){
+  if(fs.existsSync(this.md_path)) fs.unlinkSync(this.md_path)
+  if(fs.existsSync(this.a.html_path)) fs.unlinkSync(this.a.html_path)
 }
 
 buildAs(format, options){
@@ -76,8 +84,8 @@ exportAs(format, options, fn_callback){
 
 
 /**
- * Retourne true si l'analyse précédemment construite est à jour
- */
+* Retourne true si l'analyse précédemment construite est à jour
+*/
 get isUpToDate(){
   var my = this
   if (!fs.existsSync(my.md_path)){
@@ -110,9 +118,9 @@ get isUpToDate(){
 //  Méthodes de fichier
 
 /**
- * Méthode qui retourne la date la plus récente dans le dossier +folder+
- * de l'analyse du builder courant
- */
+* Méthode qui retourne la date la plus récente dans le dossier +folder+
+* de l'analyse du builder courant
+*/
 getLastChangeDateIn(folder, lastDate){
   var my = this
   my.log('* Recherche de l’antériorité des fichiers…')
@@ -135,27 +143,26 @@ getLastChangeDateIn(folder, lastDate){
   return lastDate
 }
 
-  // ---------------------------------------------------------------------
-  //  Méthodes utilitaires
+// ---------------------------------------------------------------------
+//  Méthodes utilitaires
 
-  /**
-   * Pour le log de la procédure
-   */
-  log(msg, args){ this.constructor.log(msg, args) }
+/**
+ * Pour le log de la procédure
+ */
+log(msg, args){ this.constructor.log(msg, args) }
   static log(msg, args){
     if(undefined === this.logs) this.logs = []
     this.logs.push({msg: msg, args: args})
     if (args) console.log(msg, args)
     else console.log('%c'+msg,'color:blue;margin-left:4em;font-family:Arial;')
-  }
+}
 
-  // ---------------------------------------------------------------------
-  //  Raccourcis
+// ---------------------------------------------------------------------
+//  Raccourcis
 
-  get a(){ return this.analyse }
-  get md_path()   { return this.a.md_path }
-  get html_path() { return this.a.html_path }
-
-  get report(){return this._report||defP(this,'_report', new FAReport('analyse-building'))}
+get a(){ return this.analyse }
+get md_path()   { return this.a.md_path }
+get html_path() { return this.a.html_path }
+get report(){return this._report||defP(this,'_report', new FAReport('analyse-building'))}
 
 }

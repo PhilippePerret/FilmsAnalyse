@@ -44,3 +44,11 @@ section#section-cover div#pub-film-title {
 p.pagebreak {
   page-break-after:always;
 }
+
+
+pre.heading {
+  all:unset;
+  font-family:Arial,Helvetica;
+  font-size:13pt;
+  font-weight:bold;
+}

@@ -1,9 +1,8 @@
 # SUR LE GRILL
 
-* Il semble y avoir encore des problèmes dans les enregistrements de documents
-
 * ASSEMBLAGE DE L'ANALYSE
   Maintenant que tout semble à peu près en place, il faut s'attaquer sérieusement à l'assemblage de l'analyse.
+  * Poursuivre en essayant de mettre des styles CSS depuis markdown (voir "markdown extra" qui est peutêtre la solution)
   - scénier du film
   - fondamentales
   -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés

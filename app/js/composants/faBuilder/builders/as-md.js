@@ -13,6 +13,10 @@ const DRC = `
 `
 Object.assign(FABuilder.prototype, {
 
+  /**
+    Méthode utilitaire permettant d'ajouter le contenu du document
+    de clé +key_doc+
+  **/
   appendContenuOf(key_doc){ // TODO Transformer en appendContentsOf
     var my = this
     var ca = my.analyse
@@ -71,25 +75,27 @@ FABuilder.prototype.appendBuildingOf = function(what){
   var ca = my.analyse
   var finalCode = ""
   finalCode += `<!-- BUILD ${what} -->${RC}`
-  switch (what.toUpperCase()) {
-    case 'INFOS FILM':
+  switch (what) {
+    case 'infos film':
       finalCode += my.loadAndRunBuilder('infos_film')
       break
-    case 'FONDAMENTALES':
+    case 'fondamentales':
       finalCode += my.loadAndRunBuilder('fondamentales')
       break
-    case 'PFA':
+    case 'pfa':
       finalCode +=  my.loadAndRunBuilder('pfa')
       break;
-    case 'DIAGRAMME DRAMATIQUE':
+    case 'diagramme dramatique':
       finalCode +=  my.loadAndRunBuilder('diagramme_dramatique')
       break
-    case 'DIAGRAMME QRD':
+    case 'diagramme qrd':
       finalCode +=  my.loadAndRunBuilder('diagramme_qrd')
       break
-    case 'STATISTIQUES':
+    case 'statistiques':
       finalCode +=  my.loadAndRunBuilder('statistiques')
       break
+    case 'scenier':
+      finalCode += my.loadAndRunBuilder('scenier')
     default:
 
   }
@@ -102,7 +108,8 @@ FABuilder.prototype.appendBuildingOf = function(what){
 * Retourne le code construit.
 **/
 FABuilder.prototype.loadAndRunBuilder = function(composant){
-  return '' // pour le moment
+  var method = require(`../builders/${composant}`).bind(this)
+  return method(FABuilder.options)
 }
 
 module.exports = function(options){

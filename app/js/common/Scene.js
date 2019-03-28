@@ -119,6 +119,38 @@ constructor(data){
   for(var p in data){this[`_${p}`] = data[p]}
 }
 
+/**
+* Méthode d'export de la scène
+**/
+export(options){
+  return this.export_md()
+}
+export_md(options){
+  return `
+
+\`\`\`heading
+${this.numero} ${this.lieu}-${this.effet} — ${this.decor.toUpperCase()}
+\`\`\`
+
+\`\`\`pitch
+${this.pitch}
+\`\`\`
+
+  `
+}
+
+export_html(options){
+  return `
+<div class="heading">
+  <span class="numero">${this.numero}</span>
+  <span class="lieu">${this.lieu}</span>
+  <span class="effet">${this.effet}</span>
+  <span class="decor">${this.decor}</span>
+</div>
+<div>${this.pitch}</div>
+  `
+}
+
 reset(){
   delete this._pitch
   delete this._numero
@@ -130,6 +162,9 @@ get numero(){ return this._numero }
 set numero(v){ this._numero = v}
 
 get pitch(){return this.event.pitch}
+get lieu(){return this.event.lieu}
+get effet(){return this.event.effet}
+get decor(){return this.event.decor}
 
 get event_id(){return this._event_id}
 get event(){

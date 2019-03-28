@@ -1,9 +1,12 @@
 'use strict'
 
-FABuilder.prototype.builderScenier = function(options){
+module.exports = function(options){
   // Note : on doit se servir de l'objet PFA pour le faire
+  var my = this
   my.log("* Construction du scénier du film…")
+  my.report.add('Construction du scénier du film…', 'title')
   let str = ''
-  current_analyse.forEachScene(function(scene){ str += scene.output(options)})
+  str += "<div>Scénier</div>"
+  Scene.forEachScene(function(scene){ str += scene.export(options)})
   return str
 }

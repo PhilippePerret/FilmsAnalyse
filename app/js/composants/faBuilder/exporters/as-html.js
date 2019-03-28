@@ -31,7 +31,7 @@ module.exports = function(options, fn_callback){
   }
 
 
-  var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} ./exports/${my.a.md_name}${cmd_metadata} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2${cmd_epub_cover}`
+  var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} -f markdown_mmd ./exports/${my.a.md_name}${cmd_metadata} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2${cmd_epub_cover}`
 
   // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {

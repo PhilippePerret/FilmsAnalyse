@@ -1,6 +1,6 @@
 'use strict'
 
-FABuilder.prototype.builderStatistiques = function(options){
+module.exports = function(options){
   my.log("* Construction des statistiques…")
   let str = ''
 
