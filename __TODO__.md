@@ -1,9 +1,5 @@
 # SUR LE GRILL
 
-* Quand on ouvre une nouvelle boite d'édition d'event, il faudrait qu'elle ne se place pas juste au-dessus d'une autre
-  => Peut-être, à l'ouverture d'une fwindow, passer en revue chaque fenêtre ouverte et si left = left, ajouter du left
-  et même chose avec top (ajouter du top)
-
 * Calcul du PFA
   - il faudrait empêcher les chevauchement,
   - [BUG] Quand on clique sur les parties/zones à côté de l'horloge principale, ça ne passe pas en revue tous les points (le prélude, par exemple, est zappé).

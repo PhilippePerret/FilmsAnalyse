@@ -65,10 +65,47 @@ static setCurrent(wf, e){
   if(this.current) this.current.bringToBack()
   this.current = wf
   this.current.bringToFront()
-  // Surtout pas :
-  // e && stopEvent(e)
-  // car sinon, lorsqu'on clique sur un checkbox
-  // par exemple, c'est bloqué.
+  // On vérifie que la fenêtre ne soit pas juste sur une autre
+  this.checkOverlaps(wf)
+  /**
+    Surtout pas :
+      e && stopEvent(e)
+    car sinon, lorsqu'on clique sur un checkbox
+    par exemple, c'est bloqué.
+  **/
+}
+/**
+* Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
+* sur une autre.
+**/
+static checkOverlaps(wf){
+  console.log("setCurrent : vérification overlap")
+  var {top: refTop, left: refLeft} = wf.jqObj.offset()
+  refTop  = Math.round(refTop)
+  refLeft = Math.round(refLeft)
+  console.log("refTop/refLeft initiaux:", refTop, refLeft)
+  var moveIt = false
+  $('.fwindow').each(function(i,w){
+    if(w.id == wf.domId) return // la fenêtre qu'on checke
+    if(moveIt === true) return
+    var {top, left} = $(w).offset()
+    top   = Math.round(top)
+    left  = Math.round(left)
+    if(refTop.isCloseTo(top, 8) || refLeft.isCloseTo(left, 8)){
+      refTop  += 16
+      refLeft += 16
+      moveIt  = true
+    }
+  })
+  // TODO Peut-être qu'on l'a déplacée sur une autre
+  // => Recommencer jusqu'à ce que ce soit bon
+  if(moveIt === true){
+    console.log("refTop/refLeft corrigés:", refTop, refLeft)
+    wf.jqObj.css({left:`${refLeft}px`, top:`${refTop}px`})
+    return this.checkOverlaps(wf)
+  } else {
+    return true
+  }
 }
 static unsetCurrent(wf){
   if(this.current.id !== wf.id) return
