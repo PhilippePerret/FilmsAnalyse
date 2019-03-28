@@ -1,15 +1,6 @@
 # SUR LE GRILL
 
 
-* Calcul du PFA
-  - Mettre un fond différent, entre absolu et relatif, dans
-    les mark de position structurelle (à côté de l'horloge
-    principale). Peut-être la couleur du pfa relatif peut-elle
-    varier pour indiquer si le noeud est dans le PFA ou non.
-
-* Voir comment se servir du numéro de scène
-  - s'en servir dans actualiseScene du locator
-
 * Class Report
   - Faire la sortie en fichier
 
@@ -38,6 +29,15 @@
 
 
 # EN COURS DE DÉVELOPPEMENT
+
+* Quand on clique sur une mark de scène courante, on doit éditer l'event correspondant.
+  Observer les span.current-scene-number, .current-scene-number-only, current-scene-pitch et placer
+  EventForm.editEvent.bind(EventForm)(current_analyse.current_scene.event)
+
+* Mettre en option la sauvegarde automatique de l'analyse
+  - mémoriser les events qui ont été modifiés (en pensant aux ajouts et aux destruction)
+
+* Quand on arrive au bout de la vidéo, il faudrait s'arrêter (ici le timer continue inutilement)
 
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.

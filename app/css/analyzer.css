@@ -5,6 +5,9 @@
   clear:both;
   border:1px dashed red;
 }
+#section-video #div-video-top-tools {
+  margin-bottom:8px;
+}
 #section-video #video {
   position:relative; /* pour le helper de draggable */
 }
@@ -32,18 +35,28 @@
   font-size:9.4pt;
   cursor:pointer;
 }
-#section-video div.mark-parts {
+#section-video div.mark-parts,
+#section-video div#mark-current-scene {
   display:inline-block;
   width:214px;
   height:38px;
   border:1px solid #666666;
   padding-top:3px;
+  vertical-align:bottom;
 
 }
-#section-video div.mark-parts > span {
+#section-video div.mark-parts > span,
+#section-video div#mark-current-scene > span {
   display:block;
   text-align:left;
   padding-left:12px;
+}
+
+#section-video div.mark-parts#mark-parts-abs {
+  background-color:#222222;
+}
+#section-video div.mark-parts#mark-parts-rel {
+  background-color:#112211;
 }
 
 #section-video div.mark-parts > span.mark-main-part {
@@ -51,6 +64,17 @@
 }
 #section-video div.mark-parts > span.mark-sub-part {
   color:darkseagreen;
+}
+#section-video div#mark-current-scene > span {
+  color:#DDDDDD;
+}
+#section-video div#mark-current-scene > span.current-scene-number {
+  font-size:11pt;
+}
+#section-video div#mark-current-scene > span.current-scene-pitch {
+  font-size:9.7pt;
+  white-space:nowrap;
+  overflow:hidden;
 }
 
 #section-video fieldset.time-tools {

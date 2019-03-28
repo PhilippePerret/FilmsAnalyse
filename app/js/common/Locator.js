@@ -7,38 +7,38 @@
 
 class Locator {
 
-  constructor(analyse){
-    this.analyse = this.a = analyse
-  }
+constructor(analyse){
+  this.analyse = this.a = analyse
+}
 
-  // Pour savoir si la vidéo est en train de jouer
-  get playing(){return this._playing || false}
-  set playing(v){ this._playing = v}
+// Pour savoir si la vidéo est en train de jouer
+get playing(){return this._playing || false}
+set playing(v){ this._playing = v}
 
-  // ---------------------------------------------------------------------
-  //  Gestion des points d'arrêt
-  get stop_points(){
-    if (undefined === this._stop_points) this._stop_points = []
-    return this._stop_points
-  }
-  set stop_points(v){ this._stop_points = v}
+// ---------------------------------------------------------------------
+//  Gestion des points d'arrêt
+get stop_points(){
+  if (undefined === this._stop_points) this._stop_points = []
+  return this._stop_points
+}
+set stop_points(v){ this._stop_points = v}
 
-  goToNextStopPoint(){
-    if(undefined === this._i_stop_point) this._i_stop_point = -1
-    ++ this._i_stop_point
-    if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
-    if(undefined === this.stop_points[this._i_stop_point]){
-      F.notify(T('no-stop-point'))
-    } else {
-      this.setTime(this.stop_points[this._i_stop_point])
-    }
+goToNextStopPoint(){
+  if(undefined === this._i_stop_point) this._i_stop_point = -1
+  ++ this._i_stop_point
+  if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
+  if(undefined === this.stop_points[this._i_stop_point]){
+    F.notify(T('no-stop-point'))
+  } else {
+    this.setTime(this.stop_points[this._i_stop_point])
   }
-  addStopPoint(time){
-    if(current_analyse.options.get('option_lock_stop_points')) return
-    if (this.stop_points.indexOf(time) > -1) return
-    this.stop_points.length > 2 && this.stop_points.shift()
-    this.stop_points.push(time)
-  }
+}
+addStopPoint(time){
+  if(current_analyse.options.get('option_lock_stop_points')) return
+  if (this.stop_points.indexOf(time) > -1) return
+  this.stop_points.length > 2 && this.stop_points.shift()
+  this.stop_points.push(time)
+}
 
 init(){
   var my = this
@@ -482,6 +482,11 @@ actualizeMarkersStt(curt){
  */
 actualizeCurrentScene(curt){
   this.analyse.currentScene = Scene.sceneAt(curt)
+  if (!this.analyse.currentScene){
+    $('span.current-scene-number').html('...')
+    $('span.current-scene-number-only').html('...')
+    $('span.current-scene-pitch').html('...')
+  }
 }
 
 // ---------------------------------------------------------------------

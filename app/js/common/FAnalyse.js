@@ -255,10 +255,16 @@ set modified(v) { this._modified = v }
 get currentScene(){
   if(undefined === this._current_scene){
     this._current_scene = Scene.sceneAt(this.locator.getRTime())
+    Scene.current = this._current_scene
   }
   return this._current_scene
 }
-set currentScene(v){this._current_scene = v}
+set currentScene(v){
+  this._current_scene = v
+  $('span.current-scene-number').html(`Scène ${v.numero}`)
+  $('span.current-scene-number-only').html(v.numero)
+  $('span.current-scene-pitch').html(v.pitch)
+}
 
 get PFA(){
   if(undefined === this._PFA){

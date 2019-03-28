@@ -98,9 +98,11 @@ const UI = {
   //  Méthodes d'évènement
   , observe_ui:function(){
       var my = this
-      // On place les observers sur les boutons pour créer les nouveaux
-      // évènement. Noter qu'il s'appliqueront toujours à l'analyse courante,
-      // current_analyse.
+
+      $('.current-scene-number, .current-scene-number-only, current-scene-pitch')
+        .on('click', ()=>{
+          EventForm.editEvent.bind(EventForm)(current_analyse.currentScene.event)
+        })
 
       // Extras
       // ------
