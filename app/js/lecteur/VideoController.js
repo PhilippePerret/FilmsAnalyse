@@ -138,27 +138,35 @@ setVideoUI(visible){
 }
 
 /**
-* Quand on clique sur les marques de partie à côté de l'horloge principale,
-* on peut se rendre aux parties choisies. Chaque clic passe à la partie
-* suivante.
+  Quand on clique sur les marques de partie à côté de l'horloge principale,
+  on peut se rendre aux parties choisies. Chaque clic passe à la partie
+  suivante. CMD click permet de revenir en arrière.
+
+  +mainSub+   Soit 'Main' soit 'Sub', pour indiquer qu'il s'agit d'une
+              partie (expo, dév, dénouement) ou d'une zone
+  +absRel+    Soit 'Abs', soit 'Rel', pour indiquer qu'on a cliqué sur
+              la section qui s'occupe des valeurs absolues ou la section
+              qui s'occupe des valeurs relatives.
+
 **/
-onClickMarkPart(mainSub, absRel, e){
+onClickMarkStt(mainSub, absRel, e){
+  var pfa = this.a.PFA
   // L'objet jQuery de la marque
   var mk = this[`mark${mainSub}Part${absRel}`]
   // l'identifiant structure de la partie courant (peut-être indéfini)
   var stt_id = mk.attr('data-stt-id')
-  var node = this.a.PFA.node(stt_id)
+  var node = pfa.node(stt_id)
+  // console.log("Noeud courant : ", node.hname)
   var other_node
   if (e.metaKey){
-    other_node = this.a.PFA.node(node.previous || node.last)
+    other_node = pfa.node(node.previous || node.last)
   } else {
-    other_node = this.a.PFA.node(node.next || node.first)
+    other_node = pfa.node(node.next || node.first)
   }
-  console.log("Nœud suivant/précédent:", other_node)
-  console.log("temps suivant dans VideController#onClickMarkPart:", other_node[`startAt${absRel}`])
+  // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
   this.a.locator.setRTime(other_node[`startAt${absRel}`])
-  // this.a.locator.defineNextZonesStt sera automatiquement appelé par
-  // setTime < setRTime
+
+  pfa = null
 }
 
 /**
@@ -166,10 +174,10 @@ onClickMarkPart(mainSub, absRel, e){
 * principale, en réglant son attribut data-stt-id conservant son id
 * structurel
 **/
-setMarkPart(mainSub, absRel, zone){
+setMarkStt(mainSub, absRel, node, name){
   var mk = this[`mark${mainSub}Part${absRel}`]
-  mk.html(zone.hname.toUpperCase())
-  mk.attr('data-stt-id', zone.id)
+  mk.html(name || '---')
+  node && mk.attr('data-stt-id', node.id)
 }
 
 /**
@@ -191,11 +199,17 @@ observe(){
   })
 
   // Sur les parties à droite de l'horloge principale
-  this.markMainPartAbs.on('click', this.onClickMarkPart.bind(this, 'Main', 'Abs'))
-  this.markSubPartAbs.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Abs'))
-  this.markMainPartRel.on('click', this.onClickMarkPart.bind(this, 'Main', 'Rel'))
-  this.markSubPartRel.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Rel'))
+  this.markMainPartAbs.on('click', this.onClickMarkStt.bind(this, 'Main', 'Abs'))
+  this.markSubPartAbs.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
+  this.markMainPartRel.on('click', this.onClickMarkStt.bind(this, 'Main', 'Rel'))
+  this.markSubPartRel.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
 }
+
+get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
+get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
+get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
+get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',$('#section-video #mark-sub-part-rel'))}
+
 
 // Pour l'indicateur de position, une timeline sous
 // la vidéo.
@@ -205,8 +219,5 @@ get positionIndicator(){
   }
   return this._positionIndicator
 }
-get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
-get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
-get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
-get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',$('#section-video #mark-sub-part-rel'))}
+
 }

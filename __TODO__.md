@@ -2,7 +2,20 @@
 
 * Calcul du PFA
   - [BUG] Quand on clique sur les parties/zones à côté de l'horloge principale, ça ne passe pas en revue tous les points (le prélude, par exemple, est zappé).
+    Le bug se produit de desinence à préambule. C'est bien
+    le préambule qui est détecté comme zone suivante, mais
+    c'est la zone de refus qui est affichée…
+    Cela veut dire que lorsqu'on choisit le temps du préambule (c'est peut-être le "0" falsy qui produit l'erreur), quand
+    la détection automatique des parties opère, elle détecte
+    qu'on est dans la zone de refus (qui pourtant est très
+    loin… )
+  - Mettre un fond différent, entre absolu et relatif, dans
+    les mark de position structurelle (à côté de l'horloge
+    principale). Peut-être la couleur du pfa relatif peut-elle
+    varier pour indiquer si le noeud est dans le PFA ou non.
   - [BUG] La section des relatifs affiche des informations alors qu'il n'y en a pas. Voir l'analyse "essai", qui affiche "dénouement/désinence" alors que seul le pivot 1 est défini
+
+* Voir comment se servir du numéro de scène
 
 * Class Report
   - Faire la sortie en fichier

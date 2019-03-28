@@ -85,7 +85,6 @@ static setCurrent(wf, e){
 * sur une autre.
 **/
 static checkOverlaps(wf){
-  console.log("setCurrent : vérification overlap")
   var {top: refTop, left: refLeft} = wf.jqObj.offset()
   refTop  = Math.round(refTop)
   refLeft = Math.round(refLeft)

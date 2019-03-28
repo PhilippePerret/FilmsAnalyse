@@ -44,7 +44,7 @@ const PFA = {
     , tiers2: {hname: 'Second Tiers', shortHname: '2/3', cZone:'[deuxT-iem24,deuxT+iem24]', next: 'pivot2', tolerance:'none'}
     , pivot2: {hname: 'Pivot 2', shortHname: 'Pvt 2', cZone:'[tresQ-iem24,tresQ]', next: 'crisis', tolerance: 'none'}
     , DNOU:   {hname: 'DÉNOUEMENT', shortHname: 'DÉNOUE.', cZone:'[tresQ,duree]', main: true, next: null, first: 'EXPO', tolerance: '24ieme'}
-    , crisis: {hname: 'Crise', shortHname: 'Crise', cZone:'[tresQ+iem24,"climax"]', cZoneAlt:'[tresQ-douzi,tresQ]', next: 'climax', tolerance:'before'}
+    , crisis: {hname: 'Crise', shortHname: 'Crise', cZone:'[tresQ+iem24,duree-huiti]', next: 'climax', tolerance:'before'}
     , climax: {hname: 'Climax', shortHname: 'Climax', cZone:'[duree-huiti,duree-iem24]', next: 'desine', tolerance:'after'}
     , desine: {hname: 'Désinence', shortHname:'Désin.', cZone:'[duree-iem24,duree]', next: null, first: 'preamb', tolerance:'none'}
   }

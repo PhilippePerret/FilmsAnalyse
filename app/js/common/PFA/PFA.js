@@ -1,6 +1,7 @@
 'use strict'
 
 const PFA = require('./PFA-mini')
+Object.assign(PFA, require('./PFA-calculs'))
 Object.assign(PFA, {
   class: 'PFA'
 , inited: false

@@ -57,8 +57,8 @@ class SttNode {
     return z
   }
   static initDuree(kduree, value){
-    this[`_${kduree}`] = parseInt(value,10)
-    return value
+    this[`_${kduree}`] = Math.round(value)
+    return this[`_${kduree}`]
   }
 
 
