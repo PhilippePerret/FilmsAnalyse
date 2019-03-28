@@ -71,38 +71,38 @@ setDimensions(){
   this.redefineVideoSizes(videoReaderWidth)
 }
 
-  /**
-   * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
-   * le moment)
-   *
-   * Si +save+ est true, la taille doit être enregistrée dans les préférences
-   * de l'analyse courante.
-   */
-  setSize(e, v, save){
-    if(undefined===v) v = this.menuVideoSize.value
-    this.controller.width = VideoController.VIDEO_SIZES[v]
-    this.locator.horloge.className = `horloge ${v}`
-    if (save === true) this.a.videoSize = v
-  }
+/**
+ * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
+ * le moment)
+ *
+ * Si +save+ est true, la taille doit être enregistrée dans les préférences
+ * de l'analyse courante.
+ */
+setSize(e, v, save){
+  if(undefined===v) v = this.menuVideoSize.value
+  this.controller.width = VideoController.VIDEO_SIZES[v]
+  this.locator.horloge.className = `horloge ${v}`
+  if (save === true) this.a.videoSize = v
+}
 
-  /**
-  * Pour définir la vitesse de la vidéo
-  **/
-  setSpeed(speed){
-    this.controller.defaultPlaybackRate = speed
-    this.controller.playbackRate = speed
+/**
+* Pour définir la vitesse de la vidéo
+**/
+setSpeed(speed){
+  this.controller.defaultPlaybackRate = speed
+  this.controller.playbackRate = speed
+}
+/**
+ * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
+ * de l'écran.
+ */
+redefineVideoSizes(w){
+  VideoController.VIDEO_SIZES['large']   = w - 10
+  if(w < 650){
+    VideoController.VIDEO_SIZES['medium']    = parseInt((w / 3) * 2, 10)
+    VideoController.VIDEO_SIZES['vignette']  = parseInt(w / 2.2, 10)
   }
-  /**
-   * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
-   * de l'écran.
-   */
-  redefineVideoSizes(w){
-    VideoController.VIDEO_SIZES['large']   = w - 10
-    if(w < 650){
-      VideoController.VIDEO_SIZES['medium']    = parseInt((w / 3) * 2, 10)
-      VideoController.VIDEO_SIZES['vignette']  = parseInt(w / 2.2, 10)
-    }
-  }
+}
 
 
 
@@ -138,27 +138,44 @@ setVideoUI(visible){
 }
 
 /**
-* Quand on clique sur les marques de partie à côté de l'horloge principale,
-* on peut se rendre aux parties choisies. Chaque clic passe à la partie
-* suivante.
+  Quand on clique sur les marker de structure à côté de l'horloge principale,
+  on peut se rendre aux parties choisies. Chaque clic passe à la partie
+  suivante. CMD click permet de revenir en arrière.
+
+  +mainSub+   Soit 'Main' soit 'Sub', pour indiquer qu'il s'agit d'une
+              partie (expo, dév, dénouement) ou d'une zone
+  +absRel+    Soit 'Abs', soit 'Rel', pour indiquer qu'on a cliqué sur
+              la section qui s'occupe des valeurs absolues ou la section
+              qui s'occupe des valeurs relatives.
+
 **/
-onClickMarkPart(mainSub, absRel, e){
-  // L'objet jQuery de la marque
+onClickMarkStt(mainSub, absRel, e){
+  var pfa = this.a.PFA
+  // L'objet jQuery du marker
   var mk = this[`mark${mainSub}Part${absRel}`]
   // l'identifiant structure de la partie courant (peut-être indéfini)
-  var stt_id = mk.attr('data-stt-id')
-  var node = this.a.PFA.node(stt_id)
+  var kstt = mk.attr('data-stt-id')
+  if(!kstt){
+    // <= L'identifiant structurel n'est pas défini
+    // => Il n'existe pas de noeud courant ou on est au tout début
+    // ==> Prendre l'exposition
+    kstt = mainSub == 'Main' ? 'DNOU' : 'desine'
+  }
+  var node = pfa.node(kstt)
+  // console.log("Noeud courant : ", node.hname)
   var other_node
   if (e.metaKey){
-    other_node = this.a.PFA.node(node.previous || node.last)
+    other_node = pfa.node(node.previous || node.last)
+    // Sinon le temps ne serait pas contrôlé, car il est avant le
+    // temps suivant attendu :
+    delete this.a.locator.nextTimes
   } else {
-    other_node = this.a.PFA.node(node.next || node.first)
+    other_node = pfa.node(node.next || node.first)
   }
-  console.log("Nœud suivant/précédent:", other_node)
-  console.log("temps suivant dans VideController#onClickMarkPart:", other_node[`startAt${absRel}`])
+  // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
   this.a.locator.setRTime(other_node[`startAt${absRel}`])
-  // this.a.locator.defineNextZonesStt sera automatiquement appelé par
-  // setTime < setRTime
+
+  pfa = null
 }
 
 /**
@@ -166,10 +183,10 @@ onClickMarkPart(mainSub, absRel, e){
 * principale, en réglant son attribut data-stt-id conservant son id
 * structurel
 **/
-setMarkPart(mainSub, absRel, zone){
+setMarkStt(mainSub, absRel, node, name){
   var mk = this[`mark${mainSub}Part${absRel}`]
-  mk.html(zone.hname.toUpperCase())
-  mk.attr('data-stt-id', zone.id)
+  mk.html(name || '---')
+  node && mk.attr('data-stt-id', node.id)
 }
 
 /**
@@ -191,11 +208,17 @@ observe(){
   })
 
   // Sur les parties à droite de l'horloge principale
-  this.markMainPartAbs.on('click', this.onClickMarkPart.bind(this, 'Main', 'Abs'))
-  this.markSubPartAbs.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Abs'))
-  this.markMainPartRel.on('click', this.onClickMarkPart.bind(this, 'Main', 'Rel'))
-  this.markSubPartRel.on('click', this.onClickMarkPart.bind(this, 'Sub', 'Rel'))
+  this.markMainPartAbs.on('click', this.onClickMarkStt.bind(this, 'Main', 'Abs'))
+  this.markSubPartAbs.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
+  this.markMainPartRel.on('click', this.onClickMarkStt.bind(this, 'Main', 'Rel'))
+  this.markSubPartRel.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
 }
+
+get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
+get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
+get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
+get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',$('#section-video #mark-sub-part-rel'))}
+
 
 // Pour l'indicateur de position, une timeline sous
 // la vidéo.
@@ -205,8 +228,5 @@ get positionIndicator(){
   }
   return this._positionIndicator
 }
-get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
-get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
-get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
-get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',$('#section-video #mark-sub-part-rel'))}
+
 }

@@ -22,6 +22,10 @@ const UI = {
         }
       })
 
+      // On construit la boite des boutons de création
+      // d'event
+      BtnEvent.show()
+
       // TODO Plus tard, faire une instance qui gère les boutons de
       // navigation, en en faisant un par vidéo.
       listenClick('btn-hide-current-time-video-1', this, 'hideCurrentTime')
@@ -94,13 +98,11 @@ const UI = {
   //  Méthodes d'évènement
   , observe_ui:function(){
       var my = this
-      // On place les observers sur les boutons pour créer les nouveaux
-      // évènement. Noter qu'il s'appliqueront toujours à l'analyse courante,
-      // current_analyse.
 
-      // Tous les boutons pour créer un nouvel élément doivent réagir
-      // au click.
-      $('#buttons-new-event button').on('click', function(ev){ EventForm.onClickNewEvent.bind(EventForm)(ev, $(this)) })
+      $('.current-scene-number, .current-scene-number-only, current-scene-pitch')
+        .on('click', ()=>{
+          EventForm.editEvent.bind(EventForm)(current_analyse.currentScene.event)
+        })
 
       // Extras
       // ------

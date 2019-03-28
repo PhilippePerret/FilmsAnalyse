@@ -1,15 +1,27 @@
 'use strict'
 
 const PFA = require('./PFA-mini')
+Object.assign(PFA, require('./PFA-calculs'))
 Object.assign(PFA, {
   class: 'PFA'
 , inited: false
-, visible: false // true quand le PAF est affiché
-, built:   false
 
 , init(){
+    var my = this
     this.load()
+    this.forEachNode(node => {
+      if(node.next) {
+        my.node(node.next)._previous = node.id
+        this.DATA_STT_NODES[node.next]._previous = node.id
+      }
+      if(node.first){
+        my.node(node.first)._last = node.id
+        this.DATA_STT_NODES[node.first]._last = node.id
+      }
+    })
+    // console.log("DATA APRES:", Object.assign({}, this.DATA_STT_NODES))
     this.inited = true
+    my = null
 }
 // ---------------------------------------------------------------------
 //  Méthodes de données
@@ -61,23 +73,17 @@ Object.assign(PFA, {
 // ---------------------------------------------------------------------
 // Méthodes d'affichage
 , toggle(){
-    this[this.visible?'hide':'show']()
+    this.fwindow.toggle()
 }
 , show(){
-    if(!this.built) this.build().observe()
-    else this.jqObj.show()
-    this.visible = true
+    this.fwindow.show()
   }
 , hide(){
-    this.jqObj.hide()
-    this.visible = false
+    this.fwindow.hide()
 }
 , update(){
-    if(this.built){
-      this.jqObj.remove()
-      this.built = false
-    }
-    if(this.visible) this.show()
+    this.fwindow.update()
+    if(this.fwindow.visible) this.show()
 }
 
 // ---------------------------------------------------------------------
@@ -87,22 +93,33 @@ Object.assign(PFA, {
  * Méthode principale de construction du PFA du film.
  */
 , build(){
-    require('./PFA_building.js').bind(this)()
-    document.body.appendChild(this._output)
-    this.built = true
-    return this // chainage
+    return require('./PFA_building.js').bind(this)()
   }
 // ---------------------------------------------------------------------
 //  Méthodes de calculs
 
 , observe(){
     // On colle un FATimeline
-    var tml = new FATimeline(this.jqObj[0])
-    tml.init({height:40, only_slider_sensible: true})
-
-    // On rend le PFA draggable
-    this.jqObj.draggable()
+    var ca  = this.a
+    var jqo = this.fwindow.jqObj
+    var tml = new FATimeline(jqo[0])
+    tml.init({height: 40, cursorHeight:262, cursorTop: -222, only_slider_sensible: true})
+    // Dans le paradigme, on observe tous les events relatifs
+    // pour pouvoir 1) les dragguer pour les placer dans d'autres
+    // éléments et 2) les éditer en les cliquant.
+    jqo.find('.event')
+      .draggable({
+        containment:'document'
+      , helper: 'clone'
+      , revert: true
+      })
+      .on('click', function(e){
+        var event_id = parseInt($(this).attr('data-id'),10)
+        ca.editEvent.bind(ca, event_id)()
+        stopEvent(e)//sinon le pfa est remis au premier plan
+      })
 }
+
 , getDataInEvents(){
     // console.log("-> PFA.getDataInEvents")
     var my = this
@@ -134,6 +151,9 @@ Object.defineProperties(PFA,{
 , a:{
     get(){return this.analyse || current_analyse}
   }
+, fwindow:{
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'pfas'}))}
+  }
 , jqObj:{
     get(){return this._jqObj||defP(this,'_jqObj',$('#pfas'))}
   }
@@ -151,16 +171,6 @@ Object.defineProperties(PFA,{
       }
     }
 }
-//   //Retourne la class SttNode de l'incident perturbateur
-// , incPer:{
-//       get:function(){return this._incPer}
-//     , set:function(e){this._incPer = e}
-//   }
-// // Retourne l'incident déclencheur, comme SttNode
-// , incDec:{
-//       get:function(){return this._incDec}
-//     , set:function(e){this._incDec = e}
-//   }
 })
 
 

@@ -39,13 +39,13 @@ class SttNode {
     */
     var refNode
     if('string' === typeof z[0]){
-      refNode = current_analyse.PFA.node(z[0])
+      refNode = this.pfa.node(z[0])
       z[0] = refNode.endAtRel || refNode.endAtAbs
       // On indique la dépendance, pour reseter en cas de redéfinition
       refNode.dependencies.push(sttnode.id)
     }
     if('string' === typeof z[1]){
-      refNode = current_analyse.PFA.node(z[1])
+      refNode = this.pfa.node(z[1])
       z[1] = refNode.startAtRel || refNode.startAtAbs
       refNode.dependencies.push(sttnode.id)
     }
@@ -57,8 +57,8 @@ class SttNode {
     return z
   }
   static initDuree(kduree, value){
-    this[`_${kduree}`] = parseInt(value,10)
-    return value
+    this[`_${kduree}`] = Math.round(value)
+    return this[`_${kduree}`]
   }
 
 
@@ -76,26 +76,6 @@ constructor(nid, data){
   // définis dans la méthode de classe `calcZone`
   this.dependencies = []
 
-  this.renseignePFA()
-
-}
-
-renseignePFA(){
-  if (this.next){
-    if(undefined === this.pfa.nodes[this.next]){
-      current_analyse.PFA.DATA_STT_NODES[this.next].previous = this.id
-    } else {
-      current_analyse.PFA.node(this.next)._previous = this.id
-    }
-  }
-
-  if (this.first){
-    if(undefined === current_analyse.PFA.nodes[this.first]){
-      current_analyse.PFA.DATA_STT_NODES[this.first].last = this.id
-    } else {
-      current_analyse.PFA.node(this.first)._last = this.id
-    }
-  }
 }
 
 // ---------------------------------------------------------------------
@@ -106,27 +86,49 @@ renseignePFA(){
 * en version absolue, d'après un coefficiant +coef+
 **/
 inAbsPFA(coefT2P){
+  console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
+    startAtAbs: this.startAtAbs
+  , endAtAbs: this.endAtAbs
+  , coefT2P: coefT2P
+  , leftAbs: this.leftAbs(coefT2P)
+  , widthAbs: this.widthAbs(coefT2P)
+})
   return DCreate('SPAN', {
-    class: `pfa-part-${this.isMainPart?'part':'zone'}`
-  , style: `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
+    class:  `pfa-part-${this.isMainPart?'part':'zone'}`
+  , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
   , append: [this.aSpanName]
   })
 }
 
 inRelPFA(coefT2P){
   if(false === this.isDefined) return null
+  console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
+      startAtRel: this.startAtRel
+    , endAtRel: this.endAtRel
+    , coefT2P: coefT2P
+    , leftRel: this.leftRel(coefT2P)
+    , widthRel: this.widthRel(coefT2P)
+  })
   return DCreate('SPAN', {
-    class: `pfa-part-${this.isMainPart?'part':'zone'} ${this.markGoodPos /* inzone, outzone, nearzone */}`
+    class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
-  , append: this.aSpanName
+  , append: [this.aSpanName]
+  // , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
+  , attrs:  {'data-id': this.event_id, 'data-type': 'event'}
   })
 }
+get classNode(){
+  switch (this.isMainPart) {
+    case true:  return `pfa-part-part`
+    case false: return `pfa-part-zone event EVT${this.event_id}`
+  }
+}
 
-leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${parseInt(this.startAtAbs * coef,10)}px`)}
-widthAbs(coef){return this._widthAbs||defP(this,'_widthAbs', `${parseInt((this.endAtAbs - this.startAtAbs) * coef,10)}px`)}
+leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${Math.round(this.startAtAbs * coef)}px`)}
+widthAbs(coef){return this._widthAbs||defP(this,'_widthAbs', `${Math.round((this.endAtAbs - this.startAtAbs) * coef)}px`)}
 
-leftRel(coef){return this._leftRel||defP(this,'_leftRel', `${parseInt(this.startAtRel * coef,10)}px`)}
-widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${parseInt((this.endAtRel - this.startAtRel) * coef,10)}px`)}
+leftRel(coef){return this._leftRel||defP(this,'_leftRel', `${Math.round(this.startAtRel * coef)}px`)}
+widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${Math.round((this.endAtRel - this.startAtRel) * coef)}px`)}
 
 
 /**

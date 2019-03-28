@@ -4,18 +4,19 @@ const DUREE_FILM = current_analyse.duration
 
 
 const PFABuilder = {
+    class: 'PFABuilder'
 /**
 * Retourne le code du PFA absolu
 **/
-  get absolutePFA(){
-    return DCreate('SECTION',{
-      id: `pfa-absolute`
-    , class: 'pfa'
-    , append: [
-        this.divAbsParts
-      , this.divAbsZones('top')
-      , this.divAbsZones('bottom')
-    ]})
+, get absolutePFA(){
+  return DCreate('SECTION',{
+    id: `pfa-absolute`
+  , class: 'pfa'
+  , append: [
+      this.divAbsParts
+    , this.divAbsZones('top')
+    , this.divAbsZones('bottom')
+  ]})
 }
 , get relativePFA(){
     return DCreate('SECTION',{
@@ -27,6 +28,14 @@ const PFABuilder = {
       , this.divRelParts
     ]})
 }
+
+// Retourne les styles propres, calculés en fonction du film
+, get styles(){
+    return DCreate('LINK', {
+      attrs: {rel: "stylesheet", media: 'screen', href: './js/common/PFA/PFA.css'}
+    })
+}
+
 , get divAbsParts(){
     var div = this.divParts('Abs')
     return div
@@ -36,8 +45,8 @@ const PFABuilder = {
   return div
 }
 , divParts(dimT /* 'Abs' ou 'Rel'*/ ){
-  var  div, zoneId, node, span
-  div = DCreate('DIV',{
+  var div, zoneId, node, span
+  div = DCreate('DIV', {
     id:    `pfa-div-parts-${dimT}`
   , class: 'pfa-div-parts'
   , style: `width:${this.plain}px;`
@@ -64,26 +73,33 @@ const PFABuilder = {
     return div
 }
 , divZones(dimT, which){
-    var div, zoneId, node, span, zoneIds
-    div = DCreate('DIV')
-    div.className = 'pfa-div-zones'
-    div.id = `pfa-div-zones-${dimT}`
-    if (which === 'top'){
-      zoneIds = this.a.PFA.MAIN_STTNODES
-    } else {
-      zoneIds = this.a.PFA.SUB_STTNODES
-    }
+    var div
+      , zoneId
+      , span
+      , pfa = this.a.PFA
+      , zoneIds = pfa[which === 'top'?'MAIN_STTNODES':'SUB_STTNODES']
+      , spans = []
+      ;
+
+    // Fabrication du noeud, soit dans le paradigme absolu avec
+    // la méthode `SttNode.inAbsPFA` soit dans le relatif avec
+    // la méthode `SttNode.inRelPFA` définies dans l'instance
+    // SttNode.
     for(zoneId of zoneIds){
-      node = this.a.PFA.node(zoneId)
-      span = node[`in${dimT}PFA`](this.coefT2P)
-      span && div.appendChild(span)
+      span = pfa.node(zoneId)[`in${dimT}PFA`](this.coefT2P)
+      span && spans.push(span)
     }
-    return div
+
+    return DCreate('DIV', {
+      id:     `pfa-div-zones-${dimT}`
+    , class:  'pfa-div-zones'
+    , append: spans
+    })
 }
 /**
 * Méthode qui calcule toutes les dimensions d'après la largeur voulue
 **/
-, calcDimsFor(larg){
+,  calcDimsFor(larg){
     this.quart  = this.qu = larg / 4
     this.tiers  = this.ti = larg / 3
     this.moitie = this.mo = larg / 2
@@ -113,36 +129,24 @@ const PFABuilder = {
     }
   }
   this._partsIds = ps
-  this._zonesIds    = zs
+  this._zonesIds = zs
   return {parts: ps, zones: zs}
 }
 
-}
+}// /PFABuilder
 
-
-// Retourne les styles propres, calculés en fonction du film
-PFABuilder.styles = function(){
-  var sty = document.createElement('LINK')
-  sty.setAttribute('rel', "stylesheet")
-  sty.setAttribute('media', "screen")
-  sty.href = './js/common/PFA/PFA.css'
-  return sty
-}()
-
+// Doit retourner les éléments à ajouter à la flying-window,
+// dans le build()
 module.exports = function(options){
   // console.log("-> Construction du PFA")
 
-  var pfa_id = 1
-
   PFABuilder.calcDimsFor(ScreenWidth - 200)
 
-  var pfas = document.createElement('SECTION')
-  pfas.id = 'pfas'
-  pfas.appendChild(PFABuilder.styles)
-  pfas.appendChild(PFABuilder.absolutePFA)
-  pfas.appendChild(PFABuilder.relativePFA)
-
-  this._output = pfas
+  return [
+      PFABuilder.styles
+    , PFABuilder.absolutePFA
+    , PFABuilder.relativePFA
+  ]
 
   // console.log("<- Construction du PFA")
 }

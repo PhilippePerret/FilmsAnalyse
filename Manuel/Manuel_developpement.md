@@ -6,6 +6,7 @@
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
+  * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
 * [Ajout de préférences globales](#add_global_prefs)
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
@@ -123,6 +124,18 @@ Afin que les horloges et les times en attribut de balises soient automatiquement
 Si ces conventions sont respectées, l'appel à la méthode `FAEvent#updateInUI` modification automatiquement les valeurs affichées et consignées. Pour ce qui est des scènes, c'est la méthode qui actualise tous les numéros qui se chargera d'actualiser les numéros de scène.
 
 Cf. aussi [Champs temporels](#temporal_fields) pour les champs *horlogeables* et *durationables*.
+
+### Actualisation automatique du numéro de scène courante {#autoupdate_scene_courante}
+
+Pour obtenir une actualisation automatique de la scène courante, comme elle est affichée par exemple à côté des markeurs de parties, il suffit d'utiliser des champs de classe CSS :
+
+```html
+
+<span class="current-scene-number">Scène 12</span>
+<span class="current-scene-number-only">12</span>
+<span class="current-scene-pitch">Le résumé de la scène</span>
+
+```
 
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}

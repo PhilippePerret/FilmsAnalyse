@@ -60,17 +60,57 @@ static newId(){
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
-  if(this.current && this.current.id == wf.id){
-    // La fenêtre est déjà courante
+  // console.log("On met cette fenêtre en fenêtre courante:", wf)
+  if(this.current && this.current.id == wf.id) return
+  if(this.current) this.current.bringToBack()
+  this.current = wf
+  this.current.bringToFront()
+  /**
+    Ne surtout pas :
+      this.checkOverlaps(wf)
+    Car la méthode est appelée aussi quand on ferme une fenêtre
+    => Le check du chevauchement doit être invoqué au show de
+    la fenêtre volante.
+  **/
+  // On vérifie que la fenêtre ne soit pas juste sur une autre
+  /**
+    Surtout pas :
+      e && stopEvent(e)
+    car sinon, lorsqu'on clique sur un checkbox
+    par exemple, c'est bloqué.
+  **/
+}
+/**
+* Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
+* sur une autre.
+**/
+static checkOverlaps(wf){
+  var {top: refTop, left: refLeft} = wf.jqObj.offset()
+  refTop  = Math.round(refTop)
+  refLeft = Math.round(refLeft)
+  // console.log("refTop/refLeft initiaux:", refTop, refLeft)
+  var moveIt = false
+  $('.fwindow').each(function(i,w){
+    if(w.id == wf.domId) return // la fenêtre qu'on checke
+    if(moveIt === true) return
+    var {top, left} = $(w).offset()
+    top   = Math.round(top)
+    left  = Math.round(left)
+    if(refTop.isCloseTo(top, 8) || refLeft.isCloseTo(left, 8)){
+      refTop  += 16
+      refLeft += 16
+      moveIt  = true
+    }
+  })
+  // TODO Peut-être qu'on l'a déplacée sur une autre
+  // => Recommencer jusqu'à ce que ce soit bon
+  if(moveIt === true){
+    // console.log("refTop/refLeft corrigés:", refTop, refLeft)
+    wf.jqObj.css({left:`${refLeft}px`, top:`${refTop}px`})
+    return this.checkOverlaps(wf)
   } else {
-    if(this.current) this.current.bringToBack()
-    this.current = wf
-    this.current.bringToFront()
+    return true
   }
-  // Surtout pas :
-  // e && stopEvent(e)
-  // car sinon, lorsqu'on clique sur un checkbox
-  // par exemple, c'est bloqué.
 }
 static unsetCurrent(wf){
   if(this.current.id !== wf.id) return
@@ -118,6 +158,7 @@ show(){
   if(!this.built) this.build().observe()
   this.jqObj.show()
   this.constructor.setCurrent(this)
+  FWindow.checkOverlaps(this)
   if ('function' === typeof this.owner.onShow) this.owner.onShow()
   this.visible = true
 }
@@ -126,6 +167,10 @@ hide(){
   this.jqObj.hide()
   if ('function' === typeof this.owner.onHide) this.owner.onHide()
   this.visible = false
+}
+update(){
+  if(!this.built) return
+  this.jqObj.remove()
 }
 // Pour mettre la Flying window en premier plan
 // Ne pas appeler ces méthodes directement, appeler la méthode

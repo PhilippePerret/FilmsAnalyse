@@ -168,7 +168,7 @@ get formated(){return this.formate()}
       var groups = arguments[arguments.length - 1]
       return `<span onclick="goToTime(${groups.time})">${new OTime(parseFloat(groups.time)).horloge_simple}</span>`
     })
-    console.log(str)
+    // console.log(str)
     return str
   }
   /**

@@ -29,6 +29,8 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
+Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d'au moins une minute.
+
 ## Gestion des temps {#gestion_des_temps}
 
 ### Déplacements à l'aide de la Timeline {#move_with_timeline}

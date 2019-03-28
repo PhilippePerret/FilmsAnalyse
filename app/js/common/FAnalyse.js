@@ -5,7 +5,7 @@
  * Pour l'analyse d'un film
  */
 
- let SttNode = null
+let SttNode = null
 
 class FAnalyse {
 
@@ -83,29 +83,29 @@ static checkLast(){
     }
   }
 
-  static setGlobalOption(opt_id, opt_value){
-    require('./js/tools/global_options.js').setGlobalOption(opt_id, opt_value)
-  }
-  static toggleGlobalOption(opt_id){
-    require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
-  }
+static setGlobalOption(opt_id, opt_value){
+  require('./js/tools/global_options.js').setGlobalOption(opt_id, opt_value)
+}
+static toggleGlobalOption(opt_id){
+  require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
+}
 
-  /**
-   * Méthode qui charge l'analyse dont le dossier est +aFolder+
-   */
-  static load(aFolder){
-    try {
-      this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
-      UI.startWait(T('loading-analyse'))
-      // Chargement des composants nécessaires
-      if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
-      window.current_analyse = new FAnalyse(aFolder)
-      current_analyse.load()
-      return true
-    } catch (e) {
-      return F.error(e)
-    }
+/**
+ * Méthode qui charge l'analyse dont le dossier est +aFolder+
+ */
+static load(aFolder){
+  try {
+    this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
+    UI.startWait(T('loading-analyse'))
+    // Chargement des composants nécessaires
+    if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
+    window.current_analyse = new FAnalyse(aFolder)
+    current_analyse.load()
+    return true
+  } catch (e) {
+    return F.error(e)
   }
+}
 
 
 
@@ -184,366 +184,377 @@ associateDropped(obj, domel){
   }
   return balise
 }
-  // ---------------------------------------------------------------------
-  //  Les données de l'analyse (dans le fichier data)
+// ---------------------------------------------------------------------
+//  Les données de l'analyse (dans le fichier data)
 
-  /**
-   * Retourne les données actuelles de l'analyse
-   */
-  get data(){
-    return {
-        folder:             this.folder
-      , title:              this.title
-      , filmStartTime:      this.filmStartTime
-      , filmEndTime:        this.filmEndTime
-      , filmEndGenericFin:  this.filmEndGenericFin
-      , videoPath:          this.videoPath
-      , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
-      , stopPoints:         (this.locator ? this.locator.stop_points : [])
+/**
+ * Retourne les données actuelles de l'analyse
+ */
+get data(){
+  return {
+      folder:             this.folder
+    , title:              this.title
+    , filmStartTime:      this.filmStartTime
+    , filmEndTime:        this.filmEndTime
+    , filmEndGenericFin:  this.filmEndGenericFin
+    , videoPath:          this.videoPath
+    , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
+    , stopPoints:         (this.locator ? this.locator.stop_points : [])
+  }
+}
+set data(v){
+  this.title                = v.title
+  this.filmStartTime        = v.filmStartTime || 0
+  this.filmEndTime          = v.filmEndTime
+  this.filmEndGenericFin    = v.filmEndGenericFin
+  this._videoPath           = v.videoPath
+  this.lastCurrentTime      = v.lastCurrentTime || 0
+  this.stopPoints           = v.stopPoints || []
+}
+
+// avant de le calculer vraiment :
+get duration(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
+set duration(v){ this._duration = v ; this.modified = true }
+calcDuration(){
+  if(!this.filmEndTime) return null
+  return this.filmEndTime - this.filmStartTime
+}
+
+get filmStartTime() {return this._filmStTi || defP(this,'_filmStTi', 0)}
+set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
+
+get filmEndTime(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
+set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
+
+calcFilmEndTime(){
+  var endt = null
+  if(this.videoPath){
+    this._filmEndTime = this.videoController.controller.duration
+    endt = this._filmEndTime
+  }
+  return endt
+}
+
+get filmEndGenericFin(){return this._filmEGF}
+set filmEndGenericFin(v){this._filmEGF = v ; this.modified = true }
+
+get title(){return this._title || defP(this,'_title',path.basename(this.folder))}
+set title(v){ this._title = v ; this.modified = true }
+
+get filmId(){return this._filmId||defP(this,'_filmId',this.title.camelize())}
+
+get lastCurrentTime(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
+set lastCurrentTime(v){ this._lastCurrentTime = v }
+
+// ---------------------------------------------------------------------
+//  DATA VOLATILES
+
+get modified() { return this._modified }
+set modified(v) { this._modified = v }
+
+get currentScene(){
+  if(undefined === this._current_scene){
+    this._current_scene = Scene.sceneAt(this.locator.getRTime())
+    Scene.current = this._current_scene
+  }
+  return this._current_scene
+}
+set currentScene(v){
+  this._current_scene = v
+  $('span.current-scene-number').html(`Scène ${v.numero}`)
+  $('span.current-scene-number-only').html(v.numero)
+  $('span.current-scene-pitch').html(v.pitch)
+}
+
+get PFA(){
+  if(undefined === this._PFA){
+    SttNode   = require('./js/common/PFA/SttNode.js')
+    this._PFA = require('./js/common/PFA/PFA.js')
+    this._PFA.init()
+  }
+  return this._PFA
+}
+
+// ---------------------------------------------------------------------
+/**
+ * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
+ * données ont été chargées et traitées. Si un fichier vidéo existe, on le
+ * charge.
+ */
+onReady(){
+  this.videoController = new VideoController(this)
+  this.locator = new Locator(this)
+  this.reader  = new FAReader(this)
+  this.init()
+  this.locator.init()
+  this.locator.stop_points = this.stopPoints
+  this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
+  EventForm.init()
+  Scene.init()
+  this.setOptionsInMenus()
+  this.videoController.init()
+}
+
+
+/**
+ * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
+ * où l'on est vraiment prêt.
+ */
+setAllIsReady(){
+  // console.log("-> FAnalyse#setAllIsReady")
+  // Au cours du dispatch des données, la méthode modified a été invoquée
+  // de nombreuses fois. Il faut revenir à l'état normal.
+  this.modified = false
+  UI.stopWait()// toujours, au cas où
+  // On peut indiquer aux menus qu'il y a une analyse chargée
+  ipc.send('current-analyse-exist', true)
+  // Si une fonction a été définie pour la fin du chargement, on
+  // peut l'appeler maintenant.
+  if ('function' == typeof this.methodeAfterLoading){
+    this.methodeAfterLoading()
+  }
+}
+
+init(){
+  // On met le titre dans la fenêtre
+  window.document.title = `Analyse du film « ${this.title} »`
+  // Si l'analyse courante définit une vidéo, on la charge et on prépare
+  // l'interface. Sinon, on masque la plupart des éléments
+  this.videoController.setVideoUI(!!this.videoPath)
+  if (this.videoPath){
+    this.videoController.load(this.videoPath)
+  } else {
+    F.error(T('video-path-required'))
+    this.setAllIsReady()
+  }
+}
+
+// ---------------------------------------------------------------------
+//  MÉTHODES D'AFFICHAGE
+
+exportAs(format){
+  if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
+  FABuilder.createNew().exportAs(format)
+}
+
+/**
+* Pour afficher la Timeline
+**/
+displayTimeline(){MainTimeline.toggle()}
+
+/**
+ * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
+ *
+ * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être
+ * qu'il y aura un menu particulier pour le faire
+ */
+displayFullAnalyse(forcer){
+  if(undefined === forcer) forcer = false
+  var callback = this.displayFullAnalyse.bind(this, forcer)
+  if(NONE === typeof FABuilder) return this.loadBuilder(callback)
+  if(NONE === typeof FAExporter)return this.loadExporter(callback)
+  if(NONE === typeof FAReport)return this.loadReporter(callback)
+  FABuilder.createNew().show({force_update: forcer})
+  callback = null
+}
+
+displayLastReport(){
+  var callback = this.displayLastReport.bind(this)
+  if(NONE === typeof FAReport)return this.loadReporter(callback)
+  FAReport.showLast()
+}
+
+
+displayPFA(){this.PFA.toggle()}
+
+displayInfosFilm(){
+  var method = require('./js/tools/building/infos_film.js')
+  method.bind(this)()
+}
+
+displayFondamentales(){
+  var method = require('./js/tools/building/fondamentales.js')
+  method.bind(this)()
+}
+displayStatistiques(){
+  // TODO
+  F.error("Les Statistiques ne sont pas encore implémentées.")
+}
+
+displayAnalyseState(){
+  var method = require('./js/tools/analyse_state.js')
+  method.bind(this)()
+}
+
+/**
+ * Méthode qui ouvre le writer
+ */
+openDocInWriter(dtype){
+  if( NONE === typeof FAWriter){
+    return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
+  }
+  if(!FAWriter.inited) FAWriter.init()
+  FAWriter.openDoc(dtype)
+}
+/**
+ * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
+ * des events.
+ */
+createNewEventer(){
+  if( NONE === typeof FAEventer){
+    return System.loadComponant('faEventer', this.createNewEventer.bind(this))
+  }
+  FAEventer.createNew()
+}
+// La version courante de l'analyse
+get hVersion(){return this._hversion || '0.0.1'}
+
+// ---------------------------------------------------------------------
+// MÉTHODES OPTIONS
+
+get options(){ return Options }
+
+/**
+ * Réglage des options dans les menus (en asynchrone)
+ */
+setOptionsInMenus(){
+  // Options générales
+  ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
+  ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
+  ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
+  // Options propres à l'analyse courante
+  ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
+}
+// Méthode à lancer après le chargement des données ou après la
+// sauvegarde
+// Pour le moment, ne sert que pour les tests.
+get methodeAfterLoading(){return this._methodeAfterLoading}
+set methodeAfterLoading(v){this._methodeAfterLoading = v}
+get methodAfterSaving(){return this._methodAfterSaving}
+set methodAfterSaving(v){this._methodAfterSaving = v}
+
+forEachEvent(method, options){
+  if(undefined===options){options = {}}
+  var i   = options.from || 0
+    , len = options.to || this.events.length
+    ;
+  for(;i<len;++i){
+    method(this.events[i])
+  }
+}
+
+/**
+ * Méthode ajoutant un évènement
+ *
+ * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
+ * l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
+ * donc parfaitement valide ici.
+ *
+ * Attention : la méthode est aussi appelée (en cascade) au chargement
+ * de l'analyse. +whenLoading+ est true, dans ce cas-là
+ */
+addEvent(nev, whenLoading) {
+  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
+}
+
+// Pour éditer l'event d'identifiant +event_id+
+editEvent(event_id){
+  return EventForm.editEvent.bind(EventForm, this.ids[event_id])()
+}
+
+/**
+ * Procédure de description de l'event
+ */
+destroyEvent(event_id, form_instance){
+  (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
+}
+/**
+ * Méthode appelée à la modification d'un event
+ *
+ * [1]  En règle générale, si une opération spéciale doit être faite sur
+ *      l'event, il faut mieux définir sa méthode d'instance `onModify` qui
+ *      sera automatiquement appelée après la modification.
+ */
+updateEvent(ev, options){
+  var new_idx = undefined
+  if (options && options.initTime != ev.time){
+    var idx_init      = this.indexOfEvent(ev.id)
+    var next_ev_old   = this.events[idx_init + 1]
+    var idx_new_next  = this.getIndexOfEventAfter(ev.time)
+    var next_ev_new   = this.events[idx_new_next]
+    if( next_ev_old != next_ev_new){
+      // => Il faut replacer l'event au bon endroit
+      this.events.splice(idx_init, 1)
+      var new_idx = this.getIndexOfEventAfter(ev.time)
+      this.events.splice(new_idx, 0, ev)
     }
   }
-  set data(v){
-    this.title                = v.title
-    this.filmStartTime        = v.filmStartTime || 0
-    this.filmEndTime          = v.filmEndTime
-    this.filmEndGenericFin    = v.filmEndGenericFin
-    this._videoPath           = v.videoPath
-    this.lastCurrentTime      = v.lastCurrentTime || 0
-    this.stopPoints           = v.stopPoints || []
-  }
+  // [1]
+  if(ev.isRealScene){this.updateNumerosScenes()}
+  // On actualise tous les autres éléments (par exemple l'attribut data-time)
+  ev.updateInUI()
+  // On marque l'analyse modifiée
+  this.modified = true
+  // Enfin, s'il est affiché, il faut updater son affichage dans le
+  // reader (et le replacer si nécessaire)
+  ev.updateInReader(new_idx)
 
-  // avant de le calculer vraiment :
-  get duration(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
-  set duration(v){ this._duration = v ; this.modified = true }
-  calcDuration(){
-    if(!this.filmEndTime) return null
-    return this.filmEndTime - this.filmStartTime
-  }
+  next_ev_old = null
+  next_ev_new = null
+}
 
-  get filmStartTime() {return this._filmStTi || defP(this,'_filmStTi', 0)}
-  set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
+getEventById(eid){
+  return this.ids[eid]
+}
 
-  get filmEndTime(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
-  set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
-
-  calcFilmEndTime(){
-    var endt = null
-    if(this.videoPath){
-      this._filmEndTime = this.videoController.controller.duration
-      endt = this._filmEndTime
+updateNumerosScenes(){
+  var num = 0
+  this.forEachEvent(function(ev){
+    if( ev.isRealScene ){
+      ev.numero = ++num
+      ev.updateNumero()
     }
-    return endt
-  }
+  })
+}
 
-  get filmEndGenericFin(){return this._filmEGF}
-  set filmEndGenericFin(v){this._filmEGF = v ; this.modified = true }
-
-  get title(){return this._title || defP(this,'_title',path.basename(this.folder))}
-  set title(v){ this._title = v ; this.modified = true }
-
-  get filmId(){return this._filmId||defP(this,'_filmId',this.title.camelize())}
-
-  get lastCurrentTime(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
-  set lastCurrentTime(v){ this._lastCurrentTime = v }
-
-  // ---------------------------------------------------------------------
-  //  DATA VOLATILES
-
-  get modified() { return this._modified }
-  set modified(v) { this._modified = v }
-
-  get currentScene(){
-    if(undefined === this._current_scene){
-      this._current_scene = Scene.sceneAt(this.locator.getRTime())
+getSceneNumeroAt(time){
+  var current_numero = 0
+  var i = 0, len = this.events.length, ev
+  for(i;i<len;++i){
+    ev = this.events[i]
+    if (ev.time > time) {
+      return current_numero
     }
-    return this._current_scene
+    if (ev.type === 'scene' && ev.sceneType != 'generic') { current_numero += 1 }
   }
-  set currentScene(v){this._current_scene = v}
+  // Non trouvé (début)
+  return 0
+}
 
-  get PFA(){
-    if(undefined === this._PFA){
-      SttNode   = require('./js/common/PFA/SttNode.js')
-      this._PFA = require('./js/common/PFA/PFA.js')
-      this._PFA.init()
-    }
-    return this._PFA
-  }
-
-  // ---------------------------------------------------------------------
-  /**
-   * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
-   * données ont été chargées et traitées. Si un fichier vidéo existe, on le
-   * charge.
-   */
-  onReady(){
-    this.videoController = new VideoController(this)
-    this.locator = new Locator(this)
-    this.reader  = new FAReader(this)
-    this.init()
-    this.locator.init()
-    this.locator.stop_points = this.stopPoints
-    this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
-    EventForm.init()
-    Scene.init()
-    this.setOptionsInMenus()
-    this.videoController.init()
-  }
-
-
-  /**
-   * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
-   * où l'on est vraiment prêt.
-   */
-  setAllIsReady(){
-    // console.log("-> FAnalyse#setAllIsReady")
-    // Au cours du dispatch des données, la méthode modified a été invoquée
-    // de nombreuses fois. Il faut revenir à l'état normal.
-    this.modified = false
-    UI.stopWait()// toujours, au cas où
-    // On peut indiquer aux menus qu'il y a une analyse chargée
-    ipc.send('current-analyse-exist', true)
-    // Si une fonction a été définie pour la fin du chargement, on
-    // peut l'appeler maintenant.
-    if ('function' == typeof this.methodeAfterLoading){
-      this.methodeAfterLoading()
-    }
-  }
-
-  init(){
-    // On met le titre dans la fenêtre
-    window.document.title = `Analyse du film « ${this.title} »`
-    // Si l'analyse courante définit une vidéo, on la charge et on prépare
-    // l'interface. Sinon, on masque la plupart des éléments
-    this.videoController.setVideoUI(!!this.videoPath)
-    if (this.videoPath){
-      this.videoController.load(this.videoPath)
-    } else {
-      F.error(T('video-path-required'))
-      this.setAllIsReady()
-    }
-  }
-
-  // ---------------------------------------------------------------------
-  //  MÉTHODES D'AFFICHAGE
-
-  exportAs(format){
-    if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
-    FABuilder.createNew().exportAs(format)
-  }
-
-  /**
-  * Pour afficher la Timeline
-  **/
-  displayTimeline(){MainTimeline.toggle()}
-
-  /**
-   * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
-   *
-   * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être
-   * qu'il y aura un menu particulier pour le faire
-   */
-  displayFullAnalyse(forcer){
-    if(undefined === forcer) forcer = false
-    var callback = this.displayFullAnalyse.bind(this, forcer)
-    if(NONE === typeof FABuilder) return this.loadBuilder(callback)
-    if(NONE === typeof FAExporter)return this.loadExporter(callback)
-    if(NONE === typeof FAReport)return this.loadReporter(callback)
-    FABuilder.createNew().show({force_update: forcer})
-    callback = null
-  }
-
-  displayLastReport(){
-    var callback = this.displayLastReport.bind(this)
-    if(NONE === typeof FAReport)return this.loadReporter(callback)
-    FAReport.showLast()
-  }
-
-
-  displayPFA(){this.PFA.toggle()}
-
-  displayInfosFilm(){
-    var method = require('./js/tools/building/infos_film.js')
-    method.bind(this)()
-  }
-
-  displayFondamentales(){
-    var method = require('./js/tools/building/fondamentales.js')
-    method.bind(this)()
-  }
-  displayStatistiques(){
-    // TODO
-    F.error("Les Statistiques ne sont pas encore implémentées.")
-  }
-
-  displayAnalyseState(){
-    var method = require('./js/tools/analyse_state.js')
-    method.bind(this)()
-  }
-
-  /**
-   * Méthode qui ouvre le writer
-   */
-  openDocInWriter(dtype){
-    if( NONE === typeof FAWriter){
-      return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
-    }
-    if(!FAWriter.inited) FAWriter.init()
-    FAWriter.openDoc(dtype)
-  }
-  /**
-   * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
-   * des events.
-   */
-  createNewEventer(){
-    if( NONE === typeof FAEventer){
-      return System.loadComponant('faEventer', this.createNewEventer.bind(this))
-    }
-    FAEventer.createNew()
-  }
-  // La version courante de l'analyse
-  get hVersion(){return this._hversion || '0.0.1'}
-
-  // ---------------------------------------------------------------------
-  // MÉTHODES OPTIONS
-
-  get options(){ return Options }
-
-  /**
-   * Réglage des options dans les menus (en asynchrone)
-   */
-  setOptionsInMenus(){
-    // Options générales
-    ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
-    ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
-    ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
-    // Options propres à l'analyse courante
-    ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
-  }
-  // Méthode à lancer après le chargement des données ou après la
-  // sauvegarde
-  // Pour le moment, ne sert que pour les tests.
-  get methodeAfterLoading(){return this._methodeAfterLoading}
-  set methodeAfterLoading(v){this._methodeAfterLoading = v}
-  get methodAfterSaving(){return this._methodAfterSaving}
-  set methodAfterSaving(v){this._methodAfterSaving = v}
-
-  forEachEvent(method, options){
-    if(undefined===options){options = {}}
-    var i   = options.from || 0
-      , len = options.to || this.events.length
-      ;
-    for(;i<len;++i){
-      method(this.events[i])
-    }
-  }
-
-  /**
-   * Méthode ajoutant un évènement
-   *
-   * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
-   * l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
-   * donc parfaitement valide ici.
-   *
-   * Attention : la méthode est aussi appelée (en cascade) au chargement
-   * de l'analyse. +whenLoading+ est true, dans ce cas-là
-   */
-  addEvent(nev, whenLoading) {
-    (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
-  }
-
-  /**
-   * Procédure de description de l'event
-   */
-  destroyEvent(event_id, form_instance){
-    (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
-  }
-  /**
-   * Méthode appelée à la modification d'un event
-   *
-   * [1]  En règle générale, si une opération spéciale doit être faite sur
-   *      l'event, il faut mieux définir sa méthode d'instance `onModify` qui
-   *      sera automatiquement appelée après la modification.
-   */
-  updateEvent(ev, options){
-    var new_idx = undefined
-    if (options && options.initTime != ev.time){
-      var idx_init      = this.indexOfEvent(ev.id)
-      var next_ev_old   = this.events[idx_init + 1]
-      var idx_new_next  = this.getIndexOfEventAfter(ev.time)
-      var next_ev_new   = this.events[idx_new_next]
-      if( next_ev_old != next_ev_new){
-        // => Il faut replacer l'event au bon endroit
-        this.events.splice(idx_init, 1)
-        var new_idx = this.getIndexOfEventAfter(ev.time)
-        this.events.splice(new_idx, 0, ev)
-      }
-    }
-    // [1]
-    if(ev.isRealScene){this.updateNumerosScenes()}
-    // On actualise tous les autres éléments (par exemple l'attribut data-time)
-    ev.updateInUI()
-    // On marque l'analyse modifiée
-    this.modified = true
-    // Enfin, s'il est affiché, il faut updater son affichage dans le
-    // reader (et le replacer si nécessaire)
-    ev.updateInReader(new_idx)
-
-    next_ev_old = null
-    next_ev_new = null
-  }
-
-  getEventById(eid){
-    return this.ids[eid]
-  }
-
-  updateNumerosScenes(){
-    var num = 0
-    this.forEachEvent(function(ev){
-      if( ev.isRealScene ){
-        ev.numero = ++num
-        ev.updateNumero()
-      }
-    })
-  }
-
-  getSceneNumeroAt(time){
-    var current_numero = 0
-    var i = 0, len = this.events.length, ev
-    for(i;i<len;++i){
-      ev = this.events[i]
-      if (ev.time > time) {
-        return current_numero
-      }
-      if (ev.type === 'scene' && ev.sceneType != 'generic') { current_numero += 1 }
-    }
-    // Non trouvé (début)
-    return 0
-  }
-
-  /**
-   * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
-   *
-   * La méthode permet principalement de placer les nouveaux évènements
-   */
-  getIndexOfEventAfter(time){
-    var i = 0
-      , len = this.events.length ;
-    for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
-    return len
-  }
-  /**
-   * Retourne l'index de l'event d'identifiant +event_id+
-   *
-   * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
-   * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
-   * depuis des `event_after` et `event_before`
-   * TODO Voir d'abord où on se sert exactement de la liste this.events comme
-   * liste.
-   */
-  indexOfEvent(event_id){
-    var i = 0, len = this.events.length ;
-    for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
-  }
+/**
+ * Retourne l'index de l'évènement qui se trouve juste après le temps +time+
+ *
+ * La méthode permet principalement de placer les nouveaux évènements
+ */
+getIndexOfEventAfter(time){
+  var i = 0
+    , len = this.events.length ;
+  for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
+  return len
+}
+/**
+ * Retourne l'index de l'event d'identifiant +event_id+
+ *
+ * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
+ * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
+ * depuis des `event_after` et `event_before`
+ * TODO Voir d'abord où on se sert exactement de la liste this.events comme
+ * liste.
+ */
+indexOfEvent(event_id){
+  var i = 0, len = this.events.length ;
+  for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
+}
 
   // --- FONCTIONS I/O ----------------------------------------------
 
