@@ -437,6 +437,7 @@ actualizeReader(curt){
   de l'élément suivant dans chaque table.
  */
 actualizeMarkersStt(curt){
+  // console.log("-> actualizeMarkersStt", curt)
   var vid = this.videoController
   if(undefined === curt) curt = this.currentRTime
   if(undefined === this.a.PFA.TimesTables) this.a.PFA.setTimesTables()

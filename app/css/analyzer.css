@@ -81,12 +81,13 @@
   z-index:20;
 }
 .timeline .timeline-cursors .cursor.timeline-shadowcursor {
+  visibility:hidden;
   background-color:#FF8888;
   z-index:19;
 }
 .timeline span.timeline-horloge {
   position:absolute;
-  top:-24px;
+  top:-26px;
   right:0px;
   font-size:11pt;
   font-family:monospace;

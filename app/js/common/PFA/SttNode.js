@@ -39,13 +39,13 @@ class SttNode {
     */
     var refNode
     if('string' === typeof z[0]){
-      refNode = current_analyse.PFA.node(z[0])
+      refNode = this.pfa.node(z[0])
       z[0] = refNode.endAtRel || refNode.endAtAbs
       // On indique la dépendance, pour reseter en cas de redéfinition
       refNode.dependencies.push(sttnode.id)
     }
     if('string' === typeof z[1]){
-      refNode = current_analyse.PFA.node(z[1])
+      refNode = this.pfa.node(z[1])
       z[1] = refNode.startAtRel || refNode.startAtAbs
       refNode.dependencies.push(sttnode.id)
     }
@@ -76,26 +76,6 @@ constructor(nid, data){
   // définis dans la méthode de classe `calcZone`
   this.dependencies = []
 
-  this.renseignePFA()
-
-}
-
-renseignePFA(){
-  if (this.next){
-    if(undefined === this.pfa.nodes[this.next]){
-      current_analyse.PFA.DATA_STT_NODES[this.next].previous = this.id
-    } else {
-      current_analyse.PFA.node(this.next)._previous = this.id
-    }
-  }
-
-  if (this.first){
-    if(undefined === current_analyse.PFA.nodes[this.first]){
-      current_analyse.PFA.DATA_STT_NODES[this.first].last = this.id
-    } else {
-      current_analyse.PFA.node(this.first)._last = this.id
-    }
-  }
 }
 
 // ---------------------------------------------------------------------

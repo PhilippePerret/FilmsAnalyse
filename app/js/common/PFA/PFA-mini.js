@@ -31,16 +31,17 @@ const PFA = {
       *
       **/
       EXPO:   {hname: 'EXPOSITION', shortHname: 'EXPO.', cZone:'[0,quart]', zone: null, main: true, next: 'DEV1', tolerance: '24ieme'}
-    , preamb: {hname: 'Préambule', shortHname: 'Préamb.', cZone:'[0,iem24]', next:'incPer', tolerance: 'after'}
+    , preamb: {hname: 'Préambule', shortHname: 'Préamb.', cZone:'[0,iem24]', next:'incPer', last: 'desine', tolerance: 'after'}
     , incPer: {hname: 'Incident perburbateur', shortHname: 'Inc.Pert.', cZone:'[iem24,douzi]', next:'incDec', tolerance: 'before'}
     , incDec: {hname: 'Incident déclencheur', shortHname: 'Inc.Déc.', cZone:'[douzi,quart-douzi]', next:'zone_r', tolerance: 'before'}
-    , zone_r: {hname: 'Zone de refus', shortHname: 'Zone R.', cZone:'[quart-douzi-50,quart-50]', next:'pivot1', tolerance: 'before'}
-    , pivot1: {hname: 'Pivot 1', shortHname: 'Pvt 1', cZone: '[quart-iem24,quart]', next:'actio1', tolerance: 'none'}
+    , zone_r: {hname: 'Zone de refus', shortHname: 'Zone R.', cZone:'[quart-douzi,quart-iem24]', next:'pivot1', tolerance: 'before'}
+    , pivot1: {hname: 'Pivot 1', shortHname: 'Pvt 1', cZone: '[quart-iem24,quart]', next:'act1d1', tolerance: 'none'}
     , DEV1:   {hname: 'DÉVELOPPEMENT (1ère partie)', shortHname: 'DÉV. Part 1', cZone:'[quart,moiti]', main: true, next: 'DEV2', tolerance: '24ieme'}
-    , actio1: {hname: 'Première action', shortHname: '1ère action', cZone:'[quart,quart+iem24]', next:'tiers1', tolerance:'none'}
+    , act1d1: {hname: '1ère action', shortHname: '1ère action', cZone:'[quart,quart+iem24]', next:'tiers1', tolerance:'none'}
     , tiers1: {hname: 'Premier Tiers', shortHname: '1/3', cZone:'[tiers-iem24,tiers+iem24]', next: 'cledev', tolerance:'none'}
-    , cledev: {hname: 'Clé de voûte', shortHname: 'C.d.V.', cZone:'[moiti-iem24,moiti+iem24]', next: 'tiers2', tolerance:'none'}
+    , cledev: {hname: 'Clé de voûte', shortHname: 'C.d.V.', cZone:'[moiti-iem24,moiti+iem24]', next: 'act1d2', tolerance:'none'}
     , DEV2:   {hname: 'DÉVELOPPEMENT (2nde partie)', shortHname: 'DÉV. Part 2', cZone:'[moiti,tresQ]', main: true, next: 'DNOU', tolerance: '24ieme'}
+    , act1d2: {hname: '1ère action post-CdV', shortHname: 'Action post-CdV', cZone:'[moiti+iem24,moiti+douzi]', next: 'tiers2', tolerance:'before'}
     , tiers2: {hname: 'Second Tiers', shortHname: '2/3', cZone:'[deuxT-iem24,deuxT+iem24]', next: 'pivot2', tolerance:'none'}
     , pivot2: {hname: 'Pivot 2', shortHname: 'Pvt 2', cZone:'[tresQ-iem24,tresQ]', next: 'crisis', tolerance: 'none'}
     , DNOU:   {hname: 'DÉNOUEMENT', shortHname: 'DÉNOUE.', cZone:'[tresQ,duree]', main: true, next: null, first: 'EXPO', tolerance: '24ieme'}

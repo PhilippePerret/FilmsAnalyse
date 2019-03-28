@@ -7,8 +7,21 @@ Object.assign(PFA, {
 , inited: false
 
 , init(){
+    var my = this
     this.load()
+    this.forEachNode(node => {
+      if(node.next) {
+        my.node(node.next)._previous = node.id
+        this.DATA_STT_NODES[node.next]._previous = node.id
+      }
+      if(node.first){
+        my.node(node.first)._last = node.id
+        this.DATA_STT_NODES[node.first]._last = node.id
+      }
+    })
+    // console.log("DATA APRES:", Object.assign({}, this.DATA_STT_NODES))
     this.inited = true
+    my = null
 }
 // ---------------------------------------------------------------------
 //  Méthodes de données
