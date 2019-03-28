@@ -71,12 +71,22 @@ hide(){
 }
 /**
 * Méthode qui produit la sortie dans un fichier
+
+Note : l'IOFile va se servir de this.contents comme texte à sauver
 **/
 saveInFile(){
   this.iofile.save({after: this.endSave.bind(this)})
 }
 endSave(){
-  F.notice(`Le rapport a été sauvé dans "/reports/${this.fname}".`)
+  // On utilise ensuite pandoc pour créer un fichier autonome
+  // TODO Ajouter `--css=path/to/css` pour ajouter une feuille de style
+  // pour mettre en forme le rapport
+  var cmd = `pandoc -s -o ${this.finalpath} ${this.path}`
+  exec(cmd, (err, stdout, stderr) => {
+    if(err)throw(err)
+    fs.unlinkSync(this.path)
+    F.notice(`Le rapport a été sauvé dans "/reports/${this.fname}l".`)
+  })
 }
 
 // ---------------------------------------------------------------------
@@ -85,9 +95,8 @@ endSave(){
 // Appelée par la fwindow
 build(){
   var css = DCreate('LINK', {attrs: {rel: 'stylesheet', href: './css/report.css'}})
-  var btnclose = DCreate('BUTTON', {type: 'button', class: 'btn-close'})
-  var contenu = DCreate('DIV',{class: 'report-contents', append: this.allObjMsgs()})
-  return [css, btnclose, contenu]
+  var btnclose  = DCreate('BUTTON', {type: 'button', class: 'btn-close'})
+  return [css, btnclose, this.messagesDomObjects]
 }
 
 /**
@@ -111,8 +120,21 @@ observe(){
 
 // ---------------------------------------------------------------------
 // Propriétés
+get contents(){
+  if(undefined === this._contents){
+    this._contents = this.messagesDomObjects.outerHTML
+  }
+  return this._contents
+}
+get messagesDomObjects(){
+  if(undefined === this._messagesDomObjects){
+    this._messagesDomObjects = DCreate('DIV',{class: 'report-contents', append: this.allObjMsgs()})
+  }
+  return this._messagesDomObjects
+}
 get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this, {}))}
 get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 get path(){return this._path || defP(this,'_path', path.join(this.a.folderReports, this.fname))}
-get fname(){return this._fname || defP(this,'_fname', `report-${new Date().getTime()}.html`)}
+get fname(){return this._fname || defP(this,'_fname', `report-${new Date().getTime()}.htm`)}
+get finalpath(){return this._finalpath||defP(this,'_finalpath',`${this.path}l`)}
 }

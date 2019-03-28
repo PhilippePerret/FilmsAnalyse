@@ -1,11 +1,7 @@
 # SUR LE GRILL
 
 
-* Class Report
-  - Faire la sortie en fichier
-
 * Droppable
-  - Normalement, tout est en place. Il faut simplement vérifier que tout fonctionne.
   - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)

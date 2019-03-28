@@ -35,104 +35,105 @@ class FABuilder {
     ipc.send('display-analyse')
     ipc.send('load-url-in-pubwindow', {path: this.html_path})
   }
-  /**
-   * Fonction principale construisant l'analyse
-   *
-   * "Construire l'analyse", pour le moment consiste à produire le document
-   * Markdown rassemblant tous les éléments.
-   */
-  build(options, fn_callback){
-    this.building = true
-    this.log('*** Construction de l’analyse…')
-    this.report.add('Début de la construction de l’analyse', 'title')
-    var my = this
-    if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
-    if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
-    this.buildAs('md', options)
-    this.exportAs('html', options, fn_callback)
-    this.log('=== Fin de la construction de l’analyse')
-    this.report.add('Fin de la construction de l’analyse', 'title')
-    this.building = false
-    this.report.show()
-    my = null
+/**
+ * Fonction principale construisant l'analyse
+ *
+ * "Construire l'analyse", pour le moment consiste à produire le document
+ * Markdown rassemblant tous les éléments.
+ */
+build(options, fn_callback){
+  this.building = true
+  this.log('*** Construction de l’analyse…')
+  this.report.add('Début de la construction de l’analyse', 'title')
+  var my = this
+  if(fs.existsSync(my.md_path)) fs.unlinkSync(my.md_path)
+  if(fs.existsSync(my.a.html_path)) fs.unlinkSync(my.a.html_path)
+  this.buildAs('md', options)
+  this.exportAs('html', options, fn_callback)
+  this.log('=== Fin de la construction de l’analyse')
+  this.report.add('Fin de la construction de l’analyse', 'title')
+  this.building = false
+  this.report.show()
+  this.report.saveInFile()
+  my = null
+}
+
+buildAs(format, options){
+  var my = this
+  my.log(`* buildAs "${format}". Options:`, options)
+  if(!this.building && !this.isUpToDate) this.build()
+  var method = require(`./js/composants/faBuilder/builders/as-${format}.js`).bind(this)
+  method(options)
+}
+
+exportAs(format, options, fn_callback){
+  var my = this
+  my.log(`* exportAs "${format}". Options:`, options)
+  if(!this.building && !this.isUpToDate) this.build()
+  var method = require(`./js/composants/faBuilder/exporters/as-${format}.js`).bind(this)
+  method(options, fn_callback)
+}
+
+
+/**
+ * Retourne true si l'analyse précédemment construite est à jour
+ */
+get isUpToDate(){
+  var my = this
+  if (!fs.existsSync(my.md_path)){
+    my.log("  = Fichier MD inexistant => CREATE")
+    return false
   }
-
-  buildAs(format, options){
-    var my = this
-    my.log(`* buildAs "${format}". Options:`, options)
-    if(!this.building && !this.isUpToDate) this.build()
-    var method = require(`./js/composants/faBuilder/builders/as-${format}.js`).bind(this)
-    method(options)
+  var mdFileDate = fs.statSync(my.md_path).mtime
+  var lastChangeDate = 0
+  lastChangeDate = this.getLastChangeDateIn('analyse_files', lastChangeDate)
+  if(lastChangeDate > mdFileDate){
+    my.log("  = Modifications récentes opérées dans 'analyse_files' => UPDATE")
+    return false
   }
-
-  exportAs(format, options, fn_callback){
-    var my = this
-    my.log(`* exportAs "${format}". Options:`, options)
-    if(!this.building && !this.isUpToDate) this.build()
-    var method = require(`./js/composants/faBuilder/exporters/as-${format}.js`).bind(this)
-    method(options, fn_callback)
+  lastChangeDate = this.getLastChangeDateIn('exports/img', lastChangeDate)
+  if(lastChangeDate > mdFileDate){
+    my.log("  = Modifications récentes opérées dans 'exports/img' => UPDATE")
+    return false
   }
-
-
-  /**
-   * Retourne true si l'analyse précédemment construite est à jour
-   */
-  get isUpToDate(){
-    var my = this
-    if (!fs.existsSync(my.md_path)){
-      my.log("  = Fichier MD inexistant => CREATE")
-      return false
-    }
-    var mdFileDate = fs.statSync(my.md_path).mtime
-    var lastChangeDate = 0
-    lastChangeDate = this.getLastChangeDateIn('analyse_files', lastChangeDate)
-    if(lastChangeDate > mdFileDate){
-      my.log("  = Modifications récentes opérées dans 'analyse_files' => UPDATE")
-      return false
-    }
-    lastChangeDate = this.getLastChangeDateIn('exports/img', lastChangeDate)
-    if(lastChangeDate > mdFileDate){
-      my.log("  = Modifications récentes opérées dans 'exports/img' => UPDATE")
-      return false
-    }
-    // Fichiers individuels
-    lastChangeDate = this.getLastChangeDateIn(['events.json'], lastChangeDate)
-    if(lastChangeDate > mdFileDate){
-      my.log("  = Modifications récentes opérées dans les fichiers => UPDATE")
-      return false
-    }
-    // Finalement, c'est donc up-to-date
-    return true
+  // Fichiers individuels
+  lastChangeDate = this.getLastChangeDateIn(['events.json'], lastChangeDate)
+  if(lastChangeDate > mdFileDate){
+    my.log("  = Modifications récentes opérées dans les fichiers => UPDATE")
+    return false
   }
+  // Finalement, c'est donc up-to-date
+  return true
+}
 
-  // ---------------------------------------------------------------------
-  //  Méthodes de fichier
+// ---------------------------------------------------------------------
+//  Méthodes de fichier
 
-  /**
-   * Méthode qui retourne la date la plus récente dans le dossier +folder+
-   * de l'analyse du builder courant
-   */
-  getLastChangeDateIn(folder, lastDate){
-    var my = this
-    my.log('* Recherche de l’antériorité des fichiers…')
-    var files, fpath, file
-    if(Array.isArray(folder)){
-      // <= folder est un Array
-      // => Donc c'est une liste de fichiers (chemins relatifs)
-      files = folder.map(fpath => path.join(this.a.folder, fpath))
-    } else {
-      // <= folder n'est pas un Array
-      // => C'est le path d'un dossier à fouiller
-      fpath = path.join(this.a.folder,folder)
-      files = glob.sync(`${fpath}/**/*.*`)
-    }
-    for(file of files){
-      var t = fs.statSync(file).mtime
-      my.log(`  - Check de : ${file} (${t})`)
-      if(t > lastDate) lastDate = t
-    }
-    return lastDate
+/**
+ * Méthode qui retourne la date la plus récente dans le dossier +folder+
+ * de l'analyse du builder courant
+ */
+getLastChangeDateIn(folder, lastDate){
+  var my = this
+  my.log('* Recherche de l’antériorité des fichiers…')
+  var files, fpath, file
+  if(Array.isArray(folder)){
+    // <= folder est un Array
+    // => Donc c'est une liste de fichiers (chemins relatifs)
+    files = folder.map(fpath => path.join(this.a.folder, fpath))
+  } else {
+    // <= folder n'est pas un Array
+    // => C'est le path d'un dossier à fouiller
+    fpath = path.join(this.a.folder,folder)
+    files = glob.sync(`${fpath}/**/*.*`)
   }
+  for(file of files){
+    var t = fs.statSync(file).mtime
+    my.log(`  - Check de : ${file} (${t})`)
+    if(t > lastDate) lastDate = t
+  }
+  return lastDate
+}
 
   // ---------------------------------------------------------------------
   //  Méthodes utilitaires
