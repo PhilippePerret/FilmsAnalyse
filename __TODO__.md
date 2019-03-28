@@ -1,7 +1,6 @@
 # SUR LE GRILL
 
-* Régler le problème du reader qui s'affiche en tout petit (div ?)
-
+* Placer le formulaire d'event à 500/80
 
 * Calcul du PFA
   - il faudrait empêcher les chevauchement,

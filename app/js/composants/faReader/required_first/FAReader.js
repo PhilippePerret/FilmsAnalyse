@@ -34,7 +34,7 @@ init(){
 show(){this.fwindow.show()}
 hide(){this.fwindow.hide()}
 build(){
-  return DCreate('DIV', {inner: 'READER', class: 'fw-title'})
+  return DCreate('DIV', {inner: 'LECTEUR', class: 'fw-title'})
 }
 afterBuilding(){
   // Peut-être supprimer le div ci-dessus avec READER dedans
