@@ -58,14 +58,23 @@ build(options, fn_callback){
 
 rebuildBaseFiles(fn_callback){
   this.destroyBaseFiles()
-  this.buildAs('md', this.options)
+  this.buildChunks()
   this.exportAs('html', this.options, fn_callback)
 }
 destroyBaseFiles(){
-  if(fs.existsSync(this.md_path)) fs.unlinkSync(this.md_path)
   if(fs.existsSync(this.a.html_path)) fs.unlinkSync(this.a.html_path)
 }
 
+/**
+  Construit tous les bouts de codes HTML qui vont servir plus tard à
+  assembler le fichier HTML final.
+**/
+buildChunks(){
+  var method = require(`./js/composants/faBuilder/builders/build-chunks.js`).bind(this)
+  method(this.options)
+}
+
+// ---------------------------------------------------------------------
 buildAs(format, options){
   var my = this
   my.log(`* buildAs "${format}". Options:`, options)
@@ -88,25 +97,25 @@ exportAs(format, options, fn_callback){
 */
 get isUpToDate(){
   var my = this
-  if (!fs.existsSync(my.md_path)){
+  if (!fs.existsSync(my.html_path)){
     my.log("  = Fichier MD inexistant => CREATE")
     return false
   }
-  var mdFileDate = fs.statSync(my.md_path).mtime
+  var htmlFileDate = fs.statSync(my.html_path).mtime
   var lastChangeDate = 0
   lastChangeDate = this.getLastChangeDateIn('analyse_files', lastChangeDate)
-  if(lastChangeDate > mdFileDate){
+  if(lastChangeDate > htmlFileDate){
     my.log("  = Modifications récentes opérées dans 'analyse_files' => UPDATE")
     return false
   }
   lastChangeDate = this.getLastChangeDateIn('exports/img', lastChangeDate)
-  if(lastChangeDate > mdFileDate){
+  if(lastChangeDate > htmlFileDate){
     my.log("  = Modifications récentes opérées dans 'exports/img' => UPDATE")
     return false
   }
   // Fichiers individuels
   lastChangeDate = this.getLastChangeDateIn(['events.json'], lastChangeDate)
-  if(lastChangeDate > mdFileDate){
+  if(lastChangeDate > htmlFileDate){
     my.log("  = Modifications récentes opérées dans les fichiers => UPDATE")
     return false
   }
@@ -161,6 +170,16 @@ log(msg, args){ this.constructor.log(msg, args) }
 //  Raccourcis
 
 get a(){ return this.analyse }
+get wholeHtmlPath(){return this._wholeHtmlPath||defP(this,'_wholeHtmlPath', path.join(this.folderChunks,'wholeHTML.html'))}
+get folderChunks(){
+  if(undefined === this._folderChunks){
+    this._folderChunks = path.join(this.a.folderExport, '.chunks')
+    if(!fs.existsSync(this._folderChunks)){
+      fs.mkdirSync(this._folderChunks)
+    }
+  }
+  return this._folderChunks
+}
 get md_path()   { return this.a.md_path }
 get html_path() { return this.a.html_path }
 get report(){return this._report||defP(this,'_report', new FAReport('analyse-building'))}

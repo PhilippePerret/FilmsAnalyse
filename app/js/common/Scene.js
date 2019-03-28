@@ -123,7 +123,7 @@ constructor(data){
 * Méthode d'export de la scène
 **/
 export(options){
-  return this.export_md()
+  return this.export_html()
 }
 export_md(options){
   return `
@@ -141,13 +141,13 @@ ${this.pitch}
 
 export_html(options){
   return `
-<div class="heading">
-  <span class="numero">${this.numero}</span>
-  <span class="lieu">${this.lieu}</span>
-  <span class="effet">${this.effet}</span>
-  <span class="decor">${this.decor}</span>
+<div class="scene-heading">
+  <span class="scene-numero">${this.numero}</span>
+  <span class="scene-lieu">${this.lieu}</span>
+  <span class="scene-effet">${this.effet}</span>
+  <span class="scene-decor">${this.decor}</span>
 </div>
-<div>${this.pitch}</div>
+<div class="scene-pitch">${this.pitch}</div>
   `
 }
 
