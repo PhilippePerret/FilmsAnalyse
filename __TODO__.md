@@ -1,7 +1,12 @@
 # SUR LE GRILL
 
-* Voir pourquoi le paradigme s'affiche mal avec l'essai court
 * Régler le problème du reader qui s'affiche en tout petit (div ?)
+
+
+* Calcul du PFA
+  - il faudrait empêcher les chevauchement,
+  - [BUG] Quand on clique sur les parties/zones à côté de l'horloge principale, ça ne passe pas en revue tous les points (le prélude, par exemple, est zappé).
+  - [BUG] La section des relatifs affiche des informations alors qu'il n'y en a pas. Voir l'analyse "essai", qui affiche "dénouement/désinence" alors que seul le pivot 1 est défini
 
 * Class Report
   - Faire la sortie en fichier

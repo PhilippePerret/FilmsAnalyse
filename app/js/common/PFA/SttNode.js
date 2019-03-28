@@ -106,6 +106,13 @@ renseignePFA(){
 * en version absolue, d'après un coefficiant +coef+
 **/
 inAbsPFA(coefT2P){
+  console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
+    startAtAbs: this.startAtAbs
+  , endAtAbs: this.endAtAbs
+  , coefT2P: coefT2P
+  , leftAbs: this.leftAbs(coefT2P)
+  , widthAbs: this.widthAbs(coefT2P)
+})
   return DCreate('SPAN', {
     class:  `pfa-part-${this.isMainPart?'part':'zone'}`
   , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
@@ -115,6 +122,13 @@ inAbsPFA(coefT2P){
 
 inRelPFA(coefT2P){
   if(false === this.isDefined) return null
+  console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
+      startAtRel: this.startAtRel
+    , endAtRel: this.endAtRel
+    , coefT2P: coefT2P
+    , leftRel: this.leftRel(coefT2P)
+    , widthRel: this.widthRel(coefT2P)
+  })
   return DCreate('SPAN', {
     class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
@@ -130,11 +144,11 @@ get classNode(){
   }
 }
 
-leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${parseInt(this.startAtAbs * coef,10)}px`)}
-widthAbs(coef){return this._widthAbs||defP(this,'_widthAbs', `${parseInt((this.endAtAbs - this.startAtAbs) * coef,10)}px`)}
+leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${Math.round(this.startAtAbs * coef)}px`)}
+widthAbs(coef){return this._widthAbs||defP(this,'_widthAbs', `${Math.round((this.endAtAbs - this.startAtAbs) * coef)}px`)}
 
-leftRel(coef){return this._leftRel||defP(this,'_leftRel', `${parseInt(this.startAtRel * coef,10)}px`)}
-widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${parseInt((this.endAtRel - this.startAtRel) * coef,10)}px`)}
+leftRel(coef){return this._leftRel||defP(this,'_leftRel', `${Math.round(this.startAtRel * coef)}px`)}
+widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${Math.round((this.endAtRel - this.startAtRel) * coef)}px`)}
 
 
 /**
