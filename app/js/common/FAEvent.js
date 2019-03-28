@@ -92,18 +92,21 @@ get duration(){return this._duration || 10}
 //  Méthodes d'association
 
 addDocument(doc_id){
-  this.documents.push(doc_id)
-  this.modified = true
-  return true
+  if(this.documents.indexOf(doc_id) < 0){
+    this.documents.push(doc_id)
+    this.modified = true
+  }
+  return true // car on peut, par exemple, vouloir mettre plusieurs balises
+              // dans le texte
 }
 addEvent(event_id){
   if(this.id == event_id){
     return F.error(T('same-event-no-association'))
-  } else {
+  } else if (this.events.indexOf(event_id) < 0) {
     this.events.push(event_id)
     this.modified = true
   }
-  return true
+  return true // même remarque que ci-dessus
 }
 
 // ---------------------------------------------------------------------

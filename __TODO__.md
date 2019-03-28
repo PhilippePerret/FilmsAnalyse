@@ -1,11 +1,5 @@
 # SUR LE GRILL
 
-* Mettre le z-index du reader à 40
-  - voir pourquoi, quand on fait un eventer :
-    1. il passe en dessous du reader
-    2. il se met autant à droite
-* Droppable
-  - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 

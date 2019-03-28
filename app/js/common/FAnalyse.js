@@ -147,6 +147,7 @@ constructor(pathFolder){
 * Retourne null si un problème est survenu
 **/
 associateDropped(obj, domel){
+  console.log("-> associateDropped", obj, domel)
   var balise
     , domel_type = domel.attr('data-type')
     , domel_id
@@ -158,6 +159,8 @@ associateDropped(obj, domel){
 
   // On transforme toujours en entier un nombre string
   if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
+
+  console.log("domel_type:", domel_type)
 
   switch (domel_type) {
     case 'document':
@@ -171,7 +174,9 @@ associateDropped(obj, domel){
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
       if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domel_id)) return null
+      if (false === obj.addEvent(domel_id)){
+        return null
+      }
       var isScene = this.ids[domel_id].type == 'scene'
       balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
       break
