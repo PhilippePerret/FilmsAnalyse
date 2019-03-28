@@ -31,17 +31,8 @@ constructor(analyse){
   this.built    = false
 }
 
-open(){
-  if(false === this.fwindow.built) {
-    this.fwindow.build().observe()
-    this.peuple()
-  } else {
-    this.fwindow.show()
-  }
-}
-close(){
-  this.fwindow.hide()
-}
+open(){this.fwindow.show()}
+close(){this.fwindow.hide()}
 
 /**
  * On peuple l'eventer en respectant le filtre choisi
@@ -158,7 +149,6 @@ afterBuilding(){
   this.peupleTypesInFilter()
 }
 
-get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
 
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
@@ -203,6 +193,7 @@ observe(){
   this.horlogeFiltreToTime.dispatch(dataHorloge)
 }
 
+get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
 get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
 get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
 get btnClose(){return this.jqObj.find('.toolbox .btn-close')}

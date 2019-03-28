@@ -1,6 +1,9 @@
 # SUR LE GRILL
 
-
+* Mettre le z-index du reader à 40
+  - voir pourquoi, quand on fait un eventer :
+    1. il passe en dessous du reader
+    2. il se met autant à droite
 * Droppable
   - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
 
