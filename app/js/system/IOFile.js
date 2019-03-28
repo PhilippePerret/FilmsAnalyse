@@ -170,17 +170,17 @@ endSave(err){
   set options(v){ this._options = v || {} }
 
   set code(v){this._code = v}
+  // Note : il ne faut surtout pas mettre dans une __data (__code) car
+  // ce ne serait pas le nouveau contenu du document qui serait enregistré,
+  // mais toujours son contenu initial.
   get code(){
-    if(undefined === this.__code){
-      if (undefined === this.owner) {
-        this.__code = this._code
-      } else {
-        // Le code doit être défini dans la propriété `contents` ou `code`
-        // du propriétaire de l'instance
-        this.__code = this.owner.contents || this.owner.code || this._code
-      }
+    if (undefined === this.owner) {
+      return this._code
+    } else {
+      // Le code doit être défini dans la propriété `contents` ou `code`
+      // du propriétaire de l'instance
+      return this.owner.contents || this.owner.code || this._code
     }
-    return this.__code
   }
 
   /**

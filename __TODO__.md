@@ -1,24 +1,25 @@
 # SUR LE GRILL
 
+* Il semble y avoir encore des problèmes dans les enregistrements de documents
+
+* ASSEMBLAGE DE L'ANALYSE
+  Maintenant que tout semble à peu près en place, il faut s'attaquer sérieusement à l'assemblage de l'analyse.
+  - scénier du film
+  - fondamentales
+  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
+  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
+
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
 
-* Aggrandir les champs de saisie à menu qu'on aggrandit le texte.
+* Aggrandir les champs de saisie à mesure qu'on aggrandit le texte.
   Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
   Peut-être ne pas avoir le même textearea qui s'aggrandit, mais travailler avec un autre qui sert de bac à sable.
 
 * Pour la FATimeline
   - faire des instances FACursor
 
-* Assemblage de l'analyse
-  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
-  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-
-* Pour la sortie en PDF
-  - il faudrait ajouter l'image de couverture au HTML
-  - il faut partir du HTML pour faire le PDF
-  - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
 
 # EN COURS DE DÉVELOPPEMENT

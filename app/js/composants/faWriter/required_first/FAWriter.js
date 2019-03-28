@@ -173,7 +173,7 @@ const FAWriter = {
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
 , open(){
-    if(this.isOpened) return this.fwindow.hide() // appelé par le menu
+    if(this.isOpened) return this.fwindow.hide()
     this.fwindow.show()
   }
 , OTHER_SECTIONS: ['#section-reader']
@@ -189,6 +189,7 @@ const FAWriter = {
     this.fwindow.hide()
   }
 , onHide(){
+    this.stopTimers()
     this.unsetDimensions()
     this.isOpened = false
     delete this.currentDoc
@@ -209,6 +210,24 @@ const FAWriter = {
 , saveCurrentDoc(){
     this.currentDoc.save()
   }
+
+// Arrêter les timers s'il y en a (appelée à la fermeture)
+, stopTimers(){
+    this.stopTimerAutoSave()
+    this.stopTimerAutoVisu()
+  }
+, stopTimerAutoSave(){
+    if (this.autoSaveTimer){
+      clearInterval(this.autoSaveTimer)
+      this.autoSaveTimer = null
+    }
+  }
+, stopTimerAutoVisu(){
+    if (this.autoVisuTimer){
+      clearInterval(this.autoVisuTimer)
+      this.autoVisuTimer = null
+    }
+  }
   /**
    * Méthode d'autosauvegarde du document courant
    */
@@ -227,10 +246,7 @@ const FAWriter = {
     if(this.autoSave){
       this.autoSaveTimer = setInterval(this.autoSaveCurrent.bind(this), 2000)
     } else {
-      if (this.autoSaveTimer){
-        clearInterval(this.autoSaveTimer)
-        this.autoSaveTimer = null
-      }
+      this.stopTimerAutoSave()
     }
     $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
   }
@@ -243,8 +259,7 @@ const FAWriter = {
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
       this.updateVisuDoc() // on commence tout de suite
     } else {
-      clearInterval(this.autoVisuTimer)
-      this.autoVisuTimer = null
+      this.stopTimerAutoVisu()
     }
     this.visualizor[this.visualizeDoc?'show':'hide']()
   }
@@ -417,7 +432,7 @@ Object.defineProperties(FAWriter,{
     get(){return current_analyse}
   }
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: (ScreenWidth / 2)}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: 400, top:10}))}
   }
   /**
    * Le selecteur, pour gérer la sélection
