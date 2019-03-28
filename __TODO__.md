@@ -1,7 +1,6 @@
 # SUR LE GRILL
 
 * Calcul du PFA
-  - il faudrait empêcher les chevauchement,
   - [BUG] Quand on clique sur les parties/zones à côté de l'horloge principale, ça ne passe pas en revue tous les points (le prélude, par exemple, est zappé).
   - [BUG] La section des relatifs affiche des informations alors qu'il n'y en a pas. Voir l'analyse "essai", qui affiche "dénouement/désinence" alors que seul le pivot 1 est défini
 

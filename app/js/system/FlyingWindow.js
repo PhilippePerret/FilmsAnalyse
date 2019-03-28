@@ -65,8 +65,14 @@ static setCurrent(wf, e){
   if(this.current) this.current.bringToBack()
   this.current = wf
   this.current.bringToFront()
+  /**
+    Ne surtout pas :
+      this.checkOverlaps(wf)
+    Car la méthode est appelée aussi quand on ferme une fenêtre
+    => Le check du chevauchement doit être invoqué au show de
+    la fenêtre volante.
+  **/
   // On vérifie que la fenêtre ne soit pas juste sur une autre
-  this.checkOverlaps(wf)
   /**
     Surtout pas :
       e && stopEvent(e)
@@ -83,7 +89,7 @@ static checkOverlaps(wf){
   var {top: refTop, left: refLeft} = wf.jqObj.offset()
   refTop  = Math.round(refTop)
   refLeft = Math.round(refLeft)
-  console.log("refTop/refLeft initiaux:", refTop, refLeft)
+  // console.log("refTop/refLeft initiaux:", refTop, refLeft)
   var moveIt = false
   $('.fwindow').each(function(i,w){
     if(w.id == wf.domId) return // la fenêtre qu'on checke
@@ -100,7 +106,7 @@ static checkOverlaps(wf){
   // TODO Peut-être qu'on l'a déplacée sur une autre
   // => Recommencer jusqu'à ce que ce soit bon
   if(moveIt === true){
-    console.log("refTop/refLeft corrigés:", refTop, refLeft)
+    // console.log("refTop/refLeft corrigés:", refTop, refLeft)
     wf.jqObj.css({left:`${refLeft}px`, top:`${refTop}px`})
     return this.checkOverlaps(wf)
   } else {
@@ -153,6 +159,7 @@ show(){
   if(!this.built) this.build().observe()
   this.jqObj.show()
   this.constructor.setCurrent(this)
+  FWindow.checkOverlaps(this)
   if ('function' === typeof this.owner.onShow) this.owner.onShow()
   this.visible = true
 }
