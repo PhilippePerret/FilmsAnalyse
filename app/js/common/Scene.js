@@ -16,10 +16,14 @@ class Scene {
  */
 static init(){
   this.scenes = {}
-  this._scene_number_to_id  = undefined
-  this._scenes_by_time      = undefined
+  this.reset()
 }
 
+static reset(){
+  this._scene_number_to_id  = undefined
+  this._scenes_by_time      = undefined
+  this._count               = undefined
+}
 /**
   Conserve la scène courante, c'est-à-dire la scène
   affichée à l'écran si elle existe.
@@ -27,6 +31,12 @@ static init(){
 static get current(){ return this._current }
 static set current(s){ this._current = s}
 
+static get count(){
+  if(undefined === this._count){
+    this._count = this.ScenesByTimes.length
+  }
+  return this._count
+}
 /**
  * Retourne l'instance de scène de numéro +numero+ (l'instancie if needed)
  */
@@ -46,8 +56,7 @@ static destroy(numero){
   this.scenes[numero] = undefined
   delete this.scenes[numero]
   // Pour forcer le recalcul
-  this._scene_number_to_id = undefined
-  this._scenes_by_time = undefined
+  this.reset()
 }
 
 static forEachScene(fn){
@@ -66,9 +75,8 @@ static forEachScene(fn){
 static sceneAt(time){
   time = Math.round(time)
   if (time < current_analyse.filmStartTime) return
-  var len = this.ScenesByTimes.length
   var i = 0
-  for(;i<len;++i){
+  for(;i<this.count;++i){
     if (this.ScenesByTimes[i].time > time ) {
       if(undefined === this.ScenesByTimes[i-1]) return null // première
       return this.get(this.ScenesByTimes[i-1].numero)

@@ -82,7 +82,7 @@ const AnalyseState = {
           if (fs.existsSync(fpath)){
             var size = fs.statSync(fpath).size
             if(size > expected) value = '> 100%'
-            else value = asPourcentage(expected / size)
+            else value = asPourcentage(expected, size)
           } else { value = '0%'}
           break
         case 'pfa-done':
