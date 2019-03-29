@@ -19,7 +19,7 @@
 }
 
 .survoled, .survoled * {
-  background-color:#EEFFEE;
+  background-color:#EEFFEE!important;
 }
 
 .event.survoled {

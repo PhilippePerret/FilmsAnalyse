@@ -108,6 +108,7 @@ save(){
 endSaving(){
   UI.stopWait()
   this.afterSavingPerType()
+  FAStater.update()
   this.modified = false
   this.saving   = false
 }

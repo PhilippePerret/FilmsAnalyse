@@ -101,59 +101,59 @@ static editEvent(ev){
   this.eventForms[ev.id].toggleForm()
 }
 
-  // Pour obtenir un nouvel identifiant
-  static newId(){
-    return ++ this.lastId
-  }
-  static get lastId(){
-    if (undefined === this._lastId){ this._lastId = -1 }
-    return this._lastId
-  }
-  static set lastId(v){
-    this._lastId = v
-    // console.log("Last ID mis à ", this._lastId)
-  }
+// Pour obtenir un nouvel identifiant
+static newId(){
+  return ++ this.lastId
+}
+static get lastId(){
+  if (undefined === this._lastId){ this._lastId = -1 }
+  return this._lastId
+}
+static set lastId(v){
+  this._lastId = v
+  // console.log("Last ID mis à ", this._lastId)
+}
 
-  // ---------------------------------------------------------------------
-  //  INSTANCE
+// ---------------------------------------------------------------------
+//  INSTANCE
 
-  /**
-   * Instanciation du formulaire
-   *
-   *  Il peut être instancié avec :
-   *    - le type de l'évènement (=> création)
-   *    - avec l'identifiant de l'évènement (=> édition, event à charger)
-   *    - avec les données de l'évènement
-   *    - avec l'instance de l'évènement
-   */
-  constructor(foo){
-    this.isNew    = false
-    this.analyse = this.a = current_analyse // pourra être redéfini plus tard
-    switch (typeof foo) {
-      case 'string':
-        // <= Un type
-        // => C'est une création
-        this._id    = EventForm.newId()
-        this._type  = foo
-        this.isNew  = true
-        this._time  = this.a.locator.getRTime() || 0
-        break
-      case 'number':
-        // <= L'ID de l'évènement
-        // => Il faut prendre ses données pour édition
-        this._event = this.a.getEventById(foo)
-        break
-      case 'object':
-        // <= Les données ou l'évènement lui-même
-        // => Prendre les données si c'est l'évènement
-        if('function'===typeof(foo.showDiffere)){ this._event = foo }
-        else { this._event = this.a.getEventById(ev.id) }
-        break
-      default:
-        throw("Il faut penser à traiter les autres cas")
-    }
-    return this
+/**
+ * Instanciation du formulaire
+ *
+ *  Il peut être instancié avec :
+ *    - le type de l'évènement (=> création)
+ *    - avec l'identifiant de l'évènement (=> édition, event à charger)
+ *    - avec les données de l'évènement
+ *    - avec l'instance de l'évènement
+ */
+constructor(foo){
+  this.isNew    = false
+  this.analyse = this.a = current_analyse // pourra être redéfini plus tard
+  switch (typeof foo) {
+    case 'string':
+      // <= Un type
+      // => C'est une création
+      this._id    = EventForm.newId()
+      this._type  = foo
+      this.isNew  = true
+      this._time  = this.a.locator.getRTime() || 0
+      break
+    case 'number':
+      // <= L'ID de l'évènement
+      // => Il faut prendre ses données pour édition
+      this._event = this.a.getEventById(foo)
+      break
+    case 'object':
+      // <= Les données ou l'évènement lui-même
+      // => Prendre les données si c'est l'évènement
+      if('function'===typeof(foo.showDiffere)){ this._event = foo }
+      else { this._event = this.a.getEventById(ev.id) }
+      break
+    default:
+      throw("Il faut penser à traiter les autres cas")
   }
+  return this
+}
 
 get inited(){ return this._initied || false}   // mis à true à l'initialisation
 set inited(v){ this._inited = v }
@@ -300,8 +300,10 @@ onDropThing(e, ui){
   var balise = this.a.associateDropped(this.event, ui.helper)
   if(balise){
     // console.log("Je vais ajouter la balise au champ", balise, e)
-    if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)){
+    if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
       $(e.target).insertAtCaret(balise)
+    } else {
+      F.notify("Association effectuée avec succès.")
     }
   }
 }

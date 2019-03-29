@@ -44,3 +44,40 @@ section#section-cover div#pub-film-title {
 p.pagebreak {
   page-break-after:always;
 }
+
+
+pre.heading {
+  all:unset;
+  font-family:Arial,Helvetica;
+  font-size:13pt;
+  font-weight:bold;
+}
+
+
+/* --------------------------------------------------------------------- */
+
+/* === SCÉNIER === */
+
+section#scenier div.scene-heading {
+  font-variant:small-caps;
+  font-weight:bold;
+  margin-top:1.3em;
+  margin-bottom:0.3em;
+}
+:root {
+  --number-width:40px;
+}
+section#scenier div.scene-heading span.scene-numero {
+  display:inline-block;
+  width:var(--number-width);
+  text-align:right;
+  /* background-color:#EEFFEE; Pour régler */
+}
+section#scenier div.scene-heading span.scene-time {
+  font-weight:normal;
+  font-size:0.85rem;
+}
+section#scenier div.scene-pitch {
+  margin-left:var(--number-width);
+  font-style:italic;
+}

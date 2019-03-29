@@ -97,6 +97,11 @@ FAWriter.onKeyDown = function(e){
       // META + ALT
     } else if (e.shiftKey) {
       // META + SHIFT
+      // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
+      if(e.which === 191){
+        sel.goToLineStart()
+        sel.insert('# ')
+      }
     } else {
       // META SEUL
       if (e.which === K_S ){
@@ -115,7 +120,15 @@ FAWriter.onKeyDown = function(e){
 FAWriter.onKeyUp = function(e){
   // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   var sel = this.selector
-  if(e.altKey){
+    , ret = true
+  if(e.metaKey){
+    // MÉTA
+    if(e.shiftKey){
+      // MÉTA + SHIFT
+      console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
+    }
+  } else if(e.altKey){
+    // ALT (SANS MÉTA)
     if(e.which === K_OCROCHET){ // note : avec altKey
       sel.insert('}')
       sel.set(sel.startOffset-1, sel.startOffset-1)
@@ -138,15 +151,10 @@ FAWriter.onKeyUp = function(e){
       // On prend les lettres juste avant la sélection pour voir
       // si c'est un snippet.
       var snip = sel.beforeUpTo(' ', false, {endRC: true})
-      if (snip !== null){
-        var remp = Snippets.check(snip)
-        if( remp ){
-          sel.set(sel.startOffset - snip.length, null)
-          sel.insert(remp)
-        }
-      }
+      snip === null || Snippets.checkAndReplace(sel, snip)
     }
-    stopEvent(e)
+    ret = stopEvent(e)
   }
   sel = null
+  return ret
 }

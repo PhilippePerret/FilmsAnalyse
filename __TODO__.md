@@ -1,47 +1,37 @@
 # SUR LE GRILL
 
 
-* Class Report
-  - Faire la sortie en fichier
-
-* Droppable
-  - Normalement, tout est en place. Il faut simplement vérifier que tout fonctionne.
-  - problème avec l'entête du formulaire d'event ('header') qui ne réagit aux events
+* ASSEMBLAGE DE L'ANALYSE
+  + Rappels :
+    - S'inspirer du scénier pour tout gérer :
+    - Mettre toujours un id dans les titres
+    - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
+  - scénier du film
+  - fondamentales
+  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
+  - Développer encore le vérificateur pour prendre en compte les nouveaux fichiers (vérifier que les fondamentales, etc. soit pris en compte)
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
-
-* Aggrandir les champs de saisie à menu qu'on aggrandit le texte.
+* Aggrandir les champs de saisie à mesure qu'on aggrandit le texte.
   Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
   Peut-être ne pas avoir le même textearea qui s'aggrandit, mais travailler avec un autre qui sert de bac à sable.
 
-* Pour la FATimeline
-  - faire des instances FACursor
 
-* Assemblage de l'analyse
-  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
-  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-
-* Pour la sortie en PDF
-  - il faudrait ajouter l'image de couverture au HTML
-  - il faut partir du HTML pour faire le PDF
-  - Pour tous les autres fichiers, faire les deux versions jusqu'à être sûr de la meilleure
 
 
 # EN COURS DE DÉVELOPPEMENT
 
-* Quand on clique sur une mark de scène courante, on doit éditer l'event correspondant.
-  Observer les span.current-scene-number, .current-scene-number-only, current-scene-pitch et placer
-  EventForm.editEvent.bind(EventForm)(current_analyse.current_scene.event)
+* Pour la FATimeline
+  - faire des instances FACursor
 
 * Mettre en option la sauvegarde automatique de l'analyse
   - mémoriser les events qui ont été modifiés (en pensant aux ajouts et aux destruction)
-
-* Quand on arrive au bout de la vidéo, il faudrait s'arrêter (ici le timer continue inutilement)
+  - penser au fait qu'une analyse pourra comporter une énorme quantité d'events. Peut-être se concentrer uniquement sur ceux modifié, créés ou détruits au cours de la séance.
 
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
-* L'état d'avancement de l'application (analyse_state.js)
+
 * Construction du (des) PFA (poursuivre en mettant des éléments propres à l'analyse, et en stylisant — pour le moment, le PFA n'est pas encore présentable.)
 * Construction des Fondamentales
 * Construction des statistiques de fin
@@ -50,14 +40,13 @@
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 
-* Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
-
 * Généraliser le visualeur qui devra pouvoir tout afficher comme si c'était dans le livre final, PFA, documents (déjà fait), Fondamentales, etc.
 
 * Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
-* Construire les fondamentales (à partir du fichier data)
+
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
   - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
+
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse
   - Il faudrait que ce developpement soit enregistré de façon "hot" pour pouvoir toujours apparaitre comme une jauge.
 * Implémenter les infos générales du film

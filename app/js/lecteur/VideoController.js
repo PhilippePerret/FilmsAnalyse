@@ -119,7 +119,11 @@ load(vpath){
     UI.showVideoController()
     var lastCurTime = this.analyse.lastCurrentTime
     lastCurTime && this.analyse.locator.setRTime(lastCurTime, true)
-    this.analyse.setAllIsReady.bind(current_analyse)()
+    this.a.setAllIsReady.bind(current_analyse)()
+  })
+  .on('ended', () => {
+    // Quand on atteint le bout de la vidéo
+    this.a.locator.stop()
   })
   this.controller.src = path.resolve(vpath)
   this.controller.load()

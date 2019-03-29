@@ -7,66 +7,73 @@
  *
  */
 class IOFile {
-  // Cf. le manuel de développement
-  constructor(p_or_owner){
-    if('string' === typeof p_or_owner){
-      this.path   = p_or_owner
-      this.owner  = undefined
-    } else {
-      this.owner  = p_or_owner
-      this.path   = this.owner.path
-    }
 
+// Cf. le manuel de développement
+constructor(p_or_owner){
+  if('string' === typeof p_or_owner){
+    this.path   = p_or_owner
+    this.owner  = undefined
+  } else {
+    this.owner  = p_or_owner
+    this.path   = this.owner.path
   }
 
-  // ---------------------------------------------------------------------
-  //  Méthodes d'entrée sortie
+}
 
-  /**
-   * Sauvegarde "prudente" du fichier. On l'enregistre d'abord dans un fichier
-   * temporaire, puis une fois qu'on s'est assuré de sa validité, on le met
-   * en bon fichier tout en faisant un backup de l'original.
-   */
-  save(options){
-    if(undefined===options)options={}
-    this.options = options
-    if(options.after) this.methodAfterSaving = options.after
-    this.checkBackupFolder()
-    try {
-      this.saved = false
-      this.code = this.encodeCode()
-      this.code !== undefined || raise(T('code-to-save-is-undefined'))
-      this.code !== null      || raise(T('code-to-save-is-null'))
-      this.code.length > 0    || raise(T('code-to-save-is-empty'))
-      if(this.tempExists()) fs.unlinkSync(this.tempPath)
-      fs.writeFile(this.tempPath,this.code,'utf8', this.afterTempSaved.bind(this))
-    } catch (e) { return F.error(e) }
-  }
+// ---------------------------------------------------------------------
+//  Méthodes d'entrée sortie
 
-  afterTempSaved(err){
-    try {
-      if(err) throw(err)
-      this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
-      this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
-      if (this.isBackupable) this.backup()
-      else this.endSave()
-    } catch (e) { return F.error(e)}
+/**
+ * Sauvegarde "prudente" du fichier. On l'enregistre d'abord dans un fichier
+ * temporaire, puis une fois qu'on s'est assuré de sa validité, on le met
+ * en bon fichier tout en faisant un backup de l'original.
+ */
+save(options){
+  if(undefined===options)options={}
+  this.options = options
+  if(options.after) this.methodAfterSaving = options.after
+  this.checkBackupFolder()
+  try {
+    this.saved = false
+    var scode = this.encodeCode()
+    scode !== undefined || raise(T('code-to-save-is-undefined'))
+    scode !== null      || raise(T('code-to-save-is-null'))
+    scode.length > 0    || raise(T('code-to-save-is-empty'))
+    if(this.tempExists()) fs.unlinkSync(this.tempPath)
+    fs.writeFile(this.tempPath,scode,'utf8', this.afterTempSaved.bind(this))
+  } catch (e) {
+    console.error(e)
+    return F.error(e)
   }
-  endSave(err){
-    try {
-      if (err) return F.error(err)
-      fs.rename(this.tempPath, this.path, (err)=>{
-        if (err) F.error(err)
-        else {
-          // FIN !
-          this.saved = true
-          if('function' === typeof this.methodAfterSaving){
-            this.methodAfterSaving()
-          }
+}
+
+afterTempSaved(err){
+  try {
+    if(err) throw(err)
+    this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
+    this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
+    if (this.isBackupable) this.backup()
+    else this.endSave()
+  } catch (e) {
+    console.error(e)
+    return F.error(e)
+  }
+}
+endSave(err){
+  try {
+    if (err) return F.error(err)
+    fs.rename(this.tempPath, this.path, (err)=>{
+      if (err) F.error(err)
+      else {
+        // FIN !
+        this.saved = true
+        if('function' === typeof this.methodAfterSaving){
+          this.methodAfterSaving()
         }
-      })
-    } catch (e) {F.error(e)}
-  }
+      }
+    })
+  } catch (e) {F.error(e)}
+}
 
   /**
    * Procédure intelligente de chargement, en tenant compte du fait que le
@@ -163,6 +170,9 @@ class IOFile {
   set options(v){ this._options = v || {} }
 
   set code(v){this._code = v}
+  // Note : il ne faut surtout pas mettre dans une __data (__code) car
+  // ce ne serait pas le nouveau contenu du document qui serait enregistré,
+  // mais toujours son contenu initial.
   get code(){
     if (undefined === this.owner) {
       return this._code
@@ -198,72 +208,74 @@ class IOFile {
       return null
     }
   }
-  /**
-   * Encode le code au besoin, c'est-à-dire si un format particulier est
-   * utilisé (JSON ou YAML pour le moment) et si le code n'est pas du string.
-   */
-  encodeCode(){
-    if ( !this.code ) return null
-    if ('string' === typeof this.code) return this.code // déjà encodé
-    switch (this.format) {
-      case 'JSON':
-        return JSON.stringify(this.code, null, 2)
-      case 'YAML':
-        return YAML.safeDump(this.code)
-      default:
-        return this.code
-    }
+/**
+ * Encode le code au besoin, c'est-à-dire si un format particulier est
+ * utilisé (JSON ou YAML pour le moment) et si le code n'est pas du string.
+ */
+encodeCode(){
+  if ( !this.code ){
+    return null
   }
-
-  get size(){ return fs.statSync(this.path).size }
-  get tempSize(){ return fs.statSync(this.tempPath).size }
-  get backupSize(){ return fs.statSync(this.backupPath).size }
-
-  get methodAfterSaving(){return this._methodAfterSaving}
-  set methodAfterSaving(v){this._methodAfterSaving = v}
-  get methodAfterLoading(){return this._methodAfterLoading}
-  set methodAfterLoading(v){this._methodAfterLoading = v}
-
-  /**
-   * Retourne le format du fichier, en fonction de son extension
-   */
-  get format(){return this._format||defP(this,'_format',this.getFormatFromExt())}
-
-
-  // ---------------------------------------------------------------------
-  //  Données de path
-
-  getFormatFromExt(){
-    switch (path.extname(this.path).toLowerCase()) {
-      case '.json':
-        return 'JSON'
-      case '.yml':
-      case '.yaml':
-        return 'YAML'
-      case '.md':
-      case '.mmd':
-      case '.markdown':
-        return 'MARKDOWN'
-      case '.js':
-        return 'JAVASCRIPT'
-      default:
-        return null
-    }
+  if ('string' === typeof this.code) return this.code // déjà encodé
+  switch (this.format) {
+    case 'JSON':
+      return JSON.stringify(this.code, null, 2)
+    case 'YAML':
+      return YAML.safeDump(this.code)
+    default:
+      return this.code
   }
+}
 
-  get folder(){
-    return this._folder || defP(this,'_folder', path.dirname(this.path))
+get size(){ return fs.statSync(this.path).size }
+get tempSize(){ return fs.statSync(this.tempPath).size }
+get backupSize(){ return fs.statSync(this.backupPath).size }
+
+get methodAfterSaving(){return this._methodAfterSaving}
+set methodAfterSaving(v){this._methodAfterSaving = v}
+get methodAfterLoading(){return this._methodAfterLoading}
+set methodAfterLoading(v){this._methodAfterLoading = v}
+
+/**
+ * Retourne le format du fichier, en fonction de son extension
+ */
+get format(){return this._format||defP(this,'_format',this.getFormatFromExt())}
+
+
+// ---------------------------------------------------------------------
+//  Données de path
+
+getFormatFromExt(){
+  switch (path.extname(this.path).toLowerCase()) {
+    case '.json':
+      return 'JSON'
+    case '.yml':
+    case '.yaml':
+      return 'YAML'
+    case '.md':
+    case '.mmd':
+    case '.markdown':
+      return 'MARKDOWN'
+    case '.js':
+      return 'JAVASCRIPT'
+    default:
+      return null
   }
-  get backupFolder(){
-    return this._bckFolder || defP(this,'_bckFolder', path.join(this.folder,'.backups'))
-  }
-  get name(){
-    return this._name || defP(this,'_name',path.basename(this.path))
-  }
-  get backupPath(){
-    return this._backupPath || defP(this,'_backupPath',path.join(this.backupFolder,this.name))
-  }
-  get tempPath(){
-    return this._tempPath || defP(this,'_tempPath', `${this.path}.temp`)
-  }
+}
+
+get folder(){
+  return this._folder || defP(this,'_folder', path.dirname(this.path))
+}
+get backupFolder(){
+  return this._bckFolder || defP(this,'_bckFolder', path.join(this.folder,'.backups'))
+}
+get name(){
+  return this._name || defP(this,'_name',path.basename(this.path))
+}
+get backupPath(){
+  return this._backupPath || defP(this,'_backupPath',path.join(this.backupFolder,this.name))
+}
+get tempPath(){
+  return this._tempPath || defP(this,'_tempPath', `${this.path}.temp`)
+}
 }

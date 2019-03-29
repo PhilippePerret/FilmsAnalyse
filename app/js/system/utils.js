@@ -1,5 +1,13 @@
 'use strict'
 
+
+function asPourcentage(expected, actual){
+  return `${pourcentage(expected,actual)} %`
+}
+function pourcentage(expected, actual){
+  return Math.round(100 * (100 * actual / expected)) / 100
+}
+
 /**
  * Retourne la fonction voulu
  *

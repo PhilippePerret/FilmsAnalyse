@@ -5,7 +5,9 @@
 section#section-reader {
   width:      600px;
   min-height: 800px;
+  z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
 }
+
 
 #reader {
   display:block;
@@ -16,6 +18,7 @@ section#section-reader {
   background-color:#EEEEFF;
   overflow: auto;
   padding:0;
+  z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
 }
 
 #reader .fw-title {

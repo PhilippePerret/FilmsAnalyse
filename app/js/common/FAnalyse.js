@@ -147,6 +147,7 @@ constructor(pathFolder){
 * Retourne null si un problème est survenu
 **/
 associateDropped(obj, domel){
+  // console.log("-> associateDropped", obj, domel)
   var balise
     , domel_type = domel.attr('data-type')
     , domel_id
@@ -171,7 +172,9 @@ associateDropped(obj, domel){
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
       if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domel_id)) return null
+      if (false === obj.addEvent(domel_id)){
+        return null
+      }
       var isScene = this.ids[domel_id].type == 'scene'
       balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
       break
@@ -293,8 +296,25 @@ onReady(){
   Scene.init()
   this.setOptionsInMenus()
   this.videoController.init()
+  this.setupState()
 }
 
+
+// Méthode pour régler l'état de l'analyse
+setupState(){
+  if(undefined === this.setupStateTries) this.setupStateTries = 1
+  else ++ this.setupStateTries
+  if (this.setupStateTries > 10){
+    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
+    return
+  }
+  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
+  FAStater.inited || FAStater.init(this)
+  FAStater.displaySumaryState()
+}
+updateState(){
+  FAStater.updateSumaryState()
+}
 
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
@@ -382,8 +402,7 @@ displayStatistiques(){
 }
 
 displayAnalyseState(){
-  var method = require('./js/tools/analyse_state.js')
-  method.bind(this)()
+  FAStater.displayFullState()
 }
 
 /**
@@ -455,6 +474,7 @@ forEachEvent(method, options){
  */
 addEvent(nev, whenLoading) {
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
+  if(!whenLoading) FAStater.update()
 }
 
 // Pour éditer l'event d'identifiant +event_id+
@@ -467,6 +487,7 @@ editEvent(event_id){
  */
 destroyEvent(event_id, form_instance){
   (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
+  FAStater.update()
 }
 /**
  * Méthode appelée à la modification d'un event
@@ -498,7 +519,8 @@ updateEvent(ev, options){
   // Enfin, s'il est affiché, il faut updater son affichage dans le
   // reader (et le replacer si nécessaire)
   ev.updateInReader(new_idx)
-
+  // Et enfin on actualise l'état d'avancement
+  FAStater.update()
   next_ev_old = null
   next_ev_new = null
 }
@@ -810,6 +832,7 @@ get folderFiles(){
   if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
   return this._folderFiles
 }
+
 get folderReports(){
   if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
   // On construit le dossier s'il n'existe pas
@@ -817,8 +840,6 @@ get folderReports(){
   return this._folderReports
 }
 
-get folder()  { return this._folder }
-set folder(v) { this._folder = v}
 get folderExport(){
   if(undefined === this._folderExport){
     this._folderExport = path.join(this.folder,'exports')
@@ -829,6 +850,8 @@ get folderExport(){
   return this._folderExport
 }
 
+get folder()  { return this._folder }
+set folder(v) { this._folder = v }
 
 /** ---------------------------------------------------------------------
 * Chargement des composants
@@ -844,6 +867,9 @@ loadReporter(fn_callback){
 }
 loadTimeline(fn_callback){
   return System.loadComponant('faTimeline', fn_callback)
+}
+loadStater(fn_callback){
+  return System.loadComponant('faStater', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

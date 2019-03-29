@@ -1,6 +1,6 @@
 'use strict'
 
-FABuilder.prototype.builderDiagrammeQRD = function(options){
+module.exports = function(options){
   my.log("* Construction du diagramme QRD…")
   let str = ''
 

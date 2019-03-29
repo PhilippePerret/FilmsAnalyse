@@ -173,7 +173,7 @@ const FAWriter = {
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
 , open(){
-    if(this.isOpened) return this.fwindow.hide() // appelé par le menu
+    if(this.isOpened) return this.fwindow.hide()
     this.fwindow.show()
   }
 , OTHER_SECTIONS: ['#section-reader']
@@ -181,7 +181,7 @@ const FAWriter = {
     // Les autres sections qu'il faut masquer quand on affiche
     // le writer. Est-ce vraiment nécessaire ?…
     // for(var section of this.OTHER_SECTIONS){$(section).hide()}
-    this.setDimensions()
+    this.docField.focus()
     this.isOpened = true
 }
 , close(){
@@ -189,25 +189,34 @@ const FAWriter = {
     this.fwindow.hide()
   }
 , onHide(){
-    this.unsetDimensions()
+    this.stopTimers()
     this.isOpened = false
     delete this.currentDoc
 }
-
-, setDimensions(){
-    // this.sectionVideoOriginalWidth = $('#section-video').width()
-    // this.rightColumnOriginallWidth = $('#section-reader').width()
-    // $('#section-video').css('width', '30%')
-  }
-, unsetDimensions(){
-    // $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
-  }
 
   /**
    * Sauvegarde du document courant
    */
 , saveCurrentDoc(){
     this.currentDoc.save()
+  }
+
+// Arrêter les timers s'il y en a (appelée à la fermeture)
+, stopTimers(){
+    this.stopTimerAutoSave()
+    this.stopTimerAutoVisu()
+  }
+, stopTimerAutoSave(){
+    if (this.autoSaveTimer){
+      clearInterval(this.autoSaveTimer)
+      this.autoSaveTimer = null
+    }
+  }
+, stopTimerAutoVisu(){
+    if (this.autoVisuTimer){
+      clearInterval(this.autoVisuTimer)
+      this.autoVisuTimer = null
+    }
   }
   /**
    * Méthode d'autosauvegarde du document courant
@@ -227,10 +236,7 @@ const FAWriter = {
     if(this.autoSave){
       this.autoSaveTimer = setInterval(this.autoSaveCurrent.bind(this), 2000)
     } else {
-      if (this.autoSaveTimer){
-        clearInterval(this.autoSaveTimer)
-        this.autoSaveTimer = null
-      }
+      this.stopTimerAutoSave()
     }
     $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
   }
@@ -243,8 +249,7 @@ const FAWriter = {
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
       this.updateVisuDoc() // on commence tout de suite
     } else {
-      clearInterval(this.autoVisuTimer)
-      this.autoVisuTimer = null
+      this.stopTimerAutoVisu()
     }
     this.visualizor[this.visualizeDoc?'show':'hide']()
   }
@@ -305,7 +310,7 @@ const FAWriter = {
 
     var body = DCreate('DIV', {
       class: 'body'
-    , append: [DCreate('TEXTAREA', {id: 'document-contents'})]
+    , append: [DCreate('TEXTAREA', {id: 'document-contents', attrs:{autofocus: true}})]
     })
 
     var opts = []
@@ -417,7 +422,7 @@ Object.defineProperties(FAWriter,{
     get(){return current_analyse}
   }
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: (ScreenWidth / 2)}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: 400, top:10}))}
   }
   /**
    * Le selecteur, pour gérer la sélection

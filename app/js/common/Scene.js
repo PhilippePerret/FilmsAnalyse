@@ -16,10 +16,14 @@ class Scene {
  */
 static init(){
   this.scenes = {}
-  this._scene_number_to_id  = undefined
-  this._scenes_by_time      = undefined
+  this.reset()
 }
 
+static reset(){
+  this._scene_number_to_id  = undefined
+  this._scenes_by_time      = undefined
+  this._count               = undefined
+}
 /**
   Conserve la scène courante, c'est-à-dire la scène
   affichée à l'écran si elle existe.
@@ -27,6 +31,12 @@ static init(){
 static get current(){ return this._current }
 static set current(s){ this._current = s}
 
+static get count(){
+  if(undefined === this._count){
+    this._count = this.ScenesByTimes.length
+  }
+  return this._count
+}
 /**
  * Retourne l'instance de scène de numéro +numero+ (l'instancie if needed)
  */
@@ -46,8 +56,7 @@ static destroy(numero){
   this.scenes[numero] = undefined
   delete this.scenes[numero]
   // Pour forcer le recalcul
-  this._scene_number_to_id = undefined
-  this._scenes_by_time = undefined
+  this.reset()
 }
 
 static forEachScene(fn){
@@ -66,9 +75,8 @@ static forEachScene(fn){
 static sceneAt(time){
   time = Math.round(time)
   if (time < current_analyse.filmStartTime) return
-  var len = this.ScenesByTimes.length
   var i = 0
-  for(;i<len;++i){
+  for(;i<this.count;++i){
     if (this.ScenesByTimes[i].time > time ) {
       if(undefined === this.ScenesByTimes[i-1]) return null // première
       return this.get(this.ScenesByTimes[i-1].numero)
@@ -119,10 +127,79 @@ constructor(data){
   for(var p in data){this[`_${p}`] = data[p]}
 }
 
+/**
+* Méthode d'export de la scène
+**/
+export(options){
+  return this.export_html()
+}
+export_md(options){
+  return `
+
+\`\`\`heading
+${this.numero} ${this.lieu}-${this.effet} — ${this.decor.toUpperCase()}
+\`\`\`
+
+\`\`\`pitch
+${this.pitch}
+\`\`\`
+
+  `
+}
+
+export_html(options){
+  return this.formater.formate(
+            this.f_scene_heading.outerHTML
+          + this.f_pitch.outerHTML
+        )
+
+}
+// ---------------------------------------------------------------------
+// Méthodes d'helper
+
+// Une instance FATexte pour utiliser ensuite :
+//  this.formater.formate(<le texte à corriger>[, <options éventuelles>])
+get formater(){return this._formater||defP(this,'_formater', new FATexte(''))}
+
+get f_scene_heading(){
+  if(undefined === this._f_scene_heading){
+    var headingElements = [
+        DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `})
+      , DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `})
+      , DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()})
+      , DCreate('SPAN', {inner:' – '})
+      , DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()})
+    ]
+    if(this.sous_decor){
+      headingElements.push(DCreate('SPAN', {inner: ' : '}))
+      headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
+    }
+    headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
+    // On peut assembler l'entête
+    this._f_scene_heading = DCreate('DIV', {
+      class: 'scene-heading'
+    , append: headingElements
+    })
+  }
+  return this._f_scene_heading
+}
+get f_pitch(){
+  if(undefined === this._f_pitch){
+    this._f_pitch = DCreate('DIV', {class:'scene-pitch', inner: this.pitch})
+  }
+  return this._f_pitch
+}
+
+// ---------------------------------------------------------------------
+// Méthodes fonctionnelles
+
 reset(){
   delete this._pitch
   delete this._numero
 }
+
+// ---------------------------------------------------------------------
+//  Données
 /**
  * Numéro de la scène
  */
@@ -130,6 +207,10 @@ get numero(){ return this._numero }
 set numero(v){ this._numero = v}
 
 get pitch(){return this.event.pitch}
+get lieu(){return this.event.lieu}
+get effet(){return this.event.effet}
+get decor(){return this.event.decor}
+get sous_decor(){return this.event.sous_decor}
 
 get event_id(){return this._event_id}
 get event(){
