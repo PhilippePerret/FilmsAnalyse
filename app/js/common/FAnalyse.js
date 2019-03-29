@@ -296,8 +296,25 @@ onReady(){
   Scene.init()
   this.setOptionsInMenus()
   this.videoController.init()
+  this.setupState()
 }
 
+
+// Méthode pour régler l'état de l'analyse
+setupState(){
+  if(undefined === this.setupStateTries) this.setupStateTries = 1
+  else ++ this.setupStateTries
+  if (this.setupStateTries > 10){
+    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
+    return
+  }
+  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
+  FAStater.inited || FAStater.init(this)
+  FAStater.displaySumaryState()
+}
+updateState(){
+  FAStater.updateSumaryState()
+}
 
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
@@ -385,8 +402,7 @@ displayStatistiques(){
 }
 
 displayAnalyseState(){
-  var method = require('./js/tools/analyse_state.js')
-  method.bind(this)()
+  FAStater.displayFullState()
 }
 
 /**
@@ -847,6 +863,9 @@ loadReporter(fn_callback){
 }
 loadTimeline(fn_callback){
   return System.loadComponant('faTimeline', fn_callback)
+}
+loadStater(fn_callback){
+  return System.loadComponant('faStater', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

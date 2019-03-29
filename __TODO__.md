@@ -23,6 +23,8 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
+* Utiliser current_analyse.updateState() pour actualiser l'état d'avancement (dès qu'un document est créé, ou autre)
+
 * Mettre en option la sauvegarde automatique de l'analyse
   - mémoriser les events qui ont été modifiés (en pensant aux ajouts et aux destruction)
   - penser au fait qu'une analyse pourra comporter une énorme quantité d'events. Peut-être se concentrer uniquement sur ceux modifié, créés ou détruits au cours de la séance.
@@ -38,14 +40,13 @@
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 
-* Par le writer (le menu « Document » peut-être), possibilité d'ajouter un nouveau document propre à l'analyse courante.
-
 * Généraliser le visualeur qui devra pouvoir tout afficher comme si c'était dans le livre final, PFA, documents (déjà fait), Fondamentales, etc.
 
 * Faire du filtre d'event une classe séparée qui pourra être utilisée par n'importe quel composant.
-* Construire les fondamentales (à partir du fichier data)
+
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
   - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
+
 * Barre d'état en bas pour montrer l'état d'avancement de l'analyse
   - Il faudrait que ce developpement soit enregistré de façon "hot" pour pouvoir toujours apparaitre comme une jauge.
 * Implémenter les infos générales du film

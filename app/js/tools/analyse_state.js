@@ -1,11 +1,5 @@
 'use strict'
 
-function asPourcentage(float){
-  return `${parseInt(100 * float,10) / 100} %`
-}
-function pathFile(affixe){
-  return path.join(current_analyse.folderFiles,`${affixe}.md`)
-}
 
 const PFA = require('../common/PFA/PFA-mini')
 
@@ -84,7 +78,7 @@ const AnalyseState = {
           value = fs.readdirSync(current_analyse.folderFiles).length;
           break
         case 'fonds-state':
-          var fpath = pathFile('fondamentales')
+          var fpath = this.a.filePathOf('fondamentales')
           if (fs.existsSync(fpath)){
             var size = fs.statSync(fpath).size
             if(size > expected) value = '> 100%'
@@ -107,12 +101,13 @@ const AnalyseState = {
   // ---------------------------------------------------------------------
   //  Méthodes de construction DOM
 
-  , build:function(){
+  , build(){
       // Construction du div principal
       var div, n, prop, data, d, l, v ;
-      div = document.createElement('DIV')
-      div.id = 'analyse-state'
-      div.style = 'display:none;'
+      div = DCreate('DIV',{
+        id: 'div-analyse-state'
+      , style: 'display:none;'
+      })
       n = document.createElement('H1')
       n.innerHTML = 'État d’avancement de l’analyse'
       div.appendChild(n)
@@ -142,14 +137,14 @@ const AnalyseState = {
     }
     // /build
 
-    , observe:function(){
-        $('#analyse-state').draggable()
-        $('#analyse-state button.close').on('click', this.hide.bind(this))
+    , observe(){
+        $('#div-analyse-state').draggable()
+        $('#div-analyse-state button.close').on('click', this.hide.bind(this))
       }
 }
 Object.defineProperties(AnalyseState,{
     domObj:{
-      get:function(){return DGet('analyse-state')}
+      get:function(){return DGet('div-analyse-state')}
     }
   , jqObj:{
       get:function(){return $(this.domObj)}

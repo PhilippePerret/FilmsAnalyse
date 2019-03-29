@@ -10,14 +10,16 @@ const UI = {
       if (this.inited === true) return F.error("On ne doit initier l'interface qu'une seule fois…")
       var my = this
 
+      this.a = this.analyse = current_analyse
+
       this.setDimensions()
       this.observe_ui()
 
       this.divWaitingLoop = $('div#waiting-loop')
 
       $('#requested_time').on('keypress', ev => {
-        if(current_analyse){
-          var my = current_analyse.locator
+        if(this.a){
+          var my = this.a.locator
           if(ev.keyCode == 13){my.goToTime.bind(my)();$(ev).stop()}
         }
       })
