@@ -1,5 +1,6 @@
 # SUR LE GRILL
 
+
 * ASSEMBLAGE DE L'ANALYSE
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
@@ -16,14 +17,13 @@
   Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
   Peut-être ne pas avoir le même textearea qui s'aggrandit, mais travailler avec un autre qui sert de bac à sable.
 
-* Pour la FATimeline
-  - faire des instances FACursor
 
 
 
 # EN COURS DE DÉVELOPPEMENT
 
-* Utiliser current_analyse.updateState() pour actualiser l'état d'avancement (dès qu'un document est créé, ou autre)
+* Pour la FATimeline
+  - faire des instances FACursor
 
 * Mettre en option la sauvegarde automatique de l'analyse
   - mémoriser les events qui ont été modifiés (en pensant aux ajouts et aux destruction)
@@ -31,7 +31,7 @@
 
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
-* L'état d'avancement de l'application (analyse_state.js)
+
 * Construction du (des) PFA (poursuivre en mettant des éléments propres à l'analyse, et en stylisant — pour le moment, le PFA n'est pas encore présentable.)
 * Construction des Fondamentales
 * Construction des statistiques de fin

@@ -181,7 +181,6 @@ const FAWriter = {
     // Les autres sections qu'il faut masquer quand on affiche
     // le writer. Est-ce vraiment nécessaire ?…
     // for(var section of this.OTHER_SECTIONS){$(section).hide()}
-    this.setDimensions()
     this.docField.focus()
     this.isOpened = true
 }
@@ -191,19 +190,9 @@ const FAWriter = {
   }
 , onHide(){
     this.stopTimers()
-    this.unsetDimensions()
     this.isOpened = false
     delete this.currentDoc
 }
-
-, setDimensions(){
-    // this.sectionVideoOriginalWidth = $('#section-video').width()
-    // this.rightColumnOriginallWidth = $('#section-reader').width()
-    // $('#section-video').css('width', '30%')
-  }
-, unsetDimensions(){
-    // $('#section-video').css('width', `${this.sectionVideoOriginalWidth}px`)
-  }
 
   /**
    * Sauvegarde du document courant

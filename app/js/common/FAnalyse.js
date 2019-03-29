@@ -474,6 +474,7 @@ forEachEvent(method, options){
  */
 addEvent(nev, whenLoading) {
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
+  if(!whenLoading) FAStater.update()
 }
 
 // Pour éditer l'event d'identifiant +event_id+
@@ -486,6 +487,7 @@ editEvent(event_id){
  */
 destroyEvent(event_id, form_instance){
   (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
+  FAStater.update()
 }
 /**
  * Méthode appelée à la modification d'un event
@@ -517,7 +519,8 @@ updateEvent(ev, options){
   // Enfin, s'il est affiché, il faut updater son affichage dans le
   // reader (et le replacer si nécessaire)
   ev.updateInReader(new_idx)
-
+  // Et enfin on actualise l'état d'avancement
+  FAStater.update()
   next_ev_old = null
   next_ev_new = null
 }
@@ -829,6 +832,7 @@ get folderFiles(){
   if(!fs.existsSync(this._folderFiles)) fs.mkdirSync(this._folderFiles)
   return this._folderFiles
 }
+
 get folderReports(){
   if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
   // On construit le dossier s'il n'existe pas
@@ -836,8 +840,6 @@ get folderReports(){
   return this._folderReports
 }
 
-get folder()  { return this._folder }
-set folder(v) { this._folder = v}
 get folderExport(){
   if(undefined === this._folderExport){
     this._folderExport = path.join(this.folder,'exports')
@@ -848,6 +850,8 @@ get folderExport(){
   return this._folderExport
 }
 
+get folder()  { return this._folder }
+set folder(v) { this._folder = v }
 
 /** ---------------------------------------------------------------------
 * Chargement des composants
