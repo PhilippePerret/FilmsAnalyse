@@ -42,25 +42,77 @@ showReally(){
 * Markdown rassemblant tous les éléments.
 */
 build(options, fn_callback){
-  this.building = true
-  this.log('*** Construction de l’analyse…')
-  this.report.add('Début de la construction de l’analyse', 'title')
   var my = this
   my.options = options
+  my.traitedFiles = {} // tous les fichiers traités
   my.rebuildBaseFiles(fn_callback)
-  this.log('=== Fin de la construction de l’analyse')
-  this.report.add('Fin de la construction de l’analyse', 'title')
-  this.building = false
-  this.report.show()
-  this.report.saveInFile()
+  my.verifyCompletude()
+  my.report.show()
+  my.report.saveInFile()
   my = null
 }
 
+/**
+  Reconstruction des fichiers de base (HTML)
+**/
 rebuildBaseFiles(fn_callback){
+  var my = this
+  my.building = true
+  my.log('*** Construction de l’analyse…')
+  my.report.add('Début de la construction de l’analyse', 'title')
   this.destroyBaseFiles()
   this.buildChunks()
   this.exportAs('html', this.options, fn_callback)
+  my.log('=== Fin de la construction de l’analyse')
+  my.report.add('Fin de la construction de l’analyse', 'title')
+  my.building = false
+  my = null
 }
+
+/**
+  Vérification de la completude de l'export de l'analyse
+  On s'assure dans cette partie que tous les fichiers existants
+  sont bien exportés.
+**/
+verifyCompletude(fn_callback){
+  var my = this
+  my.report.add('Vérification de la complétude', 'title')
+  // Liste des fichiers non traités
+  var unTreated = []
+  // Liste des erreurs à afficher
+  var error_list = []
+  // TODO ensuite, indiquer si c'est :
+  //  - parce que le fichier a été traité mais qu'on a rencontré une erreur
+  //  - parce que le fichier est inexistant
+  // S'assurer que tous les fichiers du dossier `analyse_files` ont
+  // été traités
+  glob.sync(`${this.a.folderFiles}/**/*.md`).forEach(function(file){
+    // console.log(file)
+    var fname  = path.basename(file)
+    var affixe = path.basename(file, path.extname(file))
+    if(undefined === my.traitedFiles[affixe]){
+      // => un fichier non traité
+      unTreated.push(fname)
+      error_list.push(`NON TRAITÉ : "${fname}"`)
+    } else if (my.traitedFiles[affixe].ok === false){
+      unTreated.push(affixe)
+      error_list.push(`ERRONÉ : "${fname}" (${my.traitedFiles[affixe].error})`)
+    }
+  })
+
+  if(unTreated.length){
+    error_list = '- ' + error_list.join(',<br>- ')
+    my.report.add(`Cet export de l'analyse est incomplet. Les fichiers suivants n'ont pas été traités :`, 'error bold')
+    my.report.add(error_list, 'error')
+  } else {
+    my.report.add('Tous les fichiers de l’analyse ont été traités.', 'notice')
+  }
+  my = false
+}
+
+
+
+
 destroyBaseFiles(){
   if(fs.existsSync(this.a.html_path)) fs.unlinkSync(this.a.html_path)
 }

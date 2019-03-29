@@ -1,15 +1,14 @@
 # SUR LE GRILL
 
 * ASSEMBLAGE DE L'ANALYSE
-  * changer le path du CSS
-  * Mettre toujours un id dans les titres
-  * Mettre des sections, comme section#scenier, section#fondamentales, etc.
-  Maintenant que tout semble à peu près en place, il faut s'attaquer sérieusement à l'assemblage de l'analyse.
-  * La solution, pour les styles, est soit de partir de document markdown qu'on transforme en HTML et de document (code) directement en HTML qu'on assemble ensuite dans une commande finale.
+  + Rappels :
+    - S'inspirer du scénier pour tout gérer :
+    - Mettre toujours un id dans les titres
+    - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
   - scénier du film
   - fondamentales
-  -> penser à faire un vérificateur, pour voir si tous les documents et tous les composants de l'analyse courantes sont bien utilisés
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
+  - Développer encore le vérificateur pour prendre en compte les nouveaux fichiers (vérifier que les fondamentales, etc. soit pris en compte)
 
 * Focusser sur le champ de saisie quand on ouvre le writer (autofocus ?)
 

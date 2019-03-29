@@ -20,11 +20,12 @@ Object.assign(FABuilder.prototype, {
   Méthode utilitaire permettant d'ajouter le contenu du document
   de clé +key_doc+
 **/
-convertAndAddFile(key_doc){ // TODO Transformer en appendContentsOf
+convertAndAddFile(key_doc){
   var my = this
   var ca = my.analyse
 
   my.log(`* Traitement du fichier "${key_doc}"`)
+  my.traitedFiles[key_doc] = {ok: null, error: null}
 
   // Le document template, dans le cas où le document original n'existerait pas
   // On l'utilise s'il est demandé par le script de construction.
@@ -39,7 +40,8 @@ convertAndAddFile(key_doc){ // TODO Transformer en appendContentsOf
     itexte = fs.readFileSync(tempPath, 'utf8')
   } else {
     // Aucun des deux fichiers n'a été trouvé, on ne fait rien
-    console.log("Fichier non trouvé : ", key_doc)
+    my.traitedFiles[key_doc].ok     = false
+    my.traitedFiles[key_doc].error  = 'required but unfound'
     return
   }
   var cmd = `echo "${itexte.replace(/\"/, '\\"')}" | pandoc -t html`
@@ -51,7 +53,9 @@ convertAndAddFile(key_doc){ // TODO Transformer en appendContentsOf
   var itexteHTML = child_process.execSync(cmd)
   my.exporter.append(my.wholeHtmlPath, itexteHTML)
   my.log(`= Ajout de "${key_doc}" dans le fichier wholeHTML.html`)
+  my.traitedFiles[key_doc].ok = true
   itexte = null
+  my = null
 }
 })
 /**
@@ -61,6 +65,7 @@ convertAndAddFile(key_doc){ // TODO Transformer en appendContentsOf
 FABuilder.prototype.buildAndAddChunk = function(what){
   var my = this
   my.log(`* Traitement du build "${what}"`)
+  my.traitedFiles[what] = {ok: null, error: null}
   var ca = my.analyse
   var finalCode = ""
   finalCode += `<!-- BUILD ${what} -->${RC}`
@@ -93,7 +98,7 @@ FABuilder.prototype.buildAndAddChunk = function(what){
   // été enregistré)
   my.exporter.append(my.wholeHtmlPath, finalCode)
   my.log(`= Ajout de "${what}" dans le fichier wholeHTML.html`)
-
+  my.traitedFiles[what].ok = true
 }
 
 /**
@@ -120,7 +125,11 @@ module.exports = function(options){
   // ===================
   // Existe-t-il un scénario de construction ?
   var bScriptPath = my.a.filePathOf('building_script.md')
-  if(!fs.existsSync(bScriptPath)){
+  if(fs.existsSync(bScriptPath)){
+    // On l'enregistre dans la liste des fichiers traités pour
+    // le vérificateur de complétude.
+    my.traitedFiles['building_script'] = {ok: true, error: null}
+  } else {
     bScriptPath = my.a.tempFilePathOf('building_script.md')
   }
 
