@@ -1,6 +1,9 @@
 # SUR LE GRILL
 
 * ASSEMBLAGE DE L'ANALYSE
+  * changer le path du CSS
+  * Mettre toujours un id dans les titres
+  * Mettre des sections, comme section#scenier, section#fondamentales, etc.
   Maintenant que tout semble à peu près en place, il faut s'attaquer sérieusement à l'assemblage de l'analyse.
   * La solution, pour les styles, est soit de partir de document markdown qu'on transforme en HTML et de document (code) directement en HTML qu'on assemble ensuite dans une commande finale.
   - scénier du film

@@ -140,21 +140,58 @@ ${this.pitch}
 }
 
 export_html(options){
-  return `
-<div class="scene-heading">
-  <span class="scene-numero">${this.numero}</span>
-  <span class="scene-lieu">${this.lieu}</span>
-  <span class="scene-effet">${this.effet}</span>
-  <span class="scene-decor">${this.decor}</span>
-</div>
-<div class="scene-pitch">${this.pitch}</div>
-  `
+  return this.formater.formate(
+            this.f_scene_heading.outerHTML
+          + this.f_pitch.outerHTML
+        )
+
 }
+// ---------------------------------------------------------------------
+// Méthodes d'helper
+
+// Une instance FATexte pour utiliser ensuite :
+//  this.formater.formate(<le texte à corriger>[, <options éventuelles>])
+get formater(){return this._formater||defP(this,'_formater', new FATexte(''))}
+
+get f_scene_heading(){
+  if(undefined === this._f_scene_heading){
+    var headingElements = [
+        DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `})
+      , DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `})
+      , DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()})
+      , DCreate('SPAN', {inner:' – '})
+      , DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()})
+    ]
+    if(this.sous_decor){
+      headingElements.push(DCreate('SPAN', {inner: ' : '}))
+      headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
+    }
+    headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
+    // On peut assembler l'entête
+    this._f_scene_heading = DCreate('DIV', {
+      class: 'scene-heading'
+    , append: headingElements
+    })
+  }
+  return this._f_scene_heading
+}
+get f_pitch(){
+  if(undefined === this._f_pitch){
+    this._f_pitch = DCreate('DIV', {class:'scene-pitch', inner: this.pitch})
+  }
+  return this._f_pitch
+}
+
+// ---------------------------------------------------------------------
+// Méthodes fonctionnelles
 
 reset(){
   delete this._pitch
   delete this._numero
 }
+
+// ---------------------------------------------------------------------
+//  Données
 /**
  * Numéro de la scène
  */
@@ -165,6 +202,7 @@ get pitch(){return this.event.pitch}
 get lieu(){return this.event.lieu}
 get effet(){return this.event.effet}
 get decor(){return this.event.decor}
+get sous_decor(){return this.event.sous_decor}
 
 get event_id(){return this._event_id}
 get event(){

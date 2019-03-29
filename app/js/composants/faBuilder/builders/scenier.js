@@ -6,7 +6,9 @@ module.exports = function(options){
   my.log("* Construction du scénier du film…")
   my.report.add('Construction du scénier du film…', 'title')
   let str = ''
-  str += "<h1>Scénier</h1>"
+  str += '<h1 id="scenier-title">Scénier</h1>'
+  str += '<section id="scenier">'
   Scene.forEachScene(function(scene){ str += scene.export(options)})
+  str += '</section>'
   return str
 }

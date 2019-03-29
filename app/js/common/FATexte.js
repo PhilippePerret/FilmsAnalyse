@@ -9,6 +9,16 @@
  *    let itexte = new FATexte(str)
  *
  *    itexte.formate() => retourne le texte entièrement corrigé
+
+  ASTUCE
+  ------
+  Le plus simple est d'implémenter dans l'instance, ou l'objet, etc.
+  une propriété `formater`:
+    this.formater = new FATexte('')
+  … puis de l'utiliser pour corriger les textes :
+
+    var texteCorriged = this.formater(<le texte à corriger>)
+
  */
 
 class FATexte {
@@ -102,6 +112,8 @@ constructor(str) {
  *  - la transformation des balises events en lien vers les events
  *  - la transformation des liens hypertextuels raccourcis en liens
  *    hypertextuels complets
+
+ Cf. l'astuce tout en haut pour l'utilisation pratique.
  */
 formate(str, options){
   if(undefined === str) str = this.raw_string
