@@ -182,6 +182,7 @@ const FAWriter = {
     // le writer. Est-ce vraiment nécessaire ?…
     // for(var section of this.OTHER_SECTIONS){$(section).hide()}
     this.setDimensions()
+    this.docField.focus()
     this.isOpened = true
 }
 , close(){
@@ -320,7 +321,7 @@ const FAWriter = {
 
     var body = DCreate('DIV', {
       class: 'body'
-    , append: [DCreate('TEXTAREA', {id: 'document-contents'})]
+    , append: [DCreate('TEXTAREA', {id: 'document-contents', attrs:{autofocus: true}})]
     })
 
     var opts = []

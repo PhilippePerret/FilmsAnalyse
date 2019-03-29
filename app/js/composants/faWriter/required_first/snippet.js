@@ -21,7 +21,7 @@ const Snippets = {
 **/
 , checkAndReplace(sel, snip){
     var remp = this.check(snip)
-    if(undefined===remp) return // pas un snippet
+    if(!remp) return // pas un snippet
     sel.set(sel.startOffset - snip.length, null)
     sel.insert(remp)
     // Si le texte contient '$0' on doit s'y rendre et le
