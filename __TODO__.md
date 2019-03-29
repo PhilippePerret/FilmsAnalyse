@@ -12,7 +12,6 @@
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
-
 * Aggrandir les champs de saisie à mesure qu'on aggrandit le texte.
   Essayer de trouver un système pour qu'on soit très à l'aide, mais peut être pas comme sur l'atelier, où ça "saute" trop.
   Peut-être ne pas avoir le même textearea qui s'aggrandit, mais travailler avec un autre qui sert de bac à sable.
@@ -24,14 +23,9 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
-* Quand on clique sur une mark de scène courante, on doit éditer l'event correspondant.
-  Observer les span.current-scene-number, .current-scene-number-only, current-scene-pitch et placer
-  EventForm.editEvent.bind(EventForm)(current_analyse.current_scene.event)
-
 * Mettre en option la sauvegarde automatique de l'analyse
   - mémoriser les events qui ont été modifiés (en pensant aux ajouts et aux destruction)
-
-* Quand on arrive au bout de la vidéo, il faudrait s'arrêter (ici le timer continue inutilement)
+  - penser au fait qu'une analyse pourra comporter une énorme quantité d'events. Peut-être se concentrer uniquement sur ceux modifié, créés ou détruits au cours de la séance.
 
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
