@@ -120,6 +120,7 @@ FAWriter.onKeyDown = function(e){
 FAWriter.onKeyUp = function(e){
   // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
   var sel = this.selector
+    , ret = true
   if(e.metaKey){
     // MÉTA
     if(e.shiftKey){
@@ -150,15 +151,10 @@ FAWriter.onKeyUp = function(e){
       // On prend les lettres juste avant la sélection pour voir
       // si c'est un snippet.
       var snip = sel.beforeUpTo(' ', false, {endRC: true})
-      if (snip !== null){
-        var remp = Snippets.check(snip)
-        if( remp ){
-          sel.set(sel.startOffset - snip.length, null)
-          sel.insert(remp)
-        }
-      }
+      snip === null || Snippets.checkAndReplace(sel, snip)
     }
-    stopEvent(e)
+    ret = stopEvent(e)
   }
   sel = null
+  return ret
 }
