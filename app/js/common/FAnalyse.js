@@ -147,7 +147,7 @@ constructor(pathFolder){
 * Retourne null si un problème est survenu
 **/
 associateDropped(obj, domel){
-  console.log("-> associateDropped", obj, domel)
+  // console.log("-> associateDropped", obj, domel)
   var balise
     , domel_type = domel.attr('data-type')
     , domel_id
@@ -159,8 +159,6 @@ associateDropped(obj, domel){
 
   // On transforme toujours en entier un nombre string
   if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
-
-  console.log("domel_type:", domel_type)
 
   switch (domel_type) {
     case 'document':
