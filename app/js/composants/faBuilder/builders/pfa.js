@@ -53,12 +53,12 @@ const PFABuilder = {
       allDivs.push(divZone)
     }
 
-    var mainDiv = DCreate('DIV', {
+    // On retourne le paradigme de field
+    return DCreate('DIV', {
       id:'pfa-container'
     , append: allDivs
     })
 
-    return mainDiv
 }
 
 }// /PFABuilder
