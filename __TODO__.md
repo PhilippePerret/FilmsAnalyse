@@ -2,6 +2,9 @@
 
 * [BUG] Pouvoir décommenter comme on excommenter, dans le FAWriter, avec le raccourci CMD-SHIFT-/
 
+* Mettre en place le MiniWriter
+  (pour éditer n'importe quel texte/champ) en dehors de documents.
+
 * ASSEMBLAGE DE L'ANALYSE
   EN COURS : PARADIGME DE FIELD (pour l'analyse/livre)
   + Rappels :

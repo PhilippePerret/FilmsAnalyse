@@ -85,34 +85,34 @@ constructor(nid, data){
 * Méthode qui retourne l'élément DOM pour ce noeud
 * en version absolue, d'après un coefficiant +coef+
 **/
-inAbsPFA(coefT2P){
-  console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
-    startAtAbs: this.startAtAbs
-  , endAtAbs: this.endAtAbs
-  , coefT2P: coefT2P
-  , leftAbs: this.leftAbs(coefT2P)
-  , widthAbs: this.widthAbs(coefT2P)
-})
+inAbsPFA(coefT2P, name){
+  // console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
+  //   startAtAbs: this.startAtAbs
+  // , endAtAbs: this.endAtAbs
+  // , coefT2P: coefT2P
+  // , leftAbs: this.leftAbs(coefT2P)
+  // , widthAbs: this.widthAbs(coefT2P)
+  // })
   return DCreate('SPAN', {
     class:  `pfa-part-${this.isMainPart?'part':'zone'}`
   , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
-  , append: [this.aSpanName]
+  , append: [this.aSpanName(name)]
   })
 }
 
-inRelPFA(coefT2P){
+inRelPFA(coefT2P, name){
   if(false === this.isDefined) return null
-  console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
-      startAtRel: this.startAtRel
-    , endAtRel: this.endAtRel
-    , coefT2P: coefT2P
-    , leftRel: this.leftRel(coefT2P)
-    , widthRel: this.widthRel(coefT2P)
-  })
+  // console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
+  //     startAtRel: this.startAtRel
+  //   , endAtRel: this.endAtRel
+  //   , coefT2P: coefT2P
+  //   , leftRel: this.leftRel(coefT2P)
+  //   , widthRel: this.widthRel(coefT2P)
+  // })
   return DCreate('SPAN', {
     class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
-  , append: [this.aSpanName]
+  , append: [this.aSpanName(name)]
   // , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
   , attrs:  {'data-id': this.event_id, 'data-type': 'event'}
   })
@@ -135,8 +135,8 @@ widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${Math.round((this
 * Retourne un SPAN pour le nom du noeud.
 * Noter qu'il faut faire des instances différentes pour chaque partie.
 **/
-get aSpanName(){
-  return DCreate('SPAN', {class:'name', inner: this.isMainPart?this.hname:this.shortHname})
+aSpanName(name){
+  return DCreate('SPAN', {class:'name', inner: name || (this.isMainPart?this.hname:this.shortHname)})
 }
 
 
@@ -147,6 +147,7 @@ get hname(){ return this._hname }
 get shortHname(){return this._shortHname}
 get cZone(){ return this._cZone }
 get tolerance(){return this._tolerance}
+get dim(){return this._dim}
 // True si c'est un noeud qui définit une main-part, c'est-à-dire
 // l'exposition, le développement ou le dénouement.
 get main(){return this._main}
@@ -195,7 +196,7 @@ get markGoodPos(){
   }
 }
 
-
+get isGood()    { return this.isInZone || this.isNearZone }
 get isInZone()  {return this._isInZone || defP(this,'_isInZone',this.defineGoodPos().in)}
 get isOutZone() {return this._isOutZone || defP(this,'_isOutZone',this.defineGoodPos().out)}
 get isNearZone(){return this._isNearZone || defP(this,'_isNearZone',this.defineGoodPos().near)}
