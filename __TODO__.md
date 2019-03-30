@@ -1,7 +1,9 @@
 # SUR LE GRILL
 
+* [BUG] Pouvoir décommenter comme on excommenter, dans le FAWriter, avec le raccourci CMD-SHIFT-/
 
 * ASSEMBLAGE DE L'ANALYSE
+  EN COURS : PARADIGME DE FIELD (pour l'analyse/livre)
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres

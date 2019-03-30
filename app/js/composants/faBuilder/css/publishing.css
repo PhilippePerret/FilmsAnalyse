@@ -29,6 +29,7 @@ img#deuxieme_image {
 }
 
 /* --------------------------------------------------------------------- */
+/* ===  COUVERTURE === */
 
 section#section-cover div#pub-title {
   font-size:2.1em;
@@ -80,4 +81,116 @@ section#scenier div.scene-heading span.scene-time {
 section#scenier div.scene-pitch {
   margin-left:var(--number-width);
   font-style:italic;
+}
+
+/* --------------------------------------------------------------------- */
+/* === PARADIGME DE FIELD === */
+
+section#pfa {
+  margin-left:3em;
+}
+section#pfa div#pfa-container {
+  border:2px solid black;
+
+  display:grid;
+  width:687px;
+  grid-template-columns: 45px 640px;
+  grid-template-rows: repeat(6, auto);
+  /* justify-items:stretch; */
+}
+
+section#pfa div#pfa-container,
+section#pfa div#pfa-container *
+{
+  font-size:1em;
+}
+
+/* Div contenant le nom des parties */
+section#pfa div#pfa-container div.pfa-part-name {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  /* border: 1px dashed green; */
+  background-color:#BEB1EC;
+  display:flex;
+  border-bottom:2px solid;
+}
+section#pfa div#pfa-container div.pfa-part-name span {
+  display:block;
+  width:12px;
+  text-align:center;
+  font-weight:bold;
+  word-wrap:break-word;
+  flex-shrink:1;
+  margin:auto;
+  font-family:Monospace;
+  font-size:1.3em;
+}
+
+section#pfa div#pfa-container div.pfa-part-name.expo {
+  grid-row: 1 / 6;
+}
+section#pfa div#pfa-container div.pfa-part-name.dev1 {
+  grid-row: 6 / 9;
+}
+section#pfa div#pfa-container div.pfa-part-name.dev2 {
+  grid-row: 9 / 12;
+}
+section#pfa div#pfa-container div.pfa-part-name.dnou {
+  grid-row: 12 / 16;
+}
+
+/* Div contenant le nom des parties */
+section#pfa div#pfa-container div.pfa-zone {
+  grid-column-start: 2;
+  grid-column-end:4;
+  /* border:1px dashed blue; */
+  /* Grid lui aussi */
+  display:grid;
+  grid-template-columns: 140px 500px;
+  grid-template-rows: auto;
+}
+
+section#pfa div#pfa-container div.pfa-zone div.pfa-zone-name {
+  grid-column-start: 1;
+  /* background-color:#AAAAFF; */
+  font-family: Arial;
+  font-size:0.8em;
+  text-align:right;
+  padding:0.2em 0.5em;
+  border-left:1px solid;
+  min-height:32px;
+
+}
+section#pfa div#pfa-container div.pfa-zone > div.pfa-zone-desc {
+  grid-column-start: 2;
+  /* background-color:#FFAAAA; */
+  padding:0.2em 0.5em;
+  font-family:Monospace;
+  font-size:1.3em;
+  border-left:1px solid;
+}
+
+section#pfa div#pfa-container div.pfa-zone {
+  border-bottom:1px solid;
+}
+section#pfa div#pfa-container div.pfa-zone.pivot1,
+section#pfa div#pfa-container div.pfa-zone.cledev,
+section#pfa div#pfa-container div.pfa-zone.pivot2
+{
+  border-bottom:2px solid;
+}
+
+section#pfa div#pfa-container div.pfa-zone.incDec,
+section#pfa div#pfa-container div.pfa-zone.climax
+{
+  background-color:#FFBBBB;
+}
+section#pfa div#pfa-container div.pfa-zone.pivot1,
+section#pfa div#pfa-container div.pfa-zone.pivot2
+{
+  background-color:#FFAAFF;
+}
+section#pfa div#pfa-container div.pfa-zone.cledev
+{
+  background-color:#AAFFAA;
 }

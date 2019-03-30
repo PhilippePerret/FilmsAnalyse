@@ -59,7 +59,7 @@ const FAStater = {
   }
 
 // Actualisation de l'état d'avancement (raccourci : FAStater.update())
-, update(){return this.updateSymaryState.bind(this)()}
+, update(){return this.updateSumaryState.bind(this)()}
 , updateSumaryState(){
 
   // Les nombres totaux qui seront utilisés pour obtenir le

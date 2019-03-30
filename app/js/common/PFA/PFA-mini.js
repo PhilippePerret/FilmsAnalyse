@@ -47,14 +47,15 @@ const PFA = {
     , DEV2:   {hname: 'DÉVELOPPEMENT (2nde partie)', shortHname: 'DÉV. Part 2', cZone:'[moiti,tresQ]', main: true, next: 'DNOU', tolerance: '24ieme', requirity:10}
     , act1d2: {hname: '1ère action post-CdV', shortHname: 'Action post-CdV', cZone:'[moiti+iem24,moiti+douzi]', next: 'tiers2', tolerance:'before', requirity:3}
     , tiers2: {hname: 'Second Tiers', shortHname: '2/3', cZone:'[deuxT-iem24,deuxT+iem24]', next: 'pivot2', tolerance:'none', requirity:3}
-    , pivot2: {hname: 'Pivot 2', shortHname: 'Pvt 2', cZone:'[tresQ-iem24,tresQ]', next: 'crisis', tolerance: 'none', requirity:9}
+    , pivot2: {hname: 'Pivot 2', shortHname: 'Pvt 2', cZone:'[tresQ-iem24,tresQ]', next: 'act1d3', tolerance: 'none', requirity:9}
     , DNOU:   {hname: 'DÉNOUEMENT', shortHname: 'DÉNOUE.', cZone:'[tresQ,duree]', main: true, next: null, first: 'EXPO', tolerance: '24ieme', requirity:10}
+    , act1d3: {hname: '1ère action dénouante', shortHname: 'Action dénoue.', cZone:'[tresQ,tresQ+iem24]', next: 'crisis', tolerance:'none', requirity:2}
     , crisis: {hname: 'Crise', shortHname: 'Crise', cZone:'[tresQ+iem24,duree-huiti]', next: 'climax', tolerance:'before', requirity:7}
     , climax: {hname: 'Climax', shortHname: 'Climax', cZone:'[duree-huiti,duree-iem24]', next: 'desine', tolerance:'after', requirity:10}
     , desine: {hname: 'Désinence', shortHname:'Désin.', cZone:'[duree-iem24,duree]', next: null, first: 'preamb', tolerance:'none', requirity:4}
   }
 , MAIN_STTNODES:  ['incDec', 'pivot1', 'cledev', 'pivot2', 'climax']
-, SUB_STTNODES:   ['preamb', 'incPer', 'zone_r', 'actio1', 'tiers1', 'tiers2', 'crisis', 'desine']
+, SUB_STTNODES:   ['preamb', 'incPer', 'zone_r', 'act1d1', 'tiers1', 'act1d2', 'tiers2', 'act1d3', 'crisis', 'desine']
 }
 
 module.exports = PFA
