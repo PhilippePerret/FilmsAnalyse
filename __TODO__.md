@@ -1,5 +1,10 @@
 # SUR LE GRILL
 
+* Voir pourquoi la formateuse de writer renvoie bien du HTML et pas le mini-writer (est-qu'on le passe déjà par pandoc ?)
+* Transformer les e-tools du reader en inline-block pour qu'ils n'apparaissent que s'ils sont vraiment survolés
+* Signaler quand des variables ne sont pas traitées (mais un message qui n'apparait qu'une seule fois)
+
+
 * [BUG] Pouvoir décommenter comme on excommenter, dans le FAWriter, avec le raccourci CMD-SHIFT-/
 
 * Mettre en place le MiniWriter

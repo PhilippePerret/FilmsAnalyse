@@ -7,7 +7,7 @@
 /* === STYLES GÉNÉRAUX === */
 
 body, body * {
-  font-family:Baskerville;
+  font-family:Palatino;/*, Georgia, Baskerville*/
 }
 h1 {
   margin-top:3em;

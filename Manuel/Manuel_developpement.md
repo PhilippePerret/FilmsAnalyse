@@ -1,6 +1,7 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
@@ -30,6 +31,20 @@ Le point d'entrée de l'analyser (`analyser.html`) se fait par `./app/js/lecteur
 On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, pour le moment, c'est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `FAReader`)
+
+## Essais/travail du code {#travail_code_sandbox_run}
+
+Pour faciliter le travail, on peut utiliser `Sandbox.run` qui est appelée quand l'application est prête. Dans la méthode `run` de la Sandbox — qui se trouve dans le fichier `./js/system.sandbox.js` — on définit le code à ajouter.
+
+Par exemple, quand je travaillais sur le MiniWriter, plutôt que de chaque fois lancer l'application, afficher les events, choisir un event, le mettre en édition, activer l'option « Utiliser le Mini-Writer pour les textes » et cliquer sur le champ contenu du premier event, j'ai utilisé :
+
+```javascript
+Sandbox.run = function(){
+  current_analyse.editEvent(0)
+  MiniWriter.new(DGet('event-0-content'))
+}
+```
+
 
 ## Chargement de dossier de modules {#loading_modules_folders}
 

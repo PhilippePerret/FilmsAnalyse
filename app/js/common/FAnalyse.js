@@ -300,22 +300,6 @@ onReady(){
 }
 
 
-// Méthode pour régler l'état de l'analyse
-setupState(){
-  if(undefined === this.setupStateTries) this.setupStateTries = 1
-  else ++ this.setupStateTries
-  if (this.setupStateTries > 10){
-    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
-    return
-  }
-  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
-  FAStater.inited || FAStater.init(this)
-  FAStater.displaySumaryState()
-}
-updateState(){
-  FAStater.updateSumaryState()
-}
-
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
  * où l'on est vraiment prêt.
@@ -333,6 +317,24 @@ setAllIsReady(){
   if ('function' == typeof this.methodeAfterLoading){
     this.methodeAfterLoading()
   }
+  // On appelle la méthode de sandbox
+  if(!MODE_TEST)Sandbox.run()
+}
+
+// Méthode pour régler l'état de l'analyse
+setupState(){
+  if(undefined === this.setupStateTries) this.setupStateTries = 1
+  else ++ this.setupStateTries
+  if (this.setupStateTries > 10){
+    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
+    return
+  }
+  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
+  FAStater.inited || FAStater.init(this)
+  FAStater.displaySumaryState()
+}
+updateState(){
+  FAStater.updateSumaryState()
 }
 
 init(){
