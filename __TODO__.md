@@ -1,7 +1,7 @@
 # SUR LE GRILL
 
-* Voir pourquoi la formateuse de writer renvoie bien du HTML et pas le mini-writer (est-qu'on le passe déjà par pandoc ?)
 * Transformer les e-tools du reader en inline-block pour qu'ils n'apparaissent que s'ils sont vraiment survolés
+* Voir pourquoi la formateuse de writer renvoie bien du HTML et pas le mini-writer (est-qu'on le passe déjà par pandoc ?)
 * Signaler quand des variables ne sont pas traitées (mais un message qui n'apparait qu'une seule fois)
 
 
