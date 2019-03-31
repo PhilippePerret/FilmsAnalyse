@@ -6,7 +6,7 @@ const FAStater = {
 
   // Les valeurs attendues pour une analyse complète
 , ExpectedCustomDocsCount:  5
-, ExpectedEvents:           2000
+, ExpectedEventsByMinute:   20
 , ExpectedDocuments: {
     'introduction':     {requirity: 8,  minLen: two.pages}
   , 'annexes':          {requirity: 5,  minLen: four.pages}
@@ -150,8 +150,8 @@ const FAStater = {
       // Pour ne pas dépasser 100%
     }
 
-    this.totalMaxValue += Math.round(this.ExpectedEvents / 10)
-    this.totalCurValue += Math.round(this.eventsCountActual / 10)
+    this.totalMaxValue += Math.round(this.eventsCountRequired)
+    this.totalCurValue += Math.round(this.eventsCountActual)
 
     // console.log("Pourcentage pour les events : ", asPourcentage(this.eventsCountExpected, this.eventsCountActual))
 
@@ -289,5 +289,10 @@ Object.defineProperties(FAStater,{
       return this._documentsCount
     }
   }
-
+, eventsCountRequired:{
+    get(){return this._ecountreq||defP(this,'_ecountreq', Math.round(this.ExpectedEventsByMinute * (this.dureeFilm / 60)))}
+  }
+, dureeFilm:{
+    get(){return this._dureeFilm||defP(this,'_dureeFilm', this.a.duration)}
+  }
 })
