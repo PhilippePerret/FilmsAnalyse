@@ -10,6 +10,7 @@ function stopEvent(e){
 
 const KTAB          = 9 // keycode
 const KRETURN       = 13 // keyCode
+const KESCAPE       = 27 // touche escape
 
 const K_S           = 83 //
 const K_OCROCHET    = 53 // MAIS AVEC altKey

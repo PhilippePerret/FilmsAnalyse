@@ -14,7 +14,7 @@ const Sandbox = {
 * l'application
 **/
 run(){
-  // // POUR TESTER
+  // POUR TESTER
   // current_analyse.editEvent(0)
   // MiniWriter.new(DGet('event-0-content'))
 

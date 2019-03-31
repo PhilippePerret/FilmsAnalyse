@@ -78,15 +78,15 @@ goToLineStart(){
   this.endOffset   = this.startLineOffset
 }
 goToLineEnd(){
-  this.startOffset = endLineOffset
-  this.endOffset   = endLineOffset
+  this.startOffset = this.endLineOffset
+  this.endOffset   = this.endLineOffset
 }
 get startLineOffset(){
-  var nbavant = this.beforeUpTo(RC, false).length
+  var nbavant = (this.beforeUpTo(RC, false)||'').length
   return this.startOffset - nbavant
 }
 get endLineOffset(){
-  var nbapres = this.afterUpTo(RC, false).length
+  var nbapres = (this.afterUpTo(RC, false)||'').length
   return this.startOffset + nbapres
 }
 

@@ -9,6 +9,7 @@
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
   * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
 * [Ajout de préférences globales](#add_global_prefs)
+  * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
@@ -157,7 +158,9 @@ Pour obtenir une actualisation automatique de la scène courante, comme elle est
 
 Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
 
-Il faut donc faire un nouveau menu dans le submenu de "Options" avec les données suivantes :
+1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+
+2. Créer un nouveau menu dans le submenu de "Options" avec les données suivantes :
 
 ```javascript
   {
@@ -172,7 +175,7 @@ Il faut donc faire un nouveau menu dans le submenu de "Options" avec les donnée
   }
 ```
 
-Il faut demander son réglage au chargement de l'application dans le fichier `.../main-process/Prefs.js` :
+3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js` :
 
 ```javascript
 
@@ -202,6 +205,16 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
       }
     }
   }
+
+```
+
+### Utilisation des préférences globales {#use_global_prefs}
+
+Pour connaitre la valeur d'une option globale, on utilise la même méthode que pour les options de l'analyse :
+
+```javascript
+
+var opt = current_analyse.options.get('<id de l’option>')
 
 ```
 

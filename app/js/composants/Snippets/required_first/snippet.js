@@ -20,6 +20,7 @@ const Snippets = {
 * dans le sélector +sel+ (vraiment class Selector) le cas échéant.
 **/
 , checkAndReplace(sel, snip){
+    if (!this.loaded) this.load()
     var remp = this.check(snip)
     if(!remp) return // pas un snippet
     sel.set(sel.startOffset - snip.length, null)
@@ -29,7 +30,7 @@ const Snippets = {
     var dol_index = remp.indexOf('$0')
     if(dol_index < 0) return // pas de $0
     var remp_len = remp.length
-    var curOffset = parseInt(sel.startOffset,10)
+    var curOffset = 0 + sel.startOffset
     sel.startOffset = curOffset - remp_len + dol_index
     sel.endOffset   = sel.startOffset + 2
   }

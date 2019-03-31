@@ -43,7 +43,17 @@ div.mini-writer div.mini-writer-editor div.mini-writer-buttons
 {
   background-color:grey;
   opacity:0.3;
+  padding:8px 1em;
+  text-align:right;
 }
+div.mini-writer div.mini-writer-editor div.mini-writer-tools,
+div.mini-writer div.mini-writer-editor div.mini-writer-tools *,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons *
+{
+  font-size:0.9em;
+}
+
 div.mini-writer div.mini-writer-editor div.mini-writer-tools:hover,
 div.mini-writer div.mini-writer-editor div.mini-writer-buttons:hover
 {

@@ -129,6 +129,9 @@ function execJsOnCurrent(method, arg){
     // console.log("execJsOnCurrent()",`current_analyse && current_analyse.${method}('${arg}')`)
     if ('string'==typeof arg) arg = `'${arg}'`
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}(${arg})`)
+  } else if(method.match(/\)$/)) {
+    // La méthode avec ses arguments
+    mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}`)
   } else {
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
   }
@@ -418,7 +421,7 @@ const DATA_MENUS = [
               , checked: false
               , click:  () => {
                   var checked = ObjMenus.getMenu('load_last_on_launching').checked
-                  mainW.webContents.executeJavaScript(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
+                  execJsOnCurrent(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
                 }
             }
           , {type:'separator'}
@@ -430,7 +433,7 @@ const DATA_MENUS = [
               , enabled: true
               , click: ()=>{
                   var c = ObjMenus.getMenu('option_start_3secs_before_event').checked ? 'true' : 'false'
-                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_start_3secs_before_event',${c})`)
+                  execJsOnCurrent(`options.set('option_start_3secs_before_event',${c})`)
               }
             }
           , {
@@ -441,19 +444,30 @@ const DATA_MENUS = [
               , enabled: true
               , click: () => {
                   var c = ObjMenus.getMenu('option_start_when_time_choosed').checked ? 'true' : 'false'
-                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_start_when_time_choosed',${c})`)
+                  execJsOnCurrent(`options.set('option_start_when_time_choosed',${c})`)
                 }
             }
+          , {type:'separator'}
           , {
                 label:  "Verrouiller les points d'arrêt"
               , id:     'option_lock_stop_points'
               , type:   'checkbox'
               , checked: true
-              , enabled: true // plus tard, à régler en fonction de la présence de l'analyse
               , click: () => {
                   var c = ObjMenus.getMenu('option_lock_stop_points').checked ? 'true' : 'false'
-                  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('option_lock_stop_points',${c})`)
+                  execJsOnCurrent(`options.set('option_lock_stop_points',${c})`)
                 }
+            }
+          , {type: 'separator'}
+          , {
+                label:    "Utiliser le mini-writer pour éditer les textes"
+              , id:       'option_edit_in_mini_writer'
+              , type:     'checkbox'
+              , checked:  false
+              , click:  () => {
+                  var c = ObjMenus.getMenu('option_edit_in_mini_writer').checked ?'true':'false'
+                  execJsOnCurrent(`options.set('option_edit_in_mini_writer',${c})`)
+              }
             }
         ]
     }

@@ -858,6 +858,9 @@ set folder(v) { this._folder = v }
 /** ---------------------------------------------------------------------
 * Chargement des composants
 **/
+static loadSnippets(fn_callback){
+  return System.loadComponant('Snippets', fn_callback)
+}
 loadBuilder(fn_callback){
   return System.loadComponant('faBuilder', fn_callback)
 }
