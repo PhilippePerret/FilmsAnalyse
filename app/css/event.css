@@ -46,13 +46,18 @@
 
 /* Les petits boutons au-dessus de l'event dans le reader */
 .event .e-tools {
+  display:inline-block;
   text-align:right;
-  clear:right;
+  float:right;
+  clear:both;
   font-size: 9.1pt;
   opacity:0.15;
 }
 .event  .e-tools:hover {
   opacity:1;
+}
+.event .content {
+  clear:both;
 }
 .event  .horloge {
   background-color:grey;

@@ -300,6 +300,31 @@ onReady(){
 }
 
 
+/**
+ * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
+ * où l'on est vraiment prêt.
+ */
+setAllIsReady(){
+  // console.log("-> FAnalyse#setAllIsReady")
+
+  // Maintenant, la classe FAWriter est toujours chargée
+  if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
+
+  // Au cours du dispatch des données, la méthode modified a été invoquée
+  // de nombreuses fois. Il faut revenir à l'état normal.
+  this.modified = false
+  UI.stopWait()// toujours, au cas où
+  // On peut indiquer aux menus qu'il y a une analyse chargée
+  ipc.send('current-analyse-exist', true)
+  // Si une fonction a été définie pour la fin du chargement, on
+  // peut l'appeler maintenant.
+  if ('function' == typeof this.methodeAfterLoading){
+    this.methodeAfterLoading()
+  }
+  // On appelle la méthode de sandbox
+  if(!MODE_TEST)Sandbox.run()
+}
+
 // Méthode pour régler l'état de l'analyse
 setupState(){
   if(undefined === this.setupStateTries) this.setupStateTries = 1
@@ -314,25 +339,6 @@ setupState(){
 }
 updateState(){
   FAStater.updateSumaryState()
-}
-
-/**
- * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
- * où l'on est vraiment prêt.
- */
-setAllIsReady(){
-  // console.log("-> FAnalyse#setAllIsReady")
-  // Au cours du dispatch des données, la méthode modified a été invoquée
-  // de nombreuses fois. Il faut revenir à l'état normal.
-  this.modified = false
-  UI.stopWait()// toujours, au cas où
-  // On peut indiquer aux menus qu'il y a une analyse chargée
-  ipc.send('current-analyse-exist', true)
-  // Si une fonction a été définie pour la fin du chargement, on
-  // peut l'appeler maintenant.
-  if ('function' == typeof this.methodeAfterLoading){
-    this.methodeAfterLoading()
-  }
 }
 
 init(){
@@ -409,6 +415,7 @@ displayAnalyseState(){
  * Méthode qui ouvre le writer
  */
 openDocInWriter(dtype){
+  if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
   if( NONE === typeof FAWriter){
     return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
   }
@@ -856,6 +863,9 @@ set folder(v) { this._folder = v }
 /** ---------------------------------------------------------------------
 * Chargement des composants
 **/
+static loadSnippets(fn_callback){
+  return System.loadComponant('Snippets', fn_callback)
+}
 loadBuilder(fn_callback){
   return System.loadComponant('faBuilder', fn_callback)
 }
@@ -870,6 +880,9 @@ loadTimeline(fn_callback){
 }
 loadStater(fn_callback){
   return System.loadComponant('faStater', fn_callback)
+}
+loadWriter(fn_callback){
+  return System.loadComponant('faWriter', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

@@ -329,6 +329,10 @@ observe(){
   this.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
   this.jqObj.find('.header').droppable(dataDrop)
 
+  // Pour savoir si l'on doit éditer dans les champs de texte ou
+  // dans le mini-writer
+  UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
+
   my = null
 }
 
@@ -339,7 +343,7 @@ submit(){
   // Si c'est une modification, on prend le temps initial pour savoir
   // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
   // dans l'analyse courante
-  var initTime = this.isNew ? null : parseInt(this.event.time,10)
+  var initTime = this.isNew ? null : Math.round(this.event.time)
 
   var [data_min, other_data] = this.getFormValues()
 

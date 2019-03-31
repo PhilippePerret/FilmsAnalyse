@@ -14,7 +14,9 @@
   ------
   Le plus simple est d'implémenter dans l'instance, ou l'objet, etc.
   une propriété `formater`:
-    this.formater = new FATexte('')
+    this.fatexte = new FATexte('')
+    this.formater = this.fatexte.formate.bind(this.fatexte)
+
   … puis de l'utiliser pour corriger les textes :
 
     var texteCorriged = this.formater(<le texte à corriger>)
@@ -42,16 +44,56 @@ static deDim(str){
   return str
 }
 
-static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9–\-]+)\}\}','g')}
+static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+
 static deVar(str){
   var my = this
-  if(my.table_vars === null) return str // pas de variables définies
+    , groups
+    , key
+    , tableref
+  // Quand il n'y a pas de variables définies, on fait quand même le
+  // traitement pour signaler à l'analyste qu'il doit définir celles qui
+  // sont utilisées, et lui explique comment le faire.
+  if(my.table_vars === null){ tableref = {} }
+  else tableref = my.table_vars
   str = str.replace(my.VAR_REGEXP, function(){
-    var groups = arguments[arguments.length-1]
-    var key = groups.key
-    return my.table_vars[key]
+    groups  = arguments[arguments.length-1]
+    key     = groups.key
+    if(undefined === tableref[key]) my.notifyMissedVariable(key)
+    return tableref[key] || key
   })
   return str
+}
+
+/**
+  Traitement des balises documents dans les strings
+**/
+static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+
+static deDoc(str){
+  var groups, doc_key
+  str = str.replace(this.DOC_REGEXP, function(){
+    groups  = arguments[arguments.length-1]
+    doc_key = groups.key
+    return FAWriterDoc.get(doc_key).as_link()
+  })
+  return str
+}
+/**
+  Méthode qui signale -- une seule fois -- l'absence de la définition
+  de la variable +varname+ rencontrée dans le texte.
+**/
+static notifyMissedVariable(varname){
+  if(undefined === this.missedVariables) this.missedVariables = {}
+  if(undefined === this.missedVariables[varname]){
+    // <= La table des variables manquantes ne connait pas la variable
+    // => C'est la première fois qu'on la rencontre
+    // => Il faut le signaler
+    this.missedVariables[varname] = 0
+    F.notify(T('notify-missed-variable', {var: varname}))
+  }
+  // On incrémente toujours le nombre de fois où la variable manque.
+  ++ this.missedVariables[varname]
 }
 /**
  * Grande table contenant tous les diminutifs et leur expression régulière
@@ -121,13 +163,34 @@ formate(str, options){
   str = this.deEventTags(str)
   str = this.deSceneTags(str)
   str = this.deTimeTags(str)
+  str = this.deDoc(str)
   str = this.deVar(str)
   str = this.deDim(str)
+
+  // Si une option de format a été définie
+  if(options && options.format) str = this.setFormat(str, options.format)
   return str
 }
 
 get formated(){return this.formate()}
 
+/**
+  Met le texte +str+ au format +format+
+  Pour le moment, les formats sont :
+    'raw'   Renvoie simplement le texte corrigé
+    'html'  Passe le texte corrigé par pandoc
+**/
+setFormat(str, format){
+  switch (format) {
+    case HTML:
+      return CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+    case 'raw':
+      return str
+    default:
+      console.error(`Le Format "${format}" est inconnu.`)
+      return str
+  }
+}
   /**
    * Transforme toutes les balises vers des events en texte correct
    *
@@ -207,6 +270,15 @@ get formated(){return this.formate()}
     if(undefined === str) str = this.raw_string
     else this.raw_string = str
     return FATexte.deVar(str)
+  }
+
+  /**
+  * Remplacement des balises documents
+  **/
+  deDoc(str){
+    if(undefined === str) str = this.raw_string
+    else this.raw_string = str
+    return FATexte.deDoc(str)
   }
 
 }

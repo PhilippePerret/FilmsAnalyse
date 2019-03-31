@@ -26,9 +26,30 @@ static newId(){
   if(undefined === this.lastID) this.lastID = 0
   return ++ this.lastID
 }
+
+/**
+ Méthode retournant l'instance WriterDoc du document d'identifiant
+ +doc_id+ qui peut-être soit l'identifiant (string) d'un document
+ normalisé (introduction, annexe, etc.) soit l'identifiant (number)
+ d'un document personnalisé.
+**/
+static get(doc_id){
+  if(undefined === this.documents) this.documents = {}
+  if(undefined === this.documents[doc_id]){
+    this.documents[doc_id] = new FAWriterDoc(doc_id)
+  }
+  return this.documents[doc_id]
+}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
+/**
+  Instanciation du document.
+  +dtype+ peut être soit le type, par exemple 'introduction', 'personnages',
+          soit un nombre pour un document propre à l'analyse courante.
+  +id+    Id du document propre à l'analyse, si +dtype+ vaut 'customdoc'.
+**/
 constructor(dtype, id){
   if(undefined === dtype) throw("Impossible d'instancier un document sans type ou ID.")
   if ('number' === typeof dtype || dtype.match(/^([0-9]+)$/)){
@@ -37,6 +58,40 @@ constructor(dtype, id){
   this.type = dtype
   this.id   = id // pour les customdoc
 }
+
+// ---------------------------------------------------------------------
+//  Méthodes publiques
+
+// Affiche le document
+display(){
+  FAWriter.reset() // pour vider le champ, notamment
+  this.preparePerType() // préparer le writer en fonction du type
+  if (this.exists()){
+    if (!this.loaded) this.load()
+    this.displayContents()
+  }
+  this.toggleMenuModeles()
+}
+
+displayContents(){
+  FAWriter.docField.val(this.contents)
+}
+
+// Pour afficher la taille du document dans l'interface (gadget)
+displaySize(){
+  $('#section-writer #text-size').html(this.contents.length)
+}
+
+// ---------------------------------------------------------------------
+// Méthodes d'helpers
+
+as_link(options){
+  if(undefined === options) options = {}
+  return `« <a onclick="showDocument('${this.id}')" class="doclink">${options.title || this.title}</a> »`
+}
+
+// ---------------------------------------------------------------------
+//  Méthodes de données
 
 get a() { return current_analyse }
 
@@ -66,26 +121,6 @@ retreiveLastContents(){
   this.modified   = false
 }
 
-// Affiche le document
-display(){
-  FAWriter.reset() // pour vider le champ, notamment
-  this.preparePerType() // préparer le writer en fonction du type
-  if (this.exists()){
-    if (!this.loaded) this.load()
-    this.displayContents()
-  }
-  this.toggleMenuModeles()
-}
-
-displayContents(){
-  FAWriter.docField.val(this.contents)
-}
-
-// Pour afficher la taille du document dans l'interface (gadget)
-displaySize(){
-  $('#section-writer #text-size').html(this.contents.length)
-}
-
 // Pour charger le texte du document
 load(){
   this.iofile.loadIfExists({after: this.endLoading.bind(this), format: 'raw'})
@@ -108,7 +143,7 @@ save(){
 endSaving(){
   UI.stopWait()
   this.afterSavingPerType()
-  FAStater.update()
+  FAStater.update.bind(FAStater)()
   this.modified = false
   this.saving   = false
 }
@@ -270,7 +305,9 @@ get themePerType(){
 **/
 get title(){
   if(undefined === this._title){
+    console.log("Path du document :", this.path, this.type)
     if(this.exists()){
+      console.log("Le document existe : ", this.type)
       var buf = Buffer.alloc(100)
       var fd  = fs.openSync(this.path, 'r');
       fs.readSync(fd, buf, 0, 100, 0)

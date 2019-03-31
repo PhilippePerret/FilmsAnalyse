@@ -1,6 +1,7 @@
 # Manuel de développement de Film-Analyzer
 
 * [Point d'entrée](#point_dentree)
+* [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
@@ -8,6 +9,7 @@
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
   * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
 * [Ajout de préférences globales](#add_global_prefs)
+  * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
@@ -30,6 +32,20 @@ Le point d'entrée de l'analyser (`analyser.html`) se fait par `./app/js/lecteur
 On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, pour le moment, c'est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `FAReader`)
+
+## Essais/travail du code {#travail_code_sandbox_run}
+
+Pour faciliter le travail, on peut utiliser `Sandbox.run` qui est appelée quand l'application est prête. Dans la méthode `run` de la Sandbox — qui se trouve dans le fichier `./js/system.sandbox.js` — on définit le code à ajouter.
+
+Par exemple, quand je travaillais sur le MiniWriter, plutôt que de chaque fois lancer l'application, afficher les events, choisir un event, le mettre en édition, activer l'option « Utiliser le Mini-Writer pour les textes » et cliquer sur le champ contenu du premier event, j'ai utilisé :
+
+```javascript
+Sandbox.run = function(){
+  current_analyse.editEvent(0)
+  MiniWriter.new(DGet('event-0-content'))
+}
+```
+
 
 ## Chargement de dossier de modules {#loading_modules_folders}
 
@@ -142,7 +158,9 @@ Pour obtenir une actualisation automatique de la scène courante, comme elle est
 
 Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
 
-Il faut donc faire un nouveau menu dans le submenu de "Options" avec les données suivantes :
+1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+
+2. Créer un nouveau menu dans le submenu de "Options" avec les données suivantes :
 
 ```javascript
   {
@@ -157,7 +175,7 @@ Il faut donc faire un nouveau menu dans le submenu de "Options" avec les donnée
   }
 ```
 
-Il faut demander son réglage au chargement de l'application dans le fichier `.../main-process/Prefs.js` :
+3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js` :
 
 ```javascript
 
@@ -187,6 +205,16 @@ Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sino
       }
     }
   }
+
+```
+
+### Utilisation des préférences globales {#use_global_prefs}
+
+Pour connaitre la valeur d'une option globale, on utilise la même méthode que pour les options de l'analyse :
+
+```javascript
+
+var opt = current_analyse.options.get('<id de l’option>')
 
 ```
 
