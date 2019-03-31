@@ -305,9 +305,7 @@ get themePerType(){
 **/
 get title(){
   if(undefined === this._title){
-    console.log("Path du document :", this.path, this.type)
     if(this.exists()){
-      console.log("Le document existe : ", this.type)
       var buf = Buffer.alloc(100)
       var fd  = fs.openSync(this.path, 'r');
       fs.readSync(fd, buf, 0, 100, 0)

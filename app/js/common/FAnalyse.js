@@ -144,7 +144,7 @@ constructor(pathFolder){
 *
 * @return la balise qui sera peut-être à insérer dans le champ de saisie,
 * si c'est un champ qui a reçu le drop
-* Retourne null si un problème est survenu
+* Retourne false si un problème est survenu
 **/
 associateDropped(obj, domel){
   // console.log("-> associateDropped", obj, domel)
