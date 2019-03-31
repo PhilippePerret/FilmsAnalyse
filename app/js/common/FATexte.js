@@ -44,7 +44,8 @@ static deDim(str){
   return str
 }
 
-static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9–\-]+)\}\}','g')}
+static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+
 static deVar(str){
   var my = this
     , groups
@@ -64,6 +65,20 @@ static deVar(str){
   return str
 }
 
+/**
+  Traitement des balises documents dans les strings
+**/
+static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+
+static deDoc(str){
+  var groups, doc_key
+  str = str.replace(this.DOC_REGEXP, function(){
+    groups  = arguments[arguments.length-1]
+    doc_key = groups.key
+    return FAWriterDoc.get(doc_key).as_link()
+  })
+  return str
+}
 /**
   Méthode qui signale -- une seule fois -- l'absence de la définition
   de la variable +varname+ rencontrée dans le texte.
@@ -148,6 +163,7 @@ formate(str, options){
   str = this.deEventTags(str)
   str = this.deSceneTags(str)
   str = this.deTimeTags(str)
+  str = this.deDoc(str)
   str = this.deVar(str)
   str = this.deDim(str)
 
@@ -254,6 +270,15 @@ setFormat(str, format){
     if(undefined === str) str = this.raw_string
     else this.raw_string = str
     return FATexte.deVar(str)
+  }
+
+  /**
+  * Remplacement des balises documents
+  **/
+  deDoc(str){
+    if(undefined === str) str = this.raw_string
+    else this.raw_string = str
+    return FATexte.deDoc(str)
   }
 
 }

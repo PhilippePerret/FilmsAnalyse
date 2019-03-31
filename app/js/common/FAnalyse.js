@@ -306,6 +306,10 @@ onReady(){
  */
 setAllIsReady(){
   // console.log("-> FAnalyse#setAllIsReady")
+
+  // Maintenant, la classe FAWriter est toujours chargée
+  if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
+
   // Au cours du dispatch des données, la méthode modified a été invoquée
   // de nombreuses fois. Il faut revenir à l'état normal.
   this.modified = false
@@ -411,6 +415,7 @@ displayAnalyseState(){
  * Méthode qui ouvre le writer
  */
 openDocInWriter(dtype){
+  if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
   if( NONE === typeof FAWriter){
     return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
   }
@@ -875,6 +880,9 @@ loadTimeline(fn_callback){
 }
 loadStater(fn_callback){
   return System.loadComponant('faStater', fn_callback)
+}
+loadWriter(fn_callback){
+  return System.loadComponant('faWriter', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

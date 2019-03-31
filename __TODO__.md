@@ -1,8 +1,6 @@
 # SUR LE GRILL
 
-* Formatage du texte : il faut traiter `{{document:key_doc}}`.
-
-* Traiter les droppables.
+* Traiter les droppables sur le mini-writer.
 
 * Mettre en place le MiniWriter
   (pour éditer n'importe quel texte/champ) en dehors de documents.
@@ -18,6 +16,11 @@
   - fondamentales
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Développer encore le vérificateur pour prendre en compte les nouveaux fichiers (vérifier que les fondamentales, etc. soit pris en compte)
+
+* Faire un protocole d'analyse, utilisable pour chaque analyse, avec des étapes à cocher pour passer à la suite.
+  - ce protocole doit bien sûr être pris en compte pour l'état d'avancement. On ne peut pas dépasser tel pourcentage suivant l'état du protocole.
+  - ce protocole doit être vraiment détaillé
+  - ce protocole est enregistré dans un fichier "protocole.json" de l'analyse
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
