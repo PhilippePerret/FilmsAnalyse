@@ -32,6 +32,7 @@
 
   sel.startOffset     => le début de la sélection
   sel.endOffset       => la fin de la sélection
+  sel.line            => retourne la ligne de la sélection
 
 Notes sur versions
 ------------------
@@ -73,13 +74,27 @@ remplace(v){return this.insert(v)} // alias
 
 // Pour rejoindre le début de la ligne
 goToLineStart(){
+  this.startOffset = this.startLineOffset
+  this.endOffset   = this.startLineOffset
+}
+goToLineEnd(){
+  this.startOffset = endLineOffset
+  this.endOffset   = endLineOffset
+}
+get startLineOffset(){
   var nbavant = this.beforeUpTo(RC, false).length
-  var curStart = parseInt(this.startOffset,10)
-  curStart = curStart - nbavant
-  this.startOffset = curStart
-  this.endOffset   = curStart
+  return this.startOffset - nbavant
+}
+get endLineOffset(){
+  var nbapres = this.afterUpTo(RC, false).length
+  return this.startOffset + nbapres
 }
 
+// Retourne le contenu de la ligne dans laquelle se
+// trouve la sélection
+get line(){
+  return this.fieldValue.substring(this.startLineOffset, this.endLineOffset)
+}
 /**
  * Retourne le décalage de départ de la sélection
  */

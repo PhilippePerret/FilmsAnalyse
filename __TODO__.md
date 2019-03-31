@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-* [BUG] Pouvoir décommenter comme on excommenter, dans le FAWriter, avec le raccourci CMD-SHIFT-/
-
 * Mettre en place le MiniWriter
   (pour éditer n'importe quel texte/champ) en dehors de documents.
 

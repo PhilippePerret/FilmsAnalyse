@@ -99,8 +99,19 @@ FAWriter.onKeyDown = function(e){
       // META + SHIFT
       // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
       if(e.which === 191){
-        sel.goToLineStart()
-        sel.insert('# ')
+        // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
+        if(sel.line.substring(0,2) == '# '){
+          // <= La ligne commence par '# '
+          // => Il faut décommenter
+          sel.startOffset = sel.startLineOffset
+          sel.endOffset = sel.startLineOffset + 2
+          sel.insert('')
+        } else {
+          // <= La ligne ne commence pas par '# '
+          // => Il faut la commenter (l'ex-commenter)
+          sel.goToLineStart()
+          sel.insert('# ')
+        }
       }
     } else {
       // META SEUL
