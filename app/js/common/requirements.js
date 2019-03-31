@@ -9,7 +9,8 @@ const fs        = require('fs')
 const YAML      = require('js-yaml')
 const glob      = require('glob')
 
-const exec = require('child_process').exec
+const CHILD_PROCESS = require('child_process')
+const exec = CHILD_PROCESS.exec
 
 
 let ScreenWidth, ScreenHeight

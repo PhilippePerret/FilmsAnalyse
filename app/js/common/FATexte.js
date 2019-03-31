@@ -14,7 +14,9 @@
   ------
   Le plus simple est d'implémenter dans l'instance, ou l'objet, etc.
   une propriété `formater`:
-    this.formater = new FATexte('')
+    this.fatexte = new FATexte('')
+    this.formater = this.fatexte.formate.bind(this.fatexte)
+
   … puis de l'utiliser pour corriger les textes :
 
     var texteCorriged = this.formater(<le texte à corriger>)
@@ -123,11 +125,31 @@ formate(str, options){
   str = this.deTimeTags(str)
   str = this.deVar(str)
   str = this.deDim(str)
+
+  // Si une option de format a été définie
+  if(options && options.format) str = this.setFormat(str, options.format)
   return str
 }
 
 get formated(){return this.formate()}
 
+/**
+  Met le texte +str+ au format +format+
+  Pour le moment, les formats sont :
+    'raw'   Renvoie simplement le texte corrigé
+    'html'  Passe le texte corrigé par pandoc
+**/
+setFormat(str, format){
+  switch (format) {
+    case HTML:
+      return CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+    case 'raw':
+      return str
+    default:
+      console.error(`Le Format "${format}" est inconnu.`)
+      return str
+  }
+}
   /**
    * Transforme toutes les balises vers des events en texte correct
    *

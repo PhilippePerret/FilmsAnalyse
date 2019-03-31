@@ -58,15 +58,12 @@ const FAWriter = {
     if (this.currentDoc.dataType.type === 'data'){
       contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
     } else {
-      contenu = new FATexte(this.docField.val()).formated
+      contenu = this.formater(this.docField.val(), {format: HTML})
     }
-    var cmd = `echo "${contenu.replace(/\"/g,'\\"')}" | pandoc`
-    exec(cmd, (err, stdout, stderr) => {
-      if(err)throw(err)
-      this.visualizor.html(stdout)
-    })
+    this.visualizor.html(contenu)
     contenu = null
   }
+
   /**
   * La méthode vérifie que le document courant, s'il a été modifié, ait bien
   * été enregistré.
@@ -423,6 +420,13 @@ Object.defineProperties(FAWriter,{
   }
 , fwindow:{
     get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: 400, top:10}))}
+  }
+  // Pour utiliser `[print] this.formater("le texte")`
+, formater:{
+    get(){return this._formater||defP(this,'_formater', this.fatexte.formate.bind(this.fatexte))}
+  }
+, fatexte:{
+    get(){return this._fatexte||defP(this,'_fatexte', new FATexte(''))}
   }
   /**
    * Le selecteur, pour gérer la sélection

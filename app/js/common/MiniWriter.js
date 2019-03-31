@@ -77,8 +77,7 @@ synchronize(){
   dans le visualizor.
 **/
 updateVisualizor(){
-  console.log("-> updateVisualizor dans ", this.oVisualizorContent, this.contents)
-  this.oVisualizorContent.html(this.fatexte.formate(this.contents))
+  this.oVisualizorContent.html(this.formater(this.contents, {format: HTML}))
 }
 /**
 * Pour mettre en route ou stopper la visualisation
@@ -133,6 +132,7 @@ idFor(foo){return `mw${this.id}-${foo}`}
 
 // Le contenu du textarea
 get contents(){return this.textField.val()}
+get formater(){return this._formater||defP(this,'_formater', this.fatexte.formate.bind(this.fatexte))}
 
 get textField(){return $(`#${this.domId} .mini-writer-content`)}
 get oButtons(){return this._obuttons||defP(this,'_obuttons', $(`#${this.domId} .mini-writer-buttons`))}
