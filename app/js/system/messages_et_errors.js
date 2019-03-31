@@ -32,6 +32,8 @@ const ERRORS = {
 , "fwindow-invalid-container": "Le container pour placer la flying-window est invalide (introuvable)"
 , "fwindow-contents-required": "Pour instancier une flying-window, il faut fournir le contenu HTML (noeud principal). On peut le faire soit par les data (propriété `contents`) soit en définissant `FWcontents` dans le propriétaire."
 , "fwindow-owner-has-build-function": "Le propriétaire d'une flying-window doit définir la méthode `build` qui doit construire le contenu de la fenêtre volante."
+, "--- TEXTES ---": ""
+, "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 }
 const MESSAGES = {
   "conf-created-analyse": "Nouvelle analyse créée avec succès."

@@ -1,8 +1,7 @@
 # SUR LE GRILL
 
-* Voir pourquoi la formateuse de writer renvoie bien du HTML et pas le mini-writer (est-qu'on le passe déjà par pandoc ?)
-* Signaler quand des variables ne sont pas traitées (mais un message qui n'apparait qu'une seule fois)
-
+* Donner plus de place aux events dans l'état de l'analyse (10 fois plus)
+  - donner un nombre d'events par minute, pour arriver à peu près à 2000 pour 2 heures, donc 1000 par heure.
 
 * [BUG] Pouvoir décommenter comme on excommenter, dans le FAWriter, avec le raccourci CMD-SHIFT-/
 

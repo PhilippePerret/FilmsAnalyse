@@ -26,7 +26,7 @@ const DATA_DOCUMENTS = {
 
 , separator1: 'separator'
 
-, infos:            {hname: 'Informations', len: 1000, format: 'yaml', type:'data'}
+, infos:            {hname: 'Informations/variables', len: 1000, format: 'yaml', type:'data'}
 , fondamentales:    {hname: 'Fondamentales', len: 1000, format: 'yaml', type:'data'}
 
 , separator2: 'separator'

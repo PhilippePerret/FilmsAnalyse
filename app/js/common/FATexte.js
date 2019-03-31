@@ -47,13 +47,38 @@ static deDim(str){
 static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9–\-]+)\}\}','g')}
 static deVar(str){
   var my = this
-  if(my.table_vars === null) return str // pas de variables définies
+    , groups
+    , key
+    , tableref
+  // Quand il n'y a pas de variables définies, on fait quand même le
+  // traitement pour signaler à l'analyste qu'il doit définir celles qui
+  // sont utilisées, et lui explique comment le faire.
+  if(my.table_vars === null){ tableref = {} }
+  else tableref = my.table_vars
   str = str.replace(my.VAR_REGEXP, function(){
-    var groups = arguments[arguments.length-1]
-    var key = groups.key
-    return my.table_vars[key]
+    groups  = arguments[arguments.length-1]
+    key     = groups.key
+    if(undefined === tableref[key]) my.notifyMissedVariable(key)
+    return tableref[key] || key
   })
   return str
+}
+
+/**
+  Méthode qui signale -- une seule fois -- l'absence de la définition
+  de la variable +varname+ rencontrée dans le texte.
+**/
+static notifyMissedVariable(varname){
+  if(undefined === this.missedVariables) this.missedVariables = {}
+  if(undefined === this.missedVariables[varname]){
+    // <= La table des variables manquantes ne connait pas la variable
+    // => C'est la première fois qu'on la rencontre
+    // => Il faut le signaler
+    this.missedVariables[varname] = 0
+    F.notify(T('notify-missed-variable', {var: varname}))
+  }
+  // On incrémente toujours le nombre de fois où la variable manque.
+  ++ this.missedVariables[varname]
 }
 /**
  * Grande table contenant tous les diminutifs et leur expression régulière
