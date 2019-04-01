@@ -155,12 +155,25 @@ build(){
     ]
 }
 observe(){
+  var my = this
   // On observe les boutons
   this.oButtons.find(`#${this.idFor('cb-visualizor')}`).on('click', this.toggleVisualizor.bind(this))
   this.oButtons.find(`#${this.idFor('cb-mask-fond')}`).on('click', this.toggleMaskFond.bind(this))
   this.oButtons.find('button.btn-ok').on('click', this.finir.bind(this))
   this.textField.on('keydown',  this.onKeyDown.bind(this))
   this.textField.on('keyup',    this.onKeyUp.bind(this))
+  // On peut déposer des éléments quelconques sur le champ de texte
+  this.textField.droppable({
+    accept: '.event, .doc, .dropped-time'
+  , tolerance: 'intersect'
+  , drop: function(e, ui){
+      stopEvent(e)
+      var balise = my.a.getBaliseAssociation(my, ui.helper)
+      balise && my.textField.insertAtCaret(balise)
+      return false
+  }
+  , classes: {'ui-droppable-hover': 'survoled'}
+  })
 }
 
 onKeyDown(e){

@@ -14,8 +14,11 @@ const System = {
 *   - possède au minimum un dossier required_then
 *   - possède exceptionnellement un dossier required_xfinally
 *
+* La méthode charge tous les scripts et inscrit les feuilles de
+* style dans le document.
 **/
-  loadComponant: function(compName, fn_callback){
+  loadComponant(compName, fn_callback){
+    this.loadCSSFolder(`./app/js/composants/${compName}/css`)
     this.loadJSFolders(`./app/js/composants/${compName}`, ['required_first', 'required_then', 'required_xfinally'], fn_callback)
   }
 
@@ -75,4 +78,14 @@ const System = {
         this.loadNextFolder()
       }
     }
+, loadCSSFolder(folder){
+  if(!fs.existsSync(folder)) return // pas de dossier css => finir
+  glob(`${folder}/**/*.css`, (err, files) => {
+    if(err) throw(err)
+    for(var file of files){
+      var relpath = file.replace(/\.\/app/,'.')
+      document.head.append(DCreate('LINK', {attrs:{href: relpath, rel:'stylesheet'}}))
+    }
+  })
+}
 }

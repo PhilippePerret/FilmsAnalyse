@@ -30,17 +30,20 @@ const FAStater = {
 , init(analyse){
     this.a = this.analyse = analyse
 
-    // Quand on clique sur la jauge d'avancement, ça ouvre le
-    // détail
-    if(this.a){
-      $('#statebar-jauger').on('click', this.a.displayAnalyseState.bind(this.a))
-    } else {
-      console.log("Pas d'analyse")
-    }
+    this.observe()
 
     this.inited = true
   }
-
+, observe(){
+  if(this.a){
+    // Quand on clique sur la jauge d'avancement, ça ouvre le
+    // détail
+    $('#statebar-jauger label[for="statebar-jauger"]').on('click', this.a.displayAnalyseState.bind(this.a))
+    // Quand on clique sur la dernière étape, ça ouvre la fenêtre
+    // de protocol
+    $('#statebar-last-step-protocole, label[for="statebar-last-step-protocole"]').on('click', this.a.protocole.show.bind(this.a.protocole))
+  }
+}
 
 /**
   Demande d'affichage de l'état d'avancement en bas de la fenêtre.
@@ -76,8 +79,10 @@ const FAStater = {
   this.setJaugeAtPourcent(0.01)
   this.setNombreDocuments('...')
   this.setNombreEvents('...')
-  // TODO Ici, on calcule
-  // Reprendre le tool analyse_state
+  this.setLastStepProtocole('...')
+  this.setMaxPctProtocole('...')
+
+  if(!this.a) return
 
   // Pourcentage par rapport à ceux attendus
   this.calcStateDocuments()
@@ -89,12 +94,54 @@ const FAStater = {
 
   this.calcStatePFA()
 
+  // On peut calculer le pourcentage final
+  let finalPct = (this.pourcentageProtocoleReference() * pourcentage(this.totalMaxValue, this.totalCurValue)) / 100
+  finalPct = Math.round(finalPct * 100) / 100
+
   // On règle enfin le pourcentage final
-  this.setJaugeAtPourcent(pourcentage(this.totalMaxValue, this.totalCurValue), asPourcentage(this.totalMaxValue, this.totalCurValue))
+  this.setJaugeAtPourcent(finalPct, `${finalPct} %`)
+  this.setMaxPctProtocole(`${this.pourcentageProtocoleReference()} %`)
+
+
+  this.setLastStepProtocole(this.a.protocole.lastStep() || '...')
 
   }
 
 
+/**
+  Calcul de l'état du protocole
+
+  Normalement, dans l'idéal, on devrait tout étudier à la lueur de
+  l'état du protocole. Un pourcentage général ne doit pouvoir être
+  atteint que lorsque l'on a atteint une certaine étape du protoccole.
+
+  Par exemple, on ne peut atteindre les 90/100% que lorsque l'on
+  a atteint la 'relecture', la 'full-correction', la finalisation de la
+  couverture ('final-cover') et la finalisation de l'eBook (final-ebook)
+  Avant ça, quelque soit l'état, il ne peut qu'atteindre les 90%
+**/
+, pourcentageProtocoleReference(){
+    return this._pctprotoref || defP(this,'_pctprotoref', this.calcStateProtocole())
+}
+, calcStateProtocole(){
+    var lastPct
+    for(var pct in FAProtocole.States){
+      if(this.areSPChecks(FAProtocole.States[pct])){
+        lastPct = parseInt(pct,10)
+      } else {
+        return lastPct
+      }
+    }
+  }
+// Retourne true si les étapes +steps+ du protocole sont cochées
+// Note : 'SP' pour 'Step Protocole'
+, areSPChecks(steps){
+    if(undefined === this.checks) this.checks = this.a.protocole.data
+    for(var step of steps){
+      if(this.checks[step] !== true) return false
+    }
+    return true
+  }
 /**
   Calcul de l'état du PFA
 **/
@@ -233,6 +280,10 @@ const FAStater = {
     // console.log("-> setJaugeAtPourcent : ", pct, pctStr)
     this.jqJauge.css('width', `${pct}%`)
     this.jqJauger.attr('title', `État d'avancement estimé à ${pctStr}`)
+    $('#statebar-pourcentage').html(pctStr)
+  }
+, setMaxPctProtocole(str){
+    $('#statebar-max-pct-suivant-protocole').html(str)
   }
 , setNombreDocuments(nb){
     $('#statebar-docs-count').html(nb)
@@ -240,7 +291,9 @@ const FAStater = {
 , setNombreEvents(nb){
     $('#statebar-events-count').html(nb)
   }
-
+, setLastStepProtocole(step_name){
+    $('#statebar-last-step-protocole').html(step_name)
+  }
 }
 Object.defineProperties(FAStater,{
   jqJauge:{

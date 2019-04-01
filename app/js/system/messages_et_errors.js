@@ -25,6 +25,8 @@ const ERRORS = {
 , "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
 , "---- EVENTS ----":""
 , "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
+, "data-type-required-for-association": "L'élément droppé devrait définir son data-type. Cet attribut n'est pas défini."
+, "unknown-associated-type": "Impossible d'associer l'élément à un élément de type inconnu “%{type}”."
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."

@@ -136,6 +136,37 @@ constructor(pathFolder){
   this.events   = []
 }
 
+
+/**
+  Méthode qui procède à l'association entre deux éléments/objets
+  de l'analyse.
+  Mais contrairement à la méthode `getBaliseAssociation` qui retourne
+  une balise à insérer dans le texte (p.e. `{{event: 12}}`), cette
+  méthode crée une association simple en dehors des textes.
+**/
+associateDropped(obj, dropped){
+  var dropped_type = dropped.attr('data-type')
+  if(undefined === dropped) throw(T('data-type-required-for-association'))
+  var dropped_id = dropped.attr('data-id') // pas toujours défini
+  if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
+  switch (dropped_type) {
+    case 'event':
+      obj.events.push(dropped_id)
+      break
+    case 'document':
+      // Associer le document
+      // Note : soit il est défini dans le `data-id` soit c'est
+      // le document courant.
+      obj.documents.push(dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type)
+      break
+    case 'time':
+      // Associer le temps courant
+      obj.times.push(this.locator.getRTimeRound())
+      break
+    default:
+      throw(T('unknown-associated-type', {type: dropped_type}))
+  }
+}
 /**
 * Associateur
 * Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
@@ -144,10 +175,10 @@ constructor(pathFolder){
 *
 * @return la balise qui sera peut-être à insérer dans le champ de saisie,
 * si c'est un champ qui a reçu le drop
-* Retourne null si un problème est survenu
+* Retourne false si un problème est survenu
 **/
-associateDropped(obj, domel){
-  // console.log("-> associateDropped", obj, domel)
+getBaliseAssociation(obj, domel){
+  // console.log("-> getBaliseAssociation", obj, domel)
   var balise
     , domel_type = domel.attr('data-type')
     , domel_id
@@ -278,6 +309,9 @@ get PFA(){
   return this._PFA
 }
 
+// {FAProtocole} Le protocole de l'analyse courante
+get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
+
 // ---------------------------------------------------------------------
 /**
  * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
@@ -296,9 +330,7 @@ onReady(){
   Scene.init()
   this.setOptionsInMenus()
   this.videoController.init()
-  this.setupState()
 }
-
 
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
@@ -309,6 +341,11 @@ setAllIsReady(){
 
   // Maintenant, la classe FAWriter est toujours chargée
   if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
+  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.setAllIsReady.bind(this))
+  if('undefined' === typeof FAStater) return this.loadStater(this.setAllIsReady.bind(this))
+
+  // On peut marquer l'état d'avancement de l'analyse
+  this.setupState()
 
   // Au cours du dispatch des données, la méthode modified a été invoquée
   // de nombreuses fois. Il faut revenir à l'état normal.
@@ -333,7 +370,6 @@ setupState(){
     console.error("Trop de tentative pour charger FAStater. J'abandonne.")
     return
   }
-  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
   FAStater.inited || FAStater.init(this)
   FAStater.displaySumaryState()
 }
@@ -362,6 +398,9 @@ exportAs(format){
   if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
   FABuilder.createNew().exportAs(format)
 }
+
+// Pour afficher le protocole de l'analyse
+displayProtocole(){this.protocole.show()}
 
 /**
 * Pour afficher la Timeline
@@ -587,104 +626,126 @@ indexOfEvent(event_id){
 
   // --- FONCTIONS I/O ----------------------------------------------
 
-  get SAVED_FILES(){
-    if(undefined === this._saved_files){
-      this._saved_files = [
-          this.eventsFilePath
-        , this.dataFilePath
-      ]
-    }
-    return this._saved_files
+get SAVED_FILES(){
+  if(undefined === this._saved_files){
+    this._saved_files = [
+        this.eventsFilePath
+      , this.dataFilePath
+    ]
   }
-  get PROP_PER_FILE(){
-    if(undefined === this._prop_per_path){
-      this._prop_per_path = {}
-      this._prop_per_path[this.eventsFilePath]  = 'eventsSaved'
-      this._prop_per_path[this.dataFilePath]    = 'data'
-    }
-    return this._prop_per_path
-  }
+  return this._saved_files
+}
 
-  /**
-   * Appelée par le menu pour sauver l'analyse
-   */
-  saveIfModified(){
-    this.modified && this.save()
+get PROP_PER_FILE(){
+  if(undefined === this._prop_per_path){
+    this._prop_per_path = {}
+    this._prop_per_path[this.eventsFilePath]  = 'eventsSaved'
+    this._prop_per_path[this.dataFilePath]    = 'data'
   }
-  /**
-   * Méthode appelée pour sauver l'analyse courante
-   */
-  save() {
-    // On sauve les options toutes seules, ça se fait de façon synchrone
-    this.options.saveIfModified()
-    this.savers = 0
-    this.savables_count = this.SAVED_FILES.length
-    for(var fpath of this.SAVED_FILES){
-      this.saveFile(fpath, this.PROP_PER_FILE[fpath])
-    }
-  }
-  /**
-   * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
-   * fenêtre, et au changement d'analyse.
-   * @synchrone
-   * Elle doit être synchrone pour quitter l'application
-   * normalement.
-   */
-  saveData(){
-    fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
-  }
+  return this._prop_per_path
+}
 
-  /**
-    * Procédure prudente de sauvegarde
-    *
-    * @asynchrone
-    *
-    * Par mesure de prudence, on procède toujours en inscrivant le
-    * fichier sur le disque, sous un autre nom, puis on change son nom
-    * en mettant l'original en backup (s'il n'est pas vide)
-    */
-  saveFile(fpath, prop){
-    var iofile = new IOFile(fpath)
-    iofile.code = this[prop]
-    iofile.save({after: this.setSaved.bind(this, fpath)})
-    var isSaved = iofile.saved
-    iofile = null
-    return isSaved
-  }
-  setSaved(fpath){
-    this.savers += 1
-    if(this.savers === this.savables_count){
-      this.modified = false
-      F.notify("Analyse enregistrée avec succès.")
-      if(this.methodAfterSaving) this.methodAfterSaving()
-    }
-  }
+/**
+ * Appelée par le menu pour sauver l'analyse
+ */
+saveIfModified(){
+  this.modified && this.save()
+}
 
-  /**
-   * Retourne les évènements sous forme de données simplifiées
-   */
-  get eventsSaved(){
-    var eSaveds = []
-    for(var e of this.events){eSaveds.push(e.data)}
-    return eSaveds
+/**
+ * Méthode appelée pour sauver l'analyse courante
+ */
+save() {
+  // En même temps qu'on sauve les fichiers, on enregistre le fichier
+  // des modifiés (seuls les events modifiés à cette session sont
+  // enregistrés)
+  FAEvent.saveModifieds()
+  // On sauve les options toutes seules, ça se fait de façon synchrone
+  this.options.saveIfModified()
+  this.savers = 0
+  this.savables_count = this.SAVED_FILES.length
+  for(var fpath of this.SAVED_FILES){
+    this.saveFile(fpath, this.PROP_PER_FILE[fpath])
   }
-  // Prend les données dans le fichier events.json et les dispatche dans
-  // l'instance d'analyse (au début du travail, en général)
-  set eventsSaved(v){
-    var my = this
-    var last_id = -1
-    this.events = []
-    for(var d of v){
-      var eClass = eval(`FAE${d.type}`)
-      this.addEvent(new eClass(my, d), true)
-      // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
-      // une création d'évènement.
-      if(d.id > last_id){last_id = parseInt(d.id,10)}
-    }
-    // On peut définir le dernier ID dans EventForm (pour le formulaire)
-    EventForm.lastId = last_id
-    my = null
+}
+/**
+ * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
+ * fenêtre, et au changement d'analyse.
+ * @synchrone
+ * Elle doit être synchrone pour quitter l'application
+ * normalement.
+ */
+saveData(){
+  fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
+}
+
+/**
+  * Procédure prudente de sauvegarde
+  *
+  * @asynchrone
+  *
+  * Par mesure de prudence, on procède toujours en inscrivant le
+  * fichier sur le disque, sous un autre nom, puis on change son nom
+  * en mettant l'original en backup (s'il n'est pas vide)
+  */
+saveFile(fpath, prop){
+  // Pour le moment, c'est une façon un peu lourde de récupérer
+  // la propriété IOFile du fichier, mais on améliorera pas la
+  // suite.
+  var iofile
+  switch (path.basename(fpath)) {
+    case 'events.json':
+      iofile = this.iofileEvent
+      break
+    case 'data.json':
+      iofile = this.iofileData
+      break
+    default:
+      throw("Il faut donner le nom du fichier", fpath)
   }
+  iofile.code = this[prop]
+  iofile.save({after: this.setSaved.bind(this, fpath)})
+  return iofile.saved
+}
+
+setSaved(fpath){
+  this.savers += 1
+  if(this.savers === this.savables_count){
+    this.modified = false
+    F.notify("Analyse enregistrée avec succès.")
+    if(this.methodAfterSaving) this.methodAfterSaving()
+  }
+}
+
+get iofileEvent() {return this._iofileEvent||defP(this,'_iofileEvent', new IOFile(this.eventsFilePath))}
+get iofileData()  {return this._iofileData||defP(this,'_iofileData',    new IOFile(this.dataFilePath))}
+
+/**
+ * Retourne les évènements sous forme de données simplifiées
+ */
+get eventsSaved(){
+  var eSaveds = []
+  for(var e of this.events){eSaveds.push(e.data)}
+  return eSaveds
+}
+
+// Prend les données dans le fichier events.json et les dispatche dans
+// l'instance d'analyse (au début du travail, en général)
+set eventsSaved(v){
+  var my = this
+  var last_id = -1
+  this.events = []
+  for(var d of v){
+    var eClass = eval(`FAE${d.type}`)
+    this.addEvent(new eClass(my, d), true)
+    // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
+    // une création d'évènement.
+    if(d.id > last_id){last_id = parseInt(d.id,10)}
+  }
+  // On peut définir le dernier ID dans EventForm (pour le formulaire)
+  EventForm.lastId = last_id
+  my = null
+}
 
   /**
    * Méthode pour charger l'analyse (courante ou pas)
@@ -831,6 +892,14 @@ get folderVignettesScenes(){
   return this._folderVignettesScenes
 }
 
+get folderBackup(){
+  if(undefined === this._folderBackup){
+    this._folderBackup = path.join(this.folder,'.backups')
+    if(!fs.existsSync(this._folderBackup)) fs.mkdirSync(this._folderBackup)
+  }
+  return this._folderBackup
+}
+
 get folderFiles(){
   if(undefined === this._folderFiles){
     this._folderFiles = path.join(this.folder,'analyse_files')
@@ -883,6 +952,9 @@ loadStater(fn_callback){
 }
 loadWriter(fn_callback){
   return System.loadComponant('faWriter', fn_callback)
+}
+loadProtocole(fn_callback){
+  return System.loadComponant('faProtocole', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

@@ -18,5 +18,7 @@ run(){
   // current_analyse.editEvent(0)
   // MiniWriter.new(DGet('event-0-content'))
 
+  // current_analyse.protocole.show()
+
 }
 }
