@@ -2,8 +2,54 @@
 
 
 class FAEvent {
+// ---------------------------------------------------------------------
+//  CLASSE
 
 static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents']}
+
+/**
+  Mémorise tous les events qui ont été créés ou modifiés au cours
+  de la séance pour les enregistrer de façon séparée dans un dossier
+  de backup, histoire d'avoir une copie en cas de problème. Ce backup
+  contiendra donc une sorte d'historique des modifications.
+**/
+static addModified(evt){
+  if(undefined === this.modifieds) this.modifieds = []
+  this.modifieds.push(evt.id)
+}
+
+/**
+  Méthode qui sauve dans le backup les events modifiés
+**/
+static saveModifieds(){
+  var my = this
+  if(undefined === this.modifieds || 0 === this.modifieds.length) return
+
+  var dataModifieds = {}
+  for(var mod_id of this.modifieds) dataModifieds[mod_id] = this.a.ids[mod_id].data
+  fs.writeFile(my.pathModifieds(), JSON.stringify(dataModifieds), 'utf8', (err) => {
+    if(err) throw(err)
+    // Sinon, tout est OK, les modifiés ont été sauvegardés
+    delete my.modifieds
+  })
+  dataModifieds = null
+}
+/**
+  Retourne le path du fichier ou mettre les modifiés du moment
+**/
+static pathModifieds(){return path.join(this.folderModifieds,`${new Date().getTime()}.json`)}
+static get folderModifieds(){
+  if(undefined === this._folderModifieds){
+    this._folderModifieds = path.join(this.a.folderBackup, 'events')
+    if(!fs.existsSync(this._folderModifieds)) fs.mkdirSync(this._folderModifieds)
+  }
+  return this._folderModifieds
+}
+
+static get a(){return current_analyse}
+
+// ---------------------------------------------------------------------
+//  INSTANCE
 
 constructor(analyse, data){
   this.analyse  = this.a = analyse
@@ -23,9 +69,14 @@ constructor(analyse, data){
 }
 
 // Dès qu'on marque l'event modifié, ça marque l'analyse modifiée
+// On utilise aussi les sauvegardes de protection en mémorisant l'identiant
+// de cet event qu'il faudra sauvegarder
 set modified(v){
   this._modified = v
-  if(v)this.a.modified = true
+  if(v){
+    FAEvent.addModified(this)
+    this.a.modified = true
+  }
 }
 
 // Méthode pratique pour reconnaitre rapidement l'element

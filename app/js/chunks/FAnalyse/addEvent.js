@@ -15,6 +15,8 @@ let addEvent = function(nev, whenLoading){
   this.ids[nev.id] = nev
 
   if (!whenLoading) {
+    // C'est une vraie création, pas une instanciation au
+    // rechargement de l'analyse.
     this.locator.addEvent(nev)
     // Si le nouvel event est une scène, il faut peut-être numéroter
     // les suivantes
@@ -35,6 +37,9 @@ let addEvent = function(nev, whenLoading){
     // On place tout de suite l'évènement sur le lecteur
     nev.show()
     this.modified = true
+    // On ajoute l'event à la liste des modifiés du moment
+    FAEvent.addModified(nev)
+    //  On reset
     nev = null
     idx_event_before = null
   }
