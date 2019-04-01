@@ -152,15 +152,6 @@ const FAWriter = {
 , onBlurContents(){
   }
 
-  /**
-   * Méthode invoquée quand on drop un event (.event) ou un document (.doc)
-   * sur le champ de texte.
-   */
-, onDropThing(e, ui){
-    var balise = this.a.associateDropped(this.currentDoc, ui.helper)
-    if (balise) this.docField.insertAtCaret(balise)
-  }
-
 , reset(){
     this.docField.val('')
   }
@@ -359,50 +350,54 @@ const FAWriter = {
 }
 // Appelé par la FWindow
 , observe(){
+    var my = this
     // On observe le menu de choix d'un document
-    this.menuTypeDoc.on('change', this.onChooseTypeDoc.bind(this))
+    my.menuTypeDoc.on('change', my.onChooseTypeDoc.bind(my))
     // On observe le menu de choix d'un modèle de document
-    this.menuModeles.on('change', this.onChooseModeleDoc.bind(this))
+    my.menuModeles.on('change', my.onChooseModeleDoc.bind(my))
     // On observe le menu qui choisit le thème
-    this.menuThemes.on('change', this.onChooseTheme.bind(this))
+    my.menuThemes.on('change', my.onChooseTheme.bind(my))
 
     // On observe le champ de texte
-    this.docField.on('change',    this.onContentsChange.bind(this))
-    this.docField.on('focus',     this.onFocusContents.bind(this))
-    this.docField.on('blur',      this.onBlurContents.bind(this))
-    this.docField.on('keydown',   this.onKeyDown.bind(this))
-    this.docField.on('keyup',     this.onKeyUp.bind(this))
+    my.docField.on('change',    my.onContentsChange.bind(my))
+    my.docField.on('focus',     my.onFocusContents.bind(my))
+    my.docField.on('blur',      my.onBlurContents.bind(my))
+    my.docField.on('keydown',   my.onKeyDown.bind(my))
+    my.docField.on('keyup',     my.onKeyUp.bind(my))
 
     // On rend le champ de texte droppable pour pouvoir y déposer
     // n'importe quel event ou n'importe quel autre document
-    this.docField.droppable({
+    my.docField.droppable({
         accept: '.event, .doc, .dropped-time'
       , tolerance: 'intersect'
-      , drop: this.onDropThing.bind(this)
+      , drop: function(e, ui){
+          var balise = my.a.getBaliseAssociation(my.currentDoc, ui.helper)
+          if (balise) my.docField.insertAtCaret(balise)
+        }
       , classes: {'ui-droppable-hover': 'survoled'}
     })
 
     // Le bouton pour sauver le document courant
-    this.btnSave.on('click',this.saveCurrentDoc.bind(this))
+    my.btnSave.on('click',my.saveCurrentDoc.bind(my))
     // On observe la case à cocher qui permet de sauvegarder automatiquement
     // le document
-    $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
+    $('input#cb-save-auto-doc').on('click', my.setAutoSave.bind(my))
     // // On observe la case à cocher pour visualiser régulièrement le document
-    $('input#cb-auto-visualize').on('change', this.setAutoVisualize.bind(this))
+    $('input#cb-auto-visualize').on('change', my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
     $('button#writer-btn-new-doc').on('click', FAWriterDoc.new.bind(FAWriterDoc))
 
     // On rend le petit bouton pour drag-dropper le document courant
     // draggable
-    this.section.find('.header .writer-btn-drop').draggable({
+    my.section.find('.header .writer-btn-drop').draggable({
       revert: true
     , zIndex: 5000
     })
 
     // Mettre la taille : non, ça doit se régler à chaque ouverture
 
-    this.ready = true
+    my.ready = true
   }
 
 /**

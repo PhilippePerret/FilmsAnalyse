@@ -168,7 +168,7 @@ observe(){
   , tolerance: 'intersect'
   , drop: function(e, ui){
       stopEvent(e)
-      var balise = my.a.associateDropped(my, ui.helper)
+      var balise = my.a.getBaliseAssociation(my, ui.helper)
       balise && my.textField.insertAtCaret(balise)
       return false
   }

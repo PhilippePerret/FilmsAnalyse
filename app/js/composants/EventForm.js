@@ -296,18 +296,6 @@ domField(prop){
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
-onDropThing(e, ui){
-  var balise = this.a.associateDropped(this.event, ui.helper)
-  if(balise){
-    // console.log("Je vais ajouter la balise au champ", balise, e)
-    if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
-      $(e.target).insertAtCaret(balise)
-    } else {
-      F.notify("Association effectuée avec succès.")
-    }
-  }
-}
-
 observe(){
   var my = this
   this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
@@ -320,7 +308,12 @@ observe(){
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
-  , drop: this.onDropThing.bind(this)
+  , drop: function(e, ui){
+      var balise = this.a.getBaliseAssociation(this.event, ui.helper)
+      if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
+        $(e.target).insertAtCaret(balise)
+      }
+  }
   , classes: {'ui-droppable-hover': 'survoled'}
   }
   // Les champs d'édition doit pouvoir recevoir des drops

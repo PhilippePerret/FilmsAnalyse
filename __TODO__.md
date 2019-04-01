@@ -1,16 +1,5 @@
 # SUR LE GRILL
 
-
-* Supprimer la méthode onDropThing, la mettre directement dans la définition des droppables.
-
-* Voir la méthode FAEvents.onDropThing
-  Pour le moment, elle ne fait rien du tout, en fait.
-  Mais ATTENTION : il ne faut pas modifier la méthode FAnalyse#associateDropped pour qu'elle modifie la donnée elle même en ajoutant dans la propriété `documents` ou `events` car il y aurait avec d'autres objets comme par exemple le MiniWriter, qui ne pourrait pas traiter, en tout cas pour le moment, le « possesseur » de cette propriété `documents` ou `events`.
-  En fait, il faudrait deux méthodes :
-    - une qui reprendrait intégralement associateDropped et retournerait la balise à insérer
-    - une qui associerait les éléments dans l'instance, dans `documents` et `events`
-    Mais la vraie question est celle-ci : est-ce vraiment nécessaire d'associer les éléments en dehors de leur texte ? Oui, peut-être justement pour les associer sans avoir à rédiger quelque chose.
-
 * ASSEMBLAGE DE L'ANALYSE
   =======================
   EN COURS : PARADIGME DE FIELD (pour l'analyse/livre)
@@ -18,11 +7,8 @@
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
-  - scénier du film
   - fondamentales
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-  - Développer encore le vérificateur pour prendre en compte les nouveaux fichiers (vérifier que les fondamentales, etc. soit pris en compte)
-
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 

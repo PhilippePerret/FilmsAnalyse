@@ -136,6 +136,37 @@ constructor(pathFolder){
   this.events   = []
 }
 
+
+/**
+  Méthode qui procède à l'association entre deux éléments/objets
+  de l'analyse.
+  Mais contrairement à la méthode `getBaliseAssociation` qui retourne
+  une balise à insérer dans le texte (p.e. `{{event: 12}}`), cette
+  méthode crée une association simple en dehors des textes.
+**/
+associateDropped(obj, dropped){
+  var dropped_type = dropped.attr('data-type')
+  if(undefined === dropped) throw(T('data-type-required-for-association'))
+  var dropped_id = dropped.attr('data-id') // pas toujours défini
+  if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
+  switch (dropped_type) {
+    case 'event':
+      obj.events.push(dropped_id)
+      break
+    case 'document':
+      // Associer le document
+      // Note : soit il est défini dans le `data-id` soit c'est
+      // le document courant.
+      obj.documents.push(dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type)
+      break
+    case 'time':
+      // Associer le temps courant
+      obj.times.push(this.locator.getRTimeRound())
+      break
+    default:
+      throw(T('unknown-associated-type', {type: dropped_type}))
+  }
+}
 /**
 * Associateur
 * Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
@@ -146,8 +177,8 @@ constructor(pathFolder){
 * si c'est un champ qui a reçu le drop
 * Retourne false si un problème est survenu
 **/
-associateDropped(obj, domel){
-  // console.log("-> associateDropped", obj, domel)
+getBaliseAssociation(obj, domel){
+  // console.log("-> getBaliseAssociation", obj, domel)
   var balise
     , domel_type = domel.attr('data-type')
     , domel_id

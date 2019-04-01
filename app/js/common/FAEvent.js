@@ -364,12 +364,8 @@ get btnPlayETools(){
 * Méthodes d'évènements
 **/
 
-onDropThing(e, ui){
-  this.a.associateDropped(this, ui.helper)
-  return stopEvent(e)
-}
-
 observe(container){
+  var my = this
   var o = this.jqReaderObj
   o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
   BtnPlay.setAndWatch(this.jqReaderObj, this.id)
@@ -381,7 +377,9 @@ observe(container){
   o.droppable({
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
-  , drop: this.onDropThing.bind(this)
+  , drop: function(e,ui){
+      my.a.associateDropped(my, ui.helper)
+    }
   , classes: {'ui-droppable-hover': 'survoled'}
   })
   /**
@@ -393,6 +391,7 @@ observe(container){
    */
   o.draggable({
       revert: true
+    , helper: 'clone'
     // , stack: 'section#section-eventers div.eventer div.pan-events'
     // , start: function(event, ui) { $(this).css("z-index", a++); }
     , classes:{
