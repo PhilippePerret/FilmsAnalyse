@@ -299,7 +299,6 @@ onReady(){
   Scene.init()
   this.setOptionsInMenus()
   this.videoController.init()
-  this.setupState()
 }
 
 /**
@@ -312,6 +311,10 @@ setAllIsReady(){
   // Maintenant, la classe FAWriter est toujours chargée
   if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
   if('undefined' === typeof FAProtocole) return this.loadProtocole(this.setAllIsReady.bind(this))
+  if('undefined' === typeof FAStater) return this.loadStater(this.setAllIsReady.bind(this))
+
+  // On peut marquer l'état d'avancement de l'analyse
+  this.setupState()
 
   // Au cours du dispatch des données, la méthode modified a été invoquée
   // de nombreuses fois. Il faut revenir à l'état normal.
@@ -336,7 +339,6 @@ setupState(){
     console.error("Trop de tentative pour charger FAStater. J'abandonne.")
     return
   }
-  if('undefined' === typeof FAStater) return this.loadStater(this.setupState.bind(this))
   FAStater.inited || FAStater.init(this)
   FAStater.displaySumaryState()
 }
@@ -365,6 +367,9 @@ exportAs(format){
   if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
   FABuilder.createNew().exportAs(format)
 }
+
+// Pour afficher le protocole de l'analyse
+displayProtocole(){this.protocole.show()}
 
 /**
 * Pour afficher la Timeline

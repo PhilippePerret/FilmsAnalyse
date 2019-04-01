@@ -14,30 +14,94 @@ class FAProtocole {
 **/
 constructor(analyse){
   this.analyse = this.a = analyse
+  this.loadData()
+  this.modified = false
+}
+
+/**
+  Méthode appelée par le checkbox quand on le clique
+**/
+onCheckStep(e){
+  console.log(e.target.value)
+  this.data[e.target.value] = true
+  this.modified = true
+}
+
+// Retourne la dernière étape atteinte (titre humain)
+lastStep(){
+  var last = null
+  for(var dstep of FAProtocole.DATA.steps){
+    if(this.data[dstep.id] === true) last = dstep.libelle
+    if(dstep.steps){
+      for(var dsousStep of dstep.steps){
+        if(this.data[dsousStep.id]===true) last = dsousStep.libelle
+      }
+    }
+  }
+  dstep = null
+  dsousStep = null
+  return last
 }
 
 // Retourne true si l'étape d'identifiant +step_id+ (cf. DATA) est
 // effectuée (checkée)
 isChecked(step_id){
-  return false
+  return this.data[step_id] === true
 }
 
-display(){
-  F.notify("Affichage des données du protocole d'analyse.")
-  this.show()
+// Les données
+setData(d){ this.data = d || {}}
+loadData(){
+  if(fs.existsSync(this.path)){
+    this.data = JSON.parse(fs.readFileSync(this.path,'utf8'))
+  } else {
+    this.data = {}
+  }
 }
+
+// Miscelleanous
+
 show(){this.fwindow.show()}
+saveAndHide(){
+  this.save()
+  this.fwindow.hide()
+}
+save(){
+  if(this.modified){
+    console.log("Protocole modifié => je l'enregistre", this.data)
+    this.iofile.save({after: this.endSave.bind(this)})
+  } else {
+    console.log("Protocole non modifié.")
+  }
+}
+endSave(){
+  this.modified = false
+}
+
+// À la fermeture de la fenêtre, on enregistre les changements
+// enregistrés
+onHide(){
+  console.log("Fermeture de la fenêtre")
+  if(this.modified){
+    console.log("Le protocole a été modifié, je dois l'enregisrer", this.data)
+    // this.save()
+  } else {
+    console.log("Pas d'enregistrement des données du protocole.")
+  }
+}
 
 build(){
-  var domElements = []
   var my = this
-  var sousSteps = []
+    , domElements = []
+    , sousSteps   = []
+    , cbSteps     = []
 
-  domElements.push(DCreate('H2', {inner:'protocole d’analyse'}))
+  cbSteps.push(DCreate('button', {class:'btn-close', type:'button'}))
+  cbSteps.push(DCreate('H2', {inner:'protocole d’analyse'}))
 
   for(var dstep of FAProtocole.DATA.steps){
     if (dstep.type === 'separator'){
-      domElements.push(DCreate('DIV', {class: 'separator'}))
+      cbSteps.push(DCreate('DIV', {class: 'separator'}))
     } else {
       if (dstep.steps){
         sousSteps = []
@@ -45,11 +109,40 @@ build(){
           sousSteps.push(this.buildStep(dsstep))
         }
       } else { sousSteps = null }
-      domElements.push(this.buildStep(dstep, sousSteps))
+      cbSteps.push(this.buildStep(dstep, sousSteps))
     }
   }
+
+  domElements.push(
+    DCreate('DIV', {class:'body', append:cbSteps})
+  )
+
+  domElements.push(
+    DCreate('DIV', {class:'footer', append:[
+      DCreate('BUTTON', {id:'protocole-btn-ok', type:'button', inner:'Enregistrer'})
+    ]})
+  )
   return domElements
 }
+
+/**
+On observe tous les checkboxes pour enregistrer les modifications
+qu'on enregistrera à la fermeture de la fenêtre.
+**/
+observe(){
+  this.fwindow.jqObj.find('input[type="checkbox"]').on('click', this.onCheckStep.bind(this))
+  this.fwindow.jqObj.find('#protocole-btn-ok').on('click', this.saveAndHide.bind(this))
+}
+
+// ---------------------------------------------------------------------
+//  Méthodes de propriétés
+
+get iofile(){return this._iofile||defP(this,'_iofile',new IOFile(this))}
+get path(){return this._path||defP(this,'_path', path.join(this.a.folder,'protocole.json'))}
+
+// ---------------------------------------------------------------------
+//  Méthodes fonctionnelles
+
 buildStep(dstep, sousSteps){
   var step_id = `protocole-step-${dstep.id}`
   var els = [

@@ -20,27 +20,28 @@
  */
 const DATA_DOCUMENTS = {
 
-  diminutifs:       {hname: 'Diminutifs', len:0, format:'yaml', type:'data'}
-, snippets:         {hname: 'Snippets', len:0, format:'yaml', type:'data'}
-, building_script:  {hname: 'Script d’assemblage', len:0, format:'md', type:'data'}
+  diminutifs:       {hname: 'Diminutifs', format:'yaml', type:'data'}
+, snippets:         {hname: 'Snippets', format:'yaml', type:'data'}
+, building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
 
 , separator1: 'separator'
 
-, infos:            {hname: 'Informations/variables', len: 1000, format: 'yaml', type:'data'}
-, fondamentales:    {hname: 'Fondamentales', len: 1000, format: 'yaml', type:'data'}
+, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
+, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data'}
 
 , separator2: 'separator'
 
-, introduction:     {hname: 'Introduction', len: 1000, type: 'real'}
-, synopsis:         {hname: 'Synopsis', len: 1000, type: 'real'}
-, au_fil_du_film:   {hname: 'Commentaires au fil du film', len: 50000, type: 'real'}
-, personnages:      {hname: 'Les personnages', len: 1000, type: 'real'}
-, themes:           {hname: 'Les thèmes', len: 1000, type: 'real'}
-, lecon_tiree:      {hname: 'La leçon tirée du film', len: 1000, type: 'real'}
-, conclusion:       {hname: 'Conclusion', len: 500, type: 'real'}
-, annexes:          {hname: 'Annexes', len: 1000, type: 'real'}
+, introduction:     {hname: 'Introduction', type: 'real'}
+, synopsis:         {hname: 'Synopsis', type: 'real'}
+, au_fil_du_film:   {hname: 'Commentaires au fil du film', type: 'real'}
+, personnages:      {hname: 'Les personnages', type: 'real'}
+, themes:           {hname: 'Les thèmes', type: 'real'}
+, comments_stats:   {hname: 'Commentaires sur stats', type:'real'}
+, lecon_tiree:      {hname: 'La leçon tirée du film', type: 'real'}
+, conclusion:       {hname: 'Conclusion', type: 'real'}
+, annexes:          {hname: 'Annexes', type: 'real'}
 
-, customdoc:        {hname: 'Personnalisé', len:0, type:'real', menu: false}
+, customdoc:        {hname: 'Personnalisé', type:'real', menu: false}
 }
 
 // Pour les menus

@@ -293,13 +293,13 @@ Avec les helpers :
 ```javascript
   var btn = DCreate('BUTTON', {class: 'btn-close', type:'button'})
 
-  // ... mettre dans le document
-
-  btn.on('click', this.closeTheBox.bind(this))
-
 ```
 
 Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture et qu'il ferme la fenêtre voulue.
+
+Si un traitement doit être opéré *avant* la fermeture de la boite, on peut implémenter la méthode `beforeHide` qui sera appelée avant. Si cette méthode renvoie `false`, le processus de fermeture est interrompue. **La méthode doit renvoyer `true` pour que la fermeture est bien lieu.**
+
+Si une méthode `cancel` existe dans le propriétaire du bouton, c'est cette méthode qui sera utilisée plutôt que `hide` dans FWindow suivant de `onHide` dans le propriétaire.
 
 ## Documents de l'analyse {#documents_analyse}
 

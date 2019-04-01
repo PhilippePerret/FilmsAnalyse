@@ -20,7 +20,8 @@ const FAWriter = {
     this.message(`Document de type "${dtype}" en préparation…`)
     if(undefined === dtype || '' == dtype){
       if (this.isOpened){
-        return this.close()
+        if(this.checkCurrentDocModified()) return this.hide()
+        else return false
       } else {
         this.menuTypeDoc.value = 'introduction'
         dtype = 'introduction'
@@ -181,8 +182,12 @@ const FAWriter = {
     this.docField.focus()
     this.isOpened = true
 }
-, close(){
-    if(false === this.checkCurrentDocModified()) return
+
+, beforeHide(){
+  if(false === this.checkCurrentDocModified()) return false
+  return true
+}
+, hide(){
     this.fwindow.hide()
   }
 , onHide(){
@@ -194,9 +199,7 @@ const FAWriter = {
   /**
    * Sauvegarde du document courant
    */
-, saveCurrentDoc(){
-    this.currentDoc.save()
-  }
+, saveCurrentDoc(){ this.currentDoc.save() }
 
 // Arrêter les timers s'il y en a (appelée à la fermeture)
 , stopTimers(){
@@ -386,9 +389,6 @@ const FAWriter = {
     $('input#cb-save-auto-doc').on('click', this.setAutoSave.bind(this))
     // // On observe la case à cocher pour visualiser régulièrement le document
     $('input#cb-auto-visualize').on('change', this.setAutoVisualize.bind(this))
-
-    // Bouton pour fermer le writer
-    $('button#btn-close-writer').on('click', this.close.bind(this))
 
     // On observe le bouton pour créer un nouveau document
     $('button#writer-btn-new-doc').on('click', FAWriterDoc.new.bind(FAWriterDoc))

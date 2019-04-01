@@ -113,7 +113,6 @@ allObjMsgs(){
 // Méthodes d'évènements
 
 observe(){
-  this.fwindow.jqObj.find('button.btn-close').on('click', this.hide.bind(this))
   // On pourra observer les events cités, par exemple, pour pouvoir les
   // éditer.
 }

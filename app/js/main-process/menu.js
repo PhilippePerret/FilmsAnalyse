@@ -22,7 +22,8 @@ const CURRENT_THING_MENUS = [
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
-  'display-timeline', 'display-analyse-state', 'display-last-report'
+  'display-timeline', 'display-analyse-state', 'display-last-report',
+  'display-protocole'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -253,6 +254,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Shift+A'
               , enabled: false
               , click: () => {execJsOnCurrent('displayFullAnalyse', true)}
+            }
+          , {type:'separator'}
+          , {
+                label: 'Protocle de l’analyse'
+              , id: 'display-protocole'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayProtocole')}
             }
           , {type:'separator'}
           , {

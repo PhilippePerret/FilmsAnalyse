@@ -1,11 +1,11 @@
 # SUR LE GRILL
 
-* Faire un PROTOCOLE D'ANALYSE, utilisable pour chaque analyse, avec des étapes à cocher pour passer à la suite.
-  - ce protocole doit bien sûr être pris en compte pour l'état d'avancement. On ne peut pas dépasser tel pourcentage suivant l'état du protocole.
-  - ce protocole doit être vraiment détaillé
-  - ce protocole est enregistré dans un fichier "protocole.json" de l'analyse
 
-* Supprimer la méthode onDropThing, la mettre directement dans la définition de droppable.
+* PROTOCOLE D'ANALYSE
+  - le prendre en compte pour l'état d'avancement. On ne peut pas dépasser tel pourcentage suivant l'état du protocole.
+  - faire une dernière passe sur les données pour voir si c'est suffisamment détaillé pour le moment
+
+* Supprimer la méthode onDropThing, la mettre directement dans la définition des droppables.
 
 * Voir la méthode FAEvents.onDropThing
   Pour le moment, elle ne fait rien du tout, en fait.

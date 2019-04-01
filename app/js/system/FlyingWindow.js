@@ -164,6 +164,9 @@ show(){
   this.visible = true
 }
 hide(){
+  if('function' === typeof this.owner.beforeHide){
+    if(this.owner.beforeHide() === false) return // abandon
+  }
   this.constructor.unsetCurrent(this)
   this.jqObj.hide()
   if ('function' === typeof this.owner.onHide) this.owner.onHide()
@@ -204,6 +207,15 @@ build(){
   return this // chainage
 }
 
+// Méthode appelée quand on clique sur le bouton 'btn-close'
+onBtnClose(){
+  if('function' === typeof this.owner.cancel){
+    this.owner.cancel.bind(this.owner)()
+  } else {
+    this.hide()
+  }
+}
+
 observe(){
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
@@ -213,6 +225,10 @@ observe(){
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on('click', FWindow.setCurrent.bind(FWindow, this))
   this.jqObj.on('click', FWindow.setCurrent.bind(FWindow, this))
+
+  // Si la boite contient un bouton close, on le surveille pour
+  // fermer la fenêtre
+  this.jqObj.find('button[type="button"].btn-close').on('click', this.onBtnClose.bind(this))
 }
 
 // ---------------------------------------------------------------------

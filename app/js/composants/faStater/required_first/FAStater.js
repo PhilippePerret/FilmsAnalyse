@@ -30,17 +30,20 @@ const FAStater = {
 , init(analyse){
     this.a = this.analyse = analyse
 
-    // Quand on clique sur la jauge d'avancement, ça ouvre le
-    // détail
-    if(this.a){
-      $('#statebar-jauger').on('click', this.a.displayAnalyseState.bind(this.a))
-    } else {
-      console.log("Pas d'analyse")
-    }
+    this.observe()
 
     this.inited = true
   }
-
+, observe(){
+  if(this.a){
+    // Quand on clique sur la jauge d'avancement, ça ouvre le
+    // détail
+    $('#statebar-jauger label[for="statebar-jauger"]').on('click', this.a.displayAnalyseState.bind(this.a))
+    // Quand on clique sur la dernière étape, ça ouvre la fenêtre
+    // de protocol
+    $('#statebar-last-step-protocole, label[for="statebar-last-step-protocole"]').on('click', this.a.protocole.show.bind(this.a.protocole))
+  }
+}
 
 /**
   Demande d'affichage de l'état d'avancement en bas de la fenêtre.
@@ -76,6 +79,7 @@ const FAStater = {
   this.setJaugeAtPourcent(0.01)
   this.setNombreDocuments('...')
   this.setNombreEvents('...')
+  this.setLastStepProtocole('...')
   // TODO Ici, on calcule
   // Reprendre le tool analyse_state
 
@@ -91,6 +95,8 @@ const FAStater = {
 
   // On règle enfin le pourcentage final
   this.setJaugeAtPourcent(pourcentage(this.totalMaxValue, this.totalCurValue), asPourcentage(this.totalMaxValue, this.totalCurValue))
+
+  this.setLastStepProtocole(this.a.protocole.lastStep() || '...')
 
   }
 
@@ -240,7 +246,9 @@ const FAStater = {
 , setNombreEvents(nb){
     $('#statebar-events-count').html(nb)
   }
-
+, setLastStepProtocole(step_name){
+    $('#statebar-last-step-protocole').html(step_name)
+  }
 }
 Object.defineProperties(FAStater,{
   jqJauge:{

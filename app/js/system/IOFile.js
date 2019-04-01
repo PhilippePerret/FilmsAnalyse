@@ -84,7 +84,7 @@ endSave(err){
    */
   load(options){
     var my = this
-    if (undefined === options) options = {}
+    if (!options) options = {}
     if(options.format)  this._format = options.format
     if(options.after)   this.methodAfterLoading = options.after
     my.loaded = false
@@ -103,29 +103,32 @@ endSave(err){
     // définir que s'ils sont définis.
     if(undefined !== options) my.options = options
     if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
-    if(false === this.exists()) my.endLoad(false)
-    if(my.size === 0) {
-      my.retrieveBackup()
+    if(false === this.exists()){
+      my.endLoad(false)
     } else {
-      // On peut charger
-      my.load(options)
+      if(my.size === 0) {
+        my.retrieveBackup()
+      } else {
+        // On peut charger
+        my.load(options)
+      }
     }
     my = null
   }
-  endLoad(success){
-    this.loaded = success
-    if('function' === typeof this.methodAfterLoading){
-      this.methodAfterLoading(this.decodedCode /* ou raw code */)
-    }
+endLoad(success){
+  this.loaded = success
+  if('function' === typeof this.methodAfterLoading){
+    this.methodAfterLoading(success ? this.decodedCode : null /* ou raw code */)
   }
+}
 
-  backup(){
-    var my = this
-    try {
-      fs.rename(my.path, my.backupPath, my.endSave.bind(my))
-    } catch (e) {F.error(e)}
-    my = null
-  }
+backup(){
+  var my = this
+  try {
+    fs.rename(my.path, my.backupPath, my.endSave.bind(my))
+  } catch (e) {F.error(e)}
+  my = null
+}
 
   retrieveBackup(){
     var my = this
@@ -163,25 +166,25 @@ endSave(err){
   backupExists()  { return fs.existsSync(this.backupPath)}
 
   get isBackupable(){ return this.exists() && this.size > 0 }
-  // ---------------------------------------------------------------------
-  //  Données
+// ---------------------------------------------------------------------
+//  Données
 
-  get options(){return this._options}
-  set options(v){ this._options = v || {} }
+get options(){return this._options}
+set options(v){ this._options = v || {} }
 
-  set code(v){this._code = v}
-  // Note : il ne faut surtout pas mettre dans une __data (__code) car
-  // ce ne serait pas le nouveau contenu du document qui serait enregistré,
-  // mais toujours son contenu initial.
-  get code(){
-    if (undefined === this.owner) {
-      return this._code
-    } else {
-      // Le code doit être défini dans la propriété `contents` ou `code`
-      // du propriétaire de l'instance
-      return this.owner.contents || this.owner.code || this._code
-    }
+set code(v){this._code = v}
+// Note : il ne faut surtout pas mettre dans une __data (__code) car
+// ce ne serait pas le nouveau contenu du document qui serait enregistré,
+// mais toujours son contenu initial.
+get code(){
+  if (undefined === this.owner) {
+    return this._code
+  } else {
+    // Le code doit être défini dans la propriété `contents` ou `code`
+    // du propriétaire de l'instance
+    return this.owner.contents || this.owner.code || this.owner.data || this._code
   }
+}
 
   /**
     * Retourne le code décodé en fonction du format du fichier (défini par
@@ -195,7 +198,8 @@ endSave(err){
         case 'RAW':
           return this.code // pour la clarté
         case 'JSON':
-          return JSON.parse(this.code)
+          if ('object' === typeof this.code) return this.code
+          else return JSON.parse(this.code)
         case 'YAML':
           return YAML.safeLoad(this.code)
         default:
