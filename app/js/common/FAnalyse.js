@@ -278,6 +278,9 @@ get PFA(){
   return this._PFA
 }
 
+// {FAProtocole} Le protocole de l'analyse courante
+get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
+
 // ---------------------------------------------------------------------
 /**
  * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
@@ -299,7 +302,6 @@ onReady(){
   this.setupState()
 }
 
-
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
  * où l'on est vraiment prêt.
@@ -309,6 +311,7 @@ setAllIsReady(){
 
   // Maintenant, la classe FAWriter est toujours chargée
   if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
+  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.setAllIsReady.bind(this))
 
   // Au cours du dispatch des données, la méthode modified a été invoquée
   // de nombreuses fois. Il faut revenir à l'état normal.
@@ -883,6 +886,9 @@ loadStater(fn_callback){
 }
 loadWriter(fn_callback){
   return System.loadComponant('faWriter', fn_callback)
+}
+loadProtocole(fn_callback){
+  return System.loadComponant('faProtocole', fn_callback)
 }
 static loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)

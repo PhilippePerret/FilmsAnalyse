@@ -1,0 +1,24 @@
+div#protocole {
+  background-color:lemonchiffon;
+  padding:2em;
+}
+div#protocole h2 {
+  margin-top:0;
+  font-variant:small-caps;
+  font-size:1.3em;
+}
+
+div#protocole div.protocole-step input[type="checkbox"]{
+  margin-right: 1em;
+}
+/* Les sous-étapes */
+div#protocole div.protocole-step > div.protocole-sous-steps {
+  margin-left:2em;
+}
+div#protocole div.protocole-step > div.protocole-sous-steps label {
+  font-size:0.91em;
+}
+
+div#protocole div.separator {
+  height:10px;
+}
