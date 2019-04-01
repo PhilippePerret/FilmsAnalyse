@@ -31,6 +31,7 @@ onCheckStep(e){
 lastStep(){
   var last = null
   for(var dstep of FAProtocole.DATA.steps){
+    if(dstep.type === 'separator') continue
     if(this.data[dstep.id] === true) last = dstep.libelle
     if(dstep.steps){
       for(var dsousStep of dstep.steps){
@@ -68,10 +69,9 @@ saveAndHide(){
 }
 save(){
   if(this.modified){
-    console.log("Protocole modifié => je l'enregistre", this.data)
     this.iofile.save({after: this.endSave.bind(this)})
   } else {
-    console.log("Protocole non modifié.")
+    // console.log("Protocole non modifié.")
   }
 }
 endSave(){
@@ -81,12 +81,10 @@ endSave(){
 // À la fermeture de la fenêtre, on enregistre les changements
 // enregistrés
 onHide(){
-  console.log("Fermeture de la fenêtre")
   if(this.modified){
-    console.log("Le protocole a été modifié, je dois l'enregisrer", this.data)
-    // this.save()
+    this.save()
   } else {
-    console.log("Pas d'enregistrement des données du protocole.")
+    // console.log("Pas d'enregistrement des données du protocole.")
   }
 }
 

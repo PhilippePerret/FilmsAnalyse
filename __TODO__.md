@@ -1,10 +1,6 @@
 # SUR LE GRILL
 
 
-* PROTOCOLE D'ANALYSE
-  - le prendre en compte pour l'état d'avancement. On ne peut pas dépasser tel pourcentage suivant l'état du protocole.
-  - faire une dernière passe sur les données pour voir si c'est suffisamment détaillé pour le moment
-
 * Supprimer la méthode onDropThing, la mettre directement dans la définition des droppables.
 
 * Voir la méthode FAEvents.onDropThing
