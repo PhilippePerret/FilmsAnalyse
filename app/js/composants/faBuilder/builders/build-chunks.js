@@ -70,6 +70,9 @@ FABuilder.prototype.buildAndAddChunk = function(what){
   var finalCode = ""
   finalCode += `<!-- BUILD ${what} -->${RC}`
   switch (what) {
+    case 'Fiche identité':
+      finalCode += my.loadAndRunBuilder('fiche_identite_film')
+      break
     case 'infos film':
       finalCode += my.loadAndRunBuilder('infos_film')
       break
