@@ -2,20 +2,27 @@
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  EN COURS : FONDAMENTALES (pour l'analyse/livre)
-  * Ajouter l'appel à   str += my.generalDescriptionOf('fondamentales') pour les éléments déjà
+  * Ajouter l'appel à str += my.generalDescriptionOf('fondamentales') pour les éléments déjà
   traités (pfa, scénier). Faire chaque fois le texte correspondant.
 
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
-  - fondamentales
-  + Faire un petit texte d'introduction commmun pour chaque grande partie, qui rappelera ce que c'est, et renverra à un lien pour le détail (par exemple pour les fondamentales, le scéner, le paradigme de Field, etc.)
-    - appeler ces fichiers du même nom que le nom du fichier de l'analyse, le placer dans le dossier builder.
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
+
+* Pour l'estimation de l'avancée de l'analyse :
+  On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
+  Par exemple, lorsque l'on édite les fondamentales, elles s'autoévaluent par rapport aux données fournies.
+  Cela permettrait :
+    - d'avoir une évaluation beaucopu plus fine
+    - de ne pas être obligé de tout recharger pour estimer l'avancée
+  => Imaginer une classe AutoEvaluator qui appelerait, pour chaque composant, une méthode 'autoEvaluate' qui retournerait :
+    - une valeur globale de pourcentage
+    - des descriptions plus précises de ce qui est fait et ce qui
+      reste à faire.
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 

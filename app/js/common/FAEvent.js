@@ -116,7 +116,7 @@ asLinkScene(alt_text){
   if(undefined === this._asLinkScene){
     this._asLinkScene = `<a class="link-to-scene" onclick="showScene(${this.id})">__TIT__</a>`
   }
-  return this._asLinkScene.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
+  return this._asLinkScene.replace(/__TIT__/, (alt_text || `scène ${this.numero} : « ${this.pitch} »`).trim())
 }
 
 // ---------------------------------------------------------------------

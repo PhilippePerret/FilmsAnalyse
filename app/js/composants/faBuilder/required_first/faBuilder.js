@@ -44,10 +44,15 @@ showReally(){
 */
 build(options, fn_callback){
   var my = this
+  if(undefined === this.buildLoopTries) this.buildLoopTries = 0
+  ++this.buildLoopTries
+  if(this.buildLoopTries > 10) throw('Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure.')
   // Il faut d'abord s'assurer que tous les composants soient bien
   // chargés.
   delete this.timerLoading
   if(false === my.allComponantsLoaded(options, fn_callback)) return
+
+  delete this.buildLoopTries
   my.options = options
   my.traitedFiles = {} // tous les fichiers traités
   my.rebuildBaseFiles(fn_callback)
