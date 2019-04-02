@@ -14,10 +14,14 @@ class Scene {
  * Initialisation de la classe. Par exemple lorsque l'on change
  * d'analyse sans recharger l'application
  */
-static init(){
+static init(analyse){
+  if(undefined === analyse) analyse = current_analyse
+  this.analyse = this._a = analyse
   this.scenes = {}
   this.reset()
 }
+
+static get a(){return this._a || current_analyse}
 
 static reset(){
   this._scene_number_to_id  = undefined
@@ -59,10 +63,15 @@ static destroy(numero){
   this.reset()
 }
 
+/**
+  Boucle sur toutes les scènes
+  On peut l'interrompre en faisant renvoyer false (et strictement
+  false) à la fonction +fn+
+**/
 static forEachScene(fn){
   var nb_scenes = this.ScenesByTimes.length
   for(var i = 0; i < nb_scenes; ++i){
-    fn(this.get(this.ScenesByTimes[i].numero))
+    if(false === fn(this.get(this.ScenesByTimes[i].numero))) break
   }
 }
 
@@ -98,7 +107,7 @@ static get SceneNumberToID(){
     current_analyse.forEachEvent(function(ev){
       if(ev.type === 'scene' && ev.sceneType !== 'generic'){
         my._scene_number_to_id[ev.numero] = ev.id
-        my._scenes_by_time.push({numero: ev.numero, time: ev.time, id: ev.id})
+        my._scenes_by_time.push({numero: ev.numero, time: ev.time, id: ev.id, event:ev})
       }
     })
     my = null
@@ -157,6 +166,11 @@ export_html(options){
 // ---------------------------------------------------------------------
 // Méthodes d'helper
 
+// Comme pour les listes ou les statistiques
+get asShort(){
+  return `<a onclick="showScene(${this.event_id})">Scène ${this.numero}. ${this.pitch}</a>`
+}
+
 // Une instance FATexte pour utiliser ensuite :
 //  this.formater.formate(<le texte à corriger>[, <options éventuelles>])
 get formater(){return this._formater||defP(this,'_formater', new FATexte(''))}
@@ -207,6 +221,7 @@ get numero(){ return this._numero }
 set numero(v){ this._numero = v}
 
 get pitch(){return this.event.pitch}
+get description(){return this.event.content}
 get lieu(){return this.event.lieu}
 get effet(){return this.event.effet}
 get decor(){return this.event.decor}
@@ -219,4 +234,6 @@ get event(){
 }
 
 get time(){ return this.event.time }
+get duration(){return this.event.duration}
+get duree(){return this.event.duration}
 }

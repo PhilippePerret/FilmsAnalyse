@@ -38,9 +38,9 @@ class OTime {
     }
     return this._horloge_simple
   }
-  get horloge_as_duree(){
-    return this.s2h(this.seconds,{as_duree: true})
-  }
+  get horloge_as_duree(){return this.hduree}
+  get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
+  get duree_sec(){ return Math.round(this.seconds) }
 
   set duration(v) { this.duration = v }
   get duration()  { return this.duration || 1 }

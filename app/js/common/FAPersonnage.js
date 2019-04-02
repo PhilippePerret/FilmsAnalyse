@@ -22,6 +22,7 @@ du fichier de données.
 static reset(){
   delete this._data
   delete this._diminutifs
+  delete this._count
   return this // chainage
 }
 
@@ -43,12 +44,21 @@ static get diminutifs(){
 
 // Retourne le personnage de pseudo +pseudo+ (instance FAPersonnage)
 static get(pseudo){
-  if(undefined === this.personnages) this.personnages = {}
-  if(undefined === this.personnages[pseudo]){
-    this.personnages[pseudo] = new FAPersonnage(current_analyse,this.data[pseudo])
-  }
   return this.personnages[pseudo]
 }
+
+static get personnages(){
+  if(undefined === this._personnages){
+    this._personnages = []
+    for(var pseudo in this.data){
+      this._personnages.push(new FAPersonnage(current_analyse, this.data[pseudo]))
+    }
+  }
+  return this._personnages
+}
+
+// Retourne le nombre de personnages
+static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
 
 static get data(){return this._data || {}}
 static exists(){return fs.existsSync(this.path)}
@@ -57,8 +67,11 @@ static get a(){return current_analyse}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
-constructor(analyse){
-
+constructor(analyse, data){
+  this.analyse = this.a = analyse
+  for(var prop in data){this[`_${prop}`] = data[prop]}
 }
 
+get pseudo(){return this._pseudo}
+get dim(){return this._dim}
 }

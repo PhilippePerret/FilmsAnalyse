@@ -13,6 +13,13 @@ h1 {
   margin-top:3em;
   margin-bottom:1em;
 }
+
+a, a:hover, a:link, a:visited {
+  text-decoration:none;
+  color:inherit;
+}
+a:hover{text-decoration:underline;}
+
 .explication {
   font-style:italic;
   opacity:0.89;
@@ -21,6 +28,15 @@ h1 {
   text-align:justify;
 }
 
+.pad2 {
+  padding-left: 2em;
+}
+.pad3 {
+  padding-left: 3em;
+}
+.pad4 {
+  padding-left: 4em;
+}
 
 /*
   Un DIV qui contient un LABEL.libelle et un SPAN.value avec
@@ -46,12 +62,32 @@ div.libval > label {
   padding-right:1em;
 }
 div.libval.normal > label {
-  width:15%;
+  width:20%;
 }
 div.libval.normal span.value {
-  width:80%;
+  width:75%;
 }
 
+/*
+  Un div un peu comme libval ci-dessus, mais qui convient
+  pour écrire à gauche un pitch de scène par exemple et
+  à droite une donnée plus courte comme sa durée.
+ */
+div.pitch-data {
+  margin-left:1em;
+}
+div.pitch-data > span.left,
+div.pitch-data > span.right
+{
+  display:inline-block;
+}
+div.pitch-data > span.left {
+  width:60%;
+  overflow:hidden;
+}
+div.pitch-data > span.right {
+  width:30%;
+}
 
 /* --------------------------------------------------------------------- */
 /* ===  COUVERTURE === */
