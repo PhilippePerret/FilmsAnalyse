@@ -125,11 +125,14 @@ static defineTableVars(){
 
 static get dimsData(){
   if(undefined === this._dimsData){
+    this._dimsData = {}
     if(fs.existsSync(this.dimsPath)){
       this._dimsData = YAML.safeLoad(fs.readFileSync(this.dimsPath,'utf8'))
-    } else {
-      this._dimsData = null
     }
+    // On met les diminutifs de personnages
+    Object.assign(this._dimsData, FAPersonnage.diminutifs)
+
+    if(this._dimsData == {}) this._dimsData = null
   }
   return this._dimsData
 }

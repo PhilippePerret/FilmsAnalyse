@@ -336,6 +336,7 @@ onReady(){
   this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
   EventForm.init()
   Scene.init()
+  FAPersonnage.reset().init()
   this.setOptionsInMenus()
   this.videoController.init()
 }

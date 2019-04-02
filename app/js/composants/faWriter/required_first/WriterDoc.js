@@ -168,6 +168,9 @@ afterSavingPerType(){
   switch (this.type) {
     case 'snippets':
       return Snippets.updateData(YAML.safeLoad(this.contents))
+    case 'dpersonnages':
+      FAPersonnage.reset().init()
+      break
     case 'customdoc':
       // Si c'est un nouveau document customisé, il faut l'ajouter
       // au menu des documents
