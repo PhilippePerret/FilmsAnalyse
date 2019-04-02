@@ -14,11 +14,11 @@
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
-
+* Comment repérer les personnages ? Les diminutifs seuls ne suffisent pas, puisqu'on peut les utiliser pour ce qu'on veut.
+  - est-ce que ça pourrait être une marque à côté de la définition, dans le fichier des diminutifs (par exemple une astérisque ?)
 
 # EN COURS DE DÉVELOPPEMENT
 
-* Pour l'eventer, afficher les scènes à l'ouverture
 
 * Pour la FATimeline
   - faire des instances FACursor
@@ -34,8 +34,6 @@
 # TODO LIST
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
-
-* Faire du filtre d'events une classe séparée qui pourra être utilisée par n'importe quel composant.
 
 * Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
   - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
