@@ -309,6 +309,14 @@ get PFA(){
   return this._PFA
 }
 
+get Fonds(){
+  if(undefined === this._Fonds){
+    this._Fonds = require('./js/common/Fondamentales/Fonds.js')
+    this._Fonds.init(this)
+  }
+  return this._Fonds
+}
+
 // {FAProtocole} Le protocole de l'analyse courante
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 
@@ -837,6 +845,9 @@ get dataFilePath(){
 }
 get pfaFilePath(){
   return this._pfaFilePath || defP(this,'_pfaFilePath', this.pathOf('pfa.json'))
+}
+get fondsFilePath(){
+  return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
 }
 
 

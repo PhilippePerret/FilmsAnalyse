@@ -35,14 +35,19 @@ showReally(){
   ipc.send('display-analyse')
   ipc.send('load-url-in-pubwindow', {path: this.html_path})
 }
+
 /**
-* Fonction principale construisant l'analyse
-*
-* "Construire l'analyse", pour le moment consiste à produire le document
-* Markdown rassemblant tous les éléments.
+  Fonction principale construisant l'analyse
+
+  "Construire l'analyse", pour le moment consiste à produire le document
+  HTML rassemblant tous les éléments.
 */
 build(options, fn_callback){
   var my = this
+  // Il faut d'abord s'assurer que tous les composants soient bien
+  // chargés.
+  delete this.timerLoading
+  if(false === my.allComponantsLoaded(options, fn_callback)) return
   my.options = options
   my.traitedFiles = {} // tous les fichiers traités
   my.rebuildBaseFiles(fn_callback)
@@ -50,6 +55,22 @@ build(options, fn_callback){
   my.report.show()
   my.report.saveInFile()
   my = null
+}
+
+/**
+  Chargement de tous les composants nécessaires
+
+  Note : la plupart sont déjà chargés
+**/
+allComponantsLoaded(options, callback){
+  try {
+    this.a.Fonds        || raise('Chargement de la classe Fondamentales (Fonds)')
+    this.a.Fonds.loaded || raise('Attente de fin de chargement des données fondamentales')
+  } catch (e) {
+    this.timerLoading = setTimeout(this.build.bind(this, options, callback), 50)
+    return false
+  }
+  return true
 }
 
 /**
@@ -206,6 +227,16 @@ getLastChangeDateIn(folder, lastDate){
 
 // ---------------------------------------------------------------------
 //  Méthodes utilitaires
+
+/**
+  Retourne le texte HTML de la description générale de l'élément
+  +chapitre+, qui peut être 'fondamentales', 'pfa', etc.
+  C'est un texte qui est ajouté en dessous du titre de la partie,
+  du chapitre, s'il doit être exporté.
+**/
+generalDescriptionOf(chapitre){
+  return fs.readFileSync(`./app/js/composants/faBuilder/assets/general_descriptions/${chapitre}.html`)
+}
 
 /**
  * Pour le log de la procédure

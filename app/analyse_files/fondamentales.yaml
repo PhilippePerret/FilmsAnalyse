@@ -1,8 +1,7 @@
 #
 # Les cinq Fondamentales du film
 ---
-fondamentale_1:
-  nature: Personnage Fondamental (PF/FD1)
+fd1:
   pseudo: PSEUDO DU PERSONNAGE
   prenom: FIRSTNAME
   nom:    LASTNAME
@@ -11,29 +10,32 @@ fondamentale_1:
   scenes: []
   events: []
 
-fondamentale_2:
-  rappel: Question Dramatique Fondamentale (QDF/FD2)
+fd2:
+  question: QUESTION
   description: |
     DESCRIPTION
   scenes: []
   events: []
 
-fondamentale_3:
-  rappel: Opposition Fondamentale (OF/FD3)
+fd3:
+  opposition: OPPOSITION
+  antagoniste: ANTAGONISTE
+  antagonisme: ANTAGONISME
   description: |
     DESCRIPTION
   scenes: []
   events: []
 
-fondamentale_4:
-  rappel: Réponse Dramatique Fondamentale (RDF/FD4)
+fd4:
+  reponse: REPONSE
+  type: OUI/NON/OUI MAIS/NON MAIS
   description: |
     DESCRIPTION
   scenes: []
   events: []
 
-fondamentale_5:
-  rappel: Concept Fondamental (CF/FD5)
+fd5:
+  concept: CONCEPT
   description: |
     DESCRIPTION
   scenes: []

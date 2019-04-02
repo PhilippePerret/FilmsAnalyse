@@ -2,12 +2,17 @@
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  EN COURS : PARADIGME DE FIELD (pour l'analyse/livre)
+  EN COURS : FONDAMENTALES (pour l'analyse/livre)
+  * Ajouter l'appel à   str += my.generalDescriptionOf('fondamentales') pour les éléments déjà
+  traités (pfa, scénier). Faire chaque fois le texte correspondant.
+
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
   - fondamentales
+  + Faire un petit texte d'introduction commmun pour chaque grande partie, qui rappelera ce que c'est, et renverra à un lien pour le détail (par exemple pour les fondamentales, le scéner, le paradigme de Field, etc.)
+    - appeler ces fichiers du même nom que le nom du fichier de l'analyse, le placer dans le dossier builder.
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.

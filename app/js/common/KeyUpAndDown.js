@@ -69,7 +69,6 @@ KeyUpAndDown.doInsertChevrons = function(e, sel){
 }
 KeyUpAndDown.doToggleComments = function(e, sel, args){
   var {before: debCom, after: endCom} = args
-  console.log("debCom, endCom:", debCom, endCom)
   if(sel.line.substring(0,debCom.length) == debCom){
     // <= La ligne commence par '# '
     // => Il faut décommenter
