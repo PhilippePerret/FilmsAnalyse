@@ -1,5 +1,7 @@
 # SUR LE GRILL
 
+* Corriger le bug du thème qui s'applique mal à l'ouverture d'un document.
+
 * ASSEMBLAGE DE L'ANALYSE
   =======================
   - Attaquer les statistiques

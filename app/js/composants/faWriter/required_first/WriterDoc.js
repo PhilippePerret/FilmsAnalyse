@@ -67,10 +67,16 @@ display(){
   FAWriter.reset() // pour vider le champ, notamment
   this.preparePerType() // préparer le writer en fonction du type
   if (this.exists()){
-    if (!this.loaded) this.load()
-    this.displayContents()
+    if (!this.loaded) this.load(this.suiteDisplay.bind(this))
+  } else {
+    this.suiteDisplay()
   }
+}
+suiteDisplay(){
+  this.displayContents()
+  FAWriter.applyTheme.bind(FAWriter)(this.theme)
   this.toggleMenuModeles()
+  FAWriter.docField.focus()
 }
 
 displayContents(){
@@ -122,7 +128,8 @@ retreiveLastContents(){
 }
 
 // Pour charger le texte du document
-load(){
+load(fn_callback){
+  if('function' === typeof fn_callback) this.methodOnLoading = fn_callback
   this.iofile.loadIfExists({after: this.endLoading.bind(this), format: 'raw'})
 }
 endLoading(code){
@@ -130,6 +137,10 @@ endLoading(code){
   this.loaded   = true
   this.displaySize()
   this.modified = false
+  if (this.methodOnLoading){
+    this.methodOnLoading()
+    delete this.methodOnLoading
+  }
 }
 
 // Pour sauver le document
@@ -205,8 +216,6 @@ getContents(){
  */
 preparePerType(){
   var my = this
-  // Thème par défaut
-  FAWriter.applyTheme(this.themePerType)
   // Templates à proposer
   var tempFolderPath = path.join('.','app','analyse_files', this.type)
   var tempFilePath = `${tempFolderPath}.${this.extension}`
@@ -282,14 +291,14 @@ addEvent(event_id){
 // ---------------------------------------------------------------------
 //  Propriétés
 
+get theme(){return this._theme||defP(this,'_theme',this.themePerType)}
 get themePerType(){
   if(undefined === this.dataType) throw(`Impossible de trouver les données du type "${this.type}"`)
-  if (this.dataType.type == 'data'){
-    if (FAWriter.currentTheme != 'data-theme') return 'data-theme'
-  } else {
-    if ( ! FAWriter.currentTheme ) return 'real-theme'
-    else if (FAWriter.currentTheme == 'data-theme') return 'real-theme'
-    else return FAWriter.currentTheme
+  switch (this.dataType.type) {
+    case 'data': return 'data-theme'
+    case 'real': return 'real-theme'
+    default:
+      return 'real-theme'
   }
 }
 
