@@ -2,9 +2,8 @@
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  * Ajouter l'appel à str += my.generalDescriptionOf('fondamentales') pour les éléments déjà
-  traités (pfa, scénier). Faire chaque fois le texte correspondant.
-
+  - Attaquer les statistiques
+    Mais avant, il faut définir comment on reconnait les personnages, entendu que les seuls diminutifs ne suffisent pas.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres

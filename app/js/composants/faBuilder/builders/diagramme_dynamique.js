@@ -7,6 +7,10 @@
 module.exports = function(options){
   my.log("* Construction du diagramme dynamique")
   let str = ''
-
+  str += '<h1 id="diagramme_dynamique-title">Diagramme dynamique</h1>'
+  str += '<section id="diagramme_dynamique">'
+  str += my.generalDescriptionOf('diagramme_dynamique')
+  // TODO Faire le diagramme à partir des events dynamiques (utilise le filtre universel)
+  str += '</section>'
   return str
 }

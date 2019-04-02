@@ -413,7 +413,10 @@ module.exports = function(options){
   let str = ''
   str += '<h1 id="section-pfa">Paradigme de Field Augmenté du film</h1>'
   str += '<!-- TODO : lien version explication -->'
+  str += '<section id="pfa">'
+  str += my.generalDescriptionOf('pfa')
   str += PFABuilder.build(pfa).outerHTML
+  str += '</section>'
 
   return str
 }
