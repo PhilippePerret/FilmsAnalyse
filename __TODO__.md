@@ -4,7 +4,6 @@
 * ASSEMBLAGE DE L'ANALYSE
   =======================
   - Attaquer les statistiques
-    Mais avant, il faut définir comment on reconnait les personnages, entendu que les seuls diminutifs ne suffisent pas.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
