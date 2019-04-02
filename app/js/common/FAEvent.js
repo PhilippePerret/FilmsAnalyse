@@ -26,7 +26,16 @@ static saveModifieds(){
   if(undefined === this.modifieds || 0 === this.modifieds.length) return
 
   var dataModifieds = {}
-  for(var mod_id of this.modifieds) dataModifieds[mod_id] = this.a.ids[mod_id].data
+  for(var mod_id of this.modifieds){
+    if(undefined === this.a.ids[mod_id]){
+      // <= L'event mod_id n'est pas défini
+      // => C'est une destruction qui a été effectuée
+      dataModifieds[mod_id] = 'DESTROYED'
+    } else {
+      dataModifieds[mod_id] = this.a.ids[mod_id].data
+    }
+  }
+  // On peut enregistrer cette liste
   fs.writeFile(my.pathModifieds(), JSON.stringify(dataModifieds), 'utf8', (err) => {
     if(err) throw(err)
     // Sinon, tout est OK, les modifiés ont été sauvegardés
