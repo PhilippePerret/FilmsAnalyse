@@ -8,6 +8,7 @@ module.exports = function(options){
   let str = ''
   str += '<h1 id="scenier-title">Scénier</h1>'
   str += '<section id="scenier">'
+  str += my.generalDescriptionOf('scenier')
   Scene.forEachScene(function(scene){ str += scene.export(options)})
   str += '</section>'
   return str

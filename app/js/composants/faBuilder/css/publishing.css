@@ -21,6 +21,38 @@ h1 {
   text-align:justify;
 }
 
+
+/*
+  Un DIV qui contient un LABEL.libelle et un SPAN.value avec
+  la valeur.
+*/
+div.libval {
+  margin-left: 1em;
+  margin-bottom:8px;
+  vertical-align:top;
+}
+div.libval > label,
+div.libval > span.value
+{
+  display:inline-block;
+  vertical-align:top;
+  /* border:1px dashed green; */
+}
+div.libval > label {
+  color:#999999;
+  font-family:Arial,Helvetica;
+  /* font-style:italic; */
+  text-align:right;
+  padding-right:1em;
+}
+div.libval.normal > label {
+  width:15%;
+}
+div.libval.normal span.value {
+  width:80%;
+}
+
+
 /* --------------------------------------------------------------------- */
 /* ===  COUVERTURE === */
 

@@ -1,0 +1,22 @@
+# Définition des personnages
+#
+# <pseudo>:
+#   pseudo:
+#   etc.
+# Propriétés : :pseudo, :prenom, :nom, :ages
+# Propriétés spéciales :
+#     :dim    Sert pour les diminutifs
+---
+PSEUDO:
+  pseudo:
+  prenom:
+  nom:
+  ages:
+  dim:        # sert pour les diminutifs
+
+PSEUDO2:
+  pseudo:
+  prenom:
+  nom:
+  ages:
+  dim:        # sert pour les diminutifs

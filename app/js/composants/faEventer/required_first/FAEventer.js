@@ -17,7 +17,7 @@ static newId(){
 // Méthode principale appelée pour créer un nouvel eventer
 static createNew(){
   var newEventer = new FAEventer(current_analyse)
-  newEventer.open()
+  newEventer.show()
 }
 
 
@@ -31,7 +31,7 @@ constructor(analyse){
   this.built    = false
 }
 
-open(){this.fwindow.show()}
+show(){this.fwindow.show()}
 close(){this.fwindow.hide()}
 
 /**
@@ -42,15 +42,11 @@ close(){this.fwindow.hide()}
 peuple(){
   var my  = this
     , o   = my.jqPanEvents
+    , fe  = new EventsFilter(this, {filter: my.filter})
     ;
   o.html('')
-  this.a.forEachEvent(function(ev){
-    if(my.filter){
-      if(my.filter.eventTypes.indexOf(ev.type) < 0) return
-      if(my.filter.fromTime && ev.time < my.filter.fromTime) return
-      if(my.filter.toTime !== null && ev.time > my.filter.toTime) return
-    }
-    o.append(ev.div) // TODO mettre dans ev.div la class EVT<id> pour remove plus simple
+  fe.forEachFilteredEvent(function(ev){
+    o.append(ev.div)
     ev.show()
     ev.observe(o)
   })
@@ -73,7 +69,8 @@ applyFilter(){
 }
 
 /**
- * Quand on clique sur le bouton filtre pour le définir
+  Quand on clique sur le bouton « filtre » pour le définir
+  (on bascule alors à l'arrière de la fenêtre)
  */
 onToggleFiltre(){
   var showList = !!this.filtreDisplayed
@@ -146,6 +143,9 @@ build(){
   return div // pour la FWindow
 }
 afterBuilding(){
+  // Au tout début, on affiche seulement les scènes
+  this.filter = {eventTypes: ['scene']}
+  this.peuple()
   this.peupleTypesInFilter()
 }
 

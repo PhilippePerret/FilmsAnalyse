@@ -18,15 +18,11 @@ const destroyEvent = function(event_id, form_instance){
     // Cas particulier de la destruction d'un event de structure (qui doit
     // donc être en relation avec un sttNode)
     ev.sttNode.event = undefined
-  }
-
-  if(ev.type === 'stt'){
-    // Si l'event est un noeud structurel, il faut le supprimer
-    // des données du PFA (et peut-être actualiser le PFA s'il
-    // est affiché)
-    delete this.PFA.data[ev.sttID] // = undefined
-    this.PFA.save()
-    this.PFA.update()
+    // Il faut le supprimer des données du PFA (et peut-être actualiser
+      // le PFA s'il est affiché)
+      delete this.PFA.data[ev.sttID] // = undefined
+      this.PFA.save()
+      this.PFA.update()
   }
 
   // Destruction dans la liste events
@@ -45,6 +41,11 @@ const destroyEvent = function(event_id, form_instance){
   // On peut détruire tous les clones qui seraient affichés en utilisant
   // la classe 'EVT<id event>' faite pour ça
   $(`.EVT${event_id}`).remove()
+
+  // On l'ajoute dans la liste des modifiés. Noter qu'au moment de
+  // sauver cette « liste des modifiés », FAEvent ne trouvera pas cet
+  // event. C'est de cette manière qu'elle saura qu'il a été détruit.
+  FAEvent.addModified(event_id)
 
   F.notify("Event détruit avec succès.")
 

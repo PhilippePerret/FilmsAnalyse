@@ -8,6 +8,9 @@
   * [Bouton Play/Stop des events](#bouton_playstop_event)
   * [Actualisation automatique des horloges, time et numéro](#autoupdate_horloge_time_numera)
   * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
+  * [Enregistrement des events](#saving_events)
+* [Travail avec les events](#working_with_events)
+  * [Filtrage des events](#filtering_events)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -152,6 +155,36 @@ Pour obtenir une actualisation automatique de la scène courante, comme elle est
 <span class="current-scene-pitch">Le résumé de la scène</span>
 
 ```
+
+### Enregistrement des events {#saving_events}
+
+Les events sont enregistrés dans le fichier `events.json` du dossier de l'analyse. Des backups sont systématiquement faits dans le dossier `.backups`.
+
+Mais les events devenant très nombreux à l'avancée de l'analyse (pouvant dépasser les 2000 items), on procède en parallèle à un enregistrement des seuls events modifiés, ajoutés ou supprimés.
+
+C'est la classe `FAEvent` qui s'en charge, dans sa méthode `saveModifieds`. Ces enregistrements sont faits chaque fois qu'on enregistre la liste de tous les events et ils sont placés dans le dossier `.backups/events` de l'analyse.
+
+## Travail avec les events {#working_with_events}
+
+### Filtrage des events {#filtering_events}
+
+On peut travailler avec une liste filtrée des events grâce à la classe `EventsFilter` (définie pour le moment dans le `FAEventer`, donc il faut charger ce composant pour avoir le filtre).
+
+Pour créer un filtre :
+
+```javascript
+
+  let obj  = monObjetPeuImporte
+  let monFiltre = {
+    eventTypes: ['stt', 'scenes', ...] // sinon tous les types
+  , fromTime: 1200  // sinon le début
+  , toTime:   12000 // sinon la fin
+  , invert:   true  // pour inverser toutes les conditions
+  }
+  let monF = new EventsFilter(obj, {filter: monFiltre})
+
+```
+
 
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}

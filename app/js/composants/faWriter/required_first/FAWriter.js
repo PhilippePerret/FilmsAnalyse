@@ -6,6 +6,7 @@
 
 const FAWriter = {
   class: 'FAWriter'
+, type: 'object'
 
 , inited: false     // Pour savoir s'il a été initié
 , ready: false      // pour savoir s'il est préparé
@@ -19,6 +20,9 @@ const FAWriter = {
 , openDoc(dtype){
     this.message(`Document de type "${dtype}" en préparation…`)
     if(undefined === dtype || '' == dtype){
+      // <= Aucun type de document n'a été choisi (note : cela se produit
+      //    par exemple lorsque l'on choisit d'ouvrir le writer par le menu)
+      // => On prend le document par défaut, c'est-à-dire l'introduction
       if (this.isOpened){
         if(this.checkCurrentDocModified()) return this.hide()
         else return false
@@ -40,12 +44,10 @@ const FAWriter = {
 , makeCurrent(kdoc){
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    if(undefined === this.writerDocs[kdoc]){
-      this.writerDocs[kdoc] = new FAWriterDoc(kdoc)
-    }
+    if(undefined === this.writerDocs[kdoc]) this.writerDocs[kdoc] = new FAWriterDoc(kdoc)
     this.currentDoc = this.writerDocs[kdoc]
-    this.currentDoc.display()
     if(!this.isOpened) this.open()
+    this.currentDoc.display()
     if(this.visualizeDoc) this.updateVisuDoc()
     // On "referme" toujours le menu des types (après l'ouverture)
     this.menuTypeDoc.val(kdoc)
@@ -127,6 +129,7 @@ const FAWriter = {
    * Méthode qui applique le thème +theme+ à l'interface
    */
 , applyTheme(theme){
+    // console.log("-> applyTheme", theme)
     this.body.removeClass(this.currentTheme).addClass(theme)
     this.docField.removeClass(this.currentTheme).addClass(theme)
     this.menuThemes.val(theme)
@@ -167,9 +170,6 @@ const FAWriter = {
   }
 , OTHER_SECTIONS: ['#section-reader']
 , onShow(){
-    // Les autres sections qu'il faut masquer quand on affiche
-    // le writer. Est-ce vraiment nécessaire ?…
-    // for(var section of this.OTHER_SECTIONS){$(section).hide()}
     this.docField.focus()
     this.isOpened = true
 }

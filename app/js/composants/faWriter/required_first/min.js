@@ -20,16 +20,21 @@
  */
 const DATA_DOCUMENTS = {
 
-  diminutifs:       {hname: 'Diminutifs', format:'yaml', type:'data'}
+  infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
+
+, separator3: 'separator'
+
+, dpersonnages:     {hname: 'Personnages (data)', format:'yaml', type:'data'}
+, dbrins:           {hname: 'Brins (data)', format:'yaml', type:'data'}
+, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data'}
+
+, separator2: 'separator'
+
+, diminutifs:       {hname: 'Diminutifs', format:'yaml', type:'data'}
 , snippets:         {hname: 'Snippets', format:'yaml', type:'data'}
 , building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
 
 , separator1: 'separator'
-
-, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
-, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data'}
-
-, separator2: 'separator'
 
 , introduction:     {hname: 'Introduction', type: 'real'}
 , synopsis:         {hname: 'Synopsis', type: 'real'}
