@@ -41,6 +41,15 @@
 # EN COURS DE DÉVELOPPEMENT
 
 
+* Pourvoir forcer le rechargement de l'analyse
+  - ou, ce qui serait mieux, c'est de pouvoir déceler où il faut
+    actualiser des données quand elles changent. Par exemple, lorsque
+    le script d'assemblage est modifié, il faudrait resetter l'affichage
+    de l'analyse pour qu'elle tienne compte du nouveau script.
+
+* Pouvoir rejoindre la dernière scène (pour le travail)
+  - Menu "Outils" > "Rejoindre la dernière scène établie"
+
 * Pour la FATimeline
   - faire des instances FACursor
 

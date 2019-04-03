@@ -83,6 +83,17 @@ pre {
   font-size:10.7pt;
   white-space:pre;
 }
+svg text.label {
+  max-width: 18%;
+  word-wrap: break-word;
+  display:block;
+  background-color:pink;
+}
+svg text.value {
+  max-width: 70%;
+  word-wrap: break-word;
+  display:block;
+}
 </style>
   `
 
@@ -90,6 +101,17 @@ pre {
   str += `
 <p class="explication">Je vais tester la mise en page.</p>
 <p class="explication">Lancer la fabrication avec CMD-MAJ-A (ou le menu), et demander la sortie au format PDF, Kindle, ePub.</p>
+
+
+<h1>Avec une image SVG</h1>
+<svg width="100%" height="50">
+  <text x="0" y="15" class="label">Un label</text>
+  <text x="20%" y="15">La valeur</text>
+</svg>
+<svg width="100%" height="50">
+  <text x="0" y="15" class="label">Un label un peu trop long</text>
+  <text x="20%" y="15">La valeur très longue elle aussi pour voir comment elle va réagir au niveau des lignes.</text>
+</svg>
 
 <h1>Test avec le div 'libval normal' (inline-block)</h1>
 <div class="libval normal">
