@@ -77,15 +77,15 @@ static notConfirmNewScene(){
 /**
  * Méthode qui renvoie NULL si le film ne possède pas de scène autour
  * du temps courant (à 10 secondes près) et qui retourne l'instance
- * Scene si une scène a été trouvée.
+ * FAEscene si une scène a été trouvée.
  */
 static filmHasSceneNearCurrentPos(){
-  var curtime = parseInt(this.a.locator.getRTime(),10)
+  var curtime = Math.round(this.a.locator.getRTime())
   var sceneFound = null
-  Scene.forEachScene(function(sc){
-    if (sceneFound) return // pour accélérer
+  FAEscene.forEachScene(function(sc){
     if (curtime.between(sc.time - 5, sc.time + 5)){
       sceneFound = sc
+      return false // pour stopper la boucle
     }
   })
   if (sceneFound) return [sceneFound, Math.abs(curtime - sceneFound.time)]
@@ -94,7 +94,7 @@ static filmHasSceneNearCurrentPos(){
 
 static editEvent(ev){
   var eForm
-  if(this.playing) this.a.locator.togglePlay()
+  this.playing && this.a.locator.togglePlay()
   if(undefined === this.eventForms[ev.id]){
     this.eventForms[ev.id] = new EventForm(ev)
   }

@@ -1,6 +1,5 @@
 'use strict'
 
-
 class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
@@ -66,8 +65,8 @@ constructor(analyse, data){
   // this.type     = data.type  // Sera défini par la sous-classe
   this.id       = parseInt(data.id,10)
   this.titre    = data.titre    // String
-  this.time     = data.time     // Number
-  this.duration = data.duration // Number (seconds)
+  this.time     = data.time.round(2)     // Number
+  this.duration = data.duration.round(2) // Number (seconds)
   this.content  = data.content  // String
   this.note     = data.note     // String
 
@@ -144,7 +143,7 @@ set duration(v){
     v = new OTime(v)
     v = v.seconds
   }
-  this._duration = v
+  this._duration = v.round(2)
 }
 get duration(){return this._duration || 10}
 

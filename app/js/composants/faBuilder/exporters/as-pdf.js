@@ -8,7 +8,7 @@ module.exports = function(options){
     , src_name
     , src_format
     ;
-    
+
   if(undefined === options) options = {}
 
   if(fs.existsSync(my.md_path)){
@@ -23,7 +23,10 @@ module.exports = function(options){
   // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
 
   // Markdown -> ePub
-  var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.pdf_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2 --epub-cover-image='./exports/img/cover.jpg'`
+  // ORIGINALE
+  // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.pdf_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2`
+  // SIMPLIFIÉ
+  var cmd = `cd "${my.a.folderExport}";pandoc -o ${my.a.pdf_name} ${src_name} --toc --toc-depth=2`
 
   // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {

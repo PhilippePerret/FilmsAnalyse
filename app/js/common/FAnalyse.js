@@ -288,16 +288,16 @@ set modified(v) { this._modified = v }
 
 get currentScene(){
   if(undefined === this._current_scene){
-    this._current_scene = Scene.sceneAt(this.locator.getRTime())
-    Scene.current = this._current_scene
+    this._current_scene = FAEscene.at(this.locator.getRTime())
+    FAEscene.current = this._current_scene
   }
   return this._current_scene
 }
 set currentScene(v){
   this._current_scene = v
-  $('span.current-scene-number').html(`Scène ${v.numero}`)
-  $('span.current-scene-number-only').html(v.numero)
-  $('span.current-scene-pitch').html(v.pitch)
+  $('span.current-scene-number').html(v ? `Scène ${v.numero}` : '...')
+  $('span.current-scene-number-only').html(v ? v.numero : '...')
+  $('span.current-scene-pitch').html(v ? DFormater(v.pitch) : '...')
 }
 
 get PFA(){
@@ -335,7 +335,7 @@ onReady(){
   this.locator.stop_points = this.stopPoints
   this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
   EventForm.init()
-  Scene.init()
+  FAEscene.init()
   FAPersonnage.reset().init()
   this.setOptionsInMenus()
   this.videoController.init()

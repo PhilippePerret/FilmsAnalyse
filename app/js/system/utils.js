@@ -138,6 +138,30 @@ function DCreate(typeElement, params){
 }
 
 /**
+  Retourne
+**/
+function DLibVal(obj, property, libelle, options){
+  let ghostProp = `_div${property}`
+  if(undefined === obj[ghostProp] && obj[property]){
+    if(undefined === libelle) libelle = property.titleize()
+    let css = 'libval'
+    if(options && options.class) css = `${css} ${options.class}`
+    obj[ghostProp] = DCreate('DIV', {class: 'libval normal', append:[
+        DCreate('LABEL', {inner: libelle})
+      , DCreate('SPAN', {class:'value', inner: DFormater(obj[property])})
+    ]})
+  }
+  return obj[ghostProp]
+}
+function DFormater(str){
+  if(undefined === FATexte._dformater){
+    let fatexte =  new FATexte('')
+    FATexte._dformater = fatexte.formate.bind(fatexte)
+  }
+  return FATexte._dformater(`${str}`)
+}
+
+/**
  * Pour rendre le selecteur +jqId+ visible (visibility)
  */
 function toggleVisible(jqId, v){

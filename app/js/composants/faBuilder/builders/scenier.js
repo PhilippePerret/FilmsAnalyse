@@ -9,7 +9,7 @@ module.exports = function(options){
   str += '<h1 id="scenier-title">Scénier</h1>'
   str += '<section id="scenier">'
   str += my.generalDescriptionOf('scenier')
-  Scene.forEachScene(function(scene){ str += scene.export(options)})
+  FAEscene.forEachSortedScene(function(scene){ str += scene.export(options)})
   str += '</section>'
   return str
 }

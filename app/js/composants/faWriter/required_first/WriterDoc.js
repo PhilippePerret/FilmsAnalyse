@@ -64,10 +64,11 @@ constructor(dtype, id){
 
 // Affiche le document
 display(){
+  // console.log("-> display ", this)
   FAWriter.reset() // pour vider le champ, notamment
   this.preparePerType() // préparer le writer en fonction du type
-  if (this.exists()){
-    if (!this.loaded) this.load(this.suiteDisplay.bind(this))
+  if (this.exists() && !this.loaded){
+    this.load(this.suiteDisplay.bind(this))
   } else {
     this.suiteDisplay()
   }

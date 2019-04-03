@@ -11,7 +11,7 @@ const destroyEvent = function(event_id, form_instance){
   if(ev.type === 'scene'){
 
     // Cas particulier de la destruction d'une scène
-    Scene.destroy(ev.numero)
+    FAEscene.destroy(ev.numero)
     this.updateNumerosScenes()
 
   } else if (ev.type === 'stt'){
