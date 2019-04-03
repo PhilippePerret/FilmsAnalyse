@@ -1,5 +1,6 @@
 # SUR LE GRILL
 
+* Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
@@ -12,9 +13,7 @@
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
 
-* Rationnaliser les méthodes de classe de Scene, qui est du grand n'importe quoi. Il faudrait que toutes les méthodes retourne des listes d'instance Scene
-  - Commencer par changer le nom pour `FAScene`
-  
+
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
   Par exemple, lorsque l'on édite les fondamentales, elles s'autoévaluent par rapport aux données fournies.

@@ -163,7 +163,6 @@ buildAs(format, options){
 
 exportAs(format, options, fn_callback){
   var my = this
-  my.log(`* exportAs "${format}". Options:`, options)
   if(!this.building && !this.isUpToDate) this.build()
   var method = require(`./js/composants/faBuilder/exporters/as-${format}.js`).bind(this)
   method(options, fn_callback)

@@ -47,6 +47,7 @@ forEachFilteredEvent(method){
     if(false === method(ev)) break
   }
 }
+get forEachFiltered(){ return this.forEachFilteredEvent.bind(this) }
 
 /**
   Retourne la liste des filtrés
@@ -56,7 +57,7 @@ get filtereds(){
   if(undefined === this._filtereds){
     this._filtereds = []
     this.a.forEachEvent(function(ev){
-      console.log("Event : ",ev)
+      // console.log("Event : ",ev)
       if(my.isFalse(my.hTypes[ev.type]))      return
       if(my.isFalse(ev.time >= my.fromTime))  return
       if(my.isFalse(ev.time <= my.toTime))    return
@@ -72,11 +73,11 @@ get filtereds(){
   compte de l'inversion.
 **/
 isFalse(condition){
-  console.log(`
-condition: ${condition}
-invert: ${this.invert}
-this.invert === condition = ${this.invert === !!condition}
-    `)
+//   console.log(`
+// condition: ${condition}
+// invert: ${this.invert}
+// this.invert === condition = ${this.invert === !!condition}
+//     `)
   return this.invert === !!condition
 }
 

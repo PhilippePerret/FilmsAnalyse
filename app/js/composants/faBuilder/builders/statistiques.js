@@ -29,7 +29,7 @@ const FAStatistiques = {
     let div = DCreate('DIV', {class:'body', append:appends})
 
     // Garbage collector
-    delete Scene.divscenesCount
+    delete FAEscene.divscenesCount
     appends = null
 
     if(options && options.format === 'dom'){
@@ -59,14 +59,14 @@ const FAStatistiques = {
     var my = this
     return DCreate('DIV', {class: 'stats-scenes', append:[
       DCreate('H2', {inner: 'Statistiques sur les scènes'})
-    , DLibVal(Scene, 'count', 'Nombre de scènes')
-    , DLibVal(Scene, 'dureeMoyenne', 'Durée moyenne')
-    , DLibVal(Scene, 'plusLongue', 'La plus longue')
-    , DLibVal(Scene, 'plusCourte', 'La plus courte')
+    , DLibVal(FAEscene, 'count', 'Nombre de scènes')
+    , DLibVal(FAEscene, 'dureeMoyenne', 'Durée moyenne')
+    , DLibVal(FAEscene, 'plusLongue', 'La plus longue')
+    , DLibVal(FAEscene, 'plusCourte', 'La plus courte')
     , DCreate('H3', {inner: 'Les dix scènes les plus longues'})
-    , DCreate('DIV', {class: 'div', append: Scene.perMaxLongueur()})
+    , DCreate('DIV', {class: 'div', append: FAEscene.perMaxLongueur()})
     , DCreate('H3', {inner: 'Les dix scènes les plus courtes'})
-    , DCreate('DIV', {class: 'div', append: Scene.perMinLongueur()})
+    , DCreate('DIV', {class: 'div', append: FAEscene.perMinLongueur()})
     ]})
 }
 
@@ -76,23 +76,23 @@ const FAStatistiques = {
 /** ---------------------------------------------------------------------
   Extension de la classe SCENE pour les STATISTIQUES
 **/
-Object.assign(Scene,{
+Object.assign(FAEscene,{
   get dureeMoyenne(){
-    return `${new OTime(Scene.a.duration / Scene.count).duree_sec} secs`
+    return `${new OTime(FAEscene.a.duration / FAEscene.count).duree_sec} secs`
   }
 , get plusLongue(){
     this._longest_scene || this.searchLongestShortest()
-    return `${this._longest_scene.asShort} (${new OTime(this._longest_scene.duree).hduree})`
+    return `${this._longest_scene.as('short', DUREE|FORMATED)}`
   }
 , get plusCourte(){
     this._shortest_scene || this.searchLongestShortest()
-    return `${this._shortest_scene.asShort} (${new OTime(this._shortest_scene.duree).hduree})`
+    return `${this._shortest_scene.as('short', DUREE|FORMATED)}`
   }
 , searchLongestShortest(){
     if (undefined === this._longest_scene){
       var sc_max = {duree: 0}
       var sc_min = {duree: 1000000}
-      Scene.forEachScene(function(sc){
+      FAEscene.forEachScene(function(sc){
         if(sc.duree > sc_max.duree) sc_max = sc
         if(sc.duree < sc_min.duree) sc_min = sc
       })
@@ -105,20 +105,20 @@ Object.assign(Scene,{
 /**
   Retourne les divs des 10 SCÈNES les plus longues
 **/
-Scene.perMaxLongueur = function(){
+FAEscene.perMaxLongueur = function(){
   var my = this
   let divs = []
   for(var i = 0; i < 10; ++i){
     let sc = this.sortedByDuree()[i]
     if(undefined === sc) break
     divs.push(DCreate('DIV', {class: 'pitch-data', append:[
-      DCreate('SPAN', {class:'pad4 left', inner: DFormater(my.get(sc.numero).asShort)})
-    , DCreate('SPAN', {class:'right', inner: new OTime(my.get(sc.numero).duree).hduree})
+      DCreate('SPAN', {class:'pad4 left', inner: sc.as('short', FORMATED)})
+    , DCreate('SPAN', {class:'right', inner: sc.hduree})
     ]}))
   }
   return divs
 }
-Scene.perMinLongueur = function(){
+FAEscene.perMinLongueur = function(){
   var my = this
     , divs = []
     , arr = Object.assign([], this.sortedByDuree())
@@ -128,17 +128,17 @@ Scene.perMinLongueur = function(){
     sc = arr[i]
     if(undefined === sc) break
     divs.push(DCreate('DIV', {class: 'pitch-data', append:[
-      DCreate('SPAN', {class:'pad4 left', inner: DFormater(my.get(sc.numero).asShort)})
-    , DCreate('SPAN', {class:'right', inner: new OTime(my.get(sc.numero).duree).hduree})
+      DCreate('SPAN', {class:'pad4 left', inner: sc.as('short', FORMATED)})
+    , DCreate('SPAN', {class:'right', inner: sc.hduree})
     ]}))
   }
   return divs
 }
-Scene.sortedByDuree = function(){
+FAEscene.sortedByDuree = function(){
   if(undefined === this._sortedDuree){
-    this._sortedDuree = Object.assign([], this._scenes_by_time)
+    this._sortedDuree = Object.assign([], this._by_time)
     this._sortedDuree.sort(function(a,b){
-      return b.event.duration - a.event.duration
+      return b.duration - a.duration
     })
   }
   return this._sortedDuree
@@ -181,9 +181,9 @@ Object.defineProperties(FAPersonnage.prototype,{
 FAPersonnage.prototype.calcPresence = function(){
   let time = 0
     , reg = new RegExp(`(^|[^a-zA-Z0-9_])@${this.dim}([^a-zA-Z0-9_]|$)`)
-  Scene.forEachScene(function(scene){
-    if(scene.pitch.match(reg) || scene.description.match(reg)){
-      time += scene.duration
+  FAEscene.forEachScene(function(scene){
+    if(scene.pitch.match(reg) || scene.resume.match(reg)){
+      time += scene.duree
     }
   })
   return time

@@ -104,7 +104,7 @@ const UI = {
 
     $('.current-scene-number, .current-scene-number-only, current-scene-pitch')
       .on('click', ()=>{
-        EventForm.editEvent.bind(EventForm)(current_analyse.currentScene.event)
+        EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
       })
 
     // Extras
@@ -173,7 +173,6 @@ const UI = {
 // En fait, ce sont des raccourcis (sauf pour togglePlay, par exemple, qui
 // initialise des valeurs)
 , togglePlay(){
-    current_analyse.locator.resetEndTime()
     this.runIfAnalyse('togglePlay')
   }
 , runIfAnalyse(method, arg){

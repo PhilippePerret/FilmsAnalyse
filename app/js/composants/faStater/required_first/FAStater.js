@@ -172,7 +172,7 @@ const FAStater = {
 **/
 , calcPourcentageEvents(){
     this.scenesCountExpected = Math.round(this.a.duration / 60)
-    this.scenesCountActual   = Scene.count
+    this.scenesCountActual   = FAEscene.count
 
     // console.log("Nombre de scènes attendues et réelles :", this.scenesCountExpected, this.scenesCountActual)
 

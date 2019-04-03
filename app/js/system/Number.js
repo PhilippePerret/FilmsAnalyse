@@ -59,12 +59,22 @@ Number.prototype.between = function(min, max, strict){
   cf. WARNING [1] ci-dessus
 
   var x = 8
-  x.isNear(10, 1) => false car 8 n'est pas entre 9 et 11
-  x.isNear(10, 3) =>  true car 8 est entre 7 (10 - 3) et
-                      13 (10 + 3)
+  x.isCloseTo(10, 1) =>   false car 8 n'est pas entre 9 et 11
+  x.isCloseTo(10, 3) =>   true car 8 est entre 7 (10 - 3) et
+                          13 (10 + 3)
 **/
 Number.prototype.isCloseTo = function(ref, tolerance){
   return this.between(ref - tolerance, ref + tolerance)
+}
+
+/**
+  Retourne la valeur arrondie à +decimales+ décimales.
+  +decimales+ (2 par défaut) ne peut pas être 0
+
+**/
+Number.prototype.round = function(decimales){
+  var pow = Math.pow(10, decimales || 2)
+  return Math.round(pow * this.valueOf()) / pow
 }
 
 /**

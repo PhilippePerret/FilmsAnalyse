@@ -88,12 +88,19 @@ set oMainHorloge(v){
 togglePlay(ev){
   var pauser = this.playing === true
   if (pauser) {
+    //
+    // => PAUSE
+    //
     this.video.pause()
     $(this.btnPlay).removeClass('actived')
     this.playing = false
     this.desactivateHorloge()
     this.setPlayButton(this.playing)
   } else {
+    //
+    // => PLAY
+    //
+    this.resetAllTimes()
     // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
     // stop.
     var curT = this.getTime()
@@ -124,7 +131,7 @@ togglePlay(ev){
 //  MÉTHODES DE NAVIGATION DANS LA VIDÉO
 
 stop(){
-  if(this.playing)this.togglePlay()
+  this.playing && this.togglePlay()
 }
 
 /**
@@ -280,89 +287,98 @@ setEndTime(time, fnOnEndTime){
   this.wantedEndTime = parseFloat(time)
   this.wantedEndTimeCallback = fnOnEndTime
 }
-resetEndTime(){
-  this.wantedEndTime = null
-  this.wantedEndTimeCallback = null
+
+/**
+  Méthode qui ré-initialise les valeurs qui vont servir à surveiller
+  les temps en cours de lecture, pour connaitre le temps d'arrêt par
+  exemple ou le temps de la prochaine scène.
+  Ces valeurs doivent être ré-initialisées à chaque lancement de la
+  vidéo.
+**/
+resetAllTimes(){
+  delete this.wantedEndTime
+  delete this.wantedEndTimeCallback
+  delete this.timeNextScene
 }
 
 // ---------------------------------------------------------------------
 
-  /**
-   * Méthode permettant de rejoindre le début du film
-   */
-  goToFilmStart(){
-    if(undefined === this.analyse.filmStartTime){
-      F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
-    }else{
-      this.setTime(this.startTime)
-    }
+/**
+ * Méthode permettant de rejoindre le début du film
+ */
+goToFilmStart(){
+  if(undefined === this.analyse.filmStartTime){
+    F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
+  }else{
+    this.setTime(this.startTime)
   }
+}
 
-  // ---------------------------------------------------------------------
-  // Méthodes de données
+// ---------------------------------------------------------------------
+// Méthodes de données
 
-  get startTime(){
-    return this.analyse.filmStartTime // toujours défini
-  }
-  get currentTime(){
-    return this.video.currentTime
-  }
-  get currentRTime(){return this.getRTime()}
+get startTime(){
+  return this.analyse.filmStartTime // toujours défini
+}
+get currentTime(){
+  return this.video.currentTime
+}
+get currentRTime(){return this.getRTime()}
 
-  /**
-  * Alias de this.currentTime pour retourner le temps vidéo courant
-  **/
-  getTime(){ return this.currentTime }
-  getTimeRound(){ return Math.round(this.getTime() * 100) / 100 }
+/**
+* Alias de this.currentTime pour retourner le temps vidéo courant
+**/
+getTime(){ return this.currentTime }
+getTimeRound(){ return Math.round(this.getTime() * 100) / 100 }
 
-  /**
-   * Méthode qui récupère le temps courant du film et retourne une instance
-   * OTime
-   *
-   */
-  getOTime(){
-    return new OTime(this.currentTime)
+/**
+ * Méthode qui récupère le temps courant du film et retourne une instance
+ * OTime
+ *
+ */
+getOTime(){
+  return new OTime(this.currentTime)
+}
+// Retourne une instance OTime du temps réel (actualisé chaque fois)
+getROTime(){
+  if(undefined === this._getROTime){
+    this._getROTime = new OTime(this.getRTime())
+  } else {
+    this._getROTime.updateSeconds(this.getRTime())
   }
-  // Retourne une instance OTime du temps réel (actualisé chaque fois)
-  getROTime(){
-    if(undefined === this._getROTime){
-      this._getROTime = new OTime(this.getRTime())
-    } else {
-      this._getROTime.updateSeconds(this.getRTime())
-    }
-    return this._getROTime
-  }
-  /**
-   * (Number) Retourne le temps rectifié. Il peut être négatif.
-   *
-   * Si +t+ est fourni, on renvoie le temps réel de ce temps, sinon on
-   * prend le temps courant
-   */
-  getRTime(t){
-    if(undefined === t){ t = this.currentTime }
-    if(this.hasStartTime){ t -= this.startTime }
-    return t
-  }
-  // Version arrondi à seulement 2 décimales
-  getRTimeRound(t){
-    return Math.round(this.getRTime(t) * 100) / 100
-  }
+  return this._getROTime
+}
+/**
+ * (Number) Retourne le temps rectifié. Il peut être négatif.
+ *
+ * Si +t+ est fourni, on renvoie le temps réel de ce temps, sinon on
+ * prend le temps courant
+ */
+getRTime(t){
+  if(undefined === t){ t = this.currentTime }
+  if(this.hasStartTime){ t -= this.startTime }
+  return t
+}
+// Version arrondi à seulement 2 décimales
+getRTimeRound(t){
+  return Math.round(this.getRTime(t) * 100) / 100
+}
 
-  // ---------------------------------------------------------------------
-  //  Méthode de formatage
+// ---------------------------------------------------------------------
+//  Méthode de formatage
 
-  // Retourne une horloge sous la forme [-]h:mm:ss:ff
-  getRealTime(s){
-    var negative = s < 0
-    if(negative){s = -s}
-    // console.log("s = ",s)
-    if(undefined === this._horloger){
-      this._horloger = new OTime(s)
-    } else {
-      this._horloger.updateSeconds(s)
-    }
-    return `${negative?'-':' '}${this._horloger.horloge}`
+// Retourne une horloge sous la forme [-]h:mm:ss:ff
+getRealTime(s){
+  var negative = s < 0
+  if(negative){s = -s}
+  // console.log("s = ",s)
+  if(undefined === this._horloger){
+    this._horloger = new OTime(s)
+  } else {
+    this._horloger.updateSeconds(s)
   }
+  return `${negative?'-':' '}${this._horloger.horloge}`
+}
 
 // ---------------------------------------------------------------------
 
@@ -475,18 +491,22 @@ actualizeMarkersStt(curt){
 
 }
 
-/*
-  On renseigne la scène courant (pour le moment, elle
-  n'est pas indiquée, mais ça pourrait servir)
-  TODO: Se servir de ce numéro de scène.
+/**
+  On renseigne la scène courante.
+
+  Cette méthode cherche la scène courante et la scène
+  suivante. Elle met la scène courante en affichage (et
+  dans current_analyse) et elle mémorise le temps suivant
+  pour ne pas avoir à chercher toujours le temps.
+
+  @param {Float} curt  Le temps courant
+
  */
 actualizeCurrentScene(curt){
-  this.analyse.currentScene = Scene.sceneAt(curt)
-  if (!this.analyse.currentScene){
-    $('span.current-scene-number').html('...')
-    $('span.current-scene-number-only').html('...')
-    $('span.current-scene-pitch').html('...')
-  }
+  if(this.timeNextScene && curt < this.timeNextScene) return
+  var resat = FAEscene.atAndNext(curt)
+  this.analyse.currentScene = resat.current
+  this.timeNextScene = resat.next ? resat.next.time : this.a.duration
 }
 
 // ---------------------------------------------------------------------
