@@ -69,8 +69,8 @@ FABuilder.prototype.buildAndAddChunk = function(what){
   var ca = my.analyse
   var finalCode = ""
   finalCode += `<!-- BUILD ${what} -->${RC}`
-  switch (what) {
-    case 'Fiche identité':
+  switch (what.toLowerCase()) {
+    case 'fiche identité':
       finalCode += my.loadAndRunBuilder('fiche_identite_film')
       break
     case 'infos film':
@@ -93,6 +93,10 @@ FABuilder.prototype.buildAndAddChunk = function(what){
       break
     case 'scenier':
       finalCode += my.loadAndRunBuilder('scenier')
+      break
+    case 'test mef':
+      finalCode += my.loadAndRunBuilder('test_mef')
+      break
     default:
 
   }

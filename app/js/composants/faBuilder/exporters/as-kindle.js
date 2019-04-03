@@ -12,34 +12,24 @@ var exec = require('child_process').exec
 module.exports = function(options){
   let my = this
 
-  if(!fs.existsSync(my.a.folderExport)) fs.mkdirSync(my.a.folderExport)
 
-  // Il faut trouver un format de fichier
+  let src_name    = my.a.html_name
+    , src_format  = 'HTML'
+    , dst_name    = my.a.mobi_name
+    , dst_path    = my.a.mobi_path
 
-  var src, format_src
+  // On détruit le fichier destination s'il existe
+  fs.existsSync(dst_path) && fs.unlinkSync(dst_path)
 
-  if (fs.existsSync(my.a.html_path)){
-    format_src = 'HTML'
-    src = my.a.html_path
-  } else if (fs.existsSync(my.a.md_path)) {
-    format_src = 'Markdown'
-    src = my.a.md_path
-  } else if (fs.existsSync(my.a.epub_path)) {
-    format_src = 'ePub'
-    src = my.a.epub_path
-  } else {
-    my.log("- Aucun fichier original trouvé, je vais créer le format ePub pour m'en servir.")
-    format_src = 'ePub'
-    my.exportAs('epub')
-  }
+  // Maintennat, on utilise toujours Calibre et le document HTML
+  // TODO Travailler les options
+  var cmd = `cd "${my.a.folderExport}" && ${EBOOK_CONVERT_CMD} ${src_name} ${dst_name}`
 
-  if(fs.existsSync(my.a.kindle_path)){fs.unlinkSync(my.a.kindle_path)}
-  var cmd = `kindlegen "${src}"`
 
-  my.log("cmd kindlegen:", cmd)
+  my.log("cmd Calibre:", cmd)
   exec(cmd, (error, stdout, stderr) => {
     if(error)throw(error)
-    my.log(`=== Création du livre Kindle (depuis le format ${format_src}) terminé avec succès.`)
-    F.notify(`Création du livre Kindle (depuis le format ${format_src}) terminé avec succès.`)
+    my.log(`=== Création du livre Kindle "${dst_name}" (depuis le fichier ${src_name} au format ${src_format}) terminé avec succès.`)
+    F.notify(`Création du livre Kindle "${dst_name}" (depuis le fichier ${src_name} au format ${src_format}) terminé avec succès.`)
   });
 }

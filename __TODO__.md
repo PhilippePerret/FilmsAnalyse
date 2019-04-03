@@ -2,10 +2,19 @@
 
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 
+* PUBLICATION
+  ebook-convert (Calibre) est incontestablement la meilleure façon de sortir les .epub et les .mobi à partir du HTML.
+  - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
+  Quelques essais sont à faire :
+    - sur le mobi (kindle), les display-inline ne sont pas respectés à la lettre
+    - sur le epub, ça prend trop de place donc les textes passent à la ligne
+    => essayer un fonctionnement avec les grids pour voir si ça marcherait mieux
+    => Pour faire ces tests, on pourrait avoir un builder fait exprès, par exemple 'test_mef.js'
+       Il suffit de mettre `BUILD test mef` dans le script d'assemblage pour produire les essais contenus dans le fichier
+
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  - Poursuivre les statistiques
-    + Voir pourquoi la scène la plus courte et la plus longue est la même
+  EN COURS : voir les problèmes de formatage des eBooks etc.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres

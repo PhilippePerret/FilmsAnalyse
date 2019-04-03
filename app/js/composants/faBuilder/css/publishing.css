@@ -1,16 +1,21 @@
 /* STYLE POUR LA PUBLICATION */
 @media print {
-
+  body {
+    background-color:red;
+  }
 }
 
 /* --------------------------------------------------------------------- */
 /* === STYLES GÉNÉRAUX === */
 
+body {
+  width:14.8cm;
+}
 body, body * {
   font-family:Palatino;/*, Georgia, Baskerville*/
 }
 h1 {
-  margin-top:3em;
+  margin-top:3em; /* sauf si on passe toujours à la ligne */
   margin-bottom:1em;
 }
 
@@ -19,6 +24,14 @@ a, a:hover, a:link, a:visited {
   color:inherit;
 }
 a:hover{text-decoration:underline;}
+
+/* Note : 53 caractères sur une ligne, max */
+pre {
+  font-family:monospace;
+  font-size:10.7pt;
+  white-space:pre;
+}
+
 
 .explication {
   font-style:italic;
