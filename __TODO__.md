@@ -4,7 +4,8 @@
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  - Attaquer les statistiques
+  - Poursuivre les statistiques
+    + Voir pourquoi la scène la plus courte et la plus longue est la même
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
@@ -43,6 +44,8 @@
 * Construction des statistiques de fin
 
 # TODO LIST
+
+* Quand il y a un trop grand nombre de rapports, on détruit les plus anciens
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 

@@ -109,7 +109,7 @@ FAEscene.perMaxLongueur = function(){
   var my = this
   let divs = []
   for(var i = 0; i < 10; ++i){
-    let sc = this.sortedByDuree()[i]
+    let sc = this.sortedByDuree[i]
     if(undefined === sc) break
     divs.push(DCreate('DIV', {class: 'pitch-data', append:[
       DCreate('SPAN', {class:'pad4 left', inner: sc.as('short', FORMATED)})
@@ -121,7 +121,7 @@ FAEscene.perMaxLongueur = function(){
 FAEscene.perMinLongueur = function(){
   var my = this
     , divs = []
-    , arr = Object.assign([], this.sortedByDuree())
+    , arr = Object.assign([], this.sortedByDuree)
     , sc
   arr.reverse()
   for(var i = 0; i < 10; ++i){
@@ -133,15 +133,6 @@ FAEscene.perMinLongueur = function(){
     ]}))
   }
   return divs
-}
-FAEscene.sortedByDuree = function(){
-  if(undefined === this._sortedDuree){
-    this._sortedDuree = Object.assign([], this._by_time)
-    this._sortedDuree.sort(function(a,b){
-      return b.duration - a.duration
-    })
-  }
-  return this._sortedDuree
 }
 
 /**
