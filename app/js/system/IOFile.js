@@ -7,6 +7,64 @@
  *
  */
 class IOFile {
+// ---------------------------------------------------------------------
+//  CLASSE
+
+/**
+  @param  {String} fpath Chemin d'accès au fichier
+  @return {String} Format en résultat, en capitales
+**/
+static getFormatFromExt(fpath){
+  switch (path.extname(fpath).toLowerCase()) {
+    case '.json':
+      return 'JSON'
+    case '.yml':
+    case '.yaml':
+      return 'YAML'
+    case '.md':
+    case '.mmd':
+    case '.markdown':
+      return 'MARKDOWN'
+    case '.js':
+      return 'JAVASCRIPT'
+    default:
+      return null
+  }
+}
+
+/**
+  Méthode qui retourne NULL si le code +code+ est valide ou le message
+  d'erreur en cas d'erreur.
+
+  @param  {String} code     Le code à tester
+  @param  {String} format   Le format, 'json' ou 'yaml'
+  @return {Null|String} NULL si OK, le message d'erreur sinon
+
+**/
+static codeIsOK(code, format){
+  switch (format) {
+    case 'JSON':
+      try {
+        JSON.parse(code)
+      } catch (e) {
+        // console.error(e)
+        return `Code JSON invalide :${RC+RC}${e.message}`
+      }
+      break
+    case 'YAML':
+      try {
+        YAML.safeLoad(code)
+      } catch (e) {
+        // console.error(e)
+        return `Code YAML invalide (lig ${e.mark.line}) :${RC+RC}${e.message}`
+      }
+      break
+  }
+  return null // OK
+}
+
+// ---------------------------------------------------------------------
+//  INSTANCE
 
 // Cf. le manuel de développement
 constructor(p_or_owner){
@@ -38,6 +96,8 @@ save(options){
     var scode = this.encodeCode()
     scode !== undefined || raise(T('code-to-save-is-undefined'))
     scode !== null      || raise(T('code-to-save-is-null'))
+    let err_code = IOFile.codeIsOK(scode, IOFile.getFormatFromExt(this.path))
+    err_code === null   || raise(T('code-to-save-not-ok', {raison: err_code}))
     scode.length > 0    || raise(T('code-to-save-is-empty'))
     if(this.tempExists()) fs.unlinkSync(this.tempPath)
     fs.writeFile(this.tempPath,scode,'utf8', this.afterTempSaved.bind(this))
@@ -75,46 +135,48 @@ endSave(err){
   } catch (e) {F.error(e)}
 }
 
-  /**
-   * Procédure intelligente de chargement, en tenant compte du fait que le
-   * fichier peut exister mais être vide.
-   *
-   * Note : utiliser plutôt la méthode `loadIfExists` pour bénéficier de
-   * toutes les protections et l'utilisation de backups
-   */
-  load(options){
-    var my = this
-    if (!options) options = {}
-    if(options.format)  this._format = options.format
-    if(options.after)   this.methodAfterLoading = options.after
-    my.loaded = false
-    fs.readFile(this.path, 'utf8', (err, data) => {
-      err ? F.error(err) : my.code = data
-      my.endLoad(!err)
-    })
-  }
-  // La différence avec la méthode précédente, c'est qu'elle ne génère pas
-  // d'erreur en cas d'inexistence du fichier
-  loadIfExists(options, fn_pour_suivre){
-    var my = this
-    this.loaded = false
-    // Noter que la méthode peut être rappelée depuis elle-même, donc
-    // sans redéfinir options ou fn_pour_suivre. Donc il ne faut les
-    // définir que s'ils sont définis.
-    if(undefined !== options) my.options = options
-    if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
-    if(false === this.exists()){
-      my.endLoad(false)
+/**
+ * Procédure intelligente de chargement, en tenant compte du fait que le
+ * fichier peut exister mais être vide.
+ *
+ * Note : utiliser plutôt la méthode `loadIfExists` pour bénéficier de
+ * toutes les protections et l'utilisation de backups
+ */
+load(options){
+  var my = this
+  if (!options) options = {}
+  if(options.format)  this._format = options.format
+  if(options.after)   this.methodAfterLoading = options.after
+  my.loaded = false
+  fs.readFile(this.path, 'utf8', (err, data) => {
+    err ? F.error(err) : my.code = data
+    my.endLoad(!err)
+  })
+}
+
+// La différence avec la méthode précédente, c'est qu'elle ne génère pas
+// d'erreur en cas d'inexistence du fichier
+loadIfExists(options, fn_pour_suivre){
+  var my = this
+  this.loaded = false
+  // Noter que la méthode peut être rappelée depuis elle-même, donc
+  // sans redéfinir options ou fn_pour_suivre. Donc il ne faut les
+  // définir que s'ils sont définis.
+  if(undefined !== options) my.options = options
+  if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
+  if(false === this.exists()){
+    my.endLoad(false)
+  } else {
+    if(my.size === 0) {
+      my.retrieveBackup()
     } else {
-      if(my.size === 0) {
-        my.retrieveBackup()
-      } else {
-        // On peut charger
-        my.load(options)
-      }
+      // On peut charger
+      my.load(options)
     }
-    my = null
   }
+  my = null
+}
+
 endLoad(success){
   this.loaded = success
   if('function' === typeof this.methodAfterLoading){
@@ -130,42 +192,44 @@ backup(){
   my = null
 }
 
-  retrieveBackup(){
-    var my = this
-    try {
-      // On doit tenter la procédure de retreive de backup
-      fs.unlinkSync(this.path)
-      if(this.backupExists()){
-        fs.copyFile(my.backupPath,my.path, (err) => {
-          if(err){ F.error(err) ; my.endLoad }
-          // Puis on réessaye…
-          return this.loadIfExists()
-        })
-      } else {
-        // Pas de backup… j'abandonne
-        my.endLoad(false)
-      }
-    } catch (e) {
-      F.error(e)
+retrieveBackup(){
+  var my = this
+  try {
+    // On doit tenter la procédure de retreive de backup
+    fs.unlinkSync(this.path)
+    if(this.backupExists()){
+      fs.copyFile(my.backupPath,my.path, (err) => {
+        if(err){ F.error(err) ; my.endLoad }
+        // Puis on réessaye…
+        return this.loadIfExists()
+      })
+    } else {
+      // Pas de backup… j'abandonne
+      my.endLoad(false)
     }
-    my = null
+  } catch (e) {
+    F.error(e)
   }
+  my = null
+}
 
-  /**
-   * Méthode qui vérifie la présence du dossier backup et le crée si nécessaire
-   */
-  checkBackupFolder(){
-    if(fs.existsSync(this.backupFolder)) return true
-    fs.mkdirSync(this.backupFolder)
-  }
+/**
+ * Méthode qui vérifie la présence du dossier backup et le crée si nécessaire
+ */
+checkBackupFolder(){
+  if(fs.existsSync(this.backupFolder)) return true
+  fs.mkdirSync(this.backupFolder)
+}
 
-  // ---------------------------------------------------------------------
-  //  Méthode de test
-  exists()        { return fs.existsSync(this.path) }
-  tempExists()    { return fs.existsSync(this.tempPath)}
-  backupExists()  { return fs.existsSync(this.backupPath)}
+// ---------------------------------------------------------------------
+//  Méthode de test
 
-  get isBackupable(){ return this.exists() && this.size > 0 }
+exists()        { return fs.existsSync(this.path) }
+tempExists()    { return fs.existsSync(this.tempPath)}
+backupExists()  { return fs.existsSync(this.backupPath)}
+
+get isBackupable(){ return this.exists() && this.size > 0 }
+
 // ---------------------------------------------------------------------
 //  Données
 
@@ -186,32 +250,42 @@ get code(){
   }
 }
 
-  /**
-    * Retourne le code décodé en fonction du format du fichier (défini par
-    * son extension ou explicitement en options)
-    */
-  get decodedCode(){return this._decodedCode || defP(this,'_decodedCode',this.decode())}
-  decode(){
-    if(!this.code) return null // fichier inexistant, par exemple
-    try {
-      switch (this.format.toUpperCase()) {
-        case 'RAW':
-          return this.code // pour la clarté
-        case 'JSON':
-          if ('object' === typeof this.code) return this.code
-          else return JSON.parse(this.code)
-        case 'YAML':
-          return YAML.safeLoad(this.code)
-        default:
-          return this.code
-      }
-    } catch (e) {
-      console.log(`ERROR ${this.format} AVEC:`, this.path)
-      F.error('Une erreur s’est produite en lisant le fichier '+this.path)
-      F.error(e)
-      return null
+/**
+  Par mesure de sécurité, on vérifie toujours la validité d'un code
+  avant son enregistrement.
+
+  @param {String} code    Le code à checker, celui qui sera vraiment enregistré
+  @returns true si le +code+ est valide, false dans le cas contraire.
+
+**/
+
+/**
+  * Retourne le code décodé en fonction du format du fichier (défini par
+  * son extension ou explicitement en options)
+  */
+get decodedCode(){return this._decodedCode || defP(this,'_decodedCode',this.decode())}
+decode(){
+  if(!this.code) return null // fichier inexistant, par exemple
+  try {
+    switch (this.format.toUpperCase()) {
+      case 'RAW':
+        return this.code // pour la clarté
+      case 'JSON':
+        if ('object' === typeof this.code) return this.code
+        else return JSON.parse(this.code)
+      case 'YAML':
+        return YAML.safeLoad(this.code)
+      default:
+        return this.code
     }
+  } catch (e) {
+    console.log(`ERROR ${this.format} AVEC:`, this.path)
+    F.error('Une erreur s’est produite en lisant le fichier '+this.path)
+    F.error(e)
+    return null
   }
+}
+
 /**
  * Encode le code au besoin, c'est-à-dire si un format particulier est
  * utilisé (JSON ou YAML pour le moment) et si le code n'est pas du string.
@@ -243,29 +317,10 @@ set methodAfterLoading(v){this._methodAfterLoading = v}
 /**
  * Retourne le format du fichier, en fonction de son extension
  */
-get format(){return this._format||defP(this,'_format',this.getFormatFromExt())}
-
+get format(){return this._format||defP(this,'_format',IOFile.getFormatFromExt(this.path))}
 
 // ---------------------------------------------------------------------
 //  Données de path
-
-getFormatFromExt(){
-  switch (path.extname(this.path).toLowerCase()) {
-    case '.json':
-      return 'JSON'
-    case '.yml':
-    case '.yaml':
-      return 'YAML'
-    case '.md':
-    case '.mmd':
-    case '.markdown':
-      return 'MARKDOWN'
-    case '.js':
-      return 'JAVASCRIPT'
-    default:
-      return null
-  }
-}
 
 get folder(){
   return this._folder || defP(this,'_folder', path.dirname(this.path))

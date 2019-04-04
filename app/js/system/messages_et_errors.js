@@ -18,6 +18,7 @@ const ERRORS = {
 , "temps-file-unfound": "Le fichier temporaire est introuvable. Je dois interrompre la procédure d'enregistrement.<br>%{fpath}"
 , "code-to-save-is-undefined":"Le code à sauver est indéfini (undefined), c'est impossible !"
 , "code-to-save-is-null":"Le code à sauver vaut `null`, c'est impossible !"
+, "code-to-save-not-ok": "Le code à enregistrer est invalide : %{raison}.\n\nCorrigez-le pour pouvoir l'enregistrer."
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."

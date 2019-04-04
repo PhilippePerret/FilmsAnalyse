@@ -1,9 +1,6 @@
 # SUR LE GRILL
 
 * Plein de [BUGS] apparaissent
-  - lorsqu'on modifie mal un document YAML (les données des personnages par exemple), on se retrouve avec une   
-    YAMLException.
-    Elle ne doit pas interrompre le programme, il faut juste la signaler
   - Lorsque je fais TAB à la fin d'un document (i.e. quand le curseur se trouve à la fin), ça génère une erreur
     'Cannot read property 'length' of undefined'
     Apparemment, le programme tente d'insérer quelque chose puisque la méthode Selector.insert et insertAtCaret sont invoqués.
