@@ -35,8 +35,14 @@ static reset(){
   affichée à l'écran si elle existe.
   @returns {FAEscene} La scène courante dans le film visionné
 **/
-static get current(){ return this._current }
-static set current(s){ this._current = s}
+static get current(){return this._current||defP(this,'_current',this.a.locator.getRTime())}
+static set current(s){
+  this._current = s
+  this.a._currentScene = s
+  $('span.current-scene-number').html(s ? s.numero : '...')
+  $('span.current-scene-number-only').html(s ? s.numero : '...')
+  $('span.current-scene-pitch').html(s ? DFormater(s.pitch) : '...')
+}
 
 /**
   @returns {Number} Le nombre de scènes du film
@@ -69,6 +75,8 @@ static getById(event_id){return this.byId[event_id]}
   @returns  {FAEscene} La scène au temps +time+
 **/
 static getByTime(time)  {return this.byTime[time]}
+
+static getByNumero(num){return this.byNumero[num]}
 
 // ---------------------------------------------------------------------
 //  Les listes de scène
@@ -243,7 +251,7 @@ as(format, flag){
   if (undefined === flag) flag = 0
   // Pour le moment, on lie par défaut
   flag = flag | LINKED
-  
+
   // console.log("-> as(format, flag)", format, flag)
   var str
   switch (format) {

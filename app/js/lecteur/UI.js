@@ -54,6 +54,10 @@ const UI = {
     listenMUp('btn-forward-2',my,'stopForward')
     listenMDown('btn-forward-3',my,'forward', 5)
     listenMUp('btn-forward-3',my,'stopForward')
+    listenMDown('btn-prev-scene', my,'goToPrevScene')
+    listenMUp('btn-prev-scene', my,'stopGoToPrevScene')
+    listenMDown('btn-next-scene', my,'goToNextScene')
+    listenMUp('btn-next-scene', my,'stopGoToNextScene')
 
     this.inited = true
   }
@@ -188,5 +192,10 @@ const UI = {
 , forward(pas){this.runIfAnalyse('forward', pas)}
 , stopRewind(pas){this.runIfAnalyse('stopRewind', pas)}
 , stopForward(pas){this.runIfAnalyse('stopForward', pas)}
+
+, goToPrevScene(){this.runIfAnalyse('goToPrevScene')}
+, goToNextScene(){this.runIfAnalyse('goToNextScene')}
+, stopGoToPrevScene(){this.runIfAnalyse('stopGoToPrevScene')}
+, stopGoToNextScene(){this.runIfAnalyse('stopGoToNextScene')}
 
 }

@@ -15,31 +15,6 @@ constructor(analyse){
 get playing(){return this._playing || false}
 set playing(v){ this._playing = v}
 
-// ---------------------------------------------------------------------
-//  Gestion des points d'arrêt
-get stop_points(){
-  if (undefined === this._stop_points) this._stop_points = []
-  return this._stop_points
-}
-set stop_points(v){ this._stop_points = v}
-
-goToNextStopPoint(){
-  if(undefined === this._i_stop_point) this._i_stop_point = -1
-  ++ this._i_stop_point
-  if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
-  if(undefined === this.stop_points[this._i_stop_point]){
-    F.notify(T('no-stop-point'))
-  } else {
-    this.setTime(this.stop_points[this._i_stop_point])
-  }
-}
-addStopPoint(time){
-  if(current_analyse.options.get('option_lock_stop_points')) return
-  if (this.stop_points.indexOf(time) > -1) return
-  this.stop_points.length > 2 && this.stop_points.shift()
-  this.stop_points.push(time)
-}
-
 init(){
   var my = this
 
@@ -205,6 +180,12 @@ stopForward(){
   * indique les partie et sous-partie dans lesquelles on se
     trouve, pour le paradigme absolu ou le paradigme relatif
     au film.
+  * cherche et indique la scène courante (if any)
+
+  [1] Note : cette méthode ne doit surtout pas être appelée de façon
+  récursive par le play, car elle initialise tous les temps mémorisés
+  qui permettent de gagner de la puissance, comme par exemple le temps
+  de la prochaine scène ou du temps d'arrêt (cf. `resetAllTimes`).
 
   +time+  @Number Nombre de secondes depuis le début de la vidéo
           Note : appeler la méthode `setRTime` pour envoyer un
@@ -213,6 +194,9 @@ stopForward(){
  */
 setTime(time, dontPlay){
   // console.log("-> setTime", time)
+
+  // Initialisation de tous les temps. Cf. [1]
+  this.resetAllTimes()
 
   // On ne peut envoyer qu'un nombre, voyons.
   if(isNaN(time)){
@@ -312,6 +296,60 @@ goToFilmStart(){
   }else{
     this.setTime(this.startTime)
   }
+}
+
+goToPrevScene(){
+  let method = () => {
+    if (this.a.prevScene){
+      this.setTime(this.a.prevScene.time)
+    }
+    else F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
+  }
+  this.timerPrevScene = setTimeout(method, 1000)
+  method()
+}
+stopGoToPrevScene(){
+  clearTimeout(this.timerPrevScene)
+  delete this.timerPrevScene
+}
+goToNextScene(){
+  // console.log("-> goToNextScene")
+  let method = () => {
+    if (this.a.nextScene){
+      this.setTime(this.a.nextScene.time)
+    }
+    else F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
+  }
+  this.timerNextScene = setTimeout(method, 500)
+  method()
+}
+stopGoToNextScene(){
+  clearTimeout(this.timerNextScene)
+  delete this.timerNextScene
+}
+// ---------------------------------------------------------------------
+//  Gestion des points d'arrêt
+get stop_points(){
+  if (undefined === this._stop_points) this._stop_points = []
+  return this._stop_points
+}
+set stop_points(v){ this._stop_points = v}
+
+goToNextStopPoint(){
+  if(undefined === this._i_stop_point) this._i_stop_point = -1
+  ++ this._i_stop_point
+  if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
+  if(undefined === this.stop_points[this._i_stop_point]){
+    F.notify(T('no-stop-point'))
+  } else {
+    this.setTime(this.stop_points[this._i_stop_point])
+  }
+}
+addStopPoint(time){
+  if(current_analyse.options.get('option_lock_stop_points')) return
+  if (this.stop_points.indexOf(time) > -1) return
+  this.stop_points.length > 2 && this.stop_points.shift()
+  this.stop_points.push(time)
 }
 
 // ---------------------------------------------------------------------
@@ -503,11 +541,13 @@ actualizeMarkersStt(curt){
 
  */
 actualizeCurrentScene(curt){
+  // console.log("-> actualizeCurrentScene")
   if(this.timeNextScene && curt < this.timeNextScene) return
   var resat = FAEscene.atAndNext(curt)
   if(resat){
     this.a.currentScene = resat.current
-    this.timeNextScene = resat.next ? resat.next.time : this.a.duration
+    // console.log("Courante scène mise à ", this.a.currentScene.numero)
+    this.timeNextScene  = resat.next ? resat.next.time : this.a.duration
   }
 }
 

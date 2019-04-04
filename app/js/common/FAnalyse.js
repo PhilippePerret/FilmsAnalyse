@@ -286,20 +286,18 @@ set lastCurrentTime(v){ this._lastCurrentTime = v }
 get modified() { return this._modified }
 set modified(v) { this._modified = v }
 
-get currentScene(){
-  if(undefined === this._current_scene){
-    this._current_scene = FAEscene.at(this.locator.getRTime())
-    FAEscene.current = this._current_scene
-  }
-  return this._current_scene
-}
-set currentScene(v){
-  this._current_scene = v
-  $('span.current-scene-number').html(v ? v.numero : '...')
-  $('span.current-scene-number-only').html(v ? v.numero : '...')
-  $('span.current-scene-pitch').html(v ? DFormater(v.pitch) : '...')
-}
+get currentScene(){ return FAEscene.current}
+set currentScene(v){ FAEscene.current = v }
 
+// Retourne la scène précédente de la scène courante
+get prevScene(){
+  if (!this.currentScene || this.currentScene.numero == 1) return
+  else return FAEscene.getByNumero(this.currentScene.numero - 1)
+}
+get nextScene(){
+  if(!this.currentScene) return FAEscene.getByNumero(1)
+  else return FAEscene.getByNumero(this.currentScene.numero + 1)
+}
 get PFA(){
   if(undefined === this._PFA){
     SttNode   = require('./js/common/PFA/SttNode.js')
