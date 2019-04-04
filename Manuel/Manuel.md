@@ -8,6 +8,9 @@
   * [Passer en revue les 3 derniers points d'arrêt](#passe_revue_stop_points)
   * [Récupération du temps courant](#get_current_time)
   * [Réglage du temps et de la durée de l'event](#set_event_time)
+    * [Réglage du temps](#reglage_du_point_temporel)
+    * [Réglage de la durée](#reglage_de_la_duree)
+    * [Réglage de la durée des scènes](#reglage_de_la_duree_des_scenes)
 * [L'Interface](#linterface)
   * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
@@ -72,7 +75,7 @@ Mais il y a même plus simple en glissant la vidéo (qui se transforme en horlog
 
 ### Réglage du temps de l'event {#set_event_time}
 
-#### Réglage du temps
+#### Réglage du temps {#reglage_du_point_temporel}
 
 Pour éditer le temps d'un event — i.e. le modifier, on peut s'y prendre de cette manière :
 
@@ -84,7 +87,7 @@ Pour éditer le temps d'un event — i.e. le modifier, on peut s'y prendre de c
 * relâcher la souris lorsque le bon temps est trouvé,
 * enregistrer les changements.
 
-#### Réglage de la durée
+#### Réglage de la durée {#reglage_de_la_duree}
 
 On peut régler la durée d'un event quelconque en modifiant son horloge de durée, de la même manière que pour l'horloge :
 
@@ -96,6 +99,11 @@ On peut régler la durée d'un event quelconque en modifiant son horloge de dur�
 * relâcher la souris lorsque la bonne durée est trouvée,
 * enregistrer les changements en cliquant sur le bouton adéquat.
 
+#### Réglage de la durée des scènes {#reglage_de_la_duree_des_scenes}
+
+Si l'option « Calcul automatique de la durée des scènes » est coché dans le menu « Options », le calcul de la durée des scènes se fait automatiquement à la création des scènes. Dès que la scène N est créée, on calcule la durée de la scène N-1 d'après son temps.
+
+---------------------------------------------------------------------
 
 ## Interface {#linterface}
 

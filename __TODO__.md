@@ -1,6 +1,7 @@
 # SUR LE GRILL
 
 * [BUGS]
+  - La durée de l'event ne se règle pas dans son formulaire d'édition
   - Faire une liste de tests à faire et les faire manuellement.
     Voir ceux qu'on peut automatiser.
     Les classer par grandes opérations
@@ -12,8 +13,6 @@
 
 * OUTILS
   - rejoindre la dernière scène définie
-  - 1. calculer la durée des scènes (en fonction de leur position)
-    -> option
 
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 

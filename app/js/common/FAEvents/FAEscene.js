@@ -365,8 +365,12 @@ get isValid(){
 //  MÉTHODES FONCTIONNELLES
 
 reset(){
+  super.reset()
   delete this._pitch
   delete this._numero
+  delete this._hduree
+  delete this._formated
+  delete this._numeroFormated
 }
 
 // ---------------------------------------------------------------------

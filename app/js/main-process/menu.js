@@ -437,6 +437,17 @@ const DATA_MENUS = [
                   execJsOnCurrent(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
                 }
             }
+          , {type: 'separator'}
+          , {
+                label: "Calcul automatique de la durée des scènes"
+              , id: 'option_duree_scene_auto'
+              , type: 'checkbox'
+              , checked: true
+              , click: () => {
+                  var checked = ObjMenus.getMenu('option_duree_scene_auto').checked
+                  execJsOnCurrent(`FAnalyse.setGlobalOption('option_duree_scene_auto',${checked?'true':'false'})`)
+                }
+            }
           , {type:'separator'}
           , {
                 label: 'Démarrer 3 secondes avant l’event'

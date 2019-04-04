@@ -87,6 +87,16 @@ set modified(v){
   }
 }
 
+reset(){
+  delete this._asLink
+  delete this._asLinkScene
+  delete this._endAt
+  delete this._otime
+  delete this._horl
+  delete this._div
+  delete this._contenu
+}
+
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return true}
 get isADocument(){return false}
@@ -143,9 +153,14 @@ set duration(v){
     v = new OTime(v)
     v = v.seconds
   }
-  this._duration = v.round(2)
+  v = v.round(2)
+  if (v != this._duration){
+    this._duration  = v
+    this.modified   = true
+    this.reset()
+  }
 }
-get duration(){return this._duration || 10}
+get duration(){return this._duration || (this.type === 'scene' ? 60 : 10)}
 
 // ---------------------------------------------------------------------
 //  Méthodes d'association

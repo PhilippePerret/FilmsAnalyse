@@ -200,9 +200,9 @@ Pour créer un filtre :
 
 Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
 
-1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
 
-2. Créer un nouveau menu dans le submenu de "Options" avec les données suivantes :
+2. Créer un nouveau menu dans le submenu de "Options" (fichier `/main-process/menu.js:427`) avec les données suivantes :
 
 ```javascript
   {
@@ -217,7 +217,7 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
   }
 ```
 
-3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js` :
+3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js:170` :
 
 ```javascript
 
@@ -233,7 +233,7 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
 
 ```
 
-Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js` comme ci-dessus) :
+Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:140` comme ci-dessus) :
 
 ```javascript
 
