@@ -230,6 +230,9 @@ show(){
     this.observe()
   }
   this.makeAppear() // c'est l'opacité qui masque l'event affiché
+  // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
+  // old-school
+  this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
 }
 
 hide(){

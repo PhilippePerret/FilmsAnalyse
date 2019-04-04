@@ -9,7 +9,6 @@
       - destruction d'un event de type scène
 
 * [AMÉLIORATIONS]
-  - 2. Il faut scroller dans le reader pour toujours afficher les events courants
   - 3. verrou pour empêcher l'enregistrement d'un code de moins de 20% de ce qu'il
     était précédemment.
 

@@ -243,11 +243,7 @@ setPlayButton(running){
  * Note : la méthode est appelée toutes les 3 secondes
  */
 showEventsAt(time){
-  var evs = this.eventsAt(time)
-  // console.log("evs:", evs)
-  for(var ev of evs){
-    ev.showDiffere()
-  }
+  this.eventsAt(time).forEach(ev => ev.showDiffere())
 }
 
 /**
