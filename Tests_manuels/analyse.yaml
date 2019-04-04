@@ -1,0 +1,25 @@
+# Fichier des tests concernant l'analyse dans
+# son ensemble, création, ouverture, etc.
+---
+
+  create_from_scratch:
+    libelle: Création d'une nouvelle analyse à l'ouverture
+    description: On ouvre l'application et on crée une nouvelle analyse
+    note: Avant de procéder à cette opération, décocher l'option « Charger la dernière analyse au chargement » pour que l'application soit « vierge ».
+    verifications:
+      - La liste des events doit être nulle
+      - la vidéo doit être la bonne
+      - la liste des documents doit être vide
+    sous_tests:
+      - créer quelques events
+      - définir une nouvelle vidéo de référence
+      - définir le point de départ de la vidéo et vérifier qu'il soit bien enregistré
+
+  create_when_current:
+    libelle: Création d'une nouvelle analyse avec une analyse courante
+    description: On ouvre une analyse existante dans l'application et on crée la nouvelle analyse.
+    note: On peut, avant cette opération, recocher l'option « Charger la dernière analyse »
+    verifications:
+      - La liste des events doit être nulle
+      - la vidéo doit être la bonne
+      - la liste des documents doit être vide

@@ -1,0 +1,9 @@
+# Tests concernant les scènes
+---
+  destruction_scene:
+    libelle: Détruire un event de type scène (par le biais du formulaire)
+    description: On prend une analyse test, et on détruit une de ses scènes.
+    verifications:
+      - Le numéro des autres scènes doit avoir été rectifié
+      - La durée des autres scènes doit avoir été rectifiée
+      - le nombre de scènes doit avoir changé (`FAEscene.count`)
