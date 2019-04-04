@@ -23,9 +23,8 @@ button.main-button {
 }
  */
 
-
 span.horloge, input.horloge {
-  font-family: Courier;
+  font-family: Courier !important;
   background-color: black;
   color: white;
   padding: 0.2em 0.5em;
@@ -40,6 +39,7 @@ input.temps-secondes {
 }
 input.horloge.small, input.temps-secondes.small {
   width:100px !important;
+  font-size:12.5pt;
 }
 
 /* Pour les boutons de classe `BtnPlay` */

@@ -308,8 +308,9 @@ observe(){
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
-  , drop: function(e, ui){
-      var balise = this.a.getBaliseAssociation(this.event, ui.helper)
+  , drop: (e, ui) => {
+      // console.log("this:",this)
+      var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
       if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
         $(e.target).insertAtCaret(balise)
       }
@@ -317,8 +318,8 @@ observe(){
   , classes: {'ui-droppable-hover': 'survoled'}
   }
   // Les champs d'édition doit pouvoir recevoir des drops
-  this.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
-  this.jqObj.find('.header').droppable(dataDrop)
+  my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
+  my.jqObj.find('.header').droppable(dataDrop)
 
   // Pour savoir si l'on doit éditer dans les champs de texte ou
   // dans le mini-writer
@@ -560,6 +561,7 @@ const EVENT_FORM_TEMP = `
         <option value="dialogue">Dialogue</option>
         <option value="rencontre">Rencontre</option>
         <option value="rencontre">Travail</option>
+        <option value="flashback">Flashback</option>
       </select>
 
       <select class="ff faction" id="event-__EID__-actionType">

@@ -1,17 +1,19 @@
 # SUR LE GRILL
 
 * [BUGS]
+  - Faire une liste de tests à faire et les faire manuellement.
+    Voir ceux qu'on peut automatiser.
+    Les classer par grandes opérations
 
 * [AMÉLIORATIONS]
-  - Il faut pouvoir glisser un temps sur un input-text de temps (essayer avec le formulaire pour un procédé)
-  - Il faut scroller dans le reader pour toujours afficher les events courants
-
-* Ajouter le style de scène "Flashback"
-  - s'en servir pour Her
+  - 2. Il faut scroller dans le reader pour toujours afficher les events courants
+  - 3. verrou pour empêcher l'enregistrement d'un code de moins de 20% de ce qu'il
+    était précédemment.
 
 * OUTILS
   - rejoindre la dernière scène définie
-  - calculer la durée des scènes (en fonction de leur position)
+  - 1. calculer la durée des scènes (en fonction de leur position)
+    -> option
 
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 

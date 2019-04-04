@@ -173,47 +173,64 @@ associateDropped(obj, dropped){
 * peut être, en substance, n'importe quel élément de l'analyse, un event, un
 * document, etc.
 *
-* @return la balise qui sera peut-être à insérer dans le champ de saisie,
+  @param  {Instance} obj  L'instance d'un objet quelconque qui peut être associé
+  @param {DOMElement} domEl L'helper qui a été déplacé sur l'objet
+  @param  {MoveEvent} e     L'évènement triggué
+
+  @return {String|Null} la balise qui sera peut-être à insérer dans le champ de saisie,
 * si c'est un champ qui a reçu le drop
 * Retourne false si un problème est survenu
 **/
-getBaliseAssociation(obj, domel){
-  // console.log("-> getBaliseAssociation", obj, domel)
+getBaliseAssociation(obj, domEl, e){
+  // console.log("-> getBaliseAssociation", obj, domEl)
   var balise
-    , domel_type = domel.attr('data-type')
-    , domel_id
-  if(undefined === domel_type)throw("L'élément droppé devrait définir son data-type:", domel)
-  domel_id = domel.attr('data-id')
+    , domEl_type = domEl.attr('data-type')
+    , domEl_id
+
+  // console.log({
+  //   obj: obj, domEl:domEl, e:e
+  // })
+
+  if(undefined === domEl_type)throw("L'élément droppé devrait définir son data-type:", domEl)
+  domEl_id = domEl.attr('data-id')
   // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
   // défini, quand on traite le document édité courant, par exemple, ou que
   // c'est un temps qu'on draggue.
 
-  // On transforme toujours en entier un nombre string
-  if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
+  if(e.target.className.match(/\bhorloge\b/)){
+    if(domEl.hasClass('dropped-time')){
+      return domEl.attr('data-value') // l'horloge
+    }
+    F.notify(`Je ne sais pas encore récupérer le temps d'un objet de type "${domEl_type}"`, {error:true})
+    return '0,0'
+  }
 
-  switch (domel_type) {
+  // On transforme toujours en entier un nombre string
+  if (domEl_id && domEl_id.match(/^([0-9]+)$/)) domEl_id = parseInt(domEl_id,10)
+
+  switch (domEl_type) {
     case 'document':
-      if(undefined === domel_id){
+      if(undefined === domEl_id){
         // => Le document édité
-        domel_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
+        domEl_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
       }
-      if (false === obj.addDocument(domel_id)) return null
-      balise = `{{document:${domel_id}}}`
+      if (false === obj.addDocument(domEl_id)) return null
+      balise = `{{document:${domEl_id}}}`
       break
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
-      if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domel_id)){
+      if (undefined === domEl_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
+      if (false === obj.addEvent(domEl_id)){
         return null
       }
-      var isScene = this.ids[domel_id].type == 'scene'
-      balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
+      var isScene = this.ids[domEl_id].type == 'scene'
+      balise = `{{${isScene?'scene':'event'}:${domEl_id}}}`
       break
     case 'time':
-      balise = `{{time:${this.locator.getRTimeRound()}}}`
+      balise = `{{time:${domEl.attr('data-time')}}}`
       break;
     default:
-      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domel_type)
+      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domEl_type)
       return false
   }
   return balise
