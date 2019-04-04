@@ -7,12 +7,13 @@
     Voir ceux qu'on peut automatiser.
     Les classer par grandes opérations
       - destruction d'un event de type scène
+      - essayer d'enregistrer un document très raccourci (de plus de 20% de son contenu)
+        => Une confirmation est demandée.
 
 * [AMÉLIORATIONS]
-  - 3. verrou pour empêcher l'enregistrement d'un code de moins de 20% de ce qu'il
-    était précédemment.
 
 * OUTILS
+  Peut-être faire un menu "Outils" s'il y en a suffisamment
   - rejoindre la dernière scène définie
 
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`

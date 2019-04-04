@@ -50,6 +50,7 @@ const MESSAGES = {
 , "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
 , "---- DOCUMENT ----":""
 , "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
+, "confirm-content-much-shorter": "Le document est plus de 20% plus court que sa version précédente… Confirmez-vous cet enregistrement ?"
 }
 
 /**

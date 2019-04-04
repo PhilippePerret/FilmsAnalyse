@@ -148,7 +148,6 @@ endLoading(code){
 save(){
   if(this.saving) return
   this.saving = true
-  UI.startWait('Sauvegarde en cours…')
   this.isNewCustom = this.type === 'customdoc' && !this.exists()
   if (false === this.iofile.save({after: this.endSaving.bind(this)})){
     // On passe par ici lorsque la sauvegarde a rencontré une erreur

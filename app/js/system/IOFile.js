@@ -88,6 +88,7 @@ constructor(p_or_owner){
  */
 save(options){
   if(undefined===options)options={}
+  UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
   this.options = options
   if(options.after) this.methodAfterSaving = options.after
   this.checkBackupFolder()
@@ -99,11 +100,16 @@ save(options){
     let err_code = IOFile.codeIsOK(scode, IOFile.getFormatFromExt(this.path))
     err_code === null   || raise(T('code-to-save-not-ok', {raison: err_code}))
     scode.length > 0    || raise(T('code-to-save-is-empty'))
+    if(false === this.confirmIfMuchShorter(scode)) raise(null)
     if(this.tempExists()) fs.unlinkSync(this.tempPath)
     fs.writeFile(this.tempPath,scode,'utf8', this.afterTempSaved.bind(this))
   } catch (e) {
-    console.error(e)
-    return F.error(e)
+    this.endSavingInAnyCase()
+    if(e){
+      console.error(e)
+      F.error(e)
+    }
+    return false
   }
 }
 
@@ -115,24 +121,43 @@ afterTempSaved(err){
     if (this.isBackupable) this.backup()
     else this.endSave()
   } catch (e) {
+    this.endSavingInAnyCase()
     console.error(e)
-    return F.error(e)
+    F.error(e)
+    return false
   }
 }
 endSave(err){
   try {
-    if (err) return F.error(err)
+    if (err){
+      this.endSavingInAnyCase()
+      return F.error(err)
+    }
     fs.rename(this.tempPath, this.path, (err)=>{
       if (err) F.error(err)
       else {
         // FIN !
+        this.endSavingInAnyCase()
         this.saved = true
         if('function' === typeof this.methodAfterSaving){
           this.methodAfterSaving()
         }
       }
     })
-  } catch (e) {F.error(e)}
+  } catch (e) {
+    this.endSavingInAnyCase()
+    F.error(e)
+  }
+}
+
+/**
+  La méthode de fin de sauvegarde qu'on utilise dans tous les cas,
+  que la procédure se soit bien passée ou qu'elle ait été annulée ou
+  interrompue
+**/
+endSavingInAnyCase(){
+  UI.stopWait()
+  this.saving = false
 }
 
 /**
@@ -219,6 +244,24 @@ retrieveBackup(){
 checkBackupFolder(){
   if(fs.existsSync(this.backupFolder)) return true
   fs.mkdirSync(this.backupFolder)
+}
+
+/**
+  Méthode de protection qui demande confirmation, à l'enregistrement, si
+  le code à enregistrer est plus court de plus de 20% que le code original
+  s'il existe déjà.
+
+  @param {String} scode   Le nouveau code prêt à être enregistré
+  @return {Boolean} true si on peut poursuivre, false quand ça n'a pas été
+                    confirmé.
+**/
+confirmIfMuchShorter(scode){
+  if(this.exists()){
+    let vingtPourcent = this.size * 80 / 100
+      , newLength = Buffer.from(scode).length
+    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter'))
+  }
+  return true
 }
 
 // ---------------------------------------------------------------------
