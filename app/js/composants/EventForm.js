@@ -618,6 +618,8 @@ const EVENT_FORM_TEMP = `
       <select class="ff fscene" id="event-__EID__-effet">
         <option value="jour">JOUR</option>
         <option value="nuit">NUIT</option>
+        <option value="matin">MATIN</option>
+        <option value="soir">SOIR</option>
         <option value="noir">NOIR</option>
         <option value="n/d">N.D.</option>
       </select>
