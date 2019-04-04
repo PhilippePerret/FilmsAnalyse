@@ -195,6 +195,7 @@ function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,met
 
 $.fn.extend({
   insertAtCaret: function(myValue) {
+    if(undefined === myValue || null === myValue) return
     this.each(function() {
       if (document.selection) {
         this.focus();
