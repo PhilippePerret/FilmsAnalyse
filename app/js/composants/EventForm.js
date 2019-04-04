@@ -222,7 +222,6 @@ build(){
 }
 afterBuilding(){
   var jqo = this.jqObj
-    , jqf = this.jqField.bind(this)
     , typ = this.type
     , eid = this.id
     ;
@@ -233,11 +232,12 @@ afterBuilding(){
   jqo.find(`.-f${typ}`).hide()
 
   // --- Valeurs définies ---
-  jqf('id').val(eid)
-  jqf('type').val(typ)
-  jqf('is_new').val(this.isNew?'1':'0')
-  jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
-  jqf('time').val(parseInt(this.a.locator.getRTime(),10))
+  this.jqf('id').val(eid)
+  this.jqf('type').val(typ)
+  this.jqf('is_new').val(this.isNew?'1':'0')
+  this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
+  this.jqf('time').html(this.a.locator.getRTime())
+  this.jqf('duration').html(this.duration)
   jqo.find('.footer .event-type').html(typ.toUpperCase())
   jqo.find('.header .event-type').html(typ.toUpperCase())
   jqo.find('.footer .event-id').html(`event #${eid}`)
@@ -277,9 +277,11 @@ afterBuilding(){
     }
   }
 
-  jqo = jqf = eid = typ = null
+  jqo = eid = typ = null
   this.built = true
 }
+
+get jqf(){return this.jqField.bind(this)}
 
 // Retourne l'ID du champ pour la propriété (ou autre) +prop+
 // Par convention, tous les champs ont un ID : "event-<id event>-<property>"
@@ -422,12 +424,17 @@ endEdition(){
  * champs.
  */
 setFormValues(){
-  var prop, sufProp
+  var prop, sufProp, otime
   // Les valeurs communes
   for(prop of FAEvent.OWN_PROPS){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
     this.jqField(prop).val(this.event[prop])
     // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
+  }
+  // Réglage spécial des temps 'time', 'duration', 'tps_reponse'
+  for(prop of ['time', 'duration', 'tps_reponse']){
+    otime = new OTime(this.event[prop])
+    this.jqf(prop).html(prop == 'duration' ? this.event.hduree : otime.horloge)
   }
   // Les valeurs propres au type d'event
   for(prop of this.event.constructor.OWN_PROPS){

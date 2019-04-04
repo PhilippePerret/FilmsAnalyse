@@ -1,10 +1,12 @@
 # SUR LE GRILL
 
 * [BUGS]
-  - La durée de l'event ne se règle pas dans son formulaire d'édition
+  - Quand une scène est détruite, les scènes ne se mettent pas à jour et
+    ça devient le bordel.
   - Faire une liste de tests à faire et les faire manuellement.
     Voir ceux qu'on peut automatiser.
     Les classer par grandes opérations
+      - destruction d'un event de type scène
 
 * [AMÉLIORATIONS]
   - 2. Il faut scroller dans le reader pour toujours afficher les events courants
