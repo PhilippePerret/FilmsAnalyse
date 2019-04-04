@@ -11,9 +11,9 @@ class FAEproc extends FAEvent {
   }
   static get dataType(){
     return {
-        hname: 'Procédé'
-      , short_hname: 'Procédé'
-      , type: 'proc'
+        hname:        'Procédé'
+      , short_hname:  'Procédé'
+      , type:         'proc'
     }
   }
   // ---------------------------------------------------------------------
@@ -27,15 +27,15 @@ class FAEproc extends FAEvent {
     this.exploitation = data.exploitation
   }
 
-  static get OWN_PROPS(){return [['setup', 'inputtext-1'], ['payoff','inputtext-2'], ['tps_payoff', 'tps_reponse'], 'exploitation']}
+  static get OWN_PROPS(){return ['procType', ['setup', 'inputtext-1'], ['payoff','inputtext-2'], ['tps_payoff', 'tps_reponse'], ['exploitation', 'content2']]}
 
   get isValid(){
     var errors = []
 
     // Définir ici les validité
-    this.procType || errors.push({msg: "Le type du procédé est requis.", prop: 'procType'})
-    this.setup    || errors.push({msg: "L'installation du procédé est requis.", prop: 'inputtext-1'})
-    this.content  || errors.push({msg: "La description du procédé est requis.", prop: 'content'})
+    this.procType || errors.push({msg: T('proc-type-required'), prop: 'procType'})
+    this.setup    || errors.push({msg: T('proc-install-required'), prop: 'inputtext-1'})
+    this.content  || errors.push({msg: T('proc-description-required'), prop: 'content'})
     if(this.payoff){
       this.tps_payoff || errors.push({msg: "Le temps de la résolution/paiement est requis.", prop: 'tps_reponse'})
     }
@@ -46,7 +46,6 @@ class FAEproc extends FAEvent {
 
   get div(){
     var n = super.div
-
     return n
   }
 }

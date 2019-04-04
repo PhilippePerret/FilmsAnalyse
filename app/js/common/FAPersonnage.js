@@ -10,7 +10,7 @@ class FAPersonnage {
 //  CLASS
 
 static init(){
-  if(this.exists){
+  if(this.exists()){
     this._data = YAML.safeLoad(fs.readFileSync(this.path,'utf8'))
   }
 }
@@ -31,6 +31,7 @@ static reset(){
   renvoie (souvent pour les diminutifs eux-mêmes)
 **/
 static get diminutifs(){
+  if(!this.exists()) return {}
   if(undefined === this._diminutifs){
     this._diminutifs = {}
     for(var pseudo in this.data){

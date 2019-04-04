@@ -505,8 +505,10 @@ actualizeMarkersStt(curt){
 actualizeCurrentScene(curt){
   if(this.timeNextScene && curt < this.timeNextScene) return
   var resat = FAEscene.atAndNext(curt)
-  this.analyse.currentScene = resat.current
-  this.timeNextScene = resat.next ? resat.next.time : this.a.duration
+  if(resat){
+    this.a.currentScene = resat.current
+    this.timeNextScene = resat.next ? resat.next.time : this.a.duration
+  }
 }
 
 // ---------------------------------------------------------------------

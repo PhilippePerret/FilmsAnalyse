@@ -159,6 +159,11 @@ const DATA_MENUS = [
                 mainW.webContents.executeJavaScript('FAnalyse.chooseAnalyse()')
               }
           }
+        , {
+              label: 'Recharger'
+            , accelerator: 'CmdOrCtrl+R'
+            , click: () => {mainW.reload()}
+          }
         , { type: 'separator' }
         , {
               label: 'Enregistrer'

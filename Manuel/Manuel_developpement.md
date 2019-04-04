@@ -62,6 +62,15 @@ C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui per
 
 Les `events` (scène, info, note, qrd, etc.) héritent tous de la classe `FAEvent`.
 
+Ils sont définis dans le dossier `./app/js/common/FAEvents/` où on définit leur sous-classe. Par exemple la classe `FAEscene (extends FAEvent)`.
+
+La propriété de classe `OWN_PROPS` permet de définir les propriétés propres au type d'event. C'est une liste qui contient :
+
+* soit un `String` si la propriété possède le même nom (suffixe d'id) que le champ où elle est éditée,
+* soit un `Array` de deux éléments `[propriété, suffixe d'id]` si le champ pour l'éditer n'est pas propre à la propriété.
+
+Par exemple, pour la propriété personnelle `procType` de la classe `FAEproc`, le menu porte le nom `event-<id event>-procType`. Le suffixe est `procType`, on peut donc mettre juste le string `procType` dans `OWN_PROPS`. En revanche, la propriété `setup` (installation du procédé) est édité dans le champ `event-<id>-inputtext-1`, donc il faut mettre la valeur `['setup', 'inputtext-1']` dans `OWN_PROPS`.
+
 ### Exécution d'une opération après la création
 
 Il suffit de créer la méthode d'instance `onCreate` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.

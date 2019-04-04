@@ -1,5 +1,28 @@
 # SUR LE GRILL
 
+* Plein de [BUGS] apparaissent
+  - lorsqu'on modifie mal un document YAML (les données des personnages par exemple), on se retrouve avec une   
+    YAMLException.
+    Elle ne doit pas interrompre le programme, il faut juste la signaler
+  - Lorsque je fais TAB à la fin d'un document (i.e. quand le curseur se trouve à la fin), ça génère une erreur
+    'Cannot read property 'length' of undefined'
+    Apparemment, le programme tente d'insérer quelque chose puisque la méthode Selector.insert et insertAtCaret sont invoqués.
+    => Intercepter le problème et l'empêcher.
+
+* AMÉLIORATIONS
+  - Faire apparaitre les nouveaux events à côté de la vidéo, pas dessus (je passe mon temps à les pousser)
+  - Ajouter "MATIN" et "SOIR" dans les effets d'une scène
+  - Marque scène au-dessus de vidéo : mettre le numéro de scène seulement et le pitch juste après pour pouvoir bénéficier de deux lignes.
+  - Il faut pouvoir glisser un temps sur un input-text de temps (essayer avec le formulaire pour un procédé)
+  - Il faut scroller dans le reader pour toujours afficher les events courants
+
+* Ajouter le style de scène "Flashback"
+  - s'en servir pour Her
+
+* OUTILS
+  - rejoindre la dernière scène définie
+  - calculer la durée des scènes (en fonction de leur position)
+
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 
 * PUBLICATION

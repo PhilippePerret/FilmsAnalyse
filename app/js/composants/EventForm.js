@@ -497,6 +497,9 @@ getFormValues(){
       fields.push(this.id)
     })
 
+  console.log({
+    fields: fields, data_min: data_min, other_data: other_data
+  })
   my = null
   return [data_min, other_data]
 }
@@ -506,8 +509,11 @@ getFormValues(){
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: 500, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.videoLeft + 10, y:80}))
 }
+// Retourne le left de la vidéo (en fait, sa width) pour pouvoir placer, au
+// départ, le formulaire à côté d'elle.
+get videoLeft(){return this.a.videoController.controller.width}
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire
@@ -630,18 +636,19 @@ const EVENT_FORM_TEMP = `
       <label class="ff fdim">@</label>
       <label class="ff fqrd">Question</label>
       <label class="ff fpp">Préparation</label>
-      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-1" />
+      <label class="ff fproc">Installation</label>
+      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-1" />
     </div>
 
     <div class="div-form">
       <label class="ff fscene">Sous-décor</label>
       <label class="ff fdim">Signification</label>
       <label class="ff fqrd">Réponse</label>
-      <label class="ff fpp">Paiement/résolution</label>
-      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-2" />
-      <div class="right ff fqrd fpp">
+      <label class="ff fpp fproc">Paiement/résolution</label>
+      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
+      <div class="right ff fqrd fpp fproc">
         <label>Temps</label>
-        <input type="text" class="small horloge fqrd fpp" id="event-__EID__-tps_reponse" />
+        <input type="text" class="small horloge fqrd fpp fproc" id="event-__EID__-tps_reponse" />
       </div>
     </div>
 
@@ -649,11 +656,18 @@ const EVENT_FORM_TEMP = `
       <div>
         <label class="ff fscene fbrin">Résumé</label>
         <label class="ff finfo">Information</label>
-        <label class="ff fevent faction fqd fpp fstt">Description</label>
+        <label class="ff fevent faction fqd fpp fstt fproc">Description</label>
         <label class="ff fdialog">Commentaire</label>
         <label class="ff fnote">Contenu de la note</label>
       </div>
       <textarea id="event-__EID__-content" rows="4"></textarea>
+    </div>
+
+    <div class="div-form">
+      <div>
+        <label class="ff fproc">Exploitation</label>
+      </div>
+      <textarea class="ff fproc" id="event-__EID__-content2" rows="4"></textarea>
     </div>
 
     <div class="div-form">
