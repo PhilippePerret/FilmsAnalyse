@@ -45,8 +45,7 @@
   vertical-align:bottom;
 
 }
-#section-video div.mark-parts > span,
-#section-video div#mark-current-scene > span {
+#section-video div.mark-parts > span {
   display:block;
   text-align:left;
   padding-left:12px;
@@ -67,14 +66,16 @@
 }
 #section-video div#mark-current-scene > span {
   color:#DDDDDD;
+  font-size:9.7pt;
+  text-align:left;
+  padding-left:12px;
 }
 #section-video div#mark-current-scene > span.current-scene-number {
-  font-size:11pt;
+  float:left;
 }
 #section-video div#mark-current-scene > span.current-scene-pitch {
-  font-size:9.7pt;
-  white-space:nowrap;
   overflow:hidden;
+  display:block;
 }
 
 #section-video fieldset.time-tools {

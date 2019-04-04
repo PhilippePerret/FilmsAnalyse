@@ -8,10 +8,10 @@
 
 * AMÉLIORATIONS
   - Faire apparaitre les nouveaux events à côté de la vidéo, pas dessus (je passe mon temps à les pousser)
-  - Ajouter "MATIN" et "SOIR" dans les effets d'une scène
   - Marque scène au-dessus de vidéo : mettre le numéro de scène seulement et le pitch juste après pour pouvoir bénéficier de deux lignes.
   - Il faut pouvoir glisser un temps sur un input-text de temps (essayer avec le formulaire pour un procédé)
   - Il faut scroller dans le reader pour toujours afficher les events courants
+  - bouton pour se déplacer de scène en scène
 
 * Ajouter le style de scène "Flashback"
   - s'en servir pour Her

@@ -295,7 +295,7 @@ get currentScene(){
 }
 set currentScene(v){
   this._current_scene = v
-  $('span.current-scene-number').html(v ? `Scène ${v.numero}` : '...')
+  $('span.current-scene-number').html(v ? v.numero : '...')
   $('span.current-scene-number-only').html(v ? v.numero : '...')
   $('span.current-scene-pitch').html(v ? DFormater(v.pitch) : '...')
 }
