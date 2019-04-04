@@ -173,47 +173,64 @@ associateDropped(obj, dropped){
 * peut être, en substance, n'importe quel élément de l'analyse, un event, un
 * document, etc.
 *
-* @return la balise qui sera peut-être à insérer dans le champ de saisie,
+  @param  {Instance} obj  L'instance d'un objet quelconque qui peut être associé
+  @param {DOMElement} domEl L'helper qui a été déplacé sur l'objet
+  @param  {MoveEvent} e     L'évènement triggué
+
+  @return {String|Null} la balise qui sera peut-être à insérer dans le champ de saisie,
 * si c'est un champ qui a reçu le drop
 * Retourne false si un problème est survenu
 **/
-getBaliseAssociation(obj, domel){
-  // console.log("-> getBaliseAssociation", obj, domel)
+getBaliseAssociation(obj, domEl, e){
+  // console.log("-> getBaliseAssociation", obj, domEl)
   var balise
-    , domel_type = domel.attr('data-type')
-    , domel_id
-  if(undefined === domel_type)throw("L'élément droppé devrait définir son data-type:", domel)
-  domel_id = domel.attr('data-id')
+    , domEl_type = domEl.attr('data-type')
+    , domEl_id
+
+  // console.log({
+  //   obj: obj, domEl:domEl, e:e
+  // })
+
+  if(undefined === domEl_type)throw("L'élément droppé devrait définir son data-type:", domEl)
+  domEl_id = domEl.attr('data-id')
   // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
   // défini, quand on traite le document édité courant, par exemple, ou que
   // c'est un temps qu'on draggue.
 
-  // On transforme toujours en entier un nombre string
-  if (domel_id && domel_id.match(/^([0-9]+)$/)) domel_id = parseInt(domel_id,10)
+  if(e.target.className.match(/\bhorloge\b/)){
+    if(domEl.hasClass('dropped-time')){
+      return domEl.attr('data-value') // l'horloge
+    }
+    F.notify(`Je ne sais pas encore récupérer le temps d'un objet de type "${domEl_type}"`, {error:true})
+    return '0,0'
+  }
 
-  switch (domel_type) {
+  // On transforme toujours en entier un nombre string
+  if (domEl_id && domEl_id.match(/^([0-9]+)$/)) domEl_id = parseInt(domEl_id,10)
+
+  switch (domEl_type) {
     case 'document':
-      if(undefined === domel_id){
+      if(undefined === domEl_id){
         // => Le document édité
-        domel_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
+        domEl_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
       }
-      if (false === obj.addDocument(domel_id)) return null
-      balise = `{{document:${domel_id}}}`
+      if (false === obj.addDocument(domEl_id)) return null
+      balise = `{{document:${domEl_id}}}`
       break
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
-      if (undefined === domel_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domel_id)){
+      if (undefined === domEl_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
+      if (false === obj.addEvent(domEl_id)){
         return null
       }
-      var isScene = this.ids[domel_id].type == 'scene'
-      balise = `{{${isScene?'scene':'event'}:${domel_id}}}`
+      var isScene = this.ids[domEl_id].type == 'scene'
+      balise = `{{${isScene?'scene':'event'}:${domEl_id}}}`
       break
     case 'time':
-      balise = `{{time:${this.locator.getRTimeRound()}}}`
+      balise = `{{time:${domEl.attr('data-time')}}}`
       break;
     default:
-      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domel_type)
+      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domEl_type)
       return false
   }
   return balise
@@ -286,20 +303,18 @@ set lastCurrentTime(v){ this._lastCurrentTime = v }
 get modified() { return this._modified }
 set modified(v) { this._modified = v }
 
-get currentScene(){
-  if(undefined === this._current_scene){
-    this._current_scene = FAEscene.at(this.locator.getRTime())
-    FAEscene.current = this._current_scene
-  }
-  return this._current_scene
-}
-set currentScene(v){
-  this._current_scene = v
-  $('span.current-scene-number').html(v ? `Scène ${v.numero}` : '...')
-  $('span.current-scene-number-only').html(v ? v.numero : '...')
-  $('span.current-scene-pitch').html(v ? DFormater(v.pitch) : '...')
-}
+get currentScene(){ return FAEscene.current}
+set currentScene(v){ FAEscene.current = v }
 
+// Retourne la scène précédente de la scène courante
+get prevScene(){
+  if (!this.currentScene || this.currentScene.numero == 1) return
+  else return FAEscene.getByNumero(this.currentScene.numero - 1)
+}
+get nextScene(){
+  if(!this.currentScene) return FAEscene.getByNumero(1)
+  else return FAEscene.getByNumero(this.currentScene.numero + 1)
+}
 get PFA(){
   if(undefined === this._PFA){
     SttNode   = require('./js/common/PFA/SttNode.js')
@@ -548,7 +563,7 @@ destroyEvent(event_id, form_instance){
  * Méthode appelée à la modification d'un event
  *
  * [1]  En règle générale, si une opération spéciale doit être faite sur
- *      l'event, il faut mieux définir sa méthode d'instance `onModify` qui
+ *      l'event, il vaut mieux définir sa méthode d'instance `onModify` qui
  *      sera automatiquement appelée après la modification.
  */
 updateEvent(ev, options){
@@ -566,7 +581,7 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  if(ev.isRealScene){this.updateNumerosScenes()}
+  ev.isRealScene && this.updateScenes()
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée
@@ -584,13 +599,32 @@ getEventById(eid){
   return this.ids[eid]
 }
 
+/**
+  Actualisation des scènes
+  La méthode est appelée aussi bien à la création d'une nouvelle scène
+  qu'à la modification d'une scène existante. Elle permet de régler les
+  numéro de scène pour qu'ils soient à jour et, si l'option le demande,
+  de définir leur durée en fonction du temps de la scène suivante.
+**/
+updateScenes(){
+  FAEscene.reset()
+  this.updateNumerosScenes()
+  if(this.options.get('option_duree_scene_auto')){
+    console.log("option_duree_scene_auto est ON, je dois régler la durée des scènes")
+    var prev_scene
+    FAEscene.forEachScene(function(scene){
+      if(scene.numero > 1){
+        prev_scene = FAEscene.getByNumero(scene.numero - 1)
+        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
+      }
+    })
+  }
+}
 updateNumerosScenes(){
   var num = 0
-  this.forEachEvent(function(ev){
-    if( ev.isRealScene ){
-      ev.numero = ++num
-      ev.updateNumero()
-    }
+  FAEscene.forEachScene(function(scene){
+    scene.numero = ++num
+    scene.updateNumero()
   })
 }
 

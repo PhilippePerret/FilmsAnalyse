@@ -141,8 +141,9 @@ const Prefs = {
       this.userPrefs = require(this.userPrefsPath)
     } else {
       this.userPrefs = {
-          'load_last_on_launching': true
-        , 'last_analyse_folder':    null
+          'load_last_on_launching':   true
+        , 'last_analyse_folder':      null
+        , 'option_duree_scene_auto':  true
       }
     }
     /*/     + "/" pour décommenter, - "/" pour ex-commenter
@@ -164,7 +165,11 @@ const Prefs = {
    * fichier userPrefs
    */
 , setMenusPrefs(){
-    ObjMenus.getMenu('load_last_on_launching').checked = this.get('load_last_on_launching')
+    ObjMenus.getMenu('load_last_on_launching').checked  = this.get('load_last_on_launching')
+    ObjMenus.getMenu('option_duree_scene_auto').checked = this.get('option_duree_scene_auto')
+    ObjMenus.getMenu('option_edit_in_mini_writer').checked = this.get('option_edit_in_mini_writer')
+    ObjMenus.getMenu('option_start_3secs_before_event').checked = this.get('option_start_3secs_before_event')
+    ObjMenus.getMenu('option_lock_stop_points').checked = this.get('option_lock_stop_points')
   }
 }
 

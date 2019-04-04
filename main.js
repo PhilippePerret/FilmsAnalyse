@@ -64,3 +64,14 @@ app.on('ready', () => {
 ipc.on('get-screen-dimensions', ev => {
   ev.returnValue = {width: screenWidth, height: screenHeight}
 })
+
+// Ça ne fonctionne pas :
+// process.on('uncaughtException', function (error) {
+//   console.error(error)
+//   mainW.webContents.send('uncaught-exception', {error: error, source: 'process.on'})
+// })
+// var oldConsoleError = console.error
+// console.error = function(error){
+//   mainW.webContents.send('uncaught-exception', {error: error, source: 'console.error'})
+//   oldConsoleError(`Envoyé : ${error}`)
+// }

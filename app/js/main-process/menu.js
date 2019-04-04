@@ -159,6 +159,11 @@ const DATA_MENUS = [
                 mainW.webContents.executeJavaScript('FAnalyse.chooseAnalyse()')
               }
           }
+        , {
+              label: 'Recharger'
+            , accelerator: 'CmdOrCtrl+R'
+            , click: () => {mainW.reload()}
+          }
         , { type: 'separator' }
         , {
               label: 'Enregistrer'
@@ -430,6 +435,17 @@ const DATA_MENUS = [
               , click:  () => {
                   var checked = ObjMenus.getMenu('load_last_on_launching').checked
                   execJsOnCurrent(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
+                }
+            }
+          , {type: 'separator'}
+          , {
+                label: "Calcul automatique de la durée des scènes"
+              , id: 'option_duree_scene_auto'
+              , type: 'checkbox'
+              , checked: true
+              , click: () => {
+                  var checked = ObjMenus.getMenu('option_duree_scene_auto').checked
+                  execJsOnCurrent(`FAnalyse.setGlobalOption('option_duree_scene_auto',${checked?'true':'false'})`)
                 }
             }
           , {type:'separator'}

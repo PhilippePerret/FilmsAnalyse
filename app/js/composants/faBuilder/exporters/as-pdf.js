@@ -5,50 +5,23 @@
  */
 module.exports = function(options){
   var my = this
-    , src_name
-    , src_format
-    ;
 
-  if(undefined === options) options = {}
+  let src_name    = my.a.html_name
+    , src_format  = 'HTML'
+    , dst_name    = my.a.pdf_name
+    , dst_path    = my.a.pdf_path
 
-  if(fs.existsSync(my.md_path)){
-    src_name    = my.a.md_name
-    src_format  = 'Markdown'
-  } else if(fs.existsSync(my.a.html_path)){
-    src_name    = my.a.html_name
-    src_format  = 'HTML'
-  }
+  // On détruit le fichier destination s'il existe
+  fs.existsSync(dst_path) && fs.unlinkSync(dst_path)
 
-  // HTML -> ePub
-  // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
-
-  // Markdown -> ePub
-  // ORIGINALE
-  // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.pdf_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2`
-  // SIMPLIFIÉ
-  var cmd = `cd "${my.a.folderExport}";pandoc -o ${my.a.pdf_name} ${src_name} --toc --toc-depth=2`
+  // Maintennat, on utilise toujours Calibre et le document HTML
+  var cmd = `cd "${my.a.folderExport}" && ${EBOOK_CONVERT_CMD} ${src_name} ${dst_name}`
 
   // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {
     if(error)throw(error)
-    my.log(`=== Création du livre PDF (à partir du format ${src_format}) terminé avec succès.`)
-    F.notify(`Création du livre PDF (à partir du format ${src_format}) terminé avec succès.`)
+    my.log(`=== Création du livre PDF "${dst_name}" (à partir du format ${src_format}) terminé avec succès.`)
+    F.notify(`Création du livre PDF "${dst_name}" (à partir du format ${src_format}) terminé avec succès.`)
   });
-
-  // let printOptions = {
-  //   marginsType:2,
-  //   pageSize:"A4",
-  //   landscape:false,
-  //   printBackground:true
-  // }
-  //
-  // remote.getCurrentWindow().webContents.printToPDF(printOptions, (err, data) => {
-  //   if(err) throw err
-  //   fs.writeFile(my.a.pdf_path, data, (err) => {
-  //     if(err) throw err
-  //     my.log(`=== PDF exporté avec succès sous le nom « ${my.a.pdf_name} »`)
-  //     F.notify(`PDF exporté avec succès sous le nom « ${my.a.pdf_name} »`)
-  //   })
-  // })
 
 }

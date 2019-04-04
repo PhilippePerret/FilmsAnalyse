@@ -16,7 +16,7 @@ section#section-reader {
   max-height: 600px;
   min-height: 600px;
   background-color:#EEEEFF;
-  overflow: auto;
+  overflow: scroll;
   padding:0;
   z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
 }

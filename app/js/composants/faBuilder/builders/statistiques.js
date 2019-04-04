@@ -44,9 +44,14 @@ const FAStatistiques = {
 **/
 , divStatsPersonnages(){
 
+    var pre = `
+
+Nombre personnages   ${FAPersonnage.count}
+
+    `
     return DCreate('DIV', {class: 'stats-personnages', append:[
       DCreate('H2', {inner: 'Statistiques sur les personnages'})
-    , DLibVal(FAPersonnage, 'count', 'Nombre personnages')
+    , DLibVal(FAPersonnage, 'count', 'Nombre de personnages', 'w40-60')
     , DCreate('H3', {inner: 'Temps de présence des personnages'})
     , DCreate('DIV', {append: FAPersonnage.perPresenceTime()})
     ]})
@@ -57,10 +62,11 @@ const FAStatistiques = {
 **/
 , divStatsScenes(){
     var my = this
+
     return DCreate('DIV', {class: 'stats-scenes', append:[
       DCreate('H2', {inner: 'Statistiques sur les scènes'})
-    , DLibVal(FAEscene, 'count', 'Nombre de scènes')
-    , DLibVal(FAEscene, 'dureeMoyenne', 'Durée moyenne')
+    , DLibVal(FAEscene, 'count', 'Nombre de scènes', 'w40-60')
+    , DLibVal(FAEscene, 'dureeMoyenne', 'Durée moyenne', 'w40-60')
     , DLibVal(FAEscene, 'plusLongue', 'La plus longue')
     , DLibVal(FAEscene, 'plusCourte', 'La plus courte')
     , DCreate('H3', {inner: 'Les dix scènes les plus longues'})
@@ -108,40 +114,37 @@ Object.assign(FAEscene,{
 FAEscene.perMaxLongueur = function(){
   var my = this
   let divs = []
+    , lignesScenes = []
   for(var i = 0; i < 10; ++i){
-    let sc = this.sortedByDuree()[i]
+    let sc = this.sortedByDuree[i]
     if(undefined === sc) break
-    divs.push(DCreate('DIV', {class: 'pitch-data', append:[
-      DCreate('SPAN', {class:'pad4 left', inner: sc.as('short', FORMATED)})
-    , DCreate('SPAN', {class:'right', inner: sc.hduree})
-    ]}))
+    // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
+    //     DCreate('LABEL',  {class:'bold', inner: sc.hduree})
+    //   , DCreate('SPAN',   {inner: sc.as('short', FORMATED)})
+    // ]}))
+    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as('short', FORMATED)}`)
   }
-  return divs
+  // return divs
+  return DCreate('PRE', {inner: lignesScenes.join(RC)})
 }
 FAEscene.perMinLongueur = function(){
   var my = this
     , divs = []
-    , arr = Object.assign([], this.sortedByDuree())
+    , arr = Object.assign([], this.sortedByDuree)
     , sc
+    , lignesScenes = []
   arr.reverse()
   for(var i = 0; i < 10; ++i){
     sc = arr[i]
     if(undefined === sc) break
-    divs.push(DCreate('DIV', {class: 'pitch-data', append:[
-      DCreate('SPAN', {class:'pad4 left', inner: sc.as('short', FORMATED)})
-    , DCreate('SPAN', {class:'right', inner: sc.hduree})
-    ]}))
+    // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
+    //   DCreate('LABEL',  {class:'bold', inner: sc.hduree})
+    // , DCreate('SPAN',   {inner: sc.as('short', FORMATED)})
+    // ]}))
+    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as('short', FORMATED)}`)
   }
-  return divs
-}
-FAEscene.sortedByDuree = function(){
-  if(undefined === this._sortedDuree){
-    this._sortedDuree = Object.assign([], this._by_time)
-    this._sortedDuree.sort(function(a,b){
-      return b.duration - a.duration
-    })
-  }
-  return this._sortedDuree
+  // return divs
+  return DCreate('PRE', {inner: lignesScenes.join(RC)})
 }
 
 /**

@@ -1,10 +1,36 @@
 # SUR LE GRILL
 
+* [BUGS]
+  - Quand une scène est détruite, les scènes ne se mettent pas à jour et
+    ça devient le bordel.
+  - Faire une liste de tests à faire et les faire manuellement.
+    Voir ceux qu'on peut automatiser.
+    Les classer par grandes opérations
+      - destruction d'un event de type scène
+      - essayer d'enregistrer un document très raccourci (de plus de 20% de son contenu)
+        => Une confirmation est demandée.
+
+* [AMÉLIORATIONS]
+
+* OUTILS
+  Peut-être faire un menu "Outils" s'il y en a suffisamment
+  - rejoindre la dernière scène définie
+
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
+
+* PUBLICATION
+  ebook-convert (Calibre) est incontestablement la meilleure façon de sortir les .epub et les .mobi à partir du HTML.
+  - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
+  Quelques essais sont à faire :
+    - sur le mobi (kindle), les display-inline ne sont pas respectés à la lettre
+    - sur le epub, ça prend trop de place donc les textes passent à la ligne
+    => essayer un fonctionnement avec les grids pour voir si ça marcherait mieux
+    => Pour faire ces tests, on pourrait avoir un builder fait exprès, par exemple 'test_mef.js'
+       Il suffit de mettre `BUILD test mef` dans le script d'assemblage pour produire les essais contenus dans le fichier
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  - Attaquer les statistiques
+  EN COURS : voir les problèmes de formatage des eBooks etc.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres
@@ -31,6 +57,15 @@
 # EN COURS DE DÉVELOPPEMENT
 
 
+* Pourvoir forcer le rechargement de l'analyse
+  - ou, ce qui serait mieux, c'est de pouvoir déceler où il faut
+    actualiser des données quand elles changent. Par exemple, lorsque
+    le script d'assemblage est modifié, il faudrait resetter l'affichage
+    de l'analyse pour qu'elle tienne compte du nouveau script.
+
+* Pouvoir rejoindre la dernière scène (pour le travail)
+  - Menu "Outils" > "Rejoindre la dernière scène établie"
+
 * Pour la FATimeline
   - faire des instances FACursor
 
@@ -43,6 +78,8 @@
 * Construction des statistiques de fin
 
 # TODO LIST
+
+* Quand il y a un trop grand nombre de rapports, on détruit les plus anciens
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 

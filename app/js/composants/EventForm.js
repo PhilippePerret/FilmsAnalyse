@@ -222,7 +222,6 @@ build(){
 }
 afterBuilding(){
   var jqo = this.jqObj
-    , jqf = this.jqField.bind(this)
     , typ = this.type
     , eid = this.id
     ;
@@ -233,11 +232,12 @@ afterBuilding(){
   jqo.find(`.-f${typ}`).hide()
 
   // --- Valeurs définies ---
-  jqf('id').val(eid)
-  jqf('type').val(typ)
-  jqf('is_new').val(this.isNew?'1':'0')
-  jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
-  jqf('time').val(parseInt(this.a.locator.getRTime(),10))
+  this.jqf('id').val(eid)
+  this.jqf('type').val(typ)
+  this.jqf('is_new').val(this.isNew?'1':'0')
+  this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
+  this.jqf('time').html(this.a.locator.getRTime())
+  this.jqf('duration').html(this.duration)
   jqo.find('.footer .event-type').html(typ.toUpperCase())
   jqo.find('.header .event-type').html(typ.toUpperCase())
   jqo.find('.footer .event-id').html(`event #${eid}`)
@@ -277,9 +277,11 @@ afterBuilding(){
     }
   }
 
-  jqo = jqf = eid = typ = null
+  jqo = eid = typ = null
   this.built = true
 }
+
+get jqf(){return this.jqField.bind(this)}
 
 // Retourne l'ID du champ pour la propriété (ou autre) +prop+
 // Par convention, tous les champs ont un ID : "event-<id event>-<property>"
@@ -308,8 +310,9 @@ observe(){
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
-  , drop: function(e, ui){
-      var balise = this.a.getBaliseAssociation(this.event, ui.helper)
+  , drop: (e, ui) => {
+      // console.log("this:",this)
+      var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
       if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
         $(e.target).insertAtCaret(balise)
       }
@@ -317,8 +320,8 @@ observe(){
   , classes: {'ui-droppable-hover': 'survoled'}
   }
   // Les champs d'édition doit pouvoir recevoir des drops
-  this.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
-  this.jqObj.find('.header').droppable(dataDrop)
+  my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
+  my.jqObj.find('.header').droppable(dataDrop)
 
   // Pour savoir si l'on doit éditer dans les champs de texte ou
   // dans le mini-writer
@@ -421,12 +424,17 @@ endEdition(){
  * champs.
  */
 setFormValues(){
-  var prop, sufProp
+  var prop, sufProp, otime
   // Les valeurs communes
   for(prop of FAEvent.OWN_PROPS){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
     this.jqField(prop).val(this.event[prop])
     // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
+  }
+  // Réglage spécial des temps 'time', 'duration', 'tps_reponse'
+  for(prop of ['time', 'duration', 'tps_reponse']){
+    otime = new OTime(this.event[prop])
+    this.jqf(prop).html(prop == 'duration' ? this.event.hduree : otime.horloge)
   }
   // Les valeurs propres au type d'event
   for(prop of this.event.constructor.OWN_PROPS){
@@ -497,6 +505,9 @@ getFormValues(){
       fields.push(this.id)
     })
 
+  console.log({
+    fields: fields, data_min: data_min, other_data: other_data
+  })
   my = null
   return [data_min, other_data]
 }
@@ -506,8 +517,11 @@ getFormValues(){
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: 500, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.videoLeft + 10, y:80}))
 }
+// Retourne le left de la vidéo (en fait, sa width) pour pouvoir placer, au
+// départ, le formulaire à côté d'elle.
+get videoLeft(){return this.a.videoController.controller.width}
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire
@@ -554,6 +568,7 @@ const EVENT_FORM_TEMP = `
         <option value="dialogue">Dialogue</option>
         <option value="rencontre">Rencontre</option>
         <option value="rencontre">Travail</option>
+        <option value="flashback">Flashback</option>
       </select>
 
       <select class="ff faction" id="event-__EID__-actionType">
@@ -612,6 +627,8 @@ const EVENT_FORM_TEMP = `
       <select class="ff fscene" id="event-__EID__-effet">
         <option value="jour">JOUR</option>
         <option value="nuit">NUIT</option>
+        <option value="matin">MATIN</option>
+        <option value="soir">SOIR</option>
         <option value="noir">NOIR</option>
         <option value="n/d">N.D.</option>
       </select>
@@ -630,18 +647,19 @@ const EVENT_FORM_TEMP = `
       <label class="ff fdim">@</label>
       <label class="ff fqrd">Question</label>
       <label class="ff fpp">Préparation</label>
-      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-1" />
+      <label class="ff fproc">Installation</label>
+      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-1" />
     </div>
 
     <div class="div-form">
       <label class="ff fscene">Sous-décor</label>
       <label class="ff fdim">Signification</label>
       <label class="ff fqrd">Réponse</label>
-      <label class="ff fpp">Paiement/résolution</label>
-      <input type="text" class="ff fscene fpp fdim fqrd" id="event-__EID__-inputtext-2" />
-      <div class="right ff fqrd fpp">
+      <label class="ff fpp fproc">Paiement/résolution</label>
+      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
+      <div class="right ff fqrd fpp fproc">
         <label>Temps</label>
-        <input type="text" class="small horloge fqrd fpp" id="event-__EID__-tps_reponse" />
+        <input type="text" class="small horloge fqrd fpp fproc" id="event-__EID__-tps_reponse" />
       </div>
     </div>
 
@@ -649,11 +667,18 @@ const EVENT_FORM_TEMP = `
       <div>
         <label class="ff fscene fbrin">Résumé</label>
         <label class="ff finfo">Information</label>
-        <label class="ff fevent faction fqd fpp fstt">Description</label>
+        <label class="ff fevent faction fqd fpp fstt fproc">Description</label>
         <label class="ff fdialog">Commentaire</label>
         <label class="ff fnote">Contenu de la note</label>
       </div>
       <textarea id="event-__EID__-content" rows="4"></textarea>
+    </div>
+
+    <div class="div-form">
+      <div>
+        <label class="ff fproc">Exploitation</label>
+      </div>
+      <textarea class="ff fproc" id="event-__EID__-content2" rows="4"></textarea>
     </div>
 
     <div class="div-form">

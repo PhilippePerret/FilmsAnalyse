@@ -203,10 +203,11 @@ observe(){
     revert: true
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
+      let otime = this.locator.getROTime()
       return DCreate('DIV', {
-        inner:this.locator.getROTime().horloge
+        inner: otime.horloge
       , class: 'dropped-time'
-      , attrs:{'data-type': 'time'}
+      , attrs:{'data-type': 'time', 'data-value': otime.horloge, 'data-time': otime.seconds.round(2)}
       })
     }
   })

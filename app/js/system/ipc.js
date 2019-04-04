@@ -21,3 +21,15 @@ ipc.on('current-image-for-current-scene', (ev) => {
 ipc.on('set-video-speed', (e, data) => {
   current_analyse.videoController.setSpeed(data.speed)
 })
+
+ipc.on('uncaugth-exception', data => {
+  let msg
+  switch (typeof data.error) {
+    case 'object':
+      msg = data.error.message + JSON.stringify(data.error)
+      break;
+    default:
+      msg = data.error
+  }
+  F.error(`UNE ERREUR EST SURVENUE : ${msg}${RC+RC}source: ${data.source}`)
+})

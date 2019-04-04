@@ -18,6 +18,7 @@ const ERRORS = {
 , "temps-file-unfound": "Le fichier temporaire est introuvable. Je dois interrompre la procédure d'enregistrement.<br>%{fpath}"
 , "code-to-save-is-undefined":"Le code à sauver est indéfini (undefined), c'est impossible !"
 , "code-to-save-is-null":"Le code à sauver vaut `null`, c'est impossible !"
+, "code-to-save-not-ok": "Le code à enregistrer est invalide : %{raison}.\n\nCorrigez-le pour pouvoir l'enregistrer."
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
@@ -27,6 +28,9 @@ const ERRORS = {
 , "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
 , "data-type-required-for-association": "L'élément droppé devrait définir son data-type. Cet attribut n'est pas défini."
 , "unknown-associated-type": "Impossible d'associer l'élément à un élément de type inconnu “%{type}”."
+, "proc-type-required": "Le type du procédé est requis."
+, "proc-install-required": "L'installation du procédé est requis."
+, "proc-description-required": "La description du procédé est requis."
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
@@ -46,6 +50,7 @@ const MESSAGES = {
 , "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
 , "---- DOCUMENT ----":""
 , "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
+, "confirm-content-much-shorter": "Le document est plus de 20% plus court que sa version précédente… Confirmez-vous cet enregistrement ?"
 }
 
 /**

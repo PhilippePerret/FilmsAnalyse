@@ -62,6 +62,15 @@ C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui per
 
 Les `events` (scène, info, note, qrd, etc.) héritent tous de la classe `FAEvent`.
 
+Ils sont définis dans le dossier `./app/js/common/FAEvents/` où on définit leur sous-classe. Par exemple la classe `FAEscene (extends FAEvent)`.
+
+La propriété de classe `OWN_PROPS` permet de définir les propriétés propres au type d'event. C'est une liste qui contient :
+
+* soit un `String` si la propriété possède le même nom (suffixe d'id) que le champ où elle est éditée,
+* soit un `Array` de deux éléments `[propriété, suffixe d'id]` si le champ pour l'éditer n'est pas propre à la propriété.
+
+Par exemple, pour la propriété personnelle `procType` de la classe `FAEproc`, le menu porte le nom `event-<id event>-procType`. Le suffixe est `procType`, on peut donc mettre juste le string `procType` dans `OWN_PROPS`. En revanche, la propriété `setup` (installation du procédé) est édité dans le champ `event-<id>-inputtext-1`, donc il faut mettre la valeur `['setup', 'inputtext-1']` dans `OWN_PROPS`.
+
 ### Exécution d'une opération après la création
 
 Il suffit de créer la méthode d'instance `onCreate` dans la classe de l'event. Elle sera automatiquement jouée lors de la modification de l'instance.
@@ -191,9 +200,9 @@ Pour créer un filtre :
 
 Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
 
-1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
 
-2. Créer un nouveau menu dans le submenu de "Options" avec les données suivantes :
+2. Créer un nouveau menu dans le submenu de "Options" (fichier `/main-process/menu.js:427`) avec les données suivantes :
 
 ```javascript
   {
@@ -208,7 +217,7 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
   }
 ```
 
-3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js` :
+3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js:170` :
 
 ```javascript
 
@@ -224,7 +233,7 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
 
 ```
 
-Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js` comme ci-dessus) :
+Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:140` comme ci-dessus) :
 
 ```javascript
 

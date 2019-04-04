@@ -148,9 +148,13 @@ endLoading(code){
 save(){
   if(this.saving) return
   this.saving = true
-  UI.startWait('Sauvegarde en cours…')
   this.isNewCustom = this.type === 'customdoc' && !this.exists()
-  this.iofile.save({after: this.endSaving.bind(this)})
+  if (false === this.iofile.save({after: this.endSaving.bind(this)})){
+    // On passe par ici lorsque la sauvegarde a rencontré une erreur
+    UI.stopWait()
+    this.saving = false
+  }
+
 }
 endSaving(){
   UI.stopWait()
@@ -167,23 +171,21 @@ endSaving(){
 **/
 afterSavingPerType(){
   switch (this.type) {
-    case 'snippets':
-      return Snippets.updateData(YAML.safeLoad(this.contents))
-    case 'dpersonnages':
-      FAPersonnage.reset().init()
-      break
-    case 'customdoc':
-      // Si c'est un nouveau document customisé, il faut l'ajouter
-      // au menu des documents
-      if (this.isNewCustom){
-        delete this.title // Pour forcer sa relecture
-        FAWriter.menuTypeDoc.append(DCreate('OPTION', {value: this.id, inner: this.title}))
-        FAWriter.menuTypeDoc.val(this.id)
-      }
-      break
+    case 'snippets':      return Snippets.updateData(YAML.safeLoad(this.contents))
+    case 'dpersonnages':  return FAPersonnage.reset().init()
+    case 'customdoc':     return this.addToMenuIfNew()
   }
 }
 
+// Si c'est un nouveau document customisé, il faut l'ajouter
+// au menu des documents
+addToMenuIfNew(){
+  if (this.isNewCustom){
+    delete this.title // Pour forcer sa relecture
+    FAWriter.menuTypeDoc.append(DCreate('OPTION', {value: this.id, inner: this.title}))
+    FAWriter.menuTypeDoc.val(this.id)
+  }
+}
 /**
  * Pour définir le contenu du document, par exemple au choix d'un modèle
  */

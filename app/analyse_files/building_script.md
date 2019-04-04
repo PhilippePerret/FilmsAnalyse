@@ -1,5 +1,6 @@
 # Script de construction de l'analyse finale
 # Consulter le manuel pour l'utilisation
+# BUILD Test mef
 BUILD Fiche identité
 FILE Introduction
 BUILD Infos film

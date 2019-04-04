@@ -20,5 +20,5 @@ const EVENTS_DATA = {
 , info:   {id: 'info',    hname: 'Info', btn_name: 'Info'}
 , note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
 , brin:   {id: 'brin',    hname: 'Brin', btn_name: 'Brin'}
-, desc:   {id: 'desc',    hname: 'Description', btn_name: 'Desc.'}
+// , desc:   {id: 'desc',    hname: 'Description', btn_name: 'Desc.'}
 }

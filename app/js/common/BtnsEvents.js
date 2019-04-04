@@ -55,11 +55,10 @@ get as_button(){
   if(undefined === this._as_button){
     this._as_button = DCreate('BUTTON',{
       id:     `btn-new-${this.type}`
-    , title: this.data.hname
     , type:   'button'
     , class:  'small'
     , inner:  this.data.btn_name
-    , attrs: {'data-type': this.type}
+    , attrs: {'data-type': this.type, title: `Pour créer un event de type « ${this.data.hname} »` }
     })
   }
   return this._as_button

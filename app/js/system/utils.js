@@ -140,14 +140,16 @@ function DCreate(typeElement, params){
 /**
   Retourne
 **/
-function DLibVal(obj, property, libelle, options){
+function DLibVal(obj, property, libelle, widths, options){
   let ghostProp = `_div${property}`
   if(undefined === obj[ghostProp] && obj[property]){
     if(undefined === libelle) libelle = property.titleize()
     let css = 'libval'
     if(options && options.class) css = `${css} ${options.class}`
-    obj[ghostProp] = DCreate('DIV', {class: 'libval normal', append:[
-        DCreate('LABEL', {inner: libelle})
+    else if(undefined !== widths) css += ` ${widths /* p.e. w40-60 */}`
+    else css += ' normal'
+    obj[ghostProp] = DCreate('DIV', {class: css, append:[
+        DCreate((widths ? 'SPAN' : 'LABEL'), {class: (widths ? 'label' : null), inner: libelle})
       , DCreate('SPAN', {class:'value', inner: DFormater(obj[property])})
     ]})
   }
@@ -193,6 +195,7 @@ function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,met
 
 $.fn.extend({
   insertAtCaret: function(myValue) {
+    if(undefined === myValue || null === myValue) return
     this.each(function() {
       if (document.selection) {
         this.focus();

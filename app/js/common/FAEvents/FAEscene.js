@@ -24,6 +24,7 @@ static reset(){
   this._by_id         = undefined
   this._by_numero     = undefined
   this._sortedByTime  = undefined
+  this._sortedByDuree = undefined
   this._count         = undefined
   this._current       = undefined
   this._scenes        = undefined
@@ -34,8 +35,14 @@ static reset(){
   affichée à l'écran si elle existe.
   @returns {FAEscene} La scène courante dans le film visionné
 **/
-static get current(){ return this._current }
-static set current(s){ this._current = s}
+static get current(){return this._current||defP(this,'_current',this.a.locator.getRTime())}
+static set current(s){
+  this._current = s
+  this.a._currentScene = s
+  $('span.current-scene-number').html(s ? s.numero : '...')
+  $('span.current-scene-number-only').html(s ? s.numero : '...')
+  $('span.current-scene-pitch').html(s ? DFormater(s.pitch) : '...')
+}
 
 /**
   @returns {Number} Le nombre de scènes du film
@@ -69,6 +76,8 @@ static getById(event_id){return this.byId[event_id]}
 **/
 static getByTime(time)  {return this.byTime[time]}
 
+static getByNumero(num){return this.byNumero[num]}
+
 // ---------------------------------------------------------------------
 //  Les listes de scène
 
@@ -83,7 +92,7 @@ static get byNumero(){return this._by_numero||defP(this,'_by_numero',this.doList
 static get byId(){return this._by_id||defP(this,'_by_id',this.doLists().id)}
 static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().time)}
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
-
+static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
@@ -92,10 +101,11 @@ static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',t
 **/
 static doLists(){
   let fe = new EventsFilter(this, {filter: {eventTypes:['scene']}})
-    , _by_id        = {}
-    , _by_numero    = {}
-    , _by_time      = {}
-    , _sortedByTime = []
+    , _by_id          = {}
+    , _by_numero      = {}
+    , _by_time        = {}
+    , _sortedByTime   = []
+    , _sortedByDuree  = []
 
   fe.forEachFiltered(function(ev){
     _by_id[ev.id] = ev
@@ -104,14 +114,19 @@ static doLists(){
   })
 
   _sortedByTime = Object.assign([], Object.values(_by_id))
-  _sortedByTime.sort(function(a, b){a.time - b.time})
+  _sortedByTime.sort(function(a, b){return a.time - b.time})
+
+  _sortedByDuree = Object.assign([], Object.values(_by_id))
+  _sortedByDuree.sort(function(a, b){return b.duree - a.duree})
 
   this._by_id         = _by_id
   this._by_numero     = _by_numero
   this._by_time       = _by_time
   this._sortedByTime  = _sortedByTime
+  this._sortedByDuree = _sortedByDuree
+
   _by_id = _by_numero = _by_time = _sortedByTime = null
-  return {id: this._by_id, numero: this._by_numero, time: this._by_time, sorted: this._sortedByTime}
+  return {id: this._by_id, numero: this._by_numero, time: this._by_time, sorted: this._sortedByTime, sorted_duree: this._sortedByDuree}
 }
 
 /**
@@ -233,22 +248,25 @@ constructor(analyse, data){
                           DUREE|TIME|LINKED
 **/
 as(format, flag){
-  if (undefined === flag) flag = LINKED
+  if (undefined === flag) flag = 0
+  // Pour le moment, on lie par défaut
+  flag = flag | LINKED
+
+  // console.log("-> as(format, flag)", format, flag)
   var str
   switch (format) {
     case 'short':
-      str = `Scène ${this.numero}. ${this.pitch}`
-
+      str = `sc. ${this.numero}. ${this.pitch}`
+      break
     default:
       str = this.pitch
   }
 
-  if(flag & DUREE)    str += ` (${this.hduree})`
+  if(flag & DUREE) str += ` (${this.hduree})`
 
   if(flag & FORMATED) str = DFormater(str)
 
   if(flag & LINKED){
-    console.log("Il faut lier la scène")
     str = `<a onclick="showScene(${this.id})">${str}</a>`
   }
   return str
@@ -347,8 +365,12 @@ get isValid(){
 //  MÉTHODES FONCTIONNELLES
 
 reset(){
+  super.reset()
   delete this._pitch
   delete this._numero
+  delete this._hduree
+  delete this._formated
+  delete this._numeroFormated
 }
 
 // ---------------------------------------------------------------------

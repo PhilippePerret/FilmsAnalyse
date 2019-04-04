@@ -10,8 +10,13 @@ class FAPersonnage {
 //  CLASS
 
 static init(){
-  if(this.exists){
-    this._data = YAML.safeLoad(fs.readFileSync(this.path,'utf8'))
+  if(this.exists()){
+    try {
+      this._data = YAML.safeLoad(fs.readFileSync(this.path,'utf8'))
+    } catch (e) {
+      F.error(`Une erreur est survenue en chargeant les données personnages (${this.path})${RC+RC}Lig. ${e.mark.line} : ${e.message}.${RC+RC}Consulter le log pour de plus amples détails.${RC}<span class="small">(il est vivement conseillé de ne pas modifier les données en dehors de l'application, au risque de produire ce genre d'erreur)</span>`)
+      console.error(e)
+    }
   }
 }
 
@@ -31,6 +36,7 @@ static reset(){
   renvoie (souvent pour les diminutifs eux-mêmes)
 **/
 static get diminutifs(){
+  if(!this.exists()) return {}
   if(undefined === this._diminutifs){
     this._diminutifs = {}
     for(var pseudo in this.data){

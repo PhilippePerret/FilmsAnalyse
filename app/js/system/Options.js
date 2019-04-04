@@ -17,6 +17,7 @@ const Options = {
     , 'video_size':                       "medium"
     , 'option_start_3secs_before_event':  false
     , 'option_edit_in_mini_writer':       false
+    , 'option_duree_scene_auto':          true
   }
 
 , modified: false

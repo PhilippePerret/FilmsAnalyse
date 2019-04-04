@@ -7,17 +7,13 @@ module.exports = function(options){
 
   my.log("*** Création du ePub…")
 
-  if(!fs.existsSync(my.a.folderExport)) fs.mkdirSync(my.a.folderExport)
+  let src_name    = my.a.html_name
+    , src_format  = 'HTML'
+    , dst_name    = my.a.epub_name
+    , dst_path    = my.a.epub_path
 
-  var src_name, src_format
-
-  if(fs.existsSync(my.md_path)){
-    src_name    = my.a.md_name
-    src_format  = 'Markdown'
-  } else if(fs.existsSync(my.a.html_path)){
-    src_name    = my.a.html_name
-    src_format  = 'HTML'
-  }
+  // On détruit le fichier destination s'il existe
+  fs.existsSync(dst_path) && fs.unlinkSync(dst_path)
 
   // HTML -> ePub
   // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
@@ -26,13 +22,16 @@ module.exports = function(options){
   // ORIGINAL À RETRAVAILLER
   // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.epub_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2 --epub-cover-image="./exports/img/cover.jpg"`
   // SIMPLIFIÉ :
-  var cmd = `cd ${my.a.folderExport};pandoc -o ${my.a.epub_name} ${src_name} --css=css/html.css --toc --toc-depth=2`
+  // var cmd = `cd ${my.a.folderExport};pandoc -o ${my.a.epub_name} ${src_name} --css=css/html.css --toc --toc-depth=2`
 
-  // console.log("cmd pandoc:", cmd)
+  // Maintennat, on utilise toujours Calibre et le document HTML
+  var cmd = `cd "${my.a.folderExport}" && ${EBOOK_CONVERT_CMD} ${src_name} ${dst_name}`
+
+  // console.log("cmd Calibre:", cmd)
   exec(cmd, (error, stdout, stderr) => {
     if(error)throw(error)
-    my.log(`=== Création du livre ePub (à partir du format ${src_format}) terminé avec succès.`)
-    F.notify(`Création du livre ePub (à partir du format ${src_format}) terminé avec succès.`)
+    my.log(`=== Création du livre ePub (à partir du fichier ${src_name} au format ${src_format}) terminé avec succès.`)
+    F.notify(`Création du livre ePub (à partir du fichier ${src_name} au format ${src_format}) terminé avec succès.`)
   });
 
 
