@@ -72,11 +72,6 @@ const UI = {
 , observe_ui(){
     var my = this
 
-    $('.current-scene-number, .current-scene-number-only, current-scene-pitch')
-      .on('click', ()=>{
-        EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
-      })
-
     // Extras
     // ------
     // Tous les champs input-text, on selectionne tout quand on focusse

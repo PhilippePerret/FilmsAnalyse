@@ -414,7 +414,8 @@ activateHorloge(){
     this.desactivateHorloge()
   } else {
     if (!this.hasStartTime){
-      this.horloge_real.style.visibility = 'hidden'
+      console.log("Pas de start-time => masquage de l'horloge real")
+      this.realHorloge.style.visibility = 'hidden'
     }
     this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)
   }
@@ -446,7 +447,7 @@ actualizeALL(){
 actualizeHorloge(curt){
   if(undefined === curt) curt = this.currentRTime
   this.horloge.innerHTML = this.getRealTime(curt)
-  this.horloge_real.innerHTML = this.getRealTime(this.video.currentTime)
+  this.realHorloge.innerHTML = this.getRealTime(this.video.currentTime)
   this.oMainHorloge.time = curt
 }
 
@@ -530,6 +531,7 @@ actualizeCurrentScene(curt){
   var resat = FAEscene.atAndNext(curt)
   if(resat){
     this.a.currentScene = resat.current
+    this.videoController.section.find('.mark-current-scene').html(this.a.currentScene.as('short', FORMATED))
     // console.log("Courante scène mise à ", this.a.currentScene.numero)
     this.timeNextScene  = resat.next ? resat.next.time : this.a.duration
   }
@@ -658,26 +660,11 @@ get playAfterSettingTime(){
 }
 
 // --- DOM ÉLÉMENTS ---
-get horloge(){
-  if(undefined===this._horloge){this._horloge=DGet('main-horloge')}
-  return this._horloge
-}
-get horloge_real(){
-  if(undefined===this._horloge_real){this._horloge_real=DGet('horloge_real')}
-  return this._horloge_real
-}
-get btnPlay(){
-  if(undefined === this._btnPl){this._btnPl = DGet('btn-play')}
-  return this._btnPl
-}
-get btnRewindStart(){
-  if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-stop')}
-  return this._btnRwdSt
-}
-get imgPauser(){
-  return '<img src="./img/btns-controller/btn-pause.png" />'
-}
-get imgPlay(){
-  return '<img src="./img/btns-controller/btn-play.png" />'
-}
+get horloge(){return this.videoController.mainHorloge}
+get realHorloge(){return this.videoController.realHorloge}
+get btnPlay(){return this.videoController.btnPlay}
+get btnRewindStart(){return this.videoController._btnRwdSt}
+get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}
+get imgPlay(){return '<img src="./img/btns-controller/btn-play.png" />'}
+
 }

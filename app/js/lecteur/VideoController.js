@@ -228,16 +228,11 @@ get DATA_BUTTONS(){return [
   , ['.btn-stop-points', 'goToNextStopPoint']
   , ['.btn-go-to-time-video', 'goToTime']
 ]}
+
 observe(){
   var my = this
 
-  // Définition pratique de certains boutons
-  // TODO : à placer ailleurs
-  this.btnPlay = this.section.find('.btn-play')
-  this.btnRewindStart = this.section.find('.btn-stop')
-
   // On observe les boutons de navigation
-
   for(var dbtn of this.DATA_BUTTONS){
     var [classe, method] = dbtn
     listenClick(this.section.find(classe)[0], my.locator, method)
@@ -254,9 +249,16 @@ observe(){
     listenMUp(btnForward,   my.locator, 'stopForward')
   }
 
+  // Les « horlogeables »
   var horloges = UI.setHorlogeable(this.section.find('.video-header')[0], {synchro_video: true})
   this.locator.oMainHorloge = Object.values(horloges)[0]
 
+  // Pour afficher les scènes, le div est sensible au clic et permet
+  // d'éditer la scène
+  this.section.find('.mark-current-scene').on('click', () => {
+    EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+  })
+  // Boutons pour se déplacer de scène en scène (dans le contrôleur)
   var btnPrevScene = this.section.find('.btn-prev-scene')[0]
   var btnNextScene = this.section.find('.btn-next-scene')[0]
   listenMDown(btnPrevScene, my.locator,'goToPrevScene')
@@ -288,10 +290,16 @@ observe(){
   my = null
 }
 
+get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.section.find('.btn-play')[0])}
+get btnStop(){return this._btnStop||defP(this,'_btnStop', this.section.find('.btn-stop')[0])}
+get btnRewindStart(){return this.btnSop}
+get mainHorloge(){return this._mainHorloge||defP(this,'_mainHorloge', this.section.find('.main-horloge')[0])}
+get realHorloge(){return this._realHorloge||defP(this,'_realHorloge', this.section.find('.real-horloge')[0])}
+
 get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs', this.section.find('.main-part-abs'))}
-get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('sub-part-abs'))}
-get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel', this.section.find('main-part-rel'))}
-get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('sub-part-rel'))}
+get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}
+get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel', this.section.find('.main-part-rel'))}
+get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('.sub-part-rel'))}
 
 
 // Pour l'indicateur de position, une timeline sous
@@ -321,14 +329,12 @@ build(){
       // ENTÊTE
       DCreate('DIV', {class:'video-header no-user-selection', append:[
             DCreate('HORLOGE', {class: 'main-horloge horloge vignette horlogeable', inner: '0:00:00.0'})
-          , DCreate('DIV', {class: 'marks-parts', append:[
-                  DCreate('DIV', {class: 'main-part-abs', inner: '...'})
-                , DCreate('DIV', {class: 'sub-part-abs', inner: '...'})
-                , DCreate('DIV', {class: 'main-part-rel', inner: '...'})
-                , DCreate('DIV', {class: 'sub-part-rel', inner: '...'})
-                , DCreate('DIV', {class: 'mark-current-scene', inner: '...'})
-            ]})
-        ]})
+          , DCreate('DIV', {class: 'main-part part-abs main-part-abs', inner: '...'})
+          , DCreate('DIV', {class: 'sub-part part-abs sub-part-abs', inner: '...'})
+          , DCreate('DIV', {class: 'main-part part-rel main-part-rel', inner: '...'})
+          , DCreate('DIV', {class: 'sub-part part-rel sub-part-rel', inner: '...'})
+          , DCreate('DIV', {class: 'mark-current-scene', inner: '...'})
+      ]})
       // VIDÉO
     , DCreate('VIDEO', {id: `video-${this.id}`, class: 'video no-user-selection dropped-time', append:[
             DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
@@ -345,11 +351,11 @@ build(){
 buildControllerBox(){
   let btns = [], suf, dbtn
 
-  let spanHorlogeReal = DCreate('SPAN', {id: `horloge-real-${this.id}`, class: 'horloge-real horloge mini fleft', inner: '0:00:00.0'})
+  let spanHorlogeReal = DCreate('SPAN', {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
 
-  let divGoToTime = DCreate('DIV', {append: [
-      DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps :'})
-    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'request-time horloge small', value: '0,0,0.0'})
+  let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
+      DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps'})
+    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '0,0,0.0'})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){
