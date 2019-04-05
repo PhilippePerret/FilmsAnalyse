@@ -12,7 +12,7 @@ const destroyEvent = function(event_id, form_instance){
 
     // Cas particulier de la destruction d'une scène
     FAEscene.destroy(ev.numero)
-    this.updateNumerosScenes()
+    this.updateScenes()
 
   } else if (ev.type === 'stt'){
     // Cas particulier de la destruction d'un event de structure (qui doit

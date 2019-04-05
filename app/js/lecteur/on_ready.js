@@ -9,20 +9,10 @@ $(document).ready(() => {
   ScreenWidth   = d.width
   ScreenHeight  = d.height
 
-  UI.init()
-
-  if (MODE_TEST) {
-
-    Tests.initAndRun()
-
-  } else {
-
-    // Voir si les préférences demandent que la dernière analyse soit chargée
-    // et la charger si elle est définie.
-    FAnalyse.checkLast()
-
-    // $('#reader').focus()
-
-  }
+  // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
+  // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT
+  // CHARGÉS DE FAÇON DYNAMIQUE. C'EST LA MÉTHODE
+  // `App.onReady` QUI DÉTERMINE VRAIMENT LA FIN
+  // DU CHARGEMENT DE L'APPLICATION ET LE DÉMARRAGE
 
 })

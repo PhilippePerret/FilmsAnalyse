@@ -4,9 +4,6 @@ function affiche(msg){
   $('div#message').html(msg)
 }
 
-
-window.current_analyse = null // définie au ready
-
 class VideoController {
 
 // ---------------------------------------------------------------------
@@ -16,20 +13,37 @@ static get VIDEO_SIZES(){
     return {small: 450, medium: 650, large: 1000}
 }
 
+static newId(){
+  if(undefined === this.lastId) this.lastId = 0
+  return ++ this.lastId
+}
 
+static get current(){return this._current}
+static set current(v){this._current = v}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 
 constructor(analyse){
   this.analyse = this.a = analyse
+  this.id = VideoController.newId()
+
+  // Maintenant, on construit toujours la section vidéo
+  console.log(`Construction de la vidéo #${this.id}`)
+  this.build()
+
+  // Le mettre en vidéo courant
+  VideoController.current = this
 }
 
+// La section contenant cette vidéo
+get section(){return this._section||defP(this,'_section',$(`#section-video-${this.id}`))}
 // Le contrôleur vidéo lui-même (la balise vidéo)
-get controller(){
-  if(undefined === this._controller){this._controller = DGet('video')}
-  return this._controller
-}
+get video(){return this._video||defP(this,'_video', this.section.find('.video')[0])}
+// L'horloge principale
+get mainHorloge(){return this._mainHorloge||defP(this,'_mainHorloge', this.section.find('.main-horloge'))}
+// La boite des boutons de navigation (control box, ou video-controller)
+get navButtons(){return this._navButtons||defP(this,'_navButtons', this.section.find('.video-controller'))}
 get inited(){return this._inited || false }
 set inited(v){this._inited = v}
 
@@ -40,6 +54,7 @@ set inited(v){this._inited = v}
  * identifiant soient uniques
  */
 init(){
+  console.log("-> VideoController#init()")
   var my = this
   if (this.inited){throw("Le vidéocontroller ne devrait pas être initié deux fois…")}
 
@@ -59,16 +74,23 @@ init(){
 
 
   this.inited = true
+  console.log("<- VideoController#init()")
+
 }
 // /fin init
 
 // Tailles pour le lecteur video
 setDimensions(){
-  var videoReaderWidth = parseInt((ScreenWidth * 60) / 100,10)
-  $('#section-video').css('width',`${videoReaderWidth}px`)
+  var videoReaderWidth = Math.round(ScreenWidth * 60 / 100)
+  this.section.css('width',`${videoReaderWidth}px`)
   // Redéfinition de la taille large de la vidéo en fonction de
   // l'écran.
   this.redefineVideoSizes(videoReaderWidth)
+
+  var videoWidth   = Math.round(ScreenWidth * 60 / 100)
+  var readerWidth  = Math.round(ScreenWidth * 39 / 100)
+  var readerHeight = Math.round(ScreenHeight * 50 /100)
+
 }
 
 /**
@@ -80,8 +102,8 @@ setDimensions(){
  */
 setSize(e, v, save){
   if(undefined===v) v = this.menuVideoSize.value
-  this.controller.width = VideoController.VIDEO_SIZES[v]
-  this.locator.horloge.className = `horloge ${v}`
+  this.video.width = VideoController.VIDEO_SIZES[v]
+  this.mainHorloge.className = `horloge ${v}`
   if (save === true) this.a.videoSize = v
 }
 
@@ -89,8 +111,8 @@ setSize(e, v, save){
 * Pour définir la vitesse de la vidéo
 **/
 setSpeed(speed){
-  this.controller.defaultPlaybackRate = speed
-  this.controller.playbackRate = speed
+  this.video.defaultPlaybackRate = speed
+  this.video.playbackRate = speed
 }
 /**
  * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
@@ -110,8 +132,8 @@ redefineVideoSizes(w){
  * Pour charger la vidéo de path +vpath+
  */
 load(vpath){
-  // console.log("-> VideoController#load")
-  $(this.controller)
+  console.log("-> VideoController#load")
+  $(this.video)
   .on('error', ()=>{
     console.log("Une erreur s'est produite au chargement de la vidéo.", err)
   })
@@ -119,14 +141,15 @@ load(vpath){
     UI.showVideoController()
     var lastCurTime = this.analyse.lastCurrentTime
     lastCurTime && this.analyse.locator.setRTime(lastCurTime, true)
-    this.a.setAllIsReady.bind(current_analyse)()
+    this.a.onVideoLoaded.bind(this.a)()
   })
   .on('ended', () => {
     // Quand on atteint le bout de la vidéo
     this.a.locator.stop()
   })
-  this.controller.src = path.resolve(vpath)
-  this.controller.load()
+  this.video.src = path.resolve(vpath)
+  this.video.load() // la vidéo, vraiment
+  console.log("<- VideoController#load")
 }
 
 /**
@@ -134,11 +157,13 @@ load(vpath){
  * vidéo.
  */
 setVideoUI(visible){
-  $('#div-video-top-tools')[visible?'show':'hide']()
-  toggleVisible('#video', visible)
-  toggleVisible('#div-nav-video-buttons', visible)
-  toggleVisible('#fs-get-times', visible)
-  toggleVisible('#fs-new-event', visible)
+  console.log("-> VideoController#setVideoUI")
+  let visu = visible ? 'visible' : 'hidden'
+  this.section.find('.video-header')[visible?'show':'hide']()
+  for(var el of ['video','div-nav-video-buttons']){
+    this.section.find(el).css('visibility', visu)
+  }
+  console.log("<- VideoController#setVideoUI")
 }
 
 /**
@@ -183,7 +208,7 @@ onClickMarkStt(mainSub, absRel, e){
 }
 
 /**
-* Met le nom de la partie courant dans le champ à côté de l'horloge
+* Met le nom de la partie courante dans le champ à côté de l'horloge
 * principale, en réglant son attribut data-stt-id conservant son id
 * structurel
 **/
@@ -196,10 +221,51 @@ setMarkStt(mainSub, absRel, node, name){
 /**
 * On place les observeurs sur le video-controleur
 **/
+get DATA_BUTTONS(){return [
+    ['.btn-play', 'togglePlay']
+  , ['.btn-stop', 'stopAndRewind']
+  , ['.btn-go-to-film-start', 'goToFilmStart']
+  , ['.btn-stop-points', 'goToNextStopPoint']
+  , ['.btn-go-to-time-video', 'goToTime']
+]}
 observe(){
-  // Sur la vidéo elle-même, pour récupérer un temps
-  var vid = $('#video')
-  vid.draggable({
+  var my = this
+
+  // Définition pratique de certains boutons
+  // TODO : à placer ailleurs
+  this.btnPlay = this.section.find('.btn-play')
+  this.btnRewindStart = this.section.find('.btn-stop')
+
+  // On observe les boutons de navigation
+
+  for(var dbtn of this.DATA_BUTTONS){
+    var [classe, method] = dbtn
+    listenClick(this.section.find(classe)[0], my.locator, method)
+  }
+
+  var valsRewForw = [0.04, 1, 5]
+  for(var i = 1; i < 4 ; ++ i){
+    var val = valsRewForw.shift()
+      , btnRewind   = this.section.find(`.btn-rewind-${i}`)[0]
+      , btnForward  = this.section.find(`.btn-forward-${i}`)[0]
+    listenMDown(btnRewind,  my.locator, 'rewind', val)
+    listenMUp(btnRewind,    my.locator, 'stopRewind')
+    listenMDown(btnForward, my.locator, 'forward', val)
+    listenMUp(btnForward,   my.locator, 'stopForward')
+  }
+
+  var horloges = UI.setHorlogeable(this.section.find('.video-header')[0], {synchro_video: true})
+  this.locator.oMainHorloge = Object.values(horloges)[0]
+
+  var btnPrevScene = this.section.find('.btn-prev-scene')[0]
+  var btnNextScene = this.section.find('.btn-next-scene')[0]
+  listenMDown(btnPrevScene, my.locator,'goToPrevScene')
+  listenMUp(btnPrevScene, my.locator,'stopGoToPrevScene')
+  listenMDown(btnNextScene, my.locator,'goToNextScene')
+  listenMUp(btnNextScene, my.locator,'stopGoToNextScene')
+
+  // La vidéo elle-même, peut être déplacée pour récupérer un temps
+  $(this.video).draggable({
     revert: true
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
@@ -217,21 +283,101 @@ observe(){
   this.markSubPartAbs.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
   this.markMainPartRel.on('click', this.onClickMarkStt.bind(this, 'Main', 'Rel'))
   this.markSubPartRel.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
+
+  horloges = null
+  my = null
 }
 
-get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs',$('#section-video #mark-main-part-abs'))}
-get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',$('#section-video #mark-sub-part-abs'))}
-get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel',$('#section-video #mark-main-part-rel'))}
-get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',$('#section-video #mark-sub-part-rel'))}
+get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs', this.section.find('.main-part-abs'))}
+get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('sub-part-abs'))}
+get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel', this.section.find('main-part-rel'))}
+get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('sub-part-rel'))}
 
 
 // Pour l'indicateur de position, une timeline sous
 // la vidéo.
 get positionIndicator(){
   if(undefined === this._positionIndicator){
-    this._positionIndicator = new FATimeline(DGet('position-indicator-1-container'))
+    this._positionIndicator = new FATimeline(DGet(`position-indicator-${this.id}-container`))
   }
   return this._positionIndicator
+}
+
+get CTRL_BUTTONS(){
+  return {
+  tiny_buttons:['prev-scene','rewind-3', 'rewind-2', 'rewind-1', 'forward-1', 'forward-2', 'forward-3', 'next-scene']
+, main_buttons: {
+    'go-to-film-start': {title:"Pour retourner au début du film (si défini)"}
+  , 'stop-points': {title:"Passe en revue les 3 derniers points d'arrêt"}
+  , 'stop': {title:"1/ dernier point d'arrêt, 2/ début du film, 3/ début de la vidéo"}
+  , 'play': {title:"Lancer/pauser/relancer la vidéo"}
+  }
+}
+}
+build(){
+  console.log('-> VideoController#build')
+  // La section principale
+  let sectionVideo = DCreate('SECTION', {class: 'section-video', id: `section-video-${this.id}`, append:[
+      // ENTÊTE
+      DCreate('DIV', {class:'video-header no-user-selection', append:[
+            DCreate('HORLOGE', {class: 'main-horloge horloge vignette horlogeable', inner: '0:00:00.0'})
+          , DCreate('DIV', {class: 'marks-parts', append:[
+                  DCreate('DIV', {class: 'main-part-abs', inner: '...'})
+                , DCreate('DIV', {class: 'sub-part-abs', inner: '...'})
+                , DCreate('DIV', {class: 'main-part-rel', inner: '...'})
+                , DCreate('DIV', {class: 'sub-part-rel', inner: '...'})
+                , DCreate('DIV', {class: 'mark-current-scene', inner: '...'})
+            ]})
+        ]})
+      // VIDÉO
+    , DCreate('VIDEO', {id: `video-${this.id}`, class: 'video no-user-selection dropped-time', append:[
+            DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
+      ]})
+      // INDICATEUR DE POSITION (aka TIMELINE)
+    , DCreate('DIV', {id: `position-indicator-${this.id}-container`, class: 'position-indicator-container'})
+      // Le DIV principal contenant les boutons de contrôle
+    , DCreate('DIV', {class: 'div-nav-video-buttons no-user-selection'})
+  ]})
+  $('section#section-videos').append(sectionVideo)
+  this.buildControllerBox()
+}
+
+buildControllerBox(){
+  let btns = [], suf, dbtn
+
+  let spanHorlogeReal = DCreate('SPAN', {id: `horloge-real-${this.id}`, class: 'horloge-real horloge mini fleft', inner: '0:00:00.0'})
+
+  let divGoToTime = DCreate('DIV', {append: [
+      DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps :'})
+    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'request-time horloge small', value: '0,0,0.0'})
+  ]})
+  // Les boutons rewind et forward, etc.
+  for(suf of this.CTRL_BUTTONS.tiny_buttons){
+    btns.push(
+        DCreate('BUTTON', {type: 'button', class: `controller btn-${suf}`, append:[
+        DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
+      ]})
+    )
+  }
+  let divTinyBtns = DCreate('DIV', {class: 'vcontroller-tiny-btns no-user-selection', append: btns})
+
+  // Les boutons principaux du controller de vidéo
+  btns = []
+  for(suf in this.CTRL_BUTTONS.main_buttons){
+    dbtn = this.CTRL_BUTTONS.main_buttons[suf]
+    btns.push(
+      DCreate('BUTTON', {type:'button', class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
+        DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
+      ]})
+    )
+  }
+  let divMainBtns = DCreate('DIV', {class: 'vcontroller-main-btns no-user-selection', append:btns})
+
+  let divControlBox = DCreate('DIV', {class: 'video-controller no-user-selection', id: `video-controller-${this.id}`, append:[
+    spanHorlogeReal, divGoToTime, divTinyBtns, divMainBtns
+  ]})
+
+  $(`#section-video-${this.id} .div-nav-video-buttons`).append(divControlBox)
 }
 
 }

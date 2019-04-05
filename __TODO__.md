@@ -3,6 +3,12 @@
 * [BUGS]
   - Quand une scène est détruite, les scènes ne se mettent pas à jour et
     ça devient le bordel.
+  - En créant une nouvelle application :
+    + Une double timeline est crée sous la vidéo
+    + Les marques de parties/scènes ne sont pas initialisés
+    + Le reader n'est pas initialisé
+    + La barre d'état n'est pas initialisée
+    + Un nouveau reader est créé
 
 * [AMÉLIORATIONS]
 
@@ -48,6 +54,9 @@
 
 
 # EN COURS DE DÉVELOPPEMENT
+
+* Mettre en place les tests manuels
+  Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
 
 * Pour la FATimeline
   - faire des instances FACursor

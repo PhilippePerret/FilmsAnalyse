@@ -7,6 +7,8 @@
 
 let SttNode = null
 
+window.current_analyse = null // définie au ready
+
 class FAnalyse {
 
 // ---------------------------------------------------------------------
@@ -90,23 +92,6 @@ static toggleGlobalOption(opt_id){
   require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
 }
 
-/**
- * Méthode qui charge l'analyse dont le dossier est +aFolder+
- */
-static load(aFolder){
-  try {
-    this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
-    UI.startWait(T('loading-analyse'))
-    // Chargement des composants nécessaires
-    if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
-    window.current_analyse = new FAnalyse(aFolder)
-    current_analyse.load()
-    return true
-  } catch (e) {
-    return F.error(e)
-  }
-}
-
 
 
 /**
@@ -136,172 +121,6 @@ constructor(pathFolder){
   this.events   = []
 }
 
-
-/**
-  Méthode qui procède à l'association entre deux éléments/objets
-  de l'analyse.
-  Mais contrairement à la méthode `getBaliseAssociation` qui retourne
-  une balise à insérer dans le texte (p.e. `{{event: 12}}`), cette
-  méthode crée une association simple en dehors des textes.
-**/
-associateDropped(obj, dropped){
-  var dropped_type = dropped.attr('data-type')
-  if(undefined === dropped) throw(T('data-type-required-for-association'))
-  var dropped_id = dropped.attr('data-id') // pas toujours défini
-  if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
-  switch (dropped_type) {
-    case 'event':
-      obj.events.push(dropped_id)
-      break
-    case 'document':
-      // Associer le document
-      // Note : soit il est défini dans le `data-id` soit c'est
-      // le document courant.
-      obj.documents.push(dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type)
-      break
-    case 'time':
-      // Associer le temps courant
-      obj.times.push(this.locator.getRTimeRound())
-      break
-    default:
-      throw(T('unknown-associated-type', {type: dropped_type}))
-  }
-}
-/**
-* Associateur
-* Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
-* peut être, en substance, n'importe quel élément de l'analyse, un event, un
-* document, etc.
-*
-  @param  {Instance} obj  L'instance d'un objet quelconque qui peut être associé
-  @param {DOMElement} domEl L'helper qui a été déplacé sur l'objet
-  @param  {MoveEvent} e     L'évènement triggué
-
-  @return {String|Null} la balise qui sera peut-être à insérer dans le champ de saisie,
-* si c'est un champ qui a reçu le drop
-* Retourne false si un problème est survenu
-**/
-getBaliseAssociation(obj, domEl, e){
-  // console.log("-> getBaliseAssociation", obj, domEl)
-  var balise
-    , domEl_type = domEl.attr('data-type')
-    , domEl_id
-
-  // console.log({
-  //   obj: obj, domEl:domEl, e:e
-  // })
-
-  if(undefined === domEl_type)throw("L'élément droppé devrait définir son data-type:", domEl)
-  domEl_id = domEl.attr('data-id')
-  // Note : le domEl_id, contrairement au domEl_type, n'est pas toujours
-  // défini, quand on traite le document édité courant, par exemple, ou que
-  // c'est un temps qu'on draggue.
-
-  if(e.target.className.match(/\bhorloge\b/)){
-    if(domEl.hasClass('dropped-time')){
-      return domEl.attr('data-value') // l'horloge
-    }
-    F.notify(`Je ne sais pas encore récupérer le temps d'un objet de type "${domEl_type}"`, {error:true})
-    return '0,0'
-  }
-
-  // On transforme toujours en entier un nombre string
-  if (domEl_id && domEl_id.match(/^([0-9]+)$/)) domEl_id = parseInt(domEl_id,10)
-
-  switch (domEl_type) {
-    case 'document':
-      if(undefined === domEl_id){
-        // => Le document édité
-        domEl_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
-      }
-      if (false === obj.addDocument(domEl_id)) return null
-      balise = `{{document:${domEl_id}}}`
-      break
-    case 'event':
-      // Pour un event, il faut toujours que l'ID soit défini
-      if (undefined === domEl_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domEl_id)){
-        return null
-      }
-      var isScene = this.ids[domEl_id].type == 'scene'
-      balise = `{{${isScene?'scene':'event'}:${domEl_id}}}`
-      break
-    case 'time':
-      balise = `{{time:${domEl.attr('data-time')}}}`
-      break;
-    default:
-      throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domEl_type)
-      return false
-  }
-  return balise
-}
-// ---------------------------------------------------------------------
-//  Les données de l'analyse (dans le fichier data)
-
-/**
- * Retourne les données actuelles de l'analyse
- */
-get data(){
-  return {
-      folder:             this.folder
-    , title:              this.title
-    , filmStartTime:      this.filmStartTime
-    , filmEndTime:        this.filmEndTime
-    , filmEndGenericFin:  this.filmEndGenericFin
-    , videoPath:          this.videoPath
-    , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
-    , stopPoints:         (this.locator ? this.locator.stop_points : [])
-  }
-}
-set data(v){
-  this.title                = v.title
-  this.filmStartTime        = v.filmStartTime || 0
-  this.filmEndTime          = v.filmEndTime
-  this.filmEndGenericFin    = v.filmEndGenericFin
-  this._videoPath           = v.videoPath
-  this.lastCurrentTime      = v.lastCurrentTime || 0
-  this.stopPoints           = v.stopPoints || []
-}
-
-// avant de le calculer vraiment :
-get duration(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
-set duration(v){ this._duration = v ; this.modified = true }
-calcDuration(){
-  if(!this.filmEndTime) return null
-  return this.filmEndTime - this.filmStartTime
-}
-
-get filmStartTime() {return this._filmStTi || defP(this,'_filmStTi', 0)}
-set filmStartTime(v){ this._filmStTi = v ; this.duration = undefined }
-
-get filmEndTime(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
-set filmEndTime(v){ this._filmEndTime = v ; this.duration = undefined }
-
-calcFilmEndTime(){
-  var endt = null
-  if(this.videoPath){
-    this._filmEndTime = this.videoController.controller.duration
-    endt = this._filmEndTime
-  }
-  return endt
-}
-
-get filmEndGenericFin(){return this._filmEGF}
-set filmEndGenericFin(v){this._filmEGF = v ; this.modified = true }
-
-get title(){return this._title || defP(this,'_title',path.basename(this.folder))}
-set title(v){ this._title = v ; this.modified = true }
-
-get filmId(){return this._filmId||defP(this,'_filmId',this.title.camelize())}
-
-get lastCurrentTime(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
-set lastCurrentTime(v){ this._lastCurrentTime = v }
-
-// ---------------------------------------------------------------------
-//  DATA VOLATILES
-
-get modified() { return this._modified }
-set modified(v) { this._modified = v }
 
 get currentScene(){ return FAEscene.current}
 set currentScene(v){ FAEscene.current = v }
@@ -342,6 +161,9 @@ get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(t
  * charge.
  */
 onReady(){
+  if('undefined' === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
+  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
+  if('undefined' === typeof FAStater) return this.loadStater(this.onReady.bind(this))
   this.videoController = new VideoController(this)
   this.locator = new Locator(this)
   this.reader  = new FAReader(this)
@@ -360,13 +182,8 @@ onReady(){
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
  * où l'on est vraiment prêt.
  */
-setAllIsReady(){
-  // console.log("-> FAnalyse#setAllIsReady")
-
-  // Maintenant, la classe FAWriter est toujours chargée
-  if('undefined' === typeof FAWriter) return this.loadWriter(this.setAllIsReady.bind(this))
-  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.setAllIsReady.bind(this))
-  if('undefined' === typeof FAStater) return this.loadStater(this.setAllIsReady.bind(this))
+onVideoLoaded(){
+  // console.log("-> FAnalyse#onVideoLoaded")
 
   // On peut marquer l'état d'avancement de l'analyse
   this.setupState()
@@ -411,7 +228,7 @@ init(){
     this.videoController.load(this.videoPath)
   } else {
     F.error(T('video-path-required'))
-    this.setAllIsReady()
+    this.onVideoLoaded()
   }
 }
 
@@ -610,7 +427,7 @@ updateScenes(){
   FAEscene.reset()
   this.updateNumerosScenes()
   if(this.options.get('option_duree_scene_auto')){
-    console.log("option_duree_scene_auto est ON, je dois régler la durée des scènes")
+    console.log("option_duree_scene_auto ON => Réglae de la durée des scènes")
     var prev_scene
     FAEscene.forEachScene(function(scene){
       if(scene.numero > 1){
@@ -789,53 +606,6 @@ set eventsSaved(v){
   EventForm.lastId = last_id
   my = null
 }
-
-  /**
-   * Méthode pour charger l'analyse (courante ou pas)
-   *
-   * Il y aura plusieurs fichiers à charger pour une application,
-   * avec tous les éléments, il faut donc procéder à un chargement asynchrone
-   * correct (en lançant tous les chargements et en attendant que l'application
-   * soit prête.)
-   */
-  load(){
-    var my = this
-      , fpath ;
-    // Les options peuvent être chargée en premier, de façon synchrone
-    // Noter qu'elles seront appliquées plus tard, à la fin.
-    this.options.load()
-    // Les fichiers à charger
-    var loadables = Object.assign([], my.SAVED_FILES)
-    // Pour comptabiliser le nombre de fichiers chargés
-    this.loaders = 0
-    my.loadables_count = loadables.length
-    // console.log("loadables:",loadables)
-    while(fpath = loadables.shift()){
-      my.loadFile(fpath, my.PROP_PER_FILE[fpath])
-    }
-  }
-
-  onLoaded(fpath){
-    this.loaders += 1
-    // console.log("-> onLoaded", fpath, this.loaders)
-    if(this.loaders === this.loadables_count){
-      // console.log("Analyse chargée avec succès.")
-      // console.log("Event count:",this.events.length)
-      this.ready = true
-      this.onReady()
-    }
-  }
-
-  // Charger le fichier +path+ pour la propriété +prop+ de façon
-  // asynchrone.
-  loadFile(fpath, prop){
-    new IOFile(fpath).loadIfExists({after: this.endLoadingFile.bind(this, fpath, prop)})
-  }
-  endLoadingFile(fpath, prop, data){
-    var my = this
-    my[prop] = data
-    my.onLoaded.bind(my)(fpath)
-  }
 
   /**
    * Méthode qui définit le départ réel du film. Permettra de prendre un

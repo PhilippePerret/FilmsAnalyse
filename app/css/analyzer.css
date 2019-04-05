@@ -1,11 +1,4 @@
-#section-video {
-  position: absolute;
-  top:0;
-  display:block;
-  clear:both;
-  border:1px dashed red;
-}
-#section-video #div-video-top-tools {
+#section-video .video-header {
   margin-bottom:8px;
 }
 #section-video #video {
@@ -70,17 +63,7 @@
   text-align:left;
   padding-left:12px;
 }
-#section-video div#mark-current-scene > span.current-scene-number {
-  float:left;
-}
-#section-video div#mark-current-scene > span.current-scene-pitch {
-  overflow:hidden;
-  display:block;
-}
 
-#section-video fieldset.time-tools {
-  width:500px;
-}
 
 .timeline {
   position:relative;

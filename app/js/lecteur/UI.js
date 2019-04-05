@@ -28,45 +28,11 @@ const UI = {
     // d'event
     BtnEvent.show()
 
-    // TODO Plus tard, faire une instance qui gère les boutons de
-    // navigation, en en faisant un par vidéo.
-    listenClick('btn-hide-current-time-video-1', this, 'hideCurrentTime')
-    listenClick('btn-go-to-time-video-1',this,'goToTime')
-
-    this.btnPlay = DGet('btn-real-play')
-    listen(this.btnPlay, 'click', this, 'togglePlay')
-
-    this.btnRewindStart = DGet('btn-stop')
-    listen(this.btnRewindStart,'click',my,'stopAndRewind')
-
-    listenClick('btn-go-to-film-start', my, 'goToFilmStart')
-    listenClick('btn-stop-points',my,'goToNextStopPoint')
-
-    listenMDown('btn-rewind-1',my,'rewind', 0.04)
-    listenMUp('btn-rewind-1',my,'stopRewind')
-    listenMDown('btn-rewind-2',my,'rewind', 1)
-    listenMUp('btn-rewind-2',my,'stopRewind')
-    listenMDown('btn-rewind-3',my,'rewind', 5)
-    listenMUp('btn-rewind-3',my,'stopRewind')
-    listenMDown('btn-forward-1',my,'forward', 0.04)
-    listenMUp('btn-forward-1',my,'stopForward')
-    listenMDown('btn-forward-2',my,'forward', 1)
-    listenMUp('btn-forward-2',my,'stopForward')
-    listenMDown('btn-forward-3',my,'forward', 5)
-    listenMUp('btn-forward-3',my,'stopForward')
-    listenMDown('btn-prev-scene', my,'goToPrevScene')
-    listenMUp('btn-prev-scene', my,'stopGoToPrevScene')
-    listenMDown('btn-next-scene', my,'goToNextScene')
-    listenMUp('btn-next-scene', my,'stopGoToNextScene')
-
     this.inited = true
   }
 
 , setDimensions(){
 
-    var videoWidth   = parseInt((ScreenWidth * 60) / 100,10)
-    var readerWidth  = parseInt((ScreenWidth * 39) / 100,10)
-    var readerHeight = parseInt((ScreenHeight * 50)/100,10)
   }
 
 /**
@@ -98,7 +64,7 @@ const UI = {
 //  Méthode d'affichage
 , showVideoController(){
     // console.log("-> UI#showVideoController")
-    $('table#video-controller-1').show()
+    VideoController.current.navButtons.show()
   }
 
 // ---------------------------------------------------------------------
@@ -139,7 +105,7 @@ const UI = {
  */
 , setHorlogeable(container, options){
     var my = this
-    if(undefined===options)options={}
+    if(undefined === options) options = {}
     var hrs = container.querySelectorAll('horloge')
     var horloges = {}
     // console.log("horloges trouvées : ", hrs)

@@ -18,9 +18,84 @@
   </head>
   <body>
 
-    <!-- Maintenant, une section de vidéo parmi plusieurs possibles -->
-    <section id="section-videos"></section>
-    <!-- /fin section des vidéos -->
+    <section id="section-videos">
+
+      <!-- Maintenant, une section de vidéo parmi plusieurs possibles -->
+      <section class="section-video" id="section-video-1">
+
+      </section>
+
+      <!-- BOUTONS AU-DESSUS DE LA VIDÉO -->
+      <div id="video-header" class="no-user-selection">
+        <horloge id="main-horloge" class="horloge vignette horlogeable"> 0:00:00.00</horloge>
+        <div id="mark-parts-abs" class="mark-parts">
+          <span id="mark-main-part-abs" class="mark-main-part">...</span>
+          <span id="mark-sub-part-abs" class="mark-sub-part">...</span>
+        </div>
+        <div id="mark-parts-rel" class="mark-parts">
+          <span id="mark-main-part-rel" class="mark-main-part">...</span>
+          <span id="mark-sub-part-rel" class="mark-sub-part">...</span>
+        </div>
+        <div id="mark-current-scene" class="current-scene">
+          <span class="current-scene-number">...</span>
+          <span class="current-scene-pitch">...</span>
+        </div>
+      </div>
+
+      <!-- VIDÉO -->
+      <video id="video" class="no-user-selection dropped-time">
+        <source id="video-src" src="" type="video/mp4">
+        <!-- <track label="Français" kind="subtitles" srclang="fr" src="captions/vtt/sintel-fr.vtt" default> -->
+      </video>
+
+      <!-- Indicateur de position -->
+      <div id="position-indicator-1-container" class="position-indicator-container"></div>
+
+      <!-- BOUTONS DE COMMANDE DE LA VIDÉO -->
+      <div id="div-nav-video-buttons" class="no-user-selection">
+        <span id="horloge_real" class="horloge mini fleft">0:00:00.00</span>
+
+        <fieldset class="time-tools no-user-selection">
+          <div>
+            <button type="button" id="btn-go-to-time-video-1" class="small">Aller au temps : </button>
+            <input type="text" id="requested_time" class="horloge small" value="0,0,0.0" placeholder="hr,mn,sc.fr" />
+          </div>
+
+          <table id="curtime-video-1" class="cont-temps-courants" style="display:none;">
+            <tr class="span-temps-courants-video">
+              <td class="small">
+                Vidéo
+              </td>
+              <td>
+                <input type="text" class="curtime-video-horloge horloge small" />
+              </td>
+              <td>
+                <input type="text" class="curtime-video-seconds temps-secondes small" />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="field-curtime-film small">
+                Film
+              </td>
+              <td class="field-curtime-film">
+                <input type="text" class="curtime-film-horloge horloge small" />
+              </td>
+              <td class="field-curtime-film">
+                <input type="text" class="curtime-film-seconds temps-secondes small" />
+              </td>
+              <td>
+                <button id="btn-hide-current-time-video-1" type="button" class="small">OK</button>
+              </td>
+            </tr>
+          </table>
+
+        </fieldset>
+      </div>
+      <!-- / Fin des boutons de navigation -->
+
+    </section>
+    <!-- /fin section vidéo -->
 
     <!-- EVENTER -->
     <section id="section-eventers"></section>
