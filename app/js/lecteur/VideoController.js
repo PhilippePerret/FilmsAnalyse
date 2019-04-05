@@ -304,12 +304,8 @@ get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',
 
 // Pour l'indicateur de position, une timeline sous
 // la vidéo.
-get positionIndicator(){
-  if(undefined === this._positionIndicator){
-    this._positionIndicator = new FATimeline(DGet(`position-indicator-${this.id}-container`))
-  }
-  return this._positionIndicator
-}
+get positionIndicator(){return this._positionIndicator||defP(this,'_positionIndicator',new FATimeline(this.timeline))}
+get timeline(){return this._timeline||defP(this,'_timeline',this.section.find('.timeline')[0])}
 
 get CTRL_BUTTONS(){
   return {
@@ -322,8 +318,9 @@ get CTRL_BUTTONS(){
   }
 }
 }
+
 build(){
-  console.log('-> VideoController#build')
+  // console.log('-> VideoController#build')
   // La section principale
   let sectionVideo = DCreate('SECTION', {class: 'section-video', id: `section-video-${this.id}`, append:[
       // ENTÊTE
@@ -340,7 +337,7 @@ build(){
             DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
       ]})
       // INDICATEUR DE POSITION (aka TIMELINE)
-    , DCreate('DIV', {id: `position-indicator-${this.id}-container`, class: 'position-indicator-container'})
+    , DCreate('DIV', {class: 'timeline'})
       // Le DIV principal contenant les boutons de contrôle
     , DCreate('DIV', {class: 'div-nav-video-buttons no-user-selection'})
   ]})
