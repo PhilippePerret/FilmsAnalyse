@@ -18,30 +18,18 @@ set playing(v){ this._playing = v}
 init(){
   var my = this
 
-  this.videoController = this.analyse.videoController
-  this.video = this.analyse.videoController.controller
+  this.videoController = this.a.videoController
+  this.video = this.a.videoController.video
 
   // Le bouton pour rejoindre le début du film. Il n'est défini que si
   // ce temps est défini pour l'analyse courante
-  this.analyse.setButtonGoToStart()
-
-  // On prépare l'horloge principale (pour qu'elle soit sensible aux
-  // déplacements de souris)
-  this.prepareMainHorloge()
+  this.a.setButtonGoToStart()
 
   my = null
 }
 
-prepareMainHorloge(){
-  // Rend horlogeable l'horloge principale qui doit permettre de se
-  // déplacer dans le film avec la souris.
-  var horloges = UI.setHorlogeable(DGet('div-video-top-tools'), {synchro_video: true})
-  this.oMainHorloge = horloges['main-horloge']
-}
-
-
 // L'instance DOMHorloge de l'horloge principale
-get oMainHorloge(){return this._oMainHorloge}
+get oMainHorloge(){return this._oMainHorloge||defP(this,'_oMainHorloge', this.videoController.mainHorloge)}
 set oMainHorloge(v){
   v.dispatch({
       time: this.getRTime()
@@ -426,7 +414,8 @@ activateHorloge(){
     this.desactivateHorloge()
   } else {
     if (!this.hasStartTime){
-      this.horloge_real.style.visibility = 'hidden'
+      console.log("Pas de start-time => masquage de l'horloge real")
+      this.realHorloge.style.visibility = 'hidden'
     }
     this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)
   }
@@ -458,7 +447,7 @@ actualizeALL(){
 actualizeHorloge(curt){
   if(undefined === curt) curt = this.currentRTime
   this.horloge.innerHTML = this.getRealTime(curt)
-  this.horloge_real.innerHTML = this.getRealTime(this.video.currentTime)
+  this.realHorloge.innerHTML = this.getRealTime(this.video.currentTime)
   this.oMainHorloge.time = curt
 }
 
@@ -542,6 +531,7 @@ actualizeCurrentScene(curt){
   var resat = FAEscene.atAndNext(curt)
   if(resat){
     this.a.currentScene = resat.current
+    this.videoController.section.find('.mark-current-scene').html(this.a.currentScene.as('short', FORMATED))
     // console.log("Courante scène mise à ", this.a.currentScene.numero)
     this.timeNextScene  = resat.next ? resat.next.time : this.a.duration
   }
@@ -623,39 +613,6 @@ addEvent(ev){
 // ---------------------------------------------------------------------
 // Méthodes DOM
 
-
-// Méthode qui cache la table indiquant les temps courants
-hideCurrentTime(){
-  $('#curtime-video-1').hide();
-}
-
-/**
- * Méthode appelée par le bouton "Temps courant" pour obtenir le temps
- * courant.
- * Plusieurs données sont données :
- *  - temps courant de la vidéo en horloge
- *  - temps courant de la vidéo en seconde
- *  - temps courant du film en horloge
- *  - temps courant du film en secondes
- *
- * Note : le temps est également mis dans le clipboard
- */
-getAndShowCurrentTime(){
-  var videoTC = this.getOTime()
-  $('#curtime-video-1 .curtime-video-horloge').val(videoTC.horloge)
-  $('#curtime-video-1 .curtime-video-seconds').val(videoTC.secondsInt)
-  if(this.hasStartTime){
-    var filmTC  = new OTime(this.getRTime())
-    $('#curtime-video-1 .curtime-film-horloge').val(filmTC.horloge)
-    $('#curtime-video-1 .curtime-film-seconds').val(filmTC.secondsInt)
-    clip(filmTC.horloge)
-  } else {
-    clip(videoTC.horloge)
-  }
-  $('#curtime-video-1').show();
-  $('#curtime-video-1 .field-curtime-film').css('visibility',this.hasStartTime?'visible':'hidden')
-}
-
 /**
  * Méthode appelée pour se rendre au temps voulu.
  * Le temps peut être défini comme on veut, en seconds, en horloge, etc.,
@@ -663,7 +620,7 @@ getAndShowCurrentTime(){
  * `getRTime`).
  */
 goToTime(ev){
-  var t = new OTime($('#requested_time').val()).seconds
+  var t = new OTime(VideoController.current.section.find('.requested_time').val()).seconds
   if(this.hasStartTime){ t += this.startTime }
   this.setTime(t)
   // En pause, il faut forcer l'affichage du temps
@@ -703,26 +660,11 @@ get playAfterSettingTime(){
 }
 
 // --- DOM ÉLÉMENTS ---
-get horloge(){
-  if(undefined===this._horloge){this._horloge=DGet('main-horloge')}
-  return this._horloge
-}
-get horloge_real(){
-  if(undefined===this._horloge_real){this._horloge_real=DGet('horloge_real')}
-  return this._horloge_real
-}
-get btnPlay(){
-  if(undefined === this._btnPl){this._btnPl = DGet('btn-real-play')}
-  return this._btnPl
-}
-get btnRewindStart(){
-  if(undefined===this._btnRwdSt){this._btnRwdSt = DGet('btn-stop')}
-  return this._btnRwdSt
-}
-get imgPauser(){
-  return '<img src="./img/btns-controller/btn-pause.png" />'
-}
-get imgPlay(){
-  return '<img src="./img/btns-controller/btn-play.png" />'
-}
+get horloge(){return this.videoController.mainHorloge}
+get realHorloge(){return this.videoController.realHorloge}
+get btnPlay(){return this.videoController.btnPlay}
+get btnRewindStart(){return this.videoController._btnRwdSt}
+get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}
+get imgPlay(){return '<img src="./img/btns-controller/btn-play.png" />'}
+
 }

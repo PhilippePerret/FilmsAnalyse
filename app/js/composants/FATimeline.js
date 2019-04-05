@@ -18,8 +18,10 @@ class FATimeline {
 constructor(container, analyse){
   this.container    = container
   this.jqContainer  = $(container)
-  this.jqContainer.addClass('timeline')
-  this.analyse      = analyse || current_analyse
+  // On ajoute la classe timeline si elle n'est pas déjà dans
+  // le container.
+  if(!this.jqContainer.hasClass('timeline')) this.jqContainer.addClass('timeline')
+  this.analyse = this.a = analyse || current_analyse
 }
 
 /**
@@ -156,7 +158,6 @@ observe(options){
 
 }
 
-get a(){return this.analyse}
 get otime(){return this._otime||defP(this,'_otime', new OTime(0))}
 
 get jqSlider(){return this._slider || defP(this,'_slider', this.jqContainer.find('.timeline-cursors'))}
@@ -167,18 +168,18 @@ get horloge(){return this._horloge || defP(this,'_horloge',this.jqContainer.find
 
 get coefP2T(){
   if( undefined === this._coefP2T){
-    this._coefP2T = this.dureeFilm / this.widthContainer
+    this._coefP2T = this.dureeVideo / this.widthContainer
   }
   return this._coefP2T
 }
 
 get coefT2P(){
-if(undefined === this._coefT2P){
-  this._coefT2P = this.widthContainer / this.dureeFilm
-}
-return this._coefT2P
+  if(undefined === this._coefT2P){
+    this._coefT2P = this.widthContainer / this.dureeVideo
+  }
+  return this._coefT2P
 }
 get widthContainer(){return this.jqContainer.width()}
-get dureeFilm(){return this._dureeFilm || defP(this, '_dureeFilm', this.a.duration)}
+get dureeVideo(){return this._dureeVideo || defP(this, '_dureeVideo', this.a.videoController.video.duration)}
 
 }// /fin de FATimeline

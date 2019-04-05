@@ -505,9 +505,9 @@ getFormValues(){
       fields.push(this.id)
     })
 
-  console.log({
-    fields: fields, data_min: data_min, other_data: other_data
-  })
+  // console.log({
+  //   fields: fields, data_min: data_min, other_data: other_data
+  // })
   my = null
   return [data_min, other_data]
 }
@@ -521,7 +521,7 @@ get fwindow(){
 }
 // Retourne le left de la vidéo (en fait, sa width) pour pouvoir placer, au
 // départ, le formulaire à côté d'elle.
-get videoLeft(){return this.a.videoController.controller.width}
+get videoLeft(){return this.a.videoController.video.width}
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire

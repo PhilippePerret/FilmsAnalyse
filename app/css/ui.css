@@ -18,8 +18,8 @@ button:focus {
 button.btn-close {
   all:unset;
   position:absolute;
-  top:3px;
-  left:3px;
+  top:7px;
+  left:9px;
   border:0;
   background-color:transparent;
   background-image:url(../img/btn-window/b_close.png);
@@ -104,10 +104,6 @@ textarea:focus
 /*
     Note : les largeurs (widths sont définies par UI.setUi )
  */
-section#section-video {
-  background:black;
-  z-index:10;
-}
 
 section#section-footer {
   position:fixed;
@@ -178,52 +174,6 @@ span#waiting-loop-message {
   display:block;
   font-size:11.5pt;
   text-align:center;
-}
-
-
-
-
-table.video-controller {
-  float:right;
-  text-align:right;
-  border:3px solid #555555;
-  -webkit-user-select:none;
-}
-
-/* TABLE DU CONTROLEUR DE VIDÉO */
-
-table.video-controller, table.video-controller * {
-  background:#DCDCDC;
-}
-table.video-controller button {
-  border:0;
-  border-bottom:3px solid inherit;
-  padding:0;
-  margin:0;
-}
-table.video-controller button.controller {
-  vertical-align:middle;
-  text-align:center;
-}
-table.video-controller button.main {
-  padding-bottom:2px;
-  background-color:#CCFFCC;
-}
-table.video-controller button:active {
-  /* background-color:green; */
-  background-color:#31d300;
-  /* transition-duration:0.4s; */
-}
-table.video-controller button.actived {
-  /* background-color:green; */
-  background-color:#31d300;
-}
-table.video-controller button.main img {
-  width:40px;
-}
-
-table.video-controller button.controller img {
-  width:30px;
 }
 
 /* TABLE TEMPS COURANT */

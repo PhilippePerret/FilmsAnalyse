@@ -3,12 +3,12 @@
 * [BUGS]
   - Quand une scène est détruite, les scènes ne se mettent pas à jour et
     ça devient le bordel.
-  - Faire une liste de tests à faire et les faire manuellement.
-    Voir ceux qu'on peut automatiser.
-    Les classer par grandes opérations
-      - destruction d'un event de type scène
-      - essayer d'enregistrer un document très raccourci (de plus de 20% de son contenu)
-        => Une confirmation est demandée.
+  - En créant une nouvelle application :
+    + Une double timeline est crée sous la vidéo
+    + Les marques de parties/scènes ne sont pas initialisés
+    + Le reader n'est pas initialisé
+    + La barre d'état n'est pas initialisée
+    + Un nouveau reader est créé
 
 * [AMÉLIORATIONS]
 
@@ -19,7 +19,6 @@
 * Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
 
 * PUBLICATION
-  ebook-convert (Calibre) est incontestablement la meilleure façon de sortir les .epub et les .mobi à partir du HTML.
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
   Quelques essais sont à faire :
     - sur le mobi (kindle), les display-inline ne sont pas respectés à la lettre
@@ -44,7 +43,7 @@
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
   Par exemple, lorsque l'on édite les fondamentales, elles s'autoévaluent par rapport aux données fournies.
   Cela permettrait :
-    - d'avoir une évaluation beaucopu plus fine
+    - d'avoir une évaluation beaucoup plus fine
     - de ne pas être obligé de tout recharger pour estimer l'avancée
   => Imaginer une classe AutoEvaluator qui appelerait, pour chaque composant, une méthode 'autoEvaluate' qui retournerait :
     - une valeur globale de pourcentage
@@ -56,15 +55,8 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
-
-* Pourvoir forcer le rechargement de l'analyse
-  - ou, ce qui serait mieux, c'est de pouvoir déceler où il faut
-    actualiser des données quand elles changent. Par exemple, lorsque
-    le script d'assemblage est modifié, il faudrait resetter l'affichage
-    de l'analyse pour qu'elle tienne compte du nouveau script.
-
-* Pouvoir rejoindre la dernière scène (pour le travail)
-  - Menu "Outils" > "Rejoindre la dernière scène établie"
+* Mettre en place les tests manuels
+  Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
 
 * Pour la FATimeline
   - faire des instances FACursor
