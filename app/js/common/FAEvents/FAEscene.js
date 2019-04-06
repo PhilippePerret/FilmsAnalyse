@@ -24,12 +24,13 @@ static init(analyse){
   scènes.
 **/
 static updateAll(){
+  // console.log("-> FAEscene::updateAll")
   var my = this
   my.reset()
   my.updateNumerosScenes()
   if(my.a.options.get('option_duree_scene_auto')){
     var prev_scene
-    my.forEachScene(function(scene){
+    my.forEachSortedScene(function(scene){
       if(scene.numero > 1){
         prev_scene = my.getByNumero(scene.numero - 1)
         prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
@@ -44,14 +45,13 @@ static updateAll(){
 **/
 static updateNumerosScenes(){
   var num = 0
-  this.forEachScene(function(scene){
-    scene.numero = ++num
+  this.forEachSortedScene(function(scene){
+    scene.numero = ++ num
     scene.updateNumero()
   })
 }
 
 static reset(){
-  this._number_to_id  = undefined
   this._by_time       = undefined
   this._by_id         = undefined
   this._by_numero     = undefined
@@ -229,7 +229,7 @@ static at(time){
 **/
 static atAndNext(time){
   time = time.round(2)
-  console.log("[atAndNext] time:", time)
+  // console.log("[atAndNext] time:", time)
   if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
     // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
     return

@@ -231,7 +231,7 @@ show(){
   } else {
     // <= L'objet DOM n'existe pas encore
     // => Il faut le construire en appelant this.div
-    this.analyse.reader.append(this.div)
+    this.a.reader.append(this)
     this.observe()
   }
   this.makeAppear() // c'est l'opacité qui masque l'event affiché

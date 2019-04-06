@@ -329,17 +329,16 @@ forEachEvent(method, options){
 }
 
 /**
- * Méthode ajoutant un évènement
- *
- * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
- * l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
- * donc parfaitement valide ici.
- *
- * Attention : la méthode est aussi appelée (en cascade) au chargement
- * de l'analyse. +whenLoading+ est true, dans ce cas-là
+  Méthode ajoutant un évènement
+
+  +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
+  l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
+  donc parfaitement valide ici.
+
  */
 addEvent(nev) {
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
+  nev.type === 'scene' && FAEscene.updateAll()
   FAStater.update()
 }
 
@@ -377,7 +376,7 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  ev.isRealScene && FAEscene.updateAll()
+  ev.type === 'scene' && FAEscene.updateAll()
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée
@@ -394,7 +393,6 @@ updateEvent(ev, options){
 getEventById(eid){
   return this.ids[eid]
 }
-
 
 getSceneNumeroAt(time){
   var scene = FAEscene.at(time)

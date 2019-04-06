@@ -61,19 +61,49 @@ reset(){ this.container.innerHTML = ''}
  * rapport à la vidéo (comme tous les temps normalement)
  */
 resetBeyond(from_time, to_time){
-  var t, id, my = this
-  this.container.querySelectorAll('.event').forEach(function(o){
-    t = parseInt(o.getAttribute('data-time'),10)
-    id = parseInt(o.getAttribute('data-id'),10)
-    if ( t < from_time || t > to_time){my.analyse.ids[id].hide()}
+  var ti, id, my = this
+  this.forEachEventNode(function(o){
+    ti  = parseFloat(o.getAttribute('data-time'))
+    id  = parseInt(o.getAttribute('data-id'),10)
+    if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
   })
 }
 
-// Pour ajouter un noeud, la plupart du temps un event
-append(node){
-  this.container.append(node)
+/**
+  Ajout d'un event dans le reader
+
+  L'event est placé au bon endroit par rapport à son temps
+
+  @param {FAEvent(typé)} ev Event qu'il faut insérer
+**/
+append(ev){
+  var my = this
+    , hasBeenInserted = false
+  this.forEachEventNode(function(ne){
+    if(parseFloat(ne.getAttribute('data-time')) > ev.time){
+      hasBeenInserted = true
+      my.container.insertBefore(ev.div, ne)
+      return false // pour interrompre la boucle
+    }
+  })
+  hasBeenInserted || this.container.append(ev.div)
 }
 
+/**
+  Exécuter une boucle sur les noeuds d'event du reader
+  en exécutant la méthode +fn+ qui peut retourner false
+  pour interrompre la boucle.
+
+  @param {Function} fn  La méthode à utiliser pour boucler
+                        Son premier argument est le node
+**/
+forEachEventNode(fn){
+  let my = this
+    , eventNodes  = this.container.querySelectorAll('.event')
+    , nb_nodes    = eventNodes.length
+    , i = 0
+  for(;i<nb_nodes;++i){if(false === fn(eventNodes[i])) break}
+}
 /**
  * Méthode qui permet d'afficher tous les events d'un coup
  */
