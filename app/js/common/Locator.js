@@ -301,8 +301,9 @@ goToNextScene(){
   let method = () => {
     if (this.a.nextScene){
       this.setTime(this.a.nextScene.time)
+    } else {
+      F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
     }
-    else F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
   }
   this.timerNextScene = setTimeout(method, 500)
   method()
@@ -440,7 +441,7 @@ actualizeALL(){
   this.videoController.positionIndicator.positionneAt(curt)
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
-  this.actualizeCurrentScene(curt)
+  this.actualizeCurrentScene(this.video.currentTime)
   curt = null
 }
 
@@ -522,18 +523,16 @@ actualizeMarkersStt(curt){
   dans current_analyse) et elle mémorise le temps suivant
   pour ne pas avoir à chercher toujours le temps.
 
-  @param {Float} curt  Le temps courant
+  @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
 
  */
 actualizeCurrentScene(curt){
   // console.log("-> actualizeCurrentScene")
-  if(this.timeNextScene && curt < this.timeNextScene) return
+  if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
   if(resat){
-    this.a.currentScene = resat.current
-    this.videoController.section.find('.mark-current-scene').html(this.a.currentScene.as('short', FORMATED))
-    // console.log("Courante scène mise à ", this.a.currentScene.numero)
-    this.timeNextScene  = resat.next ? resat.next.time : this.a.duration
+    FAEscene.current = resat.current
+    this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
   }
 }
 

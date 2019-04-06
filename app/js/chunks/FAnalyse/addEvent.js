@@ -20,7 +20,7 @@ let addEvent = function(nev, whenLoading){
     this.locator.addEvent(nev)
     // Si le nouvel event est une scène, il faut peut-être numéroter
     // les suivantes
-    nev.type === 'scene' && this.updateScenes()
+    nev.type === 'scene' && FAEscene.updateAll()
     // Si le nouvel event est un noeud structurel, il faut l'enregistrer
     // dans les données du paradigme de Field
     if(nev.type === 'stt'){

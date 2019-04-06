@@ -21,7 +21,7 @@ static get a(){return current_analyse}
 
 static reset(){
   delete this.currentForm
-  delete this._lastId
+  delete this.lastId
   delete this._eventForms
   this.videoWasPlaying = false
   $('form.form-edit-event').remove()
@@ -39,7 +39,7 @@ static get videoController(){ return this.a.videoController }
 //
 static onClickNewEvent(ev, eventType){
   if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
-  if (ev) ev.stopPropagation()
+  ev && ev.stopPropagation()
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
   if (eventType == 'scene' && this.notConfirmNewScene() ) return false
@@ -103,15 +103,8 @@ static editEvent(ev){
 
 // Pour obtenir un nouvel identifiant
 static newId(){
+  if (undefined === this.lastId){ this.lastId = -1 }
   return ++ this.lastId
-}
-static get lastId(){
-  if (undefined === this._lastId){ this._lastId = -1 }
-  return this._lastId
-}
-static set lastId(v){
-  this._lastId = v
-  // console.log("Last ID mis à ", this._lastId)
 }
 
 // ---------------------------------------------------------------------
@@ -374,7 +367,7 @@ submit(){
     if(this.isNew){
       // CRÉATION
       this.a.addEvent(this.event)
-      if('function'===this.event.onCreate) this.event.onCreate()
+      if('function' === this.event.onCreate) this.event.onCreate()
     } else {
       // ÉDITION
       this.a.updateEvent(this.event, {initTime: initTime})
@@ -454,7 +447,7 @@ setFormValues(){
 
 setNumeroScene(){
   // On ne numérote pas une scène "générique"
-  if(this.event && this.event.sceneType === 'generic') return
+  if(this.event && this.event.isGenerique) return
   var numero
   if (this.isNew || !this.event.numero) {
     // <= C'est une scène et son numéro n'est pas défini

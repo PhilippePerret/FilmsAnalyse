@@ -1,16 +1,18 @@
 # SUR LE GRILL
 
 * [BUGS]
+  - Les boutons "scène suivante" et "scène précédente" règlent mal le temps (on est au moins 10 secondes avant la scène suivante)
+  - À la création d'une scène, on doit recalculer toutes les scènes et les actualiser.
+  - Quand on ajoute une scène, elle n'est pas bien numérotée
   - Quand une scène est détruite, les scènes ne se mettent pas à jour et
     ça devient le bordel.
   - En créant une nouvelle application :
-    + Une double timeline est crée sous la vidéo
-    + Les marques de parties/scènes ne sont pas initialisés
     + Le reader n'est pas initialisé
     + La barre d'état n'est pas initialisée
-    + Un nouveau reader est créé
+    + Un double reader est créé
 
 * [AMÉLIORATIONS]
+  - Menu avec décor et sous-décor déjà utilisés (enregistrer les décors dans data.json ? ou dans un autre fichier où on mettrait aussi d'autres données de ce type ?)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment

@@ -420,11 +420,6 @@ togglePlay(){
 }
 
 // ---------------------------------------------------------------------
-// MÉTHODE D'ÉTAT
-
-get isRealScene(){return this.type === 'scene' && this.sceneType !== 'generic'}
-
-// ---------------------------------------------------------------------
 //  DOM ÉLÉMENTS
 
 get imgBtnPlay(){
@@ -490,17 +485,17 @@ observe(container){
 
 get locator(){return this.analyse.locator}
 
-  // ---------------------------------------------------------------------
-  // Gestion du Bouton BtnPlay
-  // Cf. Le manuel de développement
-  get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
+// ---------------------------------------------------------------------
+// Gestion du Bouton BtnPlay
+// Cf. Le manuel de développement
+get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
-  // Pour définir le dom obj de l'event dans le Reader
-  defineDomReaderObj(){
-    var obj
-    if (this.jqReaderObj) obj = this.jqReaderObj[0]
-    return obj
-  }
+// Pour définir le dom obj de l'event dans le Reader
+defineDomReaderObj(){
+  var obj
+  if (this.jqReaderObj) obj = this.jqReaderObj[0]
+  return obj
+}
 
 }
 

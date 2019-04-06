@@ -11,6 +11,9 @@ FAnalyse.load = function(aFolder){
   try {
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
+    if(current_analyse){
+      this.resetAll()
+    }
     // Chargement des composants nécessaires
     if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
     window.current_analyse = new FAnalyse(aFolder)
@@ -20,6 +23,11 @@ FAnalyse.load = function(aFolder){
     UI.stopWait()
     return F.error(e)
   }
+}
+
+FAnalyse.resetAll = function(){
+  // On détruit la section vidéo de l'analyse courante
+  current_analyse.videoController.section.remove()
 }
 
 // ---------------------------------------------------------------------

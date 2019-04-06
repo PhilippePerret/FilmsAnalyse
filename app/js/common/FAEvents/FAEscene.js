@@ -18,6 +18,37 @@ static init(analyse){
   this.reset()
 }
 
+/**
+  Méthode appelée systématiquement après la création ou la modification
+  d'une scène, pour actualiser les numéros et les durées de toutes les
+  scènes.
+**/
+static updateAll(){
+  var my = this
+  my.reset()
+  my.updateNumerosScenes()
+  if(my.options.get('option_duree_scene_auto')){
+    var prev_scene
+    my.forEachScene(function(scene){
+      if(scene.numero > 1){
+        prev_scene = my.getByNumero(scene.numero - 1)
+        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
+      }
+    })
+  }
+}
+
+/**
+  Actualisation du numéro de scène de toutes les scènes
+**/
+static updateNumerosScenes(){
+  var num = 0
+  this.forEachScene(function(scene){
+    scene.numero = ++num
+    scene.updateNumero()
+  })
+}
+
 static reset(){
   this._number_to_id  = undefined
   this._by_time       = undefined
@@ -35,13 +66,16 @@ static reset(){
   affichée à l'écran si elle existe.
   @returns {FAEscene} La scène courante dans le film visionné
 **/
-static get current(){return this._current||defP(this,'_current',this.a.locator.getRTime())}
+static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
+  console.log("Scène courante mise à ", s)
   this._current = s
   this.a._currentScene = s
-  $('span.current-scene-number').html(s ? s.numero : '...')
-  $('span.current-scene-number-only').html(s ? s.numero : '...')
-  $('span.current-scene-pitch').html(s ? DFormater(s.pitch) : '...')
+  this.a.videoController.section.find('div.mark-current-scene').html(s ? s.as('short', FORMATED) : '...')
+}
+static getCurrent(){
+  if(this.count === 0) return
+  return this.at(this.a.locator.getRTime())
 }
 
 /**
@@ -135,7 +169,7 @@ static doLists(){
 static destroy(numero){
   if(undefined === this.scenes[numero]) return
   delete this.scenes[numero]
-  this.reset()
+  this.updateAll()
 }
 
 /**
@@ -165,10 +199,11 @@ static forEachSortedScene(fn){
  * +time+ est le temps par rapport au début défini du film, PAS le début
  * de la vidéo
  * @param   time  Le temps à considérer
- * @returns undefined si c'est un temps avant le début du film
+ * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
+                                  du film
  */
 static at(time){
-  return this.atAndNext(time).current
+  return (this.atAndNext(time)||{}).current
 }
 /**
   Retourne la scène se trouvant au temps +time+ et la scène suivante
@@ -177,11 +212,18 @@ static at(time){
   prochain changement de scène.
 
   @param   {Float}  time  Le temps considéré
-  @returns {Object} {current: scène courante, next: scène suivante}
+  @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
+                    Noter que `next_time` est toujours défini, même lorsqu'au-
+                    cune scène n'a été trouvée après. C'est alors le temps de
+                    fin de la vidéo. Cela permet de ne pas rechercher la scène
+                    jusqu'à la fin.
 **/
 static atAndNext(time){
   time = time.round(2)
-  if (time < current_analyse.filmStartTime) return
+  if (time < current_analyse.filmStartTime){
+    console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
+    return
+  }
 
   var founded
     , next_scene
@@ -195,7 +237,8 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene}
+  console.log("AtAndNext retourne: {current: founded || this.lastScene, next: next_scene}",{current: founded || this.lastScene, next: next_scene})
+  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
 }
 
 /**
@@ -372,6 +415,15 @@ reset(){
   delete this._formated
   delete this._numeroFormated
 }
+//
+// // Méthode appelée après la création de la nouvelle scène
+// onCreate(){
+//
+// }
+// // Méthode appelée après la modification de la scène
+// onModify(){
+//
+// }
 
 // ---------------------------------------------------------------------
 //  MÉTHODES DE CONSTRUCTION
@@ -408,7 +460,9 @@ updateNumero(){
   $(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
 }
 
+get isRealScene(){return this.sceneType !== 'generic'}
 get isGenerique(){return this.sceneType === 'generic'}
 
 } // Fin de FAEscene
+
 FAEscene.dispatchData()

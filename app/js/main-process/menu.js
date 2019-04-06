@@ -70,7 +70,7 @@ const ObjMenus = {
     class: 'ObjMenus'
   , mainMenuBar: null // défini par le main.js
   , getMenuData: null
-  , getMenu: function(id) {
+  , getMenu(id) {
       var d = this.getMenuData[id]
       if(undefined == typeof(d)) throw(`Menu <${id}> is not defined…`)
       var m = this.mainMenuBar.items[d[0]].submenu.items[d[1]] ;
@@ -80,13 +80,13 @@ const ObjMenus = {
       // console.log("m final:", m)
       return m ;
     }
-  , enableMenus: function(ids_list) {
+  , enableMenus(ids_list) {
       this.setMenusState(ids_list, true)
     }
-  , disableMenus: function(ids_list) {
+  , disableMenus(ids_list) {
       this.setMenusState(ids_list, false)
     }
-  , setMenusState: function(id_menus, state) {
+  , setMenusState(id_menus, state) {
       var my = this
       for(var mid of id_menus){
         my.getMenu(mid).enabled = state
@@ -101,14 +101,14 @@ const ObjMenus = {
      * conservé, par exemple les menus enabled ou disabled ne conservent pas
      * leur état, il faudrait tout reprendre.
      */
-  , updateMenus: function(){
+  , updateMenus(){
       let { Menu } = require('electron')
       global.mainMenuBar = Menu.buildFromTemplate(this.data_menus)
       Menu.setApplicationMenu(global.mainMenuBar);
     }
 
     // les menus à activer quand un élément principal est ouvert (une analyse)
-  , setMenuCurrentThing:function(on){
+  , setMenuCurrentThing(on){
       var my = this
       my[on?'enableMenus':'disableMenus'](CURRENT_THING_MENUS)
     }
@@ -116,7 +116,7 @@ const ObjMenus = {
     /**
      * Pour modifier le label d'un menu
      */
-  , setLabelMenu:function(menu_id, menu_label){
+  , setLabelMenu(menu_id, menu_label){
       var m = this.getMenu(menu_id).label = menu_label
       this.updateMenus();
       // var cloneM = m.clone()
@@ -136,6 +136,9 @@ function execJsOnCurrent(method, arg){
   } else {
     mainW.webContents.executeJavaScript(`current_analyse && current_analyse.${method}()`)
   }
+}
+function execJS(methodAndArgs){
+  mainW.webContents.executeJavaScript(methodAndArgs)
 }
 
 /**
@@ -434,7 +437,7 @@ const DATA_MENUS = [
               , checked: false
               , click:  () => {
                   var checked = ObjMenus.getMenu('load_last_on_launching').checked
-                  execJsOnCurrent(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
+                  execJS(`FAnalyse.setGlobalOption('load_last_on_launching',${checked?'true':'false'})`)
                 }
             }
           , {type: 'separator'}
@@ -445,7 +448,7 @@ const DATA_MENUS = [
               , checked: true
               , click: () => {
                   var checked = ObjMenus.getMenu('option_duree_scene_auto').checked
-                  execJsOnCurrent(`FAnalyse.setGlobalOption('option_duree_scene_auto',${checked?'true':'false'})`)
+                  execJS(`FAnalyse.setGlobalOption('option_duree_scene_auto',${checked?'true':'false'})`)
                 }
             }
           , {type:'separator'}

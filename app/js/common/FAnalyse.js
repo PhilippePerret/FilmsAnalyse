@@ -398,7 +398,7 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  ev.isRealScene && this.updateScenes()
+  ev.isRealScene && FAEscene.updateAll()
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée
@@ -416,47 +416,11 @@ getEventById(eid){
   return this.ids[eid]
 }
 
-/**
-  Actualisation des scènes
-  La méthode est appelée aussi bien à la création d'une nouvelle scène
-  qu'à la modification d'une scène existante. Elle permet de régler les
-  numéro de scène pour qu'ils soient à jour et, si l'option le demande,
-  de définir leur durée en fonction du temps de la scène suivante.
-**/
-updateScenes(){
-  FAEscene.reset()
-  this.updateNumerosScenes()
-  if(this.options.get('option_duree_scene_auto')){
-    console.log("option_duree_scene_auto ON => Réglae de la durée des scènes")
-    var prev_scene
-    FAEscene.forEachScene(function(scene){
-      if(scene.numero > 1){
-        prev_scene = FAEscene.getByNumero(scene.numero - 1)
-        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
-      }
-    })
-  }
-}
-updateNumerosScenes(){
-  var num = 0
-  FAEscene.forEachScene(function(scene){
-    scene.numero = ++num
-    scene.updateNumero()
-  })
-}
 
 getSceneNumeroAt(time){
-  var current_numero = 0
-  var i = 0, len = this.events.length, ev
-  for(i;i<len;++i){
-    ev = this.events[i]
-    if (ev.time > time) {
-      return current_numero
-    }
-    if (ev.type === 'scene' && ev.sceneType != 'generic') { current_numero += 1 }
-  }
-  // Non trouvé (début)
-  return 0
+  var scene = FAEscene.at(time)
+  if(scene.isRealScene) return scene.numero
+  else return 0
 }
 
 /**
