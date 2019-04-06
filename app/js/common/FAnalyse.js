@@ -530,7 +530,6 @@ setSaved(fpath){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false
-    F.notify("Analyse enregistrée avec succès.")
     if(this.methodAfterSaving) this.methodAfterSaving()
   }
 }
@@ -625,7 +624,7 @@ get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
 }
 
-
+get markModified(){return this._markModified||defP(this,'_markModified',$('span#modified-indicator'))}
 
 get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
 get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}

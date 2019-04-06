@@ -2,12 +2,8 @@
 
 * [BUGS]
   - Les boutons "scène suivante" et "scène précédente" règlent mal le temps (on est au moins 10 secondes avant la scène suivante)
-  - Quand une scène est détruite, les scènes ne se mettent pas à jour et ça devient le bordel.
-  - Quand on met en route la scène à l'aide du petit bouton e-tools dans le reader, le bouton se met bien en carré, mais enuite, quand on essaie de l'arrêter, ça s'arrête mais ça reste en carré
   - En créant une nouvelle application :
-    + Le reader n'est pas initialisé
     + La barre d'état n'est pas initialisée
-    + Un double reader est créé
 
 * [AMÉLIORATIONS]
   - Menu avec décor et sous-décor déjà utilisés (enregistrer les décors dans data.json ? ou dans un autre fichier où on mettrait aussi d'autres données de ce type ?)

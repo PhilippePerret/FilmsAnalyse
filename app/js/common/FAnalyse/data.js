@@ -45,9 +45,7 @@ Object.defineProperties(FAnalyse.prototype,{
     get(){ return this._modified }
   , set(v){
       this._modified = v
-      if(true === v){
-        // TODO Mettre un indicateur dans l'interface
-      }
+      this.markModified[v ? 'addClass':'removeClass']('on')
     }
   }
 
