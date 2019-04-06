@@ -270,9 +270,47 @@ afterBuilding(){
     }
   }
 
+  // Si c'est une scène il faut peupler avec les décors existants
+  // déjà
+  if(this.type === 'scene') this.peupleDecors()
+
   jqo = eid = typ = null
   this.built = true
 }
+
+// ---------------------------------------------------------------------
+//  MÉTHODES POUR LES DÉCORS
+
+onChooseDecor(){
+  var decor = this.menuDecors.val()
+  this.jqField('inputtext-1').val(decor)
+  this.peupleSousDecors(decor)
+}
+onChooseSousDecor(){
+  this.jqField('inputtext-2').val(this.menuSousDecors.val())
+}
+peupleDecors(){
+  this.menuDecors.html('')
+  this.menuDecors.append(DCreate('OPTION',{value:'', inner:'Choisir…'}))
+  for(var decor in FAEscene.dataDecors){
+    this.menuDecors.append(DCreate('OPTION',{value:decor, inner:decor}))
+  }
+}
+peupleSousDecors(decor){
+  this.menuSousDecors.html('')
+  if (FAEscene.dataDecors[decor].length){
+    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: 'Choisir le sous-décor…'}))
+    for(var sdecor in FAEscene.dataDecors[decor].sous_decors){
+      this.menuSousDecors.append(DCreate('OPTION',{value:sdecor, inner:sdecor}))
+    }
+  }
+}
+get menuDecors(){return this._menuDecors||defP(this,'_menuDecors', this.jqObj.find('select.decors'))}
+get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', this.jqObj.find('select.sous_decors'))}
+
+// FIN des menus DECORS
+// ---------------------------------------------------------------------
+
 
 get jqf(){return this.jqField.bind(this)}
 
@@ -320,6 +358,12 @@ observe(){
   // dans le mini-writer
   UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
 
+  // Si l'event est une scène, on observe le menu décor et
+  // sous décor
+  if(this.type === 'scene'){
+    this.menuDecors.on('change', this.onChooseDecor.bind(this))
+    this.menuSousDecors.on('change', this.onChooseSousDecor.bind(this))
+  }
   my = null
 }
 
@@ -347,7 +391,6 @@ submit(){
       return
   }
 
-
   // console.log("Champs trouvés:", fields)
   // console.log("Data finale min:", data_min)
   // console.log("Data finale autres:", other_data)
@@ -367,11 +410,11 @@ submit(){
     if(this.isNew){
       // CRÉATION
       this.a.addEvent(this.event)
-      if('function' === this.event.onCreate) this.event.onCreate()
+      if('function' === typeof this.event.onCreate) this.event.onCreate()
     } else {
       // ÉDITION
       this.a.updateEvent(this.event, {initTime: initTime})
-      if('function' === this.event.onModify) this.event.onModify()
+      if('function' === typeof this.event.onModify) this.event.onModify()
     }
   }
 
@@ -489,13 +532,15 @@ getFormValues(){
   var idSansPref = null
   $('select,input[type="text"],textarea,input[type="checkbox"]')
     .filter(function(){
-      return ( $(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
+      return /* $(this).id && */ ($(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
     })
     .each(function(){
-      idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
-      other_data[idSansPref] = getValOrNull(this.id)
-      // Pour vérification
-      fields.push(this.id)
+      if(this.id){
+        idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
+        other_data[idSansPref] = getValOrNull(this.id)
+        // Pour vérification
+        fields.push(this.id)
+      }
     })
 
   // console.log({
@@ -641,6 +686,7 @@ const EVENT_FORM_TEMP = `
       <label class="ff fqrd">Question</label>
       <label class="ff fpp">Préparation</label>
       <label class="ff fproc">Installation</label>
+      <select class="ff fscene decors"></select>
       <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-1" />
     </div>
 
@@ -649,6 +695,7 @@ const EVENT_FORM_TEMP = `
       <label class="ff fdim">Signification</label>
       <label class="ff fqrd">Réponse</label>
       <label class="ff fpp fproc">Paiement/résolution</label>
+      <select class="ff fscene sous_decors"></select>
       <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
       <div class="right ff fqrd fpp fproc">
         <label>Temps</label>

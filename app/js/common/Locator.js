@@ -286,8 +286,11 @@ goToPrevScene(){
   let method = () => {
     if (this.a.prevScene){
       this.setTime(this.a.prevScene.time)
+    } else if (FAEscene.current ){
+      F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
+    } else {
+      F.notify('Pas de scène courante.')
     }
-    else F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
   }
   this.timerPrevScene = setTimeout(method, 1000)
   method()

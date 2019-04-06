@@ -121,7 +121,7 @@ static getByTime(time)  {return this.byTime[time]}
 static getByNumero(num){return this.byNumero[num]}
 
 // ---------------------------------------------------------------------
-//  Les listes de scène
+//  Les listes de scènes
 
 /**
   Retourne la table des scènes
@@ -135,6 +135,29 @@ static get byId(){return this._by_id||defP(this,'_by_id',this.doLists().id)}
 static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().time)}
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
 static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
+
+static get dataDecors(){return this._dataDecors||defP(this,'_dataDecors',this.getDataDecors())}
+
+/**
+  Récupère la donnée des décors dans la liste des scènes, directement
+  C'est une liste une contient en clé le nom du décor principal et en
+  valeur la liste des sous-décors qu'il possède.
+**/
+static getDataDecors(){
+  var d = {}
+  this.forEachScene(function(scene){
+    // console.log("scene:",scene)
+    if(scene.decor && scene.decor != '' && undefined === d[scene.decor]){
+      d[scene.decor] = {decor: scene.decor, length: 0, sous_decors: {}}
+    }
+    if(scene.sous_decor && scene.sous_decor != '' && undefined === d[scene.decor].sous_decors[scene.sous_decor]){
+      d[scene.decor].sous_decors[scene.sous_decor] = {sous_decor: scene.sous_decor}
+      d[scene.decor].length ++
+    }
+  })
+  // console.log("Données décors :", d)
+  return d
+}
 
 /**
   Private méthode qui établit toutes les listes à savoir :
@@ -430,15 +453,26 @@ reset(){
   delete this._formated
   delete this._numeroFormated
 }
-//
-// // Méthode appelée après la création de la nouvelle scène
-// onCreate(){
-//
-// }
-// // Méthode appelée après la modification de la scène
-// onModify(){
-//
-// }
+
+// Méthode appelée après la création de la nouvelle scène
+onCreate(){
+  this.checkForDecor()
+}
+// Méthode appelée après la modification de la scène
+onModify(){
+  this.checkForDecor()
+}
+
+// Pour vérifier si c'est un nouveau décor
+checkForDecor(){
+  if(this.decor){
+    if(undefined === FAEscene.dataDecors[this.decor]){
+      delete FAEscene._dataDecors
+    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sous_decors[this.sous_decor]){
+      delete FAEscene._dataDecors
+    }
+  }
+}
 
 // ---------------------------------------------------------------------
 //  MÉTHODES DE CONSTRUCTION

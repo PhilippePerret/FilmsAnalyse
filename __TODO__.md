@@ -2,12 +2,8 @@
 
 * [BUGS]
   - Les boutons "scène suivante" et "scène précédente" règlent mal le temps (on est au moins 10 secondes avant la scène suivante)
-  - En créant une nouvelle application :
-    + La barre d'état n'est pas initialisée
 
 * [AMÉLIORATIONS]
-  - Menu avec décor et sous-décor déjà utilisés (enregistrer les décors dans data.json ? ou dans un autre fichier où on mettrait aussi d'autres données de ce type ?)
-  - Supprimer le message de sauvegarde et mettre juste un indicateur de modification.
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
@@ -34,7 +30,7 @@
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-
+  - faire les statistiques par décor
 
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
@@ -109,7 +105,6 @@
 * Les PP non actuellement résolues doivent s'afficher en bas à droite
 
 * Faire un mode d'emploi interactif
-* Proposer la liste des décors/sous-décors quand on focusse dans ces champs
 * Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 
