@@ -27,7 +27,7 @@ static updateAll(){
   var my = this
   my.reset()
   my.updateNumerosScenes()
-  if(my.options.get('option_duree_scene_auto')){
+  if(my.a.options.get('option_duree_scene_auto')){
     var prev_scene
     my.forEachScene(function(scene){
       if(scene.numero > 1){
@@ -224,7 +224,7 @@ static at(time){
 static atAndNext(time){
   time = time.round(2)
   if (time < current_analyse.filmStartTime){
-    console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
+    // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
     return
   }
 
@@ -240,7 +240,7 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  console.log("AtAndNext retourne: {current: founded || this.lastScene, next: next_scene}",{current: founded || this.lastScene, next: next_scene})
+  // console.log("AtAndNext retourne: {current: founded || this.lastScene, next: next_scene}",{current: founded || this.lastScene, next: next_scene})
   return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
 }
 

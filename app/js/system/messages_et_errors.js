@@ -4,7 +4,9 @@
 // TODO Peut-être les mettre dans des fichier JSON à requérir, en fonction de
 // la langue
 const ERRORS = {
-  "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
+  "--- ANALYSE ---":""
+, "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."  
+, "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 , "--- DOCUMENTS ---":""
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"

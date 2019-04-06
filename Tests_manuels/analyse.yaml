@@ -5,21 +5,38 @@
   create_from_scratch:
     libelle: Création d'une nouvelle analyse à l'ouverture
     description: On ouvre l'application et on crée une nouvelle analyse
-    note: Avant de procéder à cette opération, décocher l'option « Charger la dernière analyse au chargement » pour que l'application soit « vierge ».
+    synopsis:
+      - ouvrir l'app
+      - désactiver l'option « Charger la dernière analyse au chargement »
+      - quitter l'app
+      - rouvrir l'app (aucune analyse ne devrait s'ouvrir)
+      - créer l'analyse en choisissant le dossier et le fichier vidéo
+      - procéder aux 'premiers_tests'
+      - créer deux events
+      - enregistrer l'analyse
+      - quitter l'app
+      - rouvrir l'app
+      - utiliser le menu « Ouvrir… » et choisir l'analyse créée.
     verifications:
-      - La liste des events doit être nulle
-      - la vidéo doit être la bonne
-      - la liste des documents doit être vide
-    sous_tests:
-      - créer quelques events
-      - définir une nouvelle vidéo de référence
-      - définir le point de départ de la vidéo et vérifier qu'il soit bien enregistré
+      premiers_tests:
+        - La liste des events doit être nulle au départ
+      tests_suivants:
+        - la vidéo doit être la bonne
+        - la liste des documents doit être vide
 
   create_when_current:
     libelle: Création d'une nouvelle analyse avec une analyse courante
     description: On ouvre une analyse existante dans l'application et on crée la nouvelle analyse.
-    note: On peut, avant cette opération, recocher l'option « Charger la dernière analyse »
+    synopsis:
+      - ouvrir l'app
+      - activer l'option « Charger la dernière analyse au chargement »
+      - ouvrir une analyse existante et fonctionnelle
+      - quitter l'app
+      - rouvrir l'app (l'analyse doit se charger)
+      - créer une nouvelle analyse à partir du menu « Nouvelle… »
+      - procéder au premier_test
     verifications:
-      - La liste des events doit être nulle
-      - la vidéo doit être la bonne
-      - la liste des documents doit être vide
+      premier_test:
+        - La liste des events doit être nulle
+        - la vidéo doit être la bonne (et pas celle de l'autre analyse)
+        - la liste des documents doit être vide

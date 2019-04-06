@@ -57,7 +57,7 @@ static checkLast(){
    */
   static checkIfCurrentSavedBeforeExec(toolName){
     var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
-    if (current_analyse && current_analyse.modified){
+    if (current_analyse && current_analyse.modified && !current_analyse.locked){
       var my = this
       DIALOG.showMessageBox(null, {
           type: 'question'
@@ -186,7 +186,7 @@ setupState(){
   if(undefined === this.setupStateTries) this.setupStateTries = 1
   else ++ this.setupStateTries
   if (this.setupStateTries > 10){
-    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
+    console.error("Trop de tentatives pour charger FAStater. J'abandonne.")
     return
   }
   FAStater.inited || FAStater.init(this)
@@ -299,7 +299,7 @@ get hVersion(){return this._hversion || '0.0.1'}
 get options(){ return Options }
 
 /**
- * Réglage des options dans les menus (en asynchrone)
+  Réglage des options dans les menus (en asynchrone)
  */
 setOptionsInMenus(){
   // Options générales
@@ -308,6 +308,7 @@ setOptionsInMenus(){
   ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
   // Options propres à l'analyse courante
   ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
+  ipc.send('set-option', {menu_id: 'option-locked', property: 'checked', value: !!this.locked})
 }
 // Méthode à lancer après le chargement des données ou après la
 // sauvegarde
@@ -397,7 +398,7 @@ getEventById(eid){
 
 getSceneNumeroAt(time){
   var scene = FAEscene.at(time)
-  if(scene.isRealScene) return scene.numero
+  if(scene && scene.isRealScene) return scene.numero
   else return 0
 }
 
@@ -428,6 +429,16 @@ indexOfEvent(event_id){
 
   // --- FONCTIONS I/O ----------------------------------------------
 
+/**
+  Méthode appelée par le menu « Analyse > Verrouiller » qui
+  permet de verrouiller ou de déverrouiller l'analyse courante,
+  c'est-à-dire de permettre ou non ses modifications.
+**/
+toggleLock(){
+  this.locked = !!!this.locked
+  this.saveData(true /* pour forcer le verrou */)
+}
+
 get SAVED_FILES(){
   if(undefined === this._saved_files){
     this._saved_files = [
@@ -451,6 +462,7 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
+  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   this.modified && this.save()
 }
 
@@ -458,6 +470,7 @@ saveIfModified(){
  * Méthode appelée pour sauver l'analyse courante
  */
 save() {
+  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -476,8 +489,13 @@ save() {
  * @synchrone
  * Elle doit être synchrone pour quitter l'application
  * normalement.
+
+  @param {Boolean} force_lock   Mis à true pour forcer l'enregistrement même
+                                si l'analyse est verouillée. À utiliser avec
+                                beaucoup de prudence.
  */
-saveData(){
+saveData(force_lock){
+  if(this.locked && !force_lock) return F.notify(T('analyse-locked-no-save'), {error: true})
   fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
 }
 

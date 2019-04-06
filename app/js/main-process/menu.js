@@ -23,7 +23,7 @@ const CURRENT_THING_MENUS = [
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
-  'display-protocole'
+  'display-protocole', 'option-locked'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -181,6 +181,15 @@ const DATA_MENUS = [
             , enabled: false
             , accelerator: 'CmdOrCtrl+Shift+S'
             , click: () => { mainW.webContents.send('save-as-analyse')}
+          }
+        , {type:'separator'}
+        , {
+              label: 'Verrouiller'
+            , id: 'option-locked'
+            , type: 'checkbox'
+            , checked: false
+            , enabled: false
+            , click: () => {execJsOnCurrent('toggleLock')}
           }
         , {type:'separator'}
         , {
