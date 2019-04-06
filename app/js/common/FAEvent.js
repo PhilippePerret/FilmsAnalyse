@@ -59,6 +59,11 @@ static get a(){return current_analyse}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
+/**
+
+  [1] Certaines vieilles versions ne définissaient pas obligatoirement
+      la durée de l'event.
+**/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
@@ -66,7 +71,7 @@ constructor(analyse, data){
   this.id       = parseInt(data.id,10)
   this.titre    = data.titre    // String
   this.time     = data.time.round(2)     // Number
-  this.duration = data.duration.round(2) // Number (seconds)
+  this.duration = (data.duration||10).round(2) // Number (seconds) [1]
   this.content  = data.content  // String
   this.note     = data.note     // String
 
@@ -226,7 +231,7 @@ show(){
   } else {
     // <= L'objet DOM n'existe pas encore
     // => Il faut le construire en appelant this.div
-    this.analyse.reader.append(this.div)
+    this.a.reader.append(this)
     this.observe()
   }
   this.makeAppear() // c'est l'opacité qui masque l'event affiché
@@ -420,11 +425,6 @@ togglePlay(){
 }
 
 // ---------------------------------------------------------------------
-// MÉTHODE D'ÉTAT
-
-get isRealScene(){return this.type === 'scene' && this.sceneType !== 'generic'}
-
-// ---------------------------------------------------------------------
 //  DOM ÉLÉMENTS
 
 get imgBtnPlay(){
@@ -490,17 +490,17 @@ observe(container){
 
 get locator(){return this.analyse.locator}
 
-  // ---------------------------------------------------------------------
-  // Gestion du Bouton BtnPlay
-  // Cf. Le manuel de développement
-  get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
+// ---------------------------------------------------------------------
+// Gestion du Bouton BtnPlay
+// Cf. Le manuel de développement
+get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
-  // Pour définir le dom obj de l'event dans le Reader
-  defineDomReaderObj(){
-    var obj
-    if (this.jqReaderObj) obj = this.jqReaderObj[0]
-    return obj
-  }
+// Pour définir le dom obj de l'event dans le Reader
+defineDomReaderObj(){
+  var obj
+  if (this.jqReaderObj) obj = this.jqReaderObj[0]
+  return obj
+}
 
 }
 

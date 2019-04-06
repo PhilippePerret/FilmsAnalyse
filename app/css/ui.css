@@ -125,6 +125,17 @@ section#section-footer div#analyse-state-bar {
   border-top:1px solid #EEEEEE;
   border-bottom:1px solid #BBBBBB
 }
+
+section#section-footer div#analyse-state-bar span#modified-indicator {
+  float:left;
+  font-size:28pt;
+  line-height:16pt;
+  color:green;
+}
+section#section-footer div#analyse-state-bar span#modified-indicator.on {
+  color:red
+}
+
 div#analyse-state-bar label.statebar-label,
 div#analyse-state-bar span.statebar-value {
   vertical-align:top;

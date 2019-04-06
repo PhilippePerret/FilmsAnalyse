@@ -20,6 +20,7 @@ Object.defineProperties(FAnalyse.prototype,{
       return {
           folder:             this.folder
         , title:              this.title
+        , locked:             !!this.locked
         , filmStartTime:      this.filmStartTime
         , filmEndTime:        this.filmEndTime
         , filmEndGenericFin:  this.filmEndGenericFin
@@ -30,6 +31,7 @@ Object.defineProperties(FAnalyse.prototype,{
     }
   , set(v){
       this.title                = v.title
+      this.locked               = !!v.locked || false
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
       this.filmEndGenericFin    = v.filmEndGenericFin
@@ -43,9 +45,7 @@ Object.defineProperties(FAnalyse.prototype,{
     get(){ return this._modified }
   , set(v){
       this._modified = v
-      if(true === v){
-        // TODO Mettre un indicateur dans l'interface
-      }
+      this.markModified[v ? 'addClass':'removeClass']('on')
     }
   }
 

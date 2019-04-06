@@ -32,7 +32,8 @@ const DATA_DOCUMENTS = {
 
 , dpersonnages:     {hname: 'Personnages (data)', format:'yaml', type:'data'}
 , dbrins:           {hname: 'Brins (data)', format:'yaml', type:'data'}
-, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data'}
+, fondamentales:    {hname: 'Fondamentales (data)', format: 'yaml', type:'data'}
+, recompenses:      {hname: 'Récompenses (data)', format: 'yaml', type:'data'}
 
 , separator1: 'separator'
 

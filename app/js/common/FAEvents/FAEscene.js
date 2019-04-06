@@ -18,8 +18,40 @@ static init(analyse){
   this.reset()
 }
 
+/**
+  Méthode appelée systématiquement après la création ou la modification
+  d'une scène, pour actualiser les numéros et les durées de toutes les
+  scènes.
+**/
+static updateAll(){
+  // console.log("-> FAEscene::updateAll")
+  var my = this
+  my.reset()
+  my.updateNumerosScenes()
+  if(my.a.options.get('option_duree_scene_auto')){
+    var prev_scene
+    my.forEachSortedScene(function(scene){
+      if(scene.numero > 1){
+        prev_scene = my.getByNumero(scene.numero - 1)
+        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
+      }
+    })
+  }
+  this.a.modified = true
+}
+
+/**
+  Actualisation du numéro de scène de toutes les scènes
+**/
+static updateNumerosScenes(){
+  var num = 0
+  this.forEachSortedScene(function(scene){
+    scene.numero = ++ num
+    scene.updateNumero()
+  })
+}
+
 static reset(){
-  this._number_to_id  = undefined
   this._by_time       = undefined
   this._by_id         = undefined
   this._by_numero     = undefined
@@ -35,13 +67,22 @@ static reset(){
   affichée à l'écran si elle existe.
   @returns {FAEscene} La scène courante dans le film visionné
 **/
-static get current(){return this._current||defP(this,'_current',this.a.locator.getRTime())}
+static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
+  // console.log("Scène courante mise à ", s)
+  // try {
+  //   pourvoirdou
+  // } catch (e) {
+  //   console.error('Pour voir qui appelle')
+  //   console.error(e)
+  // }
   this._current = s
   this.a._currentScene = s
-  $('span.current-scene-number').html(s ? s.numero : '...')
-  $('span.current-scene-number-only').html(s ? s.numero : '...')
-  $('span.current-scene-pitch').html(s ? DFormater(s.pitch) : '...')
+  this.a.videoController.section.find('div.mark-current-scene').html(s ? s.as('short', FORMATED) : '...')
+}
+static getCurrent(){
+  if(this.count === 0) return
+  return this.at(this.a.locator.getRTime())
 }
 
 /**
@@ -60,7 +101,8 @@ static get count(){return this._count||defP(this,'_count', Object.keys(this.scen
 static get(numero)      {return this.scenes[numero]}
 
 /**
-  Retoune la scène correspondant à l'event +event_id+
+  Retoune la scène ayant l'ID +event_id+ (en ne perdant pas de vue que
+  la scène est un event elle-même, à partir de la version 0.5 de l'application)
 
   @param    {Number}  event_id    ID de l'event de la scène
             Rappel : une scène, c'est aussi un event de class {FAEscene}
@@ -79,7 +121,7 @@ static getByTime(time)  {return this.byTime[time]}
 static getByNumero(num){return this.byNumero[num]}
 
 // ---------------------------------------------------------------------
-//  Les listes de scène
+//  Les listes de scènes
 
 /**
   Retourne la table des scènes
@@ -93,6 +135,30 @@ static get byId(){return this._by_id||defP(this,'_by_id',this.doLists().id)}
 static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().time)}
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
 static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
+
+static get dataDecors(){return this._dataDecors||defP(this,'_dataDecors',this.getDataDecors())}
+
+/**
+  Récupère la donnée des décors dans la liste des scènes, directement
+  C'est une liste une contient en clé le nom du décor principal et en
+  valeur la liste des sous-décors qu'il possède.
+**/
+static getDataDecors(){
+  var d = {}
+  this.forEachScene(function(scene){
+    // console.log("scene:",scene)
+    if(scene.decor && scene.decor != '' && undefined === d[scene.decor]){
+      d[scene.decor] = {decor: scene.decor, length: 0, sous_decors: {}}
+    }
+    if(scene.sous_decor && scene.sous_decor != '' && undefined === d[scene.decor].sous_decors[scene.sous_decor]){
+      d[scene.decor].sous_decors[scene.sous_decor] = {sous_decor: scene.sous_decor}
+      d[scene.decor].length ++
+    }
+  })
+  // console.log("Données décors :", d)
+  return d
+}
+
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
@@ -135,7 +201,7 @@ static doLists(){
 static destroy(numero){
   if(undefined === this.scenes[numero]) return
   delete this.scenes[numero]
-  this.reset()
+  this.updateAll()
 }
 
 /**
@@ -165,10 +231,11 @@ static forEachSortedScene(fn){
  * +time+ est le temps par rapport au début défini du film, PAS le début
  * de la vidéo
  * @param   time  Le temps à considérer
- * @returns undefined si c'est un temps avant le début du film
+ * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
+                                  du film
  */
 static at(time){
-  return this.atAndNext(time).current
+  return (this.atAndNext(time)||{}).current
 }
 /**
   Retourne la scène se trouvant au temps +time+ et la scène suivante
@@ -177,11 +244,21 @@ static at(time){
   prochain changement de scène.
 
   @param   {Float}  time  Le temps considéré
-  @returns {Object} {current: scène courante, next: scène suivante}
+  @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
+                    Noter que `next_time` est toujours défini, même lorsqu'au-
+                    cune scène n'a été trouvée après. C'est alors le temps de
+                    fin de la vidéo. Cela permet de ne pas rechercher la scène
+                    jusqu'à la fin.
 **/
 static atAndNext(time){
   time = time.round(2)
-  if (time < current_analyse.filmStartTime) return
+  // console.log("[atAndNext] time:", time)
+  if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
+    // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
+    return
+  } else if (this.firstScene && time < this.firstScene.time){
+    return {current: null, next: this.firstScene, next_time: this.firstScene.time}
+  }
 
   var founded
     , next_scene
@@ -195,12 +272,16 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene}
+  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
 }
 
 /**
   @returns {FAEscene} La dernière scène (ou undefined si inexistante)
 **/
+
+static get firstScene(){
+  return this.sortedByTime[0]
+}
 static get lastScene(){
   return this.sortedByTime[this.count-1]
 }
@@ -373,6 +454,26 @@ reset(){
   delete this._numeroFormated
 }
 
+// Méthode appelée après la création de la nouvelle scène
+onCreate(){
+  this.checkForDecor()
+}
+// Méthode appelée après la modification de la scène
+onModify(){
+  this.checkForDecor()
+}
+
+// Pour vérifier si c'est un nouveau décor
+checkForDecor(){
+  if(this.decor){
+    if(undefined === FAEscene.dataDecors[this.decor]){
+      delete FAEscene._dataDecors
+    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sous_decors[this.sous_decor]){
+      delete FAEscene._dataDecors
+    }
+  }
+}
+
 // ---------------------------------------------------------------------
 //  MÉTHODES DE CONSTRUCTION
 
@@ -408,7 +509,9 @@ updateNumero(){
   $(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
 }
 
+get isRealScene(){return this.sceneType !== 'generic'}
 get isGenerique(){return this.sceneType === 'generic'}
 
 } // Fin de FAEscene
+
 FAEscene.dispatchData()

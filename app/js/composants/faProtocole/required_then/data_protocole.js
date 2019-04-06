@@ -11,11 +11,11 @@
 // 10 %.
 FAProtocole.States = {
   '5':[]
-, '10':['infos-film', 'collecte-scenes', 'collecte-stt']
+, '10':['infos-film', 'collecte-scenes', 'collecte-stt', 'fiche-identite', 'debut-fin-film']
 , '20':['reflexion-lecon', 'ebauche-synopsis']
 , '30':['ebauche-personnages','ebauche-introduction']
 , '40':['ebauche-lecon', 'ebauche-themes','documents-ebauches']
-, '50':['comments-stats','fondamentales','pfa', 'full-collecte']
+, '50':['comments-stats','fondamentales','pfa', 'full-collecte', 'rewards']
 , '60':['redaction-conclusion']
 , '70':['qrd','diagramme-dynamique','building-script', 'documents-required']
 , '80':['final-themes','final-personnages']
@@ -25,7 +25,11 @@ FAProtocole.States = {
 }
 FAProtocole.DATA = {
   steps:[
-    {id:'infos-film', libelle: "Informations complètes sur le film (réalisateur, scénariste, etc.)"}
+    {id:'infos-film', libelle: "Informations complètes sur le film", steps:[
+      {id: 'fiche-identite', libelle: 'Fiche d’identité (document « Informations »)'}
+    , {id: 'debut-fin-film', libelle: 'Définition du temps de début et de fin du film'}
+    , {id: 'rewards', libelle: 'Récompenses obtenues (document « Récompenses »)'}
+    ]}
   , {id:'full-collecte', libelle: 'Collecte complète', steps: [
       {id:'collecte-scenes', libelle: 'Collecte des scènes'}
     , {id:'collecte-procedes', libelle: 'Collecte des procédés'}

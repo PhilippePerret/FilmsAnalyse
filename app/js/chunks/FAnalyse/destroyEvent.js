@@ -6,13 +6,22 @@
 const destroyEvent = function(event_id, form_instance){
   var ev = this.ids[event_id]
 
+  // Destruction dans la liste events
+  // console.log("this.events avant:", Object.assign([], this.events))
+  // console.log("Index de l'évènement à détruire : ", this.indexOfEvent(event_id))
+  this.events.splice(this.indexOfEvent(event_id),1)
+  // console.log("this.events après:", this.events)
+
+  // Destruction dans la table par clé identifiants
+  delete this.ids[event_id]
+  this.ids[event_id] = undefined
+
   // Si c'est une scène, il faut la retirer de la liste des
   // scène et updater les numéros
   if(ev.type === 'scene'){
 
     // Cas particulier de la destruction d'une scène
     FAEscene.destroy(ev.numero)
-    this.updateScenes()
 
   } else if (ev.type === 'stt'){
     // Cas particulier de la destruction d'un event de structure (qui doit
@@ -25,15 +34,6 @@ const destroyEvent = function(event_id, form_instance){
       this.PFA.update()
   }
 
-  // Destruction dans la liste events
-  // console.log("this.events avant:", Object.assign([], this.events))
-  // console.log("Index de l'évènement à détruire : ", this.indexOfEvent(event_id))
-  this.events.splice(this.indexOfEvent(event_id),1)
-  // console.log("this.events après:", this.events)
-
-  // Destruction dans la table par clé identifiants
-  delete this.ids[event_id]
-  this.ids[event_id] = undefined
 
   // On peut détruire l'instance du formulaire
   form_instance = undefined

@@ -12,6 +12,16 @@ form.form-edit-event {
   resize:horizontal;
 }
 
+form.form-edit-event select.decors,
+form.form-edit-event select.sous_decors,
+form.form-edit-event select.decors *,
+form.form-edit-event select.sous_decors * {
+  font-size:0.76em;
+}
+form.form-edit-event select {
+  font-size:0.82em;
+}
+
 
 /* Le Formulaire quand les données ont été modifée */
 form.form-edit-event.modified {

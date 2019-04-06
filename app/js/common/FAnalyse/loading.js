@@ -11,8 +11,7 @@ FAnalyse.load = function(aFolder){
   try {
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
-    // Chargement des composants nécessaires
-    if(NONE === typeof FAReader) return this.loadReader(this.load.bind(this, aFolder))
+    this.resetAll()
     window.current_analyse = new FAnalyse(aFolder)
     current_analyse.load()
     return true
@@ -20,6 +19,24 @@ FAnalyse.load = function(aFolder){
     UI.stopWait()
     return F.error(e)
   }
+}
+
+FAnalyse.resetAll = function(){
+  // On détruit la section vidéo de l'analyse courante
+  if(window.current_analyse){
+    // <= Il y a une analyse courante
+    // => On doit tout initialiser
+    current_analyse.videoController.remove()
+    current_analyse.reader.remove()
+
+    FAEscene.reset()
+
+    delete current_analyse.videoController
+    delete current_analyse.locator
+    delete current_analyse.reader
+    delete current_analyse.stater
+  }
+  // $('#section-videos').html()
 }
 
 // ---------------------------------------------------------------------
@@ -62,6 +79,32 @@ load(){
   }
 }
 
+/**
+  Méthode appelé ci-dessu quand l'analyse est prête, c'est-à-dire que toutes ses
+  données ont été chargées et traitées. Si un fichier vidéo existe, on le
+  charge.
+ */
+, onReady(){
+    if(NONE === typeof FAReader) return this.loadReader(this.onReady.bind(this))
+    if(NONE === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
+    if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
+    if(NONE === typeof FAStater) return this.loadStater(this.onReady.bind(this))
+    this.videoController = new VideoController(this)
+    this.locator = new Locator(this)
+    this.reader  = new FAReader(this)
+    this.init()
+    this.locator.init()
+    this.locator.stop_points = this.stopPoints
+    this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
+    EventForm.init()
+    FAEscene.init()
+    FAPersonnage.reset().init()
+    this.setOptionsInMenus()
+    this.videoController.init()
+  }
+
+
+
 // Charger le fichier +path+ pour la propriété +prop+ de façon
 // asynchrone.
 , loadFile(fpath, prop){
@@ -70,7 +113,11 @@ load(){
 
 , endLoadingFile(fpath, prop, data){
   var my = this
-  my[prop] = data
+  if('function' === typeof my[prop]){
+    my[prop](data)
+  } else {
+    my[prop] = data
+  }
   my.onLoaded.bind(my)(fpath)
 }
 

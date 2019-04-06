@@ -57,7 +57,7 @@ static checkLast(){
    */
   static checkIfCurrentSavedBeforeExec(toolName){
     var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
-    if (current_analyse && current_analyse.modified){
+    if (current_analyse && current_analyse.modified && !current_analyse.locked){
       var my = this
       DIALOG.showMessageBox(null, {
           type: 'question'
@@ -155,28 +155,6 @@ get Fonds(){
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 
 // ---------------------------------------------------------------------
-/**
- * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
- * données ont été chargées et traitées. Si un fichier vidéo existe, on le
- * charge.
- */
-onReady(){
-  if('undefined' === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
-  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
-  if('undefined' === typeof FAStater) return this.loadStater(this.onReady.bind(this))
-  this.videoController = new VideoController(this)
-  this.locator = new Locator(this)
-  this.reader  = new FAReader(this)
-  this.init()
-  this.locator.init()
-  this.locator.stop_points = this.stopPoints
-  this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
-  EventForm.init()
-  FAEscene.init()
-  FAPersonnage.reset().init()
-  this.setOptionsInMenus()
-  this.videoController.init()
-}
 
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
@@ -208,7 +186,7 @@ setupState(){
   if(undefined === this.setupStateTries) this.setupStateTries = 1
   else ++ this.setupStateTries
   if (this.setupStateTries > 10){
-    console.error("Trop de tentative pour charger FAStater. J'abandonne.")
+    console.error("Trop de tentatives pour charger FAStater. J'abandonne.")
     return
   }
   FAStater.inited || FAStater.init(this)
@@ -296,9 +274,9 @@ displayAnalyseState(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if( NONE === typeof FAWriter){
-    return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
-  }
+  // if( NONE === typeof FAWriter){
+  //   return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
+  // }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
 }
@@ -310,7 +288,7 @@ createNewEventer(){
   if( NONE === typeof FAEventer){
     return System.loadComponant('faEventer', this.createNewEventer.bind(this))
   }
-  FAEventer.createNew()
+  return FAEventer.createNew() // on le retourne pour les tests
 }
 // La version courante de l'analyse
 get hVersion(){return this._hversion || '0.0.1'}
@@ -321,7 +299,7 @@ get hVersion(){return this._hversion || '0.0.1'}
 get options(){ return Options }
 
 /**
- * Réglage des options dans les menus (en asynchrone)
+  Réglage des options dans les menus (en asynchrone)
  */
 setOptionsInMenus(){
   // Options générales
@@ -330,6 +308,7 @@ setOptionsInMenus(){
   ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
   // Options propres à l'analyse courante
   ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
+  ipc.send('set-option', {menu_id: 'option-locked', property: 'checked', value: !!this.locked})
 }
 // Méthode à lancer après le chargement des données ou après la
 // sauvegarde
@@ -340,28 +319,27 @@ get methodAfterSaving(){return this._methodAfterSaving}
 set methodAfterSaving(v){this._methodAfterSaving = v}
 
 forEachEvent(method, options){
-  if(undefined===options){options = {}}
+  if(undefined === options){options = {}}
   var i   = options.from || 0
     , len = options.to || this.events.length
     ;
   for(;i<len;++i){
-    method(this.events[i])
+    if(false === method(this.events[i])) break // pour interrompre
   }
 }
 
 /**
- * Méthode ajoutant un évènement
- *
- * +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
- * l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
- * donc parfaitement valide ici.
- *
- * Attention : la méthode est aussi appelée (en cascade) au chargement
- * de l'analyse. +whenLoading+ est true, dans ce cas-là
+  Méthode ajoutant un évènement
+
+  +nev+ (pour "Nouvel Event"). L'instance FAEvent::<sous classe> de
+  l'évènement à ajouter. Noter qu'elle a déjà été vérifiée et qu'elle est
+  donc parfaitement valide ici.
+
  */
-addEvent(nev, whenLoading) {
-  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
-  if(!whenLoading) FAStater.update()
+addEvent(nev) {
+  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
+  nev.type === 'scene' && FAEscene.updateAll()
+  FAStater.update()
 }
 
 // Pour éditer l'event d'identifiant +event_id+
@@ -398,7 +376,7 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  ev.isRealScene && this.updateScenes()
+  ev.type === 'scene' && FAEscene.updateAll()
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée
@@ -416,47 +394,10 @@ getEventById(eid){
   return this.ids[eid]
 }
 
-/**
-  Actualisation des scènes
-  La méthode est appelée aussi bien à la création d'une nouvelle scène
-  qu'à la modification d'une scène existante. Elle permet de régler les
-  numéro de scène pour qu'ils soient à jour et, si l'option le demande,
-  de définir leur durée en fonction du temps de la scène suivante.
-**/
-updateScenes(){
-  FAEscene.reset()
-  this.updateNumerosScenes()
-  if(this.options.get('option_duree_scene_auto')){
-    console.log("option_duree_scene_auto ON => Réglae de la durée des scènes")
-    var prev_scene
-    FAEscene.forEachScene(function(scene){
-      if(scene.numero > 1){
-        prev_scene = FAEscene.getByNumero(scene.numero - 1)
-        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
-      }
-    })
-  }
-}
-updateNumerosScenes(){
-  var num = 0
-  FAEscene.forEachScene(function(scene){
-    scene.numero = ++num
-    scene.updateNumero()
-  })
-}
-
 getSceneNumeroAt(time){
-  var current_numero = 0
-  var i = 0, len = this.events.length, ev
-  for(i;i<len;++i){
-    ev = this.events[i]
-    if (ev.time > time) {
-      return current_numero
-    }
-    if (ev.type === 'scene' && ev.sceneType != 'generic') { current_numero += 1 }
-  }
-  // Non trouvé (début)
-  return 0
+  var scene = FAEscene.at(time)
+  if(scene && scene.isRealScene) return scene.numero
+  else return 0
 }
 
 /**
@@ -486,6 +427,16 @@ indexOfEvent(event_id){
 
   // --- FONCTIONS I/O ----------------------------------------------
 
+/**
+  Méthode appelée par le menu « Analyse > Verrouiller » qui
+  permet de verrouiller ou de déverrouiller l'analyse courante,
+  c'est-à-dire de permettre ou non ses modifications.
+**/
+toggleLock(){
+  this.locked = !!!this.locked
+  this.saveData(true /* pour forcer le verrou */)
+}
+
 get SAVED_FILES(){
   if(undefined === this._saved_files){
     this._saved_files = [
@@ -499,7 +450,7 @@ get SAVED_FILES(){
 get PROP_PER_FILE(){
   if(undefined === this._prop_per_path){
     this._prop_per_path = {}
-    this._prop_per_path[this.eventsFilePath]  = 'eventsSaved'
+    this._prop_per_path[this.eventsFilePath]  = 'eventsIO'
     this._prop_per_path[this.dataFilePath]    = 'data'
   }
   return this._prop_per_path
@@ -509,6 +460,7 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
+  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   this.modified && this.save()
 }
 
@@ -516,6 +468,7 @@ saveIfModified(){
  * Méthode appelée pour sauver l'analyse courante
  */
 save() {
+  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -534,8 +487,13 @@ save() {
  * @synchrone
  * Elle doit être synchrone pour quitter l'application
  * normalement.
+
+  @param {Boolean} force_lock   Mis à true pour forcer l'enregistrement même
+                                si l'analyse est verouillée. À utiliser avec
+                                beaucoup de prudence.
  */
-saveData(){
+saveData(force_lock){
+  if(this.locked && !force_lock) return F.notify(T('analyse-locked-no-save'), {error: true})
   fs.writeFileSync(this.dataFilePath, JSON.stringify(this.data), 'utf8')
 }
 
@@ -572,7 +530,6 @@ setSaved(fpath){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false
-    F.notify("Analyse enregistrée avec succès.")
     if(this.methodAfterSaving) this.methodAfterSaving()
   }
 }
@@ -581,9 +538,12 @@ get iofileEvent() {return this._iofileEvent||defP(this,'_iofileEvent', new IOFil
 get iofileData()  {return this._iofileData||defP(this,'_iofileData',    new IOFile(this.dataFilePath))}
 
 /**
- * Retourne les évènements sous forme de données simplifiées
+  Retourne les évènements sous forme de données simplifiées, pour la sauvegarde
+
+  @return {Object} Les données de tous les events de l'analyse courante.
+
  */
-get eventsSaved(){
+get eventsIO(){
   var eSaveds = []
   for(var e of this.events){eSaveds.push(e.data)}
   return eSaveds
@@ -591,19 +551,28 @@ get eventsSaved(){
 
 // Prend les données dans le fichier events.json et les dispatche dans
 // l'instance d'analyse (au début du travail, en général)
-set eventsSaved(v){
+/**
+  Reçoit les données des events enregistrés et les transforme en instance
+  de leur type.
+  @param {Object} v
+**/
+set eventsIO(eventsData){
   var my = this
-  var last_id = -1
+    , last_id = -1
+    , eventData
   this.events = []
-  for(var d of v){
-    var eClass = eval(`FAE${d.type}`)
-    this.addEvent(new eClass(my, d), true)
-    // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
-    // une création d'évènement.
-    if(d.id > last_id){last_id = parseInt(d.id,10)}
+  this.ids    = {}
+  for(eventData of eventsData){
+    var eClass = eval(`FAE${eventData.type}`)
+    var ev = new eClass(my, eventData)
+    this.events.push(ev)
+    this.ids[ev.id] = ev
+    // Pour récupérer le dernier ID unitilisé
+    if(ev.id > last_id){last_id = parseInt(ev.id,10)}
   }
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
   EventForm.lastId = last_id
+  eventsData = null
   my = null
 }
 
@@ -624,7 +593,7 @@ set eventsSaved(v){
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime===0)?'hidden':'visible')
+    this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?'visible':'hidden')
   }
 
 
@@ -655,7 +624,7 @@ get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
 }
 
-
+get markModified(){return this._markModified||defP(this,'_markModified',$('span#modified-indicator'))}
 
 get html_path(){return this._html_path||defP(this,'_html_path',this.defExportPath('html').path)}
 get html_name(){return this._html_name||defP(this,'_html_name',this.defExportPath('html').name)}
@@ -772,7 +741,10 @@ loadWriter(fn_callback){
 loadProtocole(fn_callback){
   return System.loadComponant('faProtocole', fn_callback)
 }
-static loadReader(fn_callback){
+// static loadReader(fn_callback){
+//   return System.loadComponant('faReader', fn_callback)
+// }
+loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)
 }
 

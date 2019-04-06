@@ -1,6 +1,12 @@
 'use strict'
 
-let addEvent = function(nev, whenLoading){
+/**
+  Ajout d'un event
+
+  Noter que maintenant la procédure ne s'occupe plus du chargement de
+  l'analyse (depuis la version 0.5.2).
+**/
+let addEvent = function(nev){
   if(undefined === this.ids){
     this.events = []
     this.ids    = {}
@@ -14,35 +20,33 @@ let addEvent = function(nev, whenLoading){
   }
   this.ids[nev.id] = nev
 
-  if (!whenLoading) {
-    // C'est une vraie création, pas une instanciation au
-    // rechargement de l'analyse.
-    this.locator.addEvent(nev)
-    // Si le nouvel event est une scène, il faut peut-être numéroter
-    // les suivantes
-    nev.type === 'scene' && this.updateScenes()
-    // Si le nouvel event est un noeud structurel, il faut l'enregistrer
-    // dans les données du paradigme de Field
-    if(nev.type === 'stt'){
-      // note : le PFA est toujours chargé
-      // => On peut placer le nouveau noeud directement
-      //    dans les données et les enregistrer
-      var d = this.PFA.data
-      d[nev.sttID] = {event_id: nev.id, stt_id: nev.sttID}
-      this.PFA.data = d
-      this.PFA.save()
-      this.PFA.update() // seulement si déjà ouvert
-    }
-
-    // On place tout de suite l'évènement sur le lecteur
-    nev.show()
-    this.modified = true
-    // On ajoute l'event à la liste des modifiés du moment
-    FAEvent.addModified(nev)
-    //  On reset
-    nev = null
-    idx_event_before = null
+  // C'est une vraie création, pas une instanciation au
+  // rechargement de l'analyse.
+  this.locator.addEvent(nev)
+  // Si le nouvel event est une scène, il faut peut-être numéroter
+  // les suivantes
+  nev.type === 'scene' && FAEscene.updateAll()
+  // Si le nouvel event est un noeud structurel, il faut l'enregistrer
+  // dans les données du paradigme de Field
+  if(nev.type === 'stt'){
+    // note : le PFA est toujours chargé
+    // => On peut placer le nouveau noeud directement
+    //    dans les données et les enregistrer
+    var d = this.PFA.data
+    d[nev.sttID] = {event_id: nev.id, stt_id: nev.sttID}
+    this.PFA.data = d
+    this.PFA.save()
+    this.PFA.update() // seulement si déjà ouvert
   }
+
+  // On place tout de suite l'évènement sur le lecteur
+  nev.show()
+  this.modified = true
+  // On ajoute l'event à la liste des modifiés du moment
+  FAEvent.addModified(nev)
+  //  On reset
+  nev = null
+  idx_event_before = null
 
 }
 

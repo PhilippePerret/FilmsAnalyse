@@ -174,6 +174,10 @@ hide(){
 }
 update(){
   if(!this.built) return
+  this.remove()
+}
+// Pour détruire la fenêtre
+remove(){
   this.jqObj.remove()
 }
 // Pour mettre la Flying window en premier plan

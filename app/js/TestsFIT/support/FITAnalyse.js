@@ -19,7 +19,8 @@ const FITAnalyse = {
       if(!fs.existsSync(path.join('.','analyses',folder))){
         throw("Dossier introuvable:",folder)
       }
-      window.current_analyse = new FAnalyse(`./analyses/${folder}`)
+      FAnalyse.load(`./analyses/${folder}`)
+      // window.current_analyse = new FAnalyse(`./analyses/${folder}`)
       this.analyse = window.current_analyse
       // En fonction des options
       if( options.remove_events ){
@@ -58,13 +59,19 @@ const FITAnalyse = {
       * Destruction des évènements.
       * Noter que maintenant on ne détruit plus le fichier, on le vide
       */
-  , removeEvents:function(){
+  , removeEvents(){
       fs.writeFileSync(this.analyse.eventsFilePath,'[]','utf8')
       this.analyse._events  = []
       this.analyse.ids      = {}
       EventForm.lastId      = -1
       $('#reader').html('')
       $('.form-edit-event').remove() // toutes
+    }
+
+  , loadComponant(comp_name){
+      return new Promise((ok,ko)=>{
+        System.loadComponant(comp_name, ok)
+      })
     }
 }
 
