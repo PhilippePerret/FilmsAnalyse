@@ -59,6 +59,11 @@ static get a(){return current_analyse}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
+/**
+
+  [1] Certaines vieilles versions ne définissaient pas obligatoirement
+      la durée de l'event.
+**/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
@@ -66,7 +71,7 @@ constructor(analyse, data){
   this.id       = parseInt(data.id,10)
   this.titre    = data.titre    // String
   this.time     = data.time.round(2)     // Number
-  this.duration = data.duration.round(2) // Number (seconds)
+  this.duration = (data.duration||10).round(2) // Number (seconds) [1]
   this.content  = data.content  // String
   this.note     = data.note     // String
 

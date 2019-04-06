@@ -114,6 +114,14 @@ setSpeed(speed){
   this.video.defaultPlaybackRate = speed
   this.video.playbackRate = speed
 }
+
+
+/**
+  Pour détruire la vidéo courante, certainement au
+  chargement d'une autre analyse.
+**/
+remove(){ this.section.remove() }
+
 /**
  * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
  * de l'écran.

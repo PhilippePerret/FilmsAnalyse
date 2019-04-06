@@ -36,6 +36,7 @@ static updateAll(){
       }
     })
   }
+  this.a.modified = true
 }
 
 /**
@@ -68,7 +69,7 @@ static reset(){
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
-  console.log("Scène courante mise à ", s)
+  // console.log("Scène courante mise à ", s)
   this._current = s
   this.a._currentScene = s
   this.a.videoController.section.find('div.mark-current-scene').html(s ? s.as('short', FORMATED) : '...')
@@ -94,7 +95,8 @@ static get count(){return this._count||defP(this,'_count', Object.keys(this.scen
 static get(numero)      {return this.scenes[numero]}
 
 /**
-  Retoune la scène correspondant à l'event +event_id+
+  Retoune la scène ayant l'ID +event_id+ (en ne perdant pas de vue que
+  la scène est un event elle-même, à partir de la version 0.5 de l'application)
 
   @param    {Number}  event_id    ID de l'event de la scène
             Rappel : une scène, c'est aussi un event de class {FAEscene}
@@ -127,6 +129,7 @@ static get byId(){return this._by_id||defP(this,'_by_id',this.doLists().id)}
 static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().time)}
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
 static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
+
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event

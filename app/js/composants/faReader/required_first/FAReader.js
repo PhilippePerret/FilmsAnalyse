@@ -41,12 +41,17 @@ afterBuilding(){
 }
 
 /**
- * Vide tout le reader
- * Ne pas la confondre avec la méthode `resetBeyond` suivante
+  Quand on charge une autre analyse, il faut détruire le
+  reader de l'analyse courante.
+  Ce qui revient à détruire sa flying-window.
+**/
+remove(){ this.fwindow.remove() }
+
+/**
+  Vide tout le reader
+  Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
-reset(){
-  this.container.innerHTML = ''
-}
+reset(){ this.container.innerHTML = ''}
 
 /**
  * Vide le reader, mais seulement en supprimant les évènements qui se trouvent

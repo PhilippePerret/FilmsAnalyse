@@ -155,28 +155,6 @@ get Fonds(){
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 
 // ---------------------------------------------------------------------
-/**
- * Méthode appelé quand l'analyse est prête, c'est-à-dire que toutes ses
- * données ont été chargées et traitées. Si un fichier vidéo existe, on le
- * charge.
- */
-onReady(){
-  if('undefined' === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
-  if('undefined' === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
-  if('undefined' === typeof FAStater) return this.loadStater(this.onReady.bind(this))
-  this.videoController = new VideoController(this)
-  this.locator = new Locator(this)
-  this.reader  = new FAReader(this)
-  this.init()
-  this.locator.init()
-  this.locator.stop_points = this.stopPoints
-  this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
-  EventForm.init()
-  FAEscene.init()
-  FAPersonnage.reset().init()
-  this.setOptionsInMenus()
-  this.videoController.init()
-}
 
 /**
  * Méthode appelée lorsque la vidéo elle-même est chargée. C'est le moment
@@ -296,9 +274,9 @@ displayAnalyseState(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if( NONE === typeof FAWriter){
-    return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
-  }
+  // if( NONE === typeof FAWriter){
+  //   return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
+  // }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
 }
@@ -310,7 +288,7 @@ createNewEventer(){
   if( NONE === typeof FAEventer){
     return System.loadComponant('faEventer', this.createNewEventer.bind(this))
   }
-  FAEventer.createNew()
+  return FAEventer.createNew() // on le retourne pour les tests
 }
 // La version courante de l'analyse
 get hVersion(){return this._hversion || '0.0.1'}
@@ -340,12 +318,12 @@ get methodAfterSaving(){return this._methodAfterSaving}
 set methodAfterSaving(v){this._methodAfterSaving = v}
 
 forEachEvent(method, options){
-  if(undefined===options){options = {}}
+  if(undefined === options){options = {}}
   var i   = options.from || 0
     , len = options.to || this.events.length
     ;
   for(;i<len;++i){
-    method(this.events[i])
+    if(false === method(this.events[i])) break // pour interrompre
   }
 }
 
@@ -359,9 +337,9 @@ forEachEvent(method, options){
  * Attention : la méthode est aussi appelée (en cascade) au chargement
  * de l'analyse. +whenLoading+ est true, dans ce cas-là
  */
-addEvent(nev, whenLoading) {
-  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev, whenLoading)
-  if(!whenLoading) FAStater.update()
+addEvent(nev) {
+  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
+  FAStater.update()
 }
 
 // Pour éditer l'event d'identifiant +event_id+
@@ -463,7 +441,7 @@ get SAVED_FILES(){
 get PROP_PER_FILE(){
   if(undefined === this._prop_per_path){
     this._prop_per_path = {}
-    this._prop_per_path[this.eventsFilePath]  = 'eventsSaved'
+    this._prop_per_path[this.eventsFilePath]  = 'eventsIO'
     this._prop_per_path[this.dataFilePath]    = 'data'
   }
   return this._prop_per_path
@@ -545,9 +523,12 @@ get iofileEvent() {return this._iofileEvent||defP(this,'_iofileEvent', new IOFil
 get iofileData()  {return this._iofileData||defP(this,'_iofileData',    new IOFile(this.dataFilePath))}
 
 /**
- * Retourne les évènements sous forme de données simplifiées
+  Retourne les évènements sous forme de données simplifiées, pour la sauvegarde
+
+  @return {Object} Les données de tous les events de l'analyse courante.
+
  */
-get eventsSaved(){
+get eventsIO(){
   var eSaveds = []
   for(var e of this.events){eSaveds.push(e.data)}
   return eSaveds
@@ -555,19 +536,28 @@ get eventsSaved(){
 
 // Prend les données dans le fichier events.json et les dispatche dans
 // l'instance d'analyse (au début du travail, en général)
-set eventsSaved(v){
+/**
+  Reçoit les données des events enregistrés et les transforme en instance
+  de leur type.
+  @param {Object} v
+**/
+set eventsIO(eventsData){
   var my = this
-  var last_id = -1
+    , last_id = -1
+    , eventData
   this.events = []
-  for(var d of v){
-    var eClass = eval(`FAE${d.type}`)
-    this.addEvent(new eClass(my, d), true)
-    // Le 'true' ci-dessus permet de dire à la méthode que ce n'est pas
-    // une création d'évènement.
-    if(d.id > last_id){last_id = parseInt(d.id,10)}
+  this.ids    = {}
+  for(eventData of eventsData){
+    var eClass = eval(`FAE${eventData.type}`)
+    var ev = new eClass(my, eventData)
+    this.events.push(ev)
+    this.ids[ev.id] = ev
+    // Pour récupérer le dernier ID unitilisé
+    if(ev.id > last_id){last_id = parseInt(ev.id,10)}
   }
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
   EventForm.lastId = last_id
+  eventsData = null
   my = null
 }
 
@@ -736,7 +726,10 @@ loadWriter(fn_callback){
 loadProtocole(fn_callback){
   return System.loadComponant('faProtocole', fn_callback)
 }
-static loadReader(fn_callback){
+// static loadReader(fn_callback){
+//   return System.loadComponant('faReader', fn_callback)
+// }
+loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)
 }
 

@@ -14,10 +14,15 @@ static newId(){
   return ++ this.last_id
 }
 
-// Méthode principale appelée pour créer un nouvel eventer
+/**
+  Méthode principale appelée pour créer un nouvel eventer
+
+  @return {FAEventer} L'instance créée
+**/
 static createNew(){
   var newEventer = new FAEventer(current_analyse)
   newEventer.show()
+  return newEventer
 }
 
 
