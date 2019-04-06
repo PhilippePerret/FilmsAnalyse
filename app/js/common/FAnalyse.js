@@ -596,7 +596,7 @@ set eventsIO(eventsData){
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    $('#btn-go-to-film-start').css('visibility',(this.filmStartTime===0)?'hidden':'visible')
+    this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?'visible':'hidden')
   }
 
 

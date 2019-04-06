@@ -14,7 +14,6 @@
 
 * [AMÉLIORATIONS]
   - Menu avec décor et sous-décor déjà utilisés (enregistrer les décors dans data.json ? ou dans un autre fichier où on mettrait aussi d'autres données de ce type ?)
-  - Possibilité de verrouiller une analyse (Analyse > Verrouiller) pour empêcher tout changement. Utiliser par exemple pour les analyses qui servent aux tests manuels, qu'il ne faut modifier que si vraiment on sait ce qu'on fait.
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment

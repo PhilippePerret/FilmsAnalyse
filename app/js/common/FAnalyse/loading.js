@@ -29,6 +29,8 @@ FAnalyse.resetAll = function(){
     current_analyse.videoController.remove()
     current_analyse.reader.remove()
 
+    FAEscene.reset()
+
     delete current_analyse.videoController
     delete current_analyse.locator
     delete current_analyse.reader

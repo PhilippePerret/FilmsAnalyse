@@ -70,6 +70,12 @@ static reset(){
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
   // console.log("Scène courante mise à ", s)
+  // try {
+  //   pourvoirdou
+  // } catch (e) {
+  //   console.error('Pour voir qui appelle')
+  //   console.error(e)
+  // }
   this._current = s
   this.a._currentScene = s
   this.a.videoController.section.find('div.mark-current-scene').html(s ? s.as('short', FORMATED) : '...')
@@ -223,9 +229,12 @@ static at(time){
 **/
 static atAndNext(time){
   time = time.round(2)
-  if (time < current_analyse.filmStartTime){
+  console.log("[atAndNext] time:", time)
+  if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
     // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
     return
+  } else if (this.firstScene && time < this.firstScene.time){
+    return {current: null, next: this.firstScene, next_time: this.firstScene.time}
   }
 
   var founded
@@ -240,13 +249,16 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  // console.log("AtAndNext retourne: {current: founded || this.lastScene, next: next_scene}",{current: founded || this.lastScene, next: next_scene})
   return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
 }
 
 /**
   @returns {FAEscene} La dernière scène (ou undefined si inexistante)
 **/
+
+static get firstScene(){
+  return this.sortedByTime[0]
+}
 static get lastScene(){
   return this.sortedByTime[this.count-1]
 }

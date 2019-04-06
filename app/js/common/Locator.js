@@ -341,7 +341,7 @@ addStopPoint(time){
 // Méthodes de données
 
 get startTime(){
-  return this.analyse.filmStartTime // toujours défini
+  return this.a.filmStartTime // toujours défini
 }
 get currentTime(){
   return this.video.currentTime
@@ -530,6 +530,7 @@ actualizeCurrentScene(curt){
   // console.log("-> actualizeCurrentScene")
   if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
+  // console.log("resat:", resat)
   if(resat){
     FAEscene.current = resat.current
     this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
