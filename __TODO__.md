@@ -3,7 +3,6 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - Pouvoir définir la version de l'analyse (et passer à une version supérieure)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
@@ -11,6 +10,7 @@
 
 * Développer la méthode `FAEvent.as('<format>', FLAG)`.
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
+  - Il faut traiter les event, les documents et les temps associés.
 
 * PUBLICATION
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
