@@ -1,15 +1,16 @@
 # SUR LE GRILL
 
 * [BUGS]
-  - Les boutons "scène suivante" et "scène précédente" règlent mal le temps (on est au moins 10 secondes avant la scène suivante)
 
 * [AMÉLIORATIONS]
+  - Pouvoir définir la version de l'analyse (et passer à une version supérieure)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
   - rejoindre la dernière scène définie
 
-* Développer la méthode `as('<format>', FLAG)`, avec flag qui pourrait être `LINKED|NUMBERED|TIMED`
+* Développer la méthode `FAEvent.as('<format>', FLAG)`.
+  Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
 
 * PUBLICATION
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.

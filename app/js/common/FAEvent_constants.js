@@ -11,4 +11,5 @@ const DUREE     = 8
 const TIME      = 16
 const FORMATED  = 32
 const NUMERO    = 64
-const NUM       = 64
+const NUM       = 128
+// 256

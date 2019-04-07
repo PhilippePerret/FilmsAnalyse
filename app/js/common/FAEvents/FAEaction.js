@@ -24,24 +24,26 @@ class FAEaction extends FAEvent {
     this.actionType   = data.actionType
   }
 
-  // Propriétés propres
-  static get OWN_PROPS(){return ['actionType']}
+get htype(){ return 'Action' }
 
-  get isValid(){
-    var errors = []
+// Propriétés propres
+static get OWN_PROPS(){return ['actionType']}
 
-    // Définir ici les validité
-    this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'content'})
+get isValid(){
+  var errors = []
 
-    if(errors.length){super.onErrors(this, errors)}
-    return errors.length == 0
-  }
+  // Définir ici les validité
+  this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'content'})
 
-  get div(){
-    var n = super.div
+  if(errors.length){super.onErrors(this, errors)}
+  return errors.length == 0
+}
 
-    return n
-  }
+get div(){
+  var n = super.div
+  return n
+}
+
 }
 
 FAEaction.dispatchData()
