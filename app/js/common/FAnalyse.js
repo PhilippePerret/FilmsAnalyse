@@ -198,7 +198,7 @@ updateState(){
 
 init(){
   // On met le titre dans la fenêtre
-  window.document.title = `Analyse du film « ${this.title} »`
+  window.document.title = `Analyse du film « ${this.title} (v. ${this.version}) »`
   // Si l'analyse courante définit une vidéo, on la charge et on prépare
   // l'interface. Sinon, on masque la plupart des éléments
   this.videoController.setVideoUI(!!this.videoPath)
@@ -269,6 +269,11 @@ displayAnalyseState(){
   FAStater.displayFullState()
 }
 
+newVersionRequired(){
+  var method = require('./js/tools/new_version.js')
+  method.bind(this)()
+}
+
 /**
  * Méthode qui ouvre le writer
  */
@@ -290,8 +295,6 @@ createNewEventer(){
   }
   return FAEventer.createNew() // on le retourne pour les tests
 }
-// La version courante de l'analyse
-get hVersion(){return this._hversion || '0.0.1'}
 
 // ---------------------------------------------------------------------
 // MÉTHODES OPTIONS
@@ -640,7 +643,7 @@ get kindle_path(){return this.mobi_path}
 get kindle_name(){return this.mobi_name}
 
 defExportPath(type){
-  var n = this[`_${type}_name`] = `${this.filmId}-v${this.hVersion}.${type}`
+  var n = this[`_${type}_name`] = `${this.filmId}-v${this.version}.${type}`
   var p = this[`_${type}_path`] = path.join(this.folderExport, this[`_${type}_name`])
   return {path: p, name: n}
 }

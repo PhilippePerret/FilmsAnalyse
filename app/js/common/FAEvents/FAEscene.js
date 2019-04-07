@@ -316,95 +316,58 @@ constructor(analyse, data){
   this.sceneType  = data.sceneType
 }
 
-
 // ---------------------------------------------------------------------
 //  HELPERS
-/**
-  Renvoie toutes les présentations possible de la scène
 
-  @param {String} format  Le format de retour
-  @param {Number} flag    Le drapeau permettant de déterminer les détails
-                          du retour, comme la présence des boutons d'édition,
-                          l'ajout de la durée, etc.
-                          DUREE|TIME|LINKED
-**/
-as(format, flag){
-  if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut
-  flag = flag | LINKED
-
-  // console.log("-> as(format, flag)", format, flag)
-  var str
-  switch (format) {
-    case 'short':
-      str = `sc. ${this.numero}. ${this.pitch}`
-      break
-    default:
-      str = this.pitch
-  }
-
-  if(flag & DUREE) str += ` (${this.hduree})`
-
-  if(flag & FORMATED) str = DFormater(str)
-
-  if(flag & LINKED){
-    str = `<a onclick="showScene(${this.id})">${str}</a>`
-  }
-  return str
-}
-
+get htype(){ return 'Scène' }
 
 get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hduree)}
 
 /**
-* Méthode d'export de la scène
+  Sortie complète de l'event, par exemple pour le reader
 **/
-export(options){
-  return this.export_html()
+asFull(opts){
+  if(undefined === opts) opts = {}
+  let str = ''
+  opts.noTime = true
+  str += this.asBook(opts)
+  str += this.divNote(opts)
+  str += this.divAssociates(opts)
+  return str
 }
-export_md(options){
-  return `
-
-\`\`\`heading
-${this.numero} ${this.lieu}-${this.effet} — ${this.decor.toUpperCase()}
-\`\`\`
-
-\`\`\`pitch
-${this.pitch}
-\`\`\`
-
-  `
+asShort(opts){
+  return `sc. ${this.numero}. ${this.pitch}`
 }
-
-export_html(options){
-  return DFormater(
-            this.f_scene_heading.outerHTML
+asBook(opts){
+  return  this.f_scene_heading(opts).outerHTML
           + this.f_pitch.outerHTML
-        )
-
 }
 
-get f_scene_heading(){
-  if(undefined === this._f_scene_heading){
-    var headingElements = [
-        DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `})
-      , DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `})
-      , DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()})
-      , DCreate('SPAN', {inner:' – '})
-      , DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()})
-    ]
-    if(this.sous_decor){
-      headingElements.push(DCreate('SPAN', {inner: ' : '}))
-      headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
-    }
-    headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
-    // On peut assembler l'entête
-    this._f_scene_heading = DCreate('DIV', {
-      class: 'scene-heading'
-    , append: headingElements
-    })
+linked(str){
+  return `<a onclick="showScene(${this.id})">${str}</a>`
+}
+
+f_scene_heading(opts){
+  if(undefined === opts) opts = {}
+  var headingElements = [
+      DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `})
+    , DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `})
+    , DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()})
+    , DCreate('SPAN', {inner:' – '})
+    , DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()})
+  ]
+  if(this.sous_decor){
+    headingElements.push(DCreate('SPAN', {inner: ' : '}))
+    headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
   }
-  return this._f_scene_heading
+  if(!opts.noTime){
+    headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
+  }
+  // On peut assembler l'entête
+  return DCreate('DIV', {
+    class: 'scene-heading'
+  , append: headingElements
+  })
 }
 get f_pitch(){
   if(undefined === this._f_pitch){

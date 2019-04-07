@@ -4,6 +4,9 @@ class FAEdialog extends FAEvent {
   // ---------------------------------------------------------------------
   //  CLASSE
 
+  // Propriétés propres au dialogue
+  static get OWN_PROPS(){return ['dialType']}
+
   // Pour dispatcher les données propre au type
   // Note : la méthode est appelée en fin de fichier
   static dispatchData(){
@@ -16,16 +19,16 @@ class FAEdialog extends FAEvent {
       , type: 'dialog'
     }
   }
-  // ---------------------------------------------------------------------
-  //  INSTANCE
-  constructor(analyse, data){
-    super(analyse, data)
-    this.type       = 'dialog'
-    this.dialType   = data.dialType
+// ---------------------------------------------------------------------
+//  INSTANCE
+constructor(analyse, data){
+  super(analyse, data)
+  this.type       = 'dialog'
+  this.dialType   = data.dialType
 }
 
-// Propriétés propres au dialogue
-static get OWN_PROPS(){return ['dialType']}
+get htype(){ return 'Dialogue' }
+
 
 get isValid(){
   var errors = []

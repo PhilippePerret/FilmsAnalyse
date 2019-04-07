@@ -15,6 +15,7 @@ static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'conte
 static addModified(evt){
   if(undefined === this.modifieds) this.modifieds = []
   this.modifieds.push(evt.id)
+  this.a.modified = true
 }
 
 /**
@@ -76,8 +77,9 @@ constructor(analyse, data){
   this.note     = data.note     // String
 
   // Les éléments en relation
-  this.events     = data.events || []
-  this.documents  = data.documents || []
+  this.events     = data.events     || []
+  this.documents  = data.documents  || []
+  this.times      = data.times      || []
 
 }
 
@@ -85,6 +87,7 @@ constructor(analyse, data){
 // On utilise aussi les sauvegardes de protection en mémorisant l'identiant
 // de cet event qu'il faudra sauvegarder
 set modified(v){
+  // console.log(`-> modified de ${this.id} (${this.titre})`)
   this._modified = v
   if(v){
     FAEvent.addModified(this)
@@ -188,6 +191,12 @@ addEvent(event_id){
   return true // même remarque que ci-dessus
 }
 
+addTime(time){
+  if(this.times.indexOf(time) < 0){
+    this.times.push(time)
+    this.modified = true
+  }
+}
 // ---------------------------------------------------------------------
 
 /**
@@ -314,6 +323,14 @@ get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.def
 
 get domId(){ return `revent-${this.id}`}
 
+/**
+  Retourne le div qui s'affichera dans le reader
+
+  Son contenu propre provient de la méthode `as('full')` donc
+  de la méthode `asFull` qui devrait être propre à l'event.
+
+  @return {DOMElement} Le div à placer dans le reader
+**/
 get div(){
   if (undefined === this._div){
     // L'horloge des outils
@@ -326,7 +343,7 @@ get div(){
     var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
 
     var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
-    var cont = DCreate('DIV', {class:'content', inner: this.contenu})
+    var cont = DCreate('DIV', {class:'content', inner: this.as('full', FORMATED)})
 
     this._div = DCreate('DIV',{
       id: this.domId
@@ -339,6 +356,118 @@ get div(){
   return this._div
 }
 
+
+/**
+  Renvoie toutes les présentations possible de la scène
+
+  @param {String} format  Le format de retour
+  @param {Number} flag    Le drapeau permettant de déterminer les détails
+                          du retour, comme la présence des boutons d'édition,
+                          l'ajout de la durée, etc.
+                          DUREE|TIME|LINKED
+  @param {Object} options Options à utiliser (unisité pour le moment)
+**/
+as(format, flag, opts){
+  if (undefined === flag) flag = 0
+  // Pour le moment, on lie par défaut (NON !)
+  // Pour le moment, on corrige par défaut
+  flag = flag | FORMATED
+
+  // console.log("-> as(format, flag)", format, flag)
+
+  var str
+  switch (format) {
+    case 'short':
+      str = this.asShort(opts)
+      break
+    case 'book':
+      // Sortie pour le livre
+      str = this.asBook(opts)
+      break
+    case 'full':
+      // Affiche complet, avec toutes les informations
+      str = this.asFull(opts)
+      break
+    case 'associate':
+      str = this.asAssociate(opts)
+      break
+    default:
+      str = this.title
+  }
+
+  if(flag & DUREE) str += ` (${this.hduree})`
+
+  if(flag & FORMATED) str = DFormater(str)
+
+  if(flag & LINKED){
+    str = this.linked(str)
+  }
+  return str
+}
+
+// Version courte commune
+asShort(opts){
+  let str = ''
+  str += `Ev.${this.id} « ${this.titre} »`
+  str += this.warnCommonMethod
+  return str
+}
+// Version livre commune
+asBook(opts){
+  let str = ''
+  str += this.warnCommonMethod
+  return str
+}
+// Version complète (reader) commune
+// C'est la version qui est ajoutée au `div` contenant les
+// boutons d'édition, etc.
+asFull(opts){
+  let str = ''
+  str += `<div>${this.asShort(opts)}</div>`
+  str += this.warnCommonMethod
+  return str
+}
+// Version associée, quand l'event est présenté en tant
+// qu'associé dans un autre event
+asAssociate(opts){
+  let str = ''
+  str += `<label class="type">${this.htype} : </label>`
+  str += `<span class="content">${this.content}</span>`
+  return str
+}
+
+/**
+  Méthode générale pour lier l'event
+**/
+linked(str){
+  return `<a onclick="showEvent(${this.id})">${str}</a>`
+}
+
+// Méthode de warning pour indiquer que la version d'affichage courante
+// est une version commune à tous les events, pas adaptée à l'event en
+// particulier. Elle s'affichera jusqu'à ce que l'event en particulier
+// possède sa propre méthode d'helper.
+get warnCommonMethod(){
+  return '<div class="small"><span class="small">Cette version est la version commune d’affichage de l’event. Pour une version personnalisée, créer la méthode `asFull`.</span></div>'
+}
+
+divNote(opts){
+  if(this.note){
+    return `<div class="note"><label>Note : </label>${this.note}</div>`
+  } else {
+     return ''
+  }
+}
+
+/**
+  Retourne le div des éléments associés qui ajoute des procédés,
+  des notes, des informations, etc.
+**/
+divAssociates(opts){
+  let str = ''
+  this.events.forEach( ev => str += ev.as('associate', FORMATED, opts) )
+  return str
+}
 
 get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 
@@ -506,11 +635,10 @@ defineDomReaderObj(){
 
 // Pour la compatibilité avec les autres types
 class FAEevent extends FAEvent {
-  constructor(analyse, data){
-    super(analyse, data)
-    this.type = 'event'
-  }
-  get div(){
-    return super.div
-  }
+constructor(analyse, data){
+  super(analyse, data)
+  this.type = 'event'
+}
+get htype(){return 'Évènement'}
+
 }

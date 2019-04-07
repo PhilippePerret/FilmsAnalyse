@@ -20,6 +20,7 @@ Object.defineProperties(FAnalyse.prototype,{
       return {
           folder:             this.folder
         , title:              this.title
+        , version:            this.version
         , locked:             !!this.locked
         , filmStartTime:      this.filmStartTime
         , filmEndTime:        this.filmEndTime
@@ -31,6 +32,7 @@ Object.defineProperties(FAnalyse.prototype,{
     }
   , set(v){
       this.title                = v.title
+      this.version              = v.version
       this.locked               = !!v.locked || false
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
@@ -52,6 +54,11 @@ Object.defineProperties(FAnalyse.prototype,{
 , title: {
     get(){return this._title || defP(this,'_title', path.basename(this.folder))}
   , set(v){this._title = v ; this.modified = true}
+  }
+
+, version: {
+    get(){return this._version || defP(this,'_version', '0.0.1')}
+  , set(v){this._version = v ; this.modified = true}
   }
 
 , filmId:{get(){return this._filmId||defP(this,'_filmId',this.title.camelize())}}
