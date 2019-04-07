@@ -464,7 +464,11 @@ setFormValues(){
   // Les valeurs communes
   for(prop of FAEvent.OWN_PROPS){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
-    this.jqField(prop).val(this.event[prop])
+    if (this.jqField(prop).length){
+      this.jqField(prop).val(this.event[prop])
+    } else {
+      // console.log("Le champs pour la propriété n'existe pas :", prop)
+    }
     // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
   }
   // Réglage spécial des temps 'time', 'duration', 'tps_reponse'

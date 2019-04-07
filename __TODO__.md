@@ -3,6 +3,11 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - affichage reader + assemblage, traiter :
+    + les notes des events
+    + les event associés, par type
+    + les documents associés
+    + les temps associés
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment

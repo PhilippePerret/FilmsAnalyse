@@ -113,7 +113,7 @@ static checkOverlaps(wf){
   }
 }
 static unsetCurrent(wf){
-  if(!wf) return
+  if(!wf || !this.current) return
   if(this.current.id !== wf.id) return
   this.current.bringToBack()
   delete this.current

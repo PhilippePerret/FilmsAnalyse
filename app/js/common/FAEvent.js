@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times']}
 
 /**
   Mémorise tous les events qui ont été créés ou modifiés au cours
@@ -509,7 +509,7 @@ get data(){
 set data(d){
   var fieldName ;
   for(var prop of FAEvent.OWN_PROPS){
-    if(undefined === d[prop] && null === d[prop]) continue
+    if(undefined === d[prop] || null === d[prop]) continue
     this[prop] = d[prop]
   }
 }
