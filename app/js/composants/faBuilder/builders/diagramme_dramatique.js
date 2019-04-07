@@ -1,6 +1,7 @@
 'use strict'
 
 module.exports = function(options){
+  let my = this
   my.log("* Construction du diagramme dramatique")
   let str = ''
   str += '<h1 id="diagramme_dramatique-title">Diagramme dramatique</h1>'

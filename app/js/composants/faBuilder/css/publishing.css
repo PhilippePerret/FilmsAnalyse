@@ -10,6 +10,7 @@
 
 body {
   width:14.8cm;
+  margin-bottom:200px;
 }
 body, body * {
   font-family:Palatino;/*, Georgia, Baskerville*/
@@ -34,6 +35,7 @@ pre, pre * {
   font-size:10.7pt;
 }
 
+.center{text-align:center;}
 
 .explication {
   font-style:italic;
@@ -65,11 +67,13 @@ div.libval {
   margin-bottom:8px;
   vertical-align:top;
 }
+div.libval > span {
+  display:inline-block;
+}
 div.libval > label:nth-child(1),
 div.libval > span:nth-child(1),
 div.libval > span:nth-child(2)
 {
-  display:inline-block;
   vertical-align:top;
   /* border:1px dashed green; */
 }
@@ -78,7 +82,6 @@ div.libval > span.label
 {
   color:#999999;
   font-family:Arial,Helvetica;
-  text-align:left;
 }
 div.libval.normal > label {
   width:25%;
@@ -99,6 +102,18 @@ div.libval.w40-60 > span:nth-child(2) {width:58%;}
 
 div.libval.w50-50 > span:nth-child(1) {width:48%;}
 div.libval.w50-50 > span:nth-child(2) {width:48%;}
+
+div.libval.w60-40 > span:nth-child(1) {width:58%;}
+div.libval.w60-40 > span:nth-child(2) {width:38%;}
+
+div.libval.w60-20-20 > span:nth-child(1) {width:58%;}
+div.libval.w60-20-20 > span:nth-child(2) {width:18%;}
+div.libval.w60-20-20 > span:nth-child(3) {width:18%;}
+
+div.libval.w10-50-20-20 > span:nth-child(1) {width:8%;}
+div.libval.w10-50-20-20 > span:nth-child(2) {width:50%;}
+div.libval.w10-50-20-20 > span:nth-child(3) {width:18%;}
+div.libval.w10-50-20-20 > span:nth-child(4) {width:18%;}
 
 /*
   Un div un peu comme libval ci-dessus, mais qui convient

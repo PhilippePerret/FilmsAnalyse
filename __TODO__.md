@@ -14,24 +14,16 @@
 
 * PUBLICATION
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
-  Quelques essais sont à faire :
-    - sur le mobi (kindle), les display-inline ne sont pas respectés à la lettre
-    - sur le epub, ça prend trop de place donc les textes passent à la ligne
-    => essayer un fonctionnement avec les grids pour voir si ça marcherait mieux
-    => Pour faire ces tests, on pourrait avoir un builder fait exprès, par exemple 'test_mef.js'
-       Il suffit de mettre `BUILD test mef` dans le script d'assemblage pour produire les essais contenus dans le fichier
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  EN COURS : voir les problèmes de formatage des eBooks etc.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
-    - Mettre toujours un id dans les titres
+    - Mettre toujours un id dans les titres de chapitres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-  - faire les statistiques par décor
 
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
@@ -43,6 +35,7 @@
     - une valeur globale de pourcentage
     - des descriptions plus précises de ce qui est fait et ce qui
       reste à faire.
+    - ces valeurs seraient enregistrées
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 

@@ -144,21 +144,37 @@ static get dataDecors(){return this._dataDecors||defP(this,'_dataDecors',this.ge
   valeur la liste des sous-décors qu'il possède.
 **/
 static getDataDecors(){
-  var d = {}
+  var dinst = {}  // table avec des instances
+
   this.forEachScene(function(scene){
     // console.log("scene:",scene)
-    if(scene.decor && scene.decor != '' && undefined === d[scene.decor]){
-      d[scene.decor] = {decor: scene.decor, length: 0, sous_decors: {}}
-    }
-    if(scene.sous_decor && scene.sous_decor != '' && undefined === d[scene.decor].sous_decors[scene.sous_decor]){
-      d[scene.decor].sous_decors[scene.sous_decor] = {sous_decor: scene.sous_decor}
-      d[scene.decor].length ++
+    if(scene.decor && scene.decor != ''){
+      if(undefined === dinst[scene.decor]){
+        dinst[scene.decor] = new FADecor(scene.decor)
+      }
+      dinst[scene.decor].addScene(scene.numero)
+      // Il faut que le décor existe pour que le sous-décor puisse
+      // exister, c'est pour ça qu'on le met là.
+      if(scene.sous_decor && scene.sous_decor != ''){
+        if(undefined === dinst[scene.decor].sousDecor(scene.sous_decor)){
+          dinst[scene.decor].addSousDecor(scene.sous_decor)
+        }
+        dinst[scene.decor].sousDecor(scene.sous_decor).addScene(scene.numero)
+      }
     }
   })
-  // console.log("Données décors :", d)
-  return d
+  // console.log("Données décors :", dinst)
+  return dinst
 }
 
+static get decorsCount(){
+  return Object.keys(this.dataDecors).length
+}
+static forEachDecor(fn){
+  for(var decor in this.dataDecors){
+    fn(this.dataDecors[decor] /* instance FADecor */)
+  }
+}
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
@@ -431,7 +447,7 @@ checkForDecor(){
   if(this.decor){
     if(undefined === FAEscene.dataDecors[this.decor]){
       delete FAEscene._dataDecors
-    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sous_decors[this.sous_decor]){
+    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sousDecor(this.sous_decor)){
       delete FAEscene._dataDecors
     }
   }

@@ -22,9 +22,10 @@ const FAStatistiques = {
 **/
 , output(options){
     // Les "briques" des statistiques
-    let appends = []
+    var appends = []
     appends.push(this.divStatsPersonnages())
-    appends.push(this.divStatsScenes())
+    FAEscene.count && appends.push(this.divStatsScenes())
+    FAEscene.decorsCount && appends.push(this.divStatsDecors())
     // Le div final (body)
     let div = DCreate('DIV', {class:'body', append:appends})
 
@@ -62,7 +63,6 @@ Nombre personnages   ${FAPersonnage.count}
 **/
 , divStatsScenes(){
     var my = this
-
     return DCreate('DIV', {class: 'stats-scenes', append:[
       DCreate('H2', {inner: 'Statistiques sur les scènes'})
     , DLibVal(FAEscene, 'count', 'Nombre de scènes', 'w40-60')
@@ -73,6 +73,33 @@ Nombre personnages   ${FAPersonnage.count}
     , DCreate('DIV', {class: 'div', append: FAEscene.perMaxLongueur()})
     , DCreate('H3', {inner: 'Les dix scènes les plus courtes'})
     , DCreate('DIV', {class: 'div', append: FAEscene.perMinLongueur()})
+    ]})
+}
+
+/**
+  Bloc principal des statistiques sur les DÉCORS
+
+  Il consiste en la liste complète des décors et sous-décors avec,
+  pour chacun d'eux, le temps d'utilisation dans le film.
+**/
+, divStatsDecors(){
+    let my = this
+
+    var decorsList = []
+    decorsList.push(DCreate('DIV', {class:'libval w60-20-20', append:[
+      DCreate('SPAN', {inner: 'Décor/sous-décor', class: 'label'})
+    , DCreate('SPAN', {inner: 'Scènes', class: 'label center'})
+    , DCreate('SPAN', {inner: 'Durée',   class: 'label center'})
+    ]}))
+
+    FAEscene.forEachDecor(function(decor){
+      decorsList.push(decor.asStats())
+    })
+
+    return DCreate('DIV', {class: 'stats-decors', append:[
+      DCreate('H2', {inner:'Statistiques sur les décors'})
+    , DLibVal(FAEscene, 'decorsCount', 'Nombre de décors', 'w40-60')
+    , DCreate('DIV', {append: decorsList})
     ]})
 }
 
@@ -201,3 +228,58 @@ FAPersonnage.prototype.formatePresence = function(){
   let otime = new OTime(this.presence)
   return `${otime.hduree} (${asPourcentage(this.a.duration, this.presence)})`
 }
+
+
+FADecor.prototype.asStats = function(){
+  var divsSousDecors = []
+  for(var sdecor in this.sousDecors){
+    divsSousDecors.push(this.sousDecors[sdecor].asStats())
+  }
+  return DCreate('DIV', {append:[
+    DCreate('DIV', {class: 'libval w60-20-20', append:[
+        DCreate('SPAN', {inner: this.name})
+      , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
+      , DCreate('SPAN', {inner: this.hduration, class: 'center'})
+      ]})
+  , DCreate('DIV', {append: divsSousDecors})
+  ]})
+}
+
+FASousDecor.prototype.asStats = function(){
+  return DCreate('DIV', {class: 'libval w10-50-20-20', append:[
+    DCreate('SPAN', {inner: ' '})
+  , DCreate('SPAN', {inner: this.name})
+  , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
+  , DCreate('SPAN', {inner: this.hduration, class: 'center'})
+  ]})
+}
+
+function dureeAndPctForScenesNumeros(numeros){
+  var d = 0
+  numeros.forEach(num => d += FAEscene.getByNumero(num).duree)
+  d = new OTime(d)
+  return [d, asPourcentage(current_analyse.duration, d.seconds)]
+}
+
+Object.defineProperties(FADecor.prototype,{
+  hduration:{
+    get(){
+      if (undefined === this._hduration){
+        let [otime, pourcentage] = dureeAndPctForScenesNumeros(this.scenes)
+        this._hduration = `${otime.hduree} (${pourcentage})`
+      }
+      return this._hduration
+    }
+  }
+})
+Object.defineProperties(FASousDecor.prototype,{
+  hduration:{
+    get(){
+      if (undefined === this._hduration){
+        let [otime, pourcentage] = dureeAndPctForScenesNumeros(this.scenes)
+        this._hduration = `${otime.hduree} (${pourcentage})`
+      }
+      return this._hduration
+    }
+  }
+})

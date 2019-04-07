@@ -298,9 +298,9 @@ peupleDecors(){
 }
 peupleSousDecors(decor){
   this.menuSousDecors.html('')
-  if (FAEscene.dataDecors[decor].length){
-    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: 'Choisir le sous-décor…'}))
-    for(var sdecor in FAEscene.dataDecors[decor].sous_decors){
+  if (FAEscene.dataDecors[decor].sousDecorsCount){
+    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: `Sous-décor de « ${decor} »…`}))
+    for(var sdecor in FAEscene.dataDecors[decor].sousDecors){
       this.menuSousDecors.append(DCreate('OPTION',{value:sdecor, inner:sdecor}))
     }
   }

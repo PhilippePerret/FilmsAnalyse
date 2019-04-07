@@ -14,7 +14,7 @@
 .inline {display:inline-block;}
 .inline90 {
   display:inline-block;
-  width: 90;
+  width:90;
 }
 
 /* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
