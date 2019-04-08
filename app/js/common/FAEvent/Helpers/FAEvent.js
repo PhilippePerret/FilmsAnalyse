@@ -60,7 +60,6 @@ as(format, flag, opts){
 ,
 // Version courte commune
 asShort(opts){
-  console.log("--> [Main]FAEvent#asShort")
   let str = ''
   str += `« ${this.titre} » — ${this.content}`
   if(!opts || !opts.no_warm) str += this.warnCommonMethod

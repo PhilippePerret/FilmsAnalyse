@@ -14,7 +14,7 @@ Object.assign(FAEscene.prototype,{
 asShort(opts){
   // console.log("-> FAEscene#asShort")
   let str = ''
-  if (this.resume.match(new RegExp(`^${this.pitch}`))){
+  if (this.resume.match(new RegExp(`^${RegExp.escape(this.pitch)}`))){
     return this.resume
   } else {
     return `sc. ${this.numero}. ${this.pitch} — ${this.resume}`

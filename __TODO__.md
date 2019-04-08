@@ -4,7 +4,7 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - Construction du graphique des QRD
+  - Intitulé de scène : passer tout en majuscules
   - construction du graphique de la dynamique narrative
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
