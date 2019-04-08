@@ -104,6 +104,7 @@ load(){
     this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
     EventForm.init()
     FAEscene.init()
+    FAEqrd.reset().init()
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()

@@ -17,6 +17,8 @@
   width:90;
 }
 
+.warning{color:red;}
+
 /* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
 button.main-button {
   -webkit-appearance: none;

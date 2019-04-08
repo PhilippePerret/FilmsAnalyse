@@ -146,6 +146,9 @@ set duration(v){
 }
 get duration(){return this._duration || (this.type === 'scene' ? 60 : 10)}
 
+// Alias
+get description(){return this.content}
+
 // ---------------------------------------------------------------------
 //  Méthodes d'association
 

@@ -4,10 +4,10 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - Au lieu de "Times associés", il faut "Temps associés"
-  - Traiter les préparations paiement
   - Traiter les QRD
     + le graphique des QRD
+  - Mettre en exergue les events quand le temps passe dessus
+  - Traiter les préparations paiement
 
 * [VÉRIFICATIONS]
   - Vérifier que les temps associés s'affichent bien.
