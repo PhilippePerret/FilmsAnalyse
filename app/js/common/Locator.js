@@ -59,6 +59,7 @@ togglePlay(ev){
     this.playing = false
     this.desactivateHorloge()
     this.setPlayButton(this.playing)
+    this.stopWatchTimerEvent()
   } else {
     //
     // => PLAY
@@ -86,6 +87,10 @@ togglePlay(ev){
         this.setPlayButton(this.playing)
       });
     }
+    // On redémarre la surveillance des temps par les events du
+    // reader pour qu'ils se mettent en exergue quand le temps
+    // passe sur eux.
+    this.restartWatchTimerEvent()
   }
   // console.log("<- togglePlay")
 }
@@ -231,9 +236,23 @@ setPlayButton(running){
  * Note : la méthode est appelée toutes les 3 secondes
  */
 showEventsAt(time){
-  this.eventsAt(time).forEach(ev => ev.showDiffere())
+  this.eventsAt(time).forEach(ev => {if(!ev.shown) ev.showDiffere()})
 }
-
+/**
+  Méthode qui arrête la surveillance des events affichés dans
+  le reader (quand on arrête la lecture)
+**/
+stopWatchTimerEvent(){
+  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.stopWatchingTime()})
+}
+/**
+  Méthode contraire à la méthode précédente, qui relance la
+  surveillance des events affichés dans le reader, pour savoir
+  si on passe par leur temps.
+**/
+restartWatchTimerEvent(){
+  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.startWatchingTime()})
+}
 /**
  * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
  * défini pour le film

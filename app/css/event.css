@@ -12,6 +12,11 @@
   margin-bottom:3px;
 }
 
+.event.current,
+.event.current * {
+  background-color:#EEFFEE;
+}
+
 /* Quand on le draggue */
 .event.myHighlight{
   border:2px solid red;

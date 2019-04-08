@@ -233,6 +233,8 @@ showDiffere(){
  * Pour afficher l'évènement dans le reader de l'analyse
  */
 show(){
+  // console.log("-> show", this.id)
+  if(this.shown === true) return
   if(this.jqReaderObj && this.jqReaderObj.length){
     // <= l'objet DOM existe déjà
     // => On a juste à l'afficher
@@ -244,16 +246,47 @@ show(){
     this.observe()
   }
   this.makeAppear() // c'est l'opacité qui masque l'event affiché
+  // Pour se mettre en exergue lorsqu'il est survolé
+  this.startWatchingTime()
   // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
   // old-school
   this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+  this.shown = true
 }
 
 hide(){
   this.makeDesappear()
   this.jqReaderObj.hide()
+  this.stopWatchingTime()
+  this.shown = false
 }
 
+/**
+  Toutes les secondes, l'event va véfiier si le temps courant le
+  survole. Si c'est le cas, il se met en exergue.
+**/
+startWatchingTime(){
+  // console.log("-> startWatchingTime de ", this.id)
+  this.timerWatchingTime = setInterval(this.watchTime.bind(this), 1000)
+  // console.log("<- startWatchingTime de", this.id)
+}
+stopWatchingTime(){
+  // console.log("-> stopWatchingTime")
+  clearInterval(this.timerWatchingTime)
+  delete this.timerWatchingTime
+}
+watchTime(){
+  var rtime = this.a.locator.getRTime()
+  let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
+  if(this.isCurrent != iscur){
+    this.isCurrent = !!iscur
+    this.jqReaderObj[this.isCurrent?'addClass':'removeClass']('current')
+  }
+}
+get end(){
+  if(undefined === this._end) this._end = this.time + this.duration
+  return this._end
+}
 /**
  * Après édition de l'event, on peut avoir à updater son affichage dans
  * le reader. On va faire simplement un remplacement de div (le div du

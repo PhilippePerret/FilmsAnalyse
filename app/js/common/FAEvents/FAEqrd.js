@@ -24,7 +24,6 @@ static get dataType(){
   de réponse dans le bloc (section) prévu pour
 **/
 static init(){
-
   this.forEachQRD(qrd => {
     if(qrd.reponse && qrd.reponse.length) return
     // Sinon, on doit l'écrire dans la section

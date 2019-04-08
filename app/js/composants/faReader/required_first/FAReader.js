@@ -99,10 +99,31 @@ append(ev){
 **/
 forEachEventNode(fn){
   let my = this
-    , eventNodes  = this.container.querySelectorAll('.event')
+    , eventNodes  = this.eventNodes
     , nb_nodes    = eventNodes.length
     , i = 0
   for(;i<nb_nodes;++i){if(false === fn(eventNodes[i])) break}
+}
+
+/**
+  Boucle sur chaque noeud du reader, mais en tant qu'event
+  contrairement à la méthode précédente.
+**/
+forEachEvent(fn){
+  let my = this
+    , eNodes    = this.eventNodes
+    , nb_nodes  = eNodes.length
+    , i = 0
+    , no, ev
+  for(;i<nb_nodes;++i){
+    no = eNodes[i]
+    ev = this.a.ids[parseInt(no.getAttribute('data-id'),10)]
+    if(false === fn(ev)) break
+  }
+}
+
+get eventNodes(){
+  return this.container.querySelectorAll('.event')
 }
 /**
  * Méthode qui permet d'afficher tous les events d'un coup

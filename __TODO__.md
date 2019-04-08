@@ -4,10 +4,9 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - Traiter les QRD
-    + le graphique des QRD
-  - Mettre en exergue les events quand le temps passe dessus
-  - Traiter les préparations paiement
+  - Construction du graphique des QRD
+  - construction du graphique de la dynamique narrative
+  - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
 * [VÉRIFICATIONS]
   - Vérifier que les temps associés s'affichent bien.
@@ -119,3 +118,10 @@
 
 # PEUT-ÊTRE UN JOUR
 * API qui permettrait de récupérer les data des films online (au format json).
+
+
+Comment mettre en exergue les events affichés dans le reader ?
+Si on part du principe qu'il n'y en aura jamais beaucoup, ça peut se faire en lisant
+
+Et si c'était l'event lui-même qui vérifiait ? Tous les events, une fois affichés, mettent en route une méthode setInterval qui regarde le temps courant. Si l'évènement est dans le temps courant (à plus ou moins 2 secondes), il se met en exergue.
+C'est donc dans la méthode show.
