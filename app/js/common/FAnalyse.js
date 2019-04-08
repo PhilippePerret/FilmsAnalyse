@@ -199,7 +199,7 @@ updateState(){
 
 init(){
   // On met le titre dans la fenêtre
-  window.document.title = `Analyse du film « ${this.title} (v. ${this.version}) »`
+  window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
   // Si l'analyse courante définit une vidéo, on la charge et on prépare
   // l'interface. Sinon, on masque la plupart des éléments
   this.videoController.setVideoUI(!!this.videoPath)

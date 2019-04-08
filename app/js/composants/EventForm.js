@@ -326,6 +326,10 @@ domField(prop){
   return DGet(`event-${this.id}-${prop}`)
 }
 
+synchronizePitchAndResume(e){
+  this.jqField('content').val(this.jqField('titre').val())
+}
+
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
@@ -337,6 +341,12 @@ observe(){
   // Toutes les modifications de texte doivent entrainer une activation du
   // bouton de sauvegarde
   this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
+
+  // Quand le type de l'event est scene et que le résumé est vide,
+  // on synchronise le pitch avec le résumé
+  if(this.type === 'scene' && this.isNew){
+    this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
+  }
 
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'

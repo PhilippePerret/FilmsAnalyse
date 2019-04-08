@@ -40,7 +40,7 @@
 
 .event.note {
   font-style:italic;
-  margin-left:2em;
+  /* margin-left:2em; */
   font-size:0.85em;
 }
 

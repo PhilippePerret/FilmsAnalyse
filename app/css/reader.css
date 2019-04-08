@@ -29,3 +29,16 @@ section#section-reader {
   font-style:italic;
   text-align:right;
 }
+
+#reader h3 {
+  margin:0.5em 0 0.3em;
+}
+
+#reader label {
+  color:#999999;
+  font-size:0.75em;
+}
+
+#reader .associates {
+  margin-left:1em;
+}

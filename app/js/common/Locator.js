@@ -420,7 +420,6 @@ activateHorloge(){
     this.desactivateHorloge()
   } else {
     if (!this.hasStartTime){
-      console.log("Pas de start-time => masquage de l'horloge real")
       this.realHorloge.style.visibility = 'hidden'
     }
     this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)

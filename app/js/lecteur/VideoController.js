@@ -29,8 +29,9 @@ constructor(analyse){
   this.id = VideoController.newId()
 
   // Maintenant, on construit toujours la section vidéo
-  console.log(`Construction de la vidéo #${this.id}`)
+  log.info(`---> Build vidéo #${this.id}`)
   this.build()
+  log.info(`<--- Build vidéo #${this.id}`)
 
   // Le mettre en vidéo courant
   VideoController.current = this
@@ -54,7 +55,7 @@ set inited(v){this._inited = v}
  * identifiant soient uniques
  */
 init(){
-  console.log("-> VideoController#init()")
+  log.info("-> VideoController#init()")
   var my = this
   if (this.inited){throw("Le vidéocontroller ne devrait pas être initié deux fois…")}
 
@@ -74,7 +75,7 @@ init(){
 
 
   this.inited = true
-  console.log("<- VideoController#init()")
+  log.info("<- VideoController#init()")
 
 }
 // /fin init
@@ -140,10 +141,10 @@ redefineVideoSizes(w){
  * Pour charger la vidéo de path +vpath+
  */
 load(vpath){
-  console.log("-> VideoController#load")
+  log.info("-> VideoController#load")
   $(this.video)
   .on('error', ()=>{
-    console.log("Une erreur s'est produite au chargement de la vidéo.", err)
+    log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
   })
   .on('loadeddata', () => {
     UI.showVideoController()
@@ -157,7 +158,7 @@ load(vpath){
   })
   this.video.src = path.resolve(vpath)
   this.video.load() // la vidéo, vraiment
-  console.log("<- VideoController#load")
+  log.info("<- VideoController#load")
 }
 
 /**
@@ -165,13 +166,13 @@ load(vpath){
  * vidéo.
  */
 setVideoUI(visible){
-  console.log("-> VideoController#setVideoUI")
+  log.info("-> VideoController#setVideoUI")
   let visu = visible ? 'visible' : 'hidden'
   this.section.find('.video-header')[visible?'show':'hide']()
   for(var el of ['video','div-nav-video-buttons']){
     this.section.find(el).css('visibility', visu)
   }
-  console.log("<- VideoController#setVideoUI")
+  log.info("<- VideoController#setVideoUI")
 }
 
 /**
@@ -268,7 +269,7 @@ observe(){
       EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
     }
   })
-  
+
   // Boutons pour se déplacer de scène en scène (dans le contrôleur)
   var btnPrevScene = this.section.find('.btn-prev-scene')[0]
   var btnNextScene = this.section.find('.btn-next-scene')[0]

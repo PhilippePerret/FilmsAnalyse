@@ -15,3 +15,5 @@ const exec = CHILD_PROCESS.exec
 
 
 let ScreenWidth, ScreenHeight
+
+log.transports.console.level = 'warn'

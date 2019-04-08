@@ -2,6 +2,8 @@
 
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)
+* [Les Events](#les_events)
+  * [Les events « Scènes »](#les_events_scenes)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Déplacements par parties/zones](#move_by_parts_and_zones)
@@ -33,6 +35,22 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d'au moins une minute.
+
+---------------------------------------------------------------------
+
+## Les Events {#les_events}
+
+Dans **Film Analyzer**, l'*Event* est l'élément de base, l'*atome* de l'analyse. Il signifie « évènement » en français, mais on préfère la version courte anglaise.
+
+On pourrait dire que *tout est event* dans **Film Analyzer**. Un procédé est un event, une scène est un event, une note est un event, etc.
+
+### Les events « Scènes » {#les_events_scenes}
+
+Ils permettent de définir les scènes du film. Ce sont des *events* particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d'autres éléments.
+
+La scène, à la base, se définit par un *pitch* et un *résumé*. À la création de la scène, on remarque que le pitch, à mesure qu'on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l'affichage : si le résumé commence exactement comme le pitch, ce pitch n'est pas ajouté dans l'affichage complet des scènes. En revanche, il permet d'en faire un affichage réduit.
+
+---------------------------------------------------------------------
 
 ## Gestion des temps {#gestion_des_temps}
 

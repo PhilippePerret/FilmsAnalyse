@@ -12,4 +12,5 @@ const TIME      = 16
 const FORMATED  = 32
 const NUMERO    = 64
 const NUM       = 128
+const LABELLED  = 256 // pour mettre le type et l'id devant
 // 256

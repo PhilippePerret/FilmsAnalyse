@@ -1,13 +1,16 @@
 # SUR LE GRILL
 
+
+  F
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - Traiter les préparations paiement
+  - Traiter les QRD
+    + le graphique des QRD
+
   - affichage reader + assemblage, traiter :
-    + les notes des events
-    + les event associés, par type
-    + les documents associés
-    + les temps associés
+    + les temps associés (ce ne sont pas des events, il faut les traiter à part)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment

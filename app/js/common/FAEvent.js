@@ -97,7 +97,6 @@ set modified(v){
 
 reset(){
   delete this._asLink
-  delete this._asLinkScene
   delete this._endAt
   delete this._otime
   delete this._horl
@@ -112,29 +111,6 @@ get isADocument(){return false}
 // ---------------------------------------------------------------------
 //  Méthodes d'helper
 
-// Un lien cliquable pour se rendre au temps de l'event
-get link(){
-  return `-&gt; <a onclick="current_analyse.locator.setRTime(${this.time})">E #${this.id}</a>`
-}
-/**
- * Retourne le lien vers l'event
- * Pour remplacer par exemple une balise `event: <id>`
- *
- * Note : si ce texte est modifié, il faut aussi corriger les tests à :
- * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
- */
-asLink(alt_text){
-  if(undefined === this._asLink){
-    this._asLink = `<a class="link-to-event" onclick="showEvent(${this.id})">__TIT__</a>`
-  }
-  return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
-}
-asLinkScene(alt_text){
-  if(undefined === this._asLinkScene){
-    this._asLinkScene = `<a class="link-to-scene" onclick="showScene(${this.id})">__TIT__</a>`
-  }
-  return this._asLinkScene.replace(/__TIT__/, (alt_text || `scène ${this.numero} : « ${this.pitch} »`).trim())
-}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -195,6 +171,21 @@ addTime(time){
   if(this.times.indexOf(time) < 0){
     this.times.push(time)
     this.modified = true
+  }
+}
+
+/**
+
+  Répète la méthode +fn+ sur tous les events associés de
+  type +type+ (le nom du type au pluriel, comme la propriété)
+
+  @param {String} type  Soit 'events', 'documents', 'times'
+  @return {Void}
+
+**/
+forEachAssociate(type, fn){
+  for(var assoEvent of this[type]){
+    if(false === fn(this.a.ids[assoEvent])) break;
   }
 }
 // ---------------------------------------------------------------------
@@ -356,92 +347,6 @@ get div(){
   return this._div
 }
 
-
-/**
-  Renvoie toutes les présentations possible de la scène
-
-  @param {String} format  Le format de retour
-  @param {Number} flag    Le drapeau permettant de déterminer les détails
-                          du retour, comme la présence des boutons d'édition,
-                          l'ajout de la durée, etc.
-                          DUREE|TIME|LINKED
-  @param {Object} options Options à utiliser (unisité pour le moment)
-**/
-as(format, flag, opts){
-  if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut (NON !)
-  // Pour le moment, on corrige par défaut
-  flag = flag | FORMATED
-
-  // console.log("-> as(format, flag)", format, flag)
-
-  var str
-  switch (format) {
-    case 'short':
-      str = this.asShort(opts)
-      break
-    case 'book':
-      // Sortie pour le livre
-      str = this.asBook(opts)
-      break
-    case 'full':
-      // Affiche complet, avec toutes les informations
-      str = this.asFull(opts)
-      break
-    case 'associate':
-      str = this.asAssociate(opts)
-      break
-    default:
-      str = this.title
-  }
-
-  if(flag & DUREE) str += ` (${this.hduree})`
-
-  if(flag & FORMATED) str = DFormater(str)
-
-  if(flag & LINKED){
-    str = this.linked(str)
-  }
-  return str
-}
-
-// Version courte commune
-asShort(opts){
-  let str = ''
-  str += `Ev.${this.id} « ${this.titre} »`
-  str += this.warnCommonMethod
-  return str
-}
-// Version livre commune
-asBook(opts){
-  let str = ''
-  str += this.warnCommonMethod
-  return str
-}
-// Version complète (reader) commune
-// C'est la version qui est ajoutée au `div` contenant les
-// boutons d'édition, etc.
-asFull(opts){
-  let str = ''
-  str += `<div>${this.asShort(opts)}</div>`
-  str += this.warnCommonMethod
-  return str
-}
-// Version associée, quand l'event est présenté en tant
-// qu'associé dans un autre event
-asAssociate(opts){
-  let str = ''
-  str += `<label class="type">${this.htype} : </label>`
-  str += `<span class="content">${this.content}</span>`
-  return str
-}
-
-/**
-  Méthode générale pour lier l'event
-**/
-linked(str){
-  return `<a onclick="showEvent(${this.id})">${str}</a>`
-}
 
 // Méthode de warning pour indiquer que la version d'affichage courante
 // est une version commune à tous les events, pas adaptée à l'event en

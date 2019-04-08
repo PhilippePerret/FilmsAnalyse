@@ -80,7 +80,8 @@ section.section-video div.video-header div.mark-current-scene {
   grid-row:1/3;
   grid-column:4;
   text-align:left;
-  padding-left:12px;
+  padding:2px 2px 2px 12px;
+  overflow:hidden;
 }
 section.section-video div.video-header div.mark-current-scene,
 section.section-video div.video-header div.mark-current-scene *

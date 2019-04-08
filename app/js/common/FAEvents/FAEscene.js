@@ -345,69 +345,6 @@ get htype(){ return 'Scène' }
 
 get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hduree)}
 
-/**
-  Sortie complète de l'event, par exemple pour le reader
-**/
-asFull(opts){
-  if(undefined === opts) opts = {}
-  let str = ''
-  opts.noTime = true
-  str += this.asBook(opts)
-  str += this.divNote(opts)
-  str += this.divAssociates(opts)
-  return str
-}
-asShort(opts){
-  return `sc. ${this.numero}. ${this.pitch}`
-}
-asBook(opts){
-  return  this.f_scene_heading(opts).outerHTML
-          + this.f_pitch.outerHTML
-}
-
-linked(str){
-  return `<a onclick="showScene(${this.id})">${str}</a>`
-}
-
-f_scene_heading(opts){
-  if(undefined === opts) opts = {}
-  var headingElements = []
-  if(this.numero){
-    headingElements.push(DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `}))
-  } else {
-    headingElements.push(DCreate('SPAN', {class: 'scene-numero', inner: 'GÉNÉRIQUE'}))
-  }
-  if(this.lieu){
-    headingElements.push(DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `}))
-  }
-  if(this.effet){
-    headingElements.push(DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()}))
-  }
-  if(this.decor){
-    headingElements.push(DCreate('SPAN', {inner:' – '}))
-    headingElements.push(DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()}))
-  }
-  if(this.sous_decor){
-    headingElements.push(DCreate('SPAN', {inner: ' : '}))
-    headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
-  }
-  if(!opts.noTime){
-    headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
-  }
-  // On peut assembler l'entête
-  return DCreate('DIV', {
-    class: 'scene-heading'
-  , append: headingElements
-  })
-}
-get f_pitch(){
-  if(undefined === this._f_pitch){
-    this._f_pitch = DCreate('DIV', {class:'scene-pitch', inner: this.pitch})
-  }
-  return this._f_pitch
-}
-
-
 
 // ---------------------------------------------------------------------
 //  MÉTHODES DE DONNÉES
@@ -466,31 +403,6 @@ checkForDecor(){
       delete FAEscene._dataDecors
     }
   }
-}
-
-// ---------------------------------------------------------------------
-//  MÉTHODES DE CONSTRUCTION
-
-/**
- * Div construit pour la scène
- */
-formateContenu(){
-  var h
-  if(this.isGenerique){ h = "GÉNÉRIQUE" }
-  else {
-    var decor  = this.decor ? ` — ${FATexte.deDim(this.decor)}` : ''
-    var sdecor = this.sous_decor ? ` : ${FATexte.deDim(this.sous_decor)}` : ''
-    h = `${this.numeroFormated}. ${(this.lieu || 'INT').toUpperCase()}. ${(this.effet || 'jour').toUpperCase()}${decor}${sdecor}`
-  }
-  this._formated = `<div class="scene-heading">${h}</div><span class="scene-resume">${FATexte.deDim(this.content)}</span>`
-  return this._formated
-}
-
-get numeroFormated(){
-  if(undefined===this._numeroFormated){
-    this._numeroFormated = `<span class="numero-scene" data-id="${this.id}">${this.numero}</span>`
-  }
-  return this._numeroFormated
 }
 
 /**

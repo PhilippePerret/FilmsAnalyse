@@ -3,6 +3,7 @@
 * [Point d'entrée](#point_dentree)
 * [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
+  * [Chargement de dossiers JS au lancement de l'application](#load_folders_at_launching)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
@@ -57,6 +58,12 @@ On peut charger des modules en inscrivant leur balise `<script>` dans le documen
 L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FAWriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
 
 C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui permet de rédiger les textes.
+
+### Chargement de dossiers JS au lancement de l'application {#load_folders_at_launching}
+
+Grâce au module `system/App.js`, on peut charger des dossiers javascript sans les coder en dur dans le fichier HTML de l'application.
+
+Il suffit de les inscrire dans la constante `AppLoader::REQUIRED_MODULES` et ils sont chargés de façon asynchrone.
 
 ## Création/modification des events {#creation_event}
 

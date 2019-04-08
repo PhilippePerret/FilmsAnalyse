@@ -186,7 +186,9 @@ get formated(){return this.formate()}
 setFormat(str, format){
   switch (format) {
     case HTML:
-      return CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+      str = CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+      str = str.replace(/\n/g, '<br>')
+      return str
     case 'raw':
       return str
     default:
@@ -233,7 +235,7 @@ setFormat(str, format){
     else this.raw_string = str
     str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
       var groups = arguments[arguments.length - 1]
-      return current_analyse.ids[groups.event_id].asLinkScene(groups.alt_text)
+      return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
     })
     // console.log(founds)
     return str
