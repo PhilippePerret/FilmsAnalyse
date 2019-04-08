@@ -257,6 +257,7 @@ static forEachSortedScene(fn){
                                   du film
  */
 static at(time){
+  console.log("time:", time)
   return (this.atAndNext(time)||{}).current
 }
 /**

@@ -99,7 +99,7 @@ f_scene_heading(opts){
  */
 asLink(alt_text){
   if(undefined === this._asLink){
-    this._asLink = `<a class="lkscene" onclick="showScene(${this.id})">__TIT__</a>`
+    this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">__TIT__</a>`
   }
   return this._asLink.replace(/__TIT__/, (alt_text || `scène ${this.numero} : « ${this.pitch} »`).trim())
 }

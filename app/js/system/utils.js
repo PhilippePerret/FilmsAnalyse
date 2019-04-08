@@ -118,11 +118,12 @@ function DGet(DOMId){
 *
 **/
 function DCreate(typeElement, params){
+  // console.log("DCreate params:", params)
   var e = document.createElement(typeElement)
   if(undefined === params) return e
   if(params.id)     e.id = params.id
   if(params.class)  e.className = params.class
-  if(params.style)  e.style = params.style
+  if(params.style)  e.setAttribute('style', params.style)
   if(params.type)   e.type = params.type
   if(params.inner)  e.innerHTML = params.inner
   if(undefined !== params.value)  e.value = params.value

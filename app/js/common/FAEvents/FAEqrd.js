@@ -27,10 +27,11 @@ static init(){
   this.forEachQRD(qrd => {
     if(qrd.reponse && qrd.reponse.length) return
     // Sinon, on doit l'écrire dans la section
-    this.section.append(qrd.as('short', LINKED))
+    this.section.append(qrd.as('short', EDITABLE))
   })
 }
 static reset(){
+  this.section.html('')
   delete this._qrds
   delete this._sorted
   return this // chainage
@@ -96,6 +97,33 @@ get isValid(){
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0
+}
+
+/**
+  @return {Boolean} true si les informations minimales sont fournies pour
+  construire la QRD, à savoir :
+    - la question
+    - la réponse
+    - le temps de la réponse
+**/
+isComplete(){
+  return !!(this.question && this.question.length > 0
+      && this.reponse  && this.reponse.length > 0
+      && this.tps_reponse)
+}
+
+/**
+  @return {Number} Le numéro de la scène à laquelle appartient
+                   la QUESTION dramatique
+**/
+get sceneQ(){
+  if(undefined === this._sceneQ) this._sceneQ = FAEscene.at(this.time)
+  return this._sceneQ
+}
+get sceneR(){
+  if(!this.tps_reponse) return
+  if(undefined === this._sceneR) this._sceneR = FAEscene.at(new OTime(this.tps_reponse).seconds)
+  return this._sceneR
 }
 
 get div(){

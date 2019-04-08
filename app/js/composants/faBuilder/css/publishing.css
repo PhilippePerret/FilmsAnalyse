@@ -441,3 +441,23 @@ section#pfa div#pfa-container div.pfa-zone.cledev
 {
   background-color:#AAFFAA;
 }
+
+/* --------------------------------------------------------------------- */
+/* --- GRAPHIQUE DRAMATIQUE --- */
+
+div.graphic-drama {
+  border:1px solid #BBBBBB;
+  position:relative;
+}
+div.graphic-drama div.GDtr {
+  position:absolute;
+  bottom:0;
+  background-color:white;
+  width:10px;
+}
+div.graphic-drama div.GDtr div.GDtrT {
+  background-color:#EEEEEE;
+}
+div.graphic-drama div.GDtr div.GDtrB {
+  background-color:red;
+}
