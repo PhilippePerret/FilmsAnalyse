@@ -48,7 +48,11 @@ as(format, flag, opts){
 
   if(flag & FORMATED) str = DFormater(str)
 
-  if(flag & LINKED){
+  if(flag & EDITABLE){
+    // Note : il exclut LINKED
+    str = this.linkedToEdit(str)
+    console.log("str:", str)
+  } else if(flag & LINKED){
     str = this.linked(str)
   }
   return str
@@ -112,8 +116,18 @@ asLink(alt_text){
   return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
 }
 ,
+asLinkToEdit(str){
+  if(undefined === this._asLinkToEdit){
+    this._asLinkToEdit = `<a class="lkevent" onclick="EventForm.editEvent.bind(EventForm)(${this.id})">__TIT__</a>`
+  }
+  return this._asLinkToEdit.replace(/__TIT__/, (str || this.title || this.content).trim())
+}
+,
 // Alias
 linked(str){ return this.asLink(str) }
+,
+// Alias
+linkedToEdit(str){ return this.asLinkToEdit(str)}
 ,
 
 /**

@@ -27,7 +27,7 @@ static init(){
   this.forEachPP(pp => {
     if(pp.payoff && pp.payoff.length) return
     // Sinon, on doit l'écrire dans la section
-    this.section.append(pp.as('short', LINKED))
+    this.section.append(pp.as('short', EDITABLE))
   })
 }
 static reset(){

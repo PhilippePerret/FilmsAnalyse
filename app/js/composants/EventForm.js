@@ -93,6 +93,7 @@ static filmHasSceneNearCurrentPos(){
 }
 
 static editEvent(ev){
+  if('number' === typeof ev) ev = this.a.ids[ev]
   var eForm
   this.playing && this.a.locator.togglePlay()
   if(undefined === this.eventForms[ev.id]){

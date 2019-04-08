@@ -12,7 +12,7 @@ Object.assign(FAEscene.prototype,{
   résumé.
 **/
 asShort(opts){
-  console.log("-> FAEscene#asShort")
+  // console.log("-> FAEscene#asShort")
   let str = ''
   if (this.resume.match(new RegExp(`^${this.pitch}`))){
     return this.resume

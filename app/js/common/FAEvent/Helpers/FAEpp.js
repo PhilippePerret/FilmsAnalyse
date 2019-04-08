@@ -17,11 +17,11 @@ asShort(options){
   var str = ''
   let rep
   if(this.payoff){
-    rep = `<label>Réponse : </label>${this.payoff}`
+    rep = `<label>Paiement : </label>${this.payoff}`
   } else {
-    rep = '<span class="warning">RÉPONSE REQUISE</span>'
+    rep = '<span class="warning">PAIEMENT REQUIS</span>'
   }
-  str += `<div>QRD #${this.id} : ${this.setup} — ${rep}</div>`
+  str += `<div>PP #${this.id} : ${this.setup} — ${rep}</div>`
 
   return str
 }
@@ -33,7 +33,7 @@ asShort(options){
 asFull(options){
   return DCreate('DIV', {append:[
     DCreate('DIV', {append: [
-        DCreate('LABEL', {inner: 'PRÉPARTATION : '})
+        DCreate('LABEL', {inner: 'PRÉPARATION : '})
       , DCreate('SPAN', {inner: this.setup})
       ]})
   , DCreate('DIV', {append:[

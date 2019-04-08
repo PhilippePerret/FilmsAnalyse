@@ -13,5 +13,5 @@ const FORMATED  = 32
 const NUMERO    = 64
 const NUM       = 128
 const LABELLED  = 256 // pour mettre le type et l'id devant
-const EDITABLE  = 512 // L'élément est lié à son édition 
+const EDITABLE  = 512 // L'élément est lié à son édition
 // 256
