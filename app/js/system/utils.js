@@ -86,7 +86,12 @@ function getValOrNull(domId, options){
     case 'duree':
       return parseFloat(field.attr('value'))
     default:
-      value = field.val().trim()
+      try {
+        value = field.val().trim()
+      } catch (e) {
+        console.error(`[getValOrNull] Impossible d'obtenir la valeur de ${domId} : `, e)
+        return null
+      }
   }
   if ( value === "" ) return null
   else if(options.type === 'number')  value = parseInt(value,10)

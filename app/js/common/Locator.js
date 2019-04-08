@@ -285,7 +285,7 @@ goToFilmStart(){
 goToPrevScene(){
   let method = () => {
     if (this.a.prevScene){
-      this.setTime(this.a.prevScene.time)
+      this.setRTime(this.a.prevScene.time)
     } else if (FAEscene.current ){
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
     } else {
@@ -303,9 +303,11 @@ goToNextScene(){
   // console.log("-> goToNextScene")
   let method = () => {
     if (this.a.nextScene){
-      this.setTime(this.a.nextScene.time)
-    } else {
+      this.setRTime(this.a.nextScene.time)
+    } else if (FAEscene.current) {
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
+    } else {
+      F.notify(`Pas de scène suivante.`)
     }
   }
   this.timerNextScene = setTimeout(method, 500)

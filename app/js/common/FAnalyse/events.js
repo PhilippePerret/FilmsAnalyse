@@ -56,7 +56,7 @@ Object.assign(FAnalyse.prototype,{
 **/
 ,
 getBaliseAssociation(obj, domEl, e){
-  console.log("-> getBaliseAssociation", obj, domEl)
+  // console.log("-> getBaliseAssociation", obj, domEl)
   var balise
     , domEl_type = domEl.attr('data-type')
     , domEl_id

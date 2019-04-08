@@ -44,10 +44,12 @@ static updateAll(){
   Actualisation du numéro de scène de toutes les scènes
 **/
 static updateNumerosScenes(){
-  var num = 0
+  var num = 0, oldNum
   this.forEachSortedScene(function(scene){
+    oldNum = parseInt(scene.numero,10)
     scene.numero = ++ num
     scene.updateNumero()
+    if (oldNum != num) scene.modified = true
   })
 }
 
@@ -118,7 +120,9 @@ static getById(event_id){return this.byId[event_id]}
 **/
 static getByTime(time)  {return this.byTime[time]}
 
-static getByNumero(num){return this.byNumero[num]}
+static getByNumero(num){
+  return this.byNumero[num]
+}
 
 // ---------------------------------------------------------------------
 //  Les listes de scènes
@@ -190,6 +194,7 @@ static doLists(){
     , _sortedByDuree  = []
 
   fe.forEachFiltered(function(ev){
+    if(ev.isGenerique) return
     _by_id[ev.id] = ev
     _by_numero[ev.numero] = ev
     _by_time[ev.time] = ev
@@ -197,6 +202,7 @@ static doLists(){
 
   _sortedByTime = Object.assign([], Object.values(_by_id))
   _sortedByTime.sort(function(a, b){return a.time - b.time})
+  // console.log("_sortedByTime", _sortedByTime)
 
   _sortedByDuree = Object.assign([], Object.values(_by_id))
   _sortedByDuree.sort(function(a, b){return b.duree - a.duree})
@@ -365,13 +371,22 @@ linked(str){
 
 f_scene_heading(opts){
   if(undefined === opts) opts = {}
-  var headingElements = [
-      DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `})
-    , DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `})
-    , DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()})
-    , DCreate('SPAN', {inner:' – '})
-    , DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()})
-  ]
+  var headingElements = []
+  if(this.numero){
+    headingElements.push(DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `}))
+  } else {
+    headingElements.push(DCreate('SPAN', {class: 'scene-numero', inner: 'GÉNÉRIQUE'}))
+  }
+  if(this.lieu){
+    headingElements.push(DCreate('SPAN', {class:'scene-lieu', inner: `${this.lieu.toUpperCase()}. `}))
+  }
+  if(this.effet){
+    headingElements.push(DCreate('SPAN', {class:'scene-effet', inner: this.effet.toUpperCase()}))
+  }
+  if(this.decor){
+    headingElements.push(DCreate('SPAN', {inner:' – '}))
+    headingElements.push(DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()}))
+  }
   if(this.sous_decor){
     headingElements.push(DCreate('SPAN', {inner: ' : '}))
     headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))

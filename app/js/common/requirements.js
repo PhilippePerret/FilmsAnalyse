@@ -2,6 +2,7 @@
 
 const electron  = require('electron')
 const remote    = electron.remote
+const log       = require('electron-log');
 const DIALOG    = remote.dialog
 const ipc       = electron.ipcRenderer
 const path      = require('path')

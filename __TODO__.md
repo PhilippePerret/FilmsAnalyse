@@ -47,6 +47,8 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
+* Quand l'application est verrouillée, on met un cadenas à la place de la marque de modification
+
 * Mettre en place les tests manuels
   Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
 

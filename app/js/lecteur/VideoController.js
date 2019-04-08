@@ -264,8 +264,11 @@ observe(){
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
   this.section.find('.mark-current-scene').on('click', () => {
-    EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+    if (current_analyse.currentScene){
+      EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+    }
   })
+  
   // Boutons pour se déplacer de scène en scène (dans le contrôleur)
   var btnPrevScene = this.section.find('.btn-prev-scene')[0]
   var btnNextScene = this.section.find('.btn-next-scene')[0]
