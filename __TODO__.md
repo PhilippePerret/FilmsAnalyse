@@ -1,16 +1,17 @@
 # SUR LE GRILL
 
 
-  F
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - Au lieu de "Times associés", il faut "Temps associés"
   - Traiter les préparations paiement
   - Traiter les QRD
     + le graphique des QRD
 
-  - affichage reader + assemblage, traiter :
-    + les temps associés (ce ne sont pas des events, il faut les traiter à part)
+* [VÉRIFICATIONS]
+  - Vérifier que les temps associés s'affichent bien.
+    => Glisser un temps sur un temps (la vidéo)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
@@ -67,6 +68,10 @@
 * Construction des statistiques de fin
 
 # TODO LIST
+
+* Faire les méthodes `showTime`, `showEvent`, `showScene`, etc. qui doit donner des indications sur les éléments.
+  - voir comment on se sert de javascript dans les eBooks
+  - faire les styles associés aux liens utilisant ces méthodes (`lktime`, `lkscene`, `lkevent`, etc.)
 
 * Quand il y a un trop grand nombre de rapports, on détruit les plus anciens
 

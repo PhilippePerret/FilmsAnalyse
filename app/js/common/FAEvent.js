@@ -184,8 +184,14 @@ addTime(time){
 
 **/
 forEachAssociate(type, fn){
-  for(var assoEvent of this[type]){
-    if(false === fn(this.a.ids[assoEvent])) break;
+  if(type==='times' || type === 'time'){
+    for(var assoEvent of this[type]){
+      if(false === fn(new OTime(assoEvent))) break;
+    }
+  } else {
+    for(var assoEvent of this[type]){
+      if(false === fn(this.a.ids[assoEvent])) break;
+    }
   }
 }
 // ---------------------------------------------------------------------

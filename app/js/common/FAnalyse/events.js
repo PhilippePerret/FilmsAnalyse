@@ -32,7 +32,7 @@ Object.assign(FAnalyse.prototype,{
         break
       case 'time':
         // Associer le temps courant
-        obj.times.push(this.locator.getRTimeRound())
+        obj.addTime(this.locator.getRTimeRound())
         break
       default:
         throw(T('unknown-associated-type', {type: dropped_type}))

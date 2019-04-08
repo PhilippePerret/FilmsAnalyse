@@ -42,58 +42,70 @@ class OTime {
   get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
   get duree_sec(){ return Math.round(this.seconds) }
 
-  set duration(v) { this.duration = v }
-  get duration()  { return this.duration || 1 }
 
-  get secondsInt() {
-    return Math.round(this.seconds)
-  }
-  h2s(h){
-    var d = h.split('.') // Séparer l'horloge de ses frames
-    var frms = d.splice(1,1)[0] || 0
-    h = d[0].split(/[,\:]/).reverse()
-    var tps = 0
-    tps =  frms * 40
-    tps += parseInt(h[0]||0,10) * 1000
-    tps += parseInt(h[1]||0,10) * 1000 * 60
-    tps += parseInt(h[2]||0,10) * 1000 * 3600
-    return tps / 1000
-  }
-  s2h(s, format){
-    if(undefined===format) format = {}
-    var r, hrs, mns, scs, frm ;
-    if(undefined==s){s = this.seconds}
-    hrs = Math.floor(s / 3600)
-    r = s - (hrs * 3600)
-    mns = Math.floor(r / 60)
-    if(!(format.as_duree && hrs == 0)){
-      mns = mns > 9 ? mns : `0${mns}`
-    }
-    r = r - (mns * 60)
-    scs = Math.floor(r)
-    scs = scs > 9 ? scs : `0${scs}`
-    frm = parseInt((r - scs) * 1000 / 40,10)
-    frm = frm > 9 ? frm : `0${frm}`
+/**
+  Méthode qui permet de traiter les temps comme des events dans
+  les associations.
 
-    var hstr
-    if(format.no_frames){
-      hstr = `${mns}:${scs}`
-    } else {
-      hstr = `${mns}:${scs}.${frm}`
-    }
-    if(!format.as_duree){
-      hstr = `${hrs}:${hstr}`
-    }
-    return hstr
-  }
+  @param {Object} options  Des options (inutilisé ici pour le moment)
 
-  /**
-   * Permet d'actualiser le nombre de seconds de l'instance
-   * Cette méthode est utile par exemple pour régler l'horloge de la vidéo,
-   * pour ne pas créer intensivement des instances à chaque millisecondes
-   */
-  updateSeconds(s){
-    this.seconds = s
-    this.horloge = this.s2h(s)
+*/
+asAssociate(options){
+  return `<a class="lktime" onclick="showTime(${this.seconds})">${this.horloge_simple}</a>`
+}
+
+set duration(v) { this.duration = v }
+get duration()  { return this.duration || 1 }
+
+get secondsInt() {
+  return Math.round(this.seconds)
+}
+h2s(h){
+  var d = h.split('.') // Séparer l'horloge de ses frames
+  var frms = d.splice(1,1)[0] || 0
+  h = d[0].split(/[,\:]/).reverse()
+  var tps = 0
+  tps =  frms * 40
+  tps += parseInt(h[0]||0,10) * 1000
+  tps += parseInt(h[1]||0,10) * 1000 * 60
+  tps += parseInt(h[2]||0,10) * 1000 * 3600
+  return tps / 1000
+}
+s2h(s, format){
+  if(undefined===format) format = {}
+  var r, hrs, mns, scs, frm ;
+  if(undefined==s){s = this.seconds}
+  hrs = Math.floor(s / 3600)
+  r = s - (hrs * 3600)
+  mns = Math.floor(r / 60)
+  if(!(format.as_duree && hrs == 0)){
+    mns = mns > 9 ? mns : `0${mns}`
   }
+  r = r - (mns * 60)
+  scs = Math.floor(r)
+  scs = scs > 9 ? scs : `0${scs}`
+  frm = parseInt((r - scs) * 1000 / 40,10)
+  frm = frm > 9 ? frm : `0${frm}`
+
+  var hstr
+  if(format.no_frames){
+    hstr = `${mns}:${scs}`
+  } else {
+    hstr = `${mns}:${scs}.${frm}`
+  }
+  if(!format.as_duree){
+    hstr = `${hrs}:${hstr}`
+  }
+  return hstr
+}
+
+/**
+ * Permet d'actualiser le nombre de seconds de l'instance
+ * Cette méthode est utile par exemple pour régler l'horloge de la vidéo,
+ * pour ne pas créer intensivement des instances à chaque millisecondes
+ */
+updateSeconds(s){
+  this.seconds = s
+  this.horloge = this.s2h(s)
+}
 }

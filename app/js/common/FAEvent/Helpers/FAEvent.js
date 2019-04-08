@@ -43,7 +43,7 @@ as(format, flag, opts){
   }
 
   if(flag & LABELLED) str = `<label>${this.htype} #${this.id} : </label> ${str}`
-  
+
   if(flag & DUREE) str += ` (${this.hduree})`
 
   if(flag & FORMATED) str = DFormater(str)
@@ -145,7 +145,7 @@ divAssociates(type){
   for(type of options.types){
     // console.log("Traitement du type", type)
     if(this[type].length === 0) continue
-    str += `<h3>${type.titleize()} associés</h3>`
+    str += `<h3>${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}</h3>`
     str += `<div class="associates ${type}">`
     this.forEachAssociate(type, function(ev){
       str += ev.asAssociate(options)

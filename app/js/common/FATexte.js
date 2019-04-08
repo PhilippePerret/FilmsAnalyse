@@ -36,6 +36,34 @@ static forEachDim(method){
   }
 }
 
+
+static get TYPES2HTYPES(){
+  return {
+    'time':   {fr: 'temps',   genre: 'M'}
+  , 'times':  {fr: 'temps',   genre: 'M'}
+  , 'event':  {fr: 'event',   genre: 'M'}
+  , 'events': {fr: 'events',  genre: 'M'}
+  , 'scene':  {fr: 'scène',   genre: 'F'}
+  , 'scenes': {fr: 'scènes',  genre: 'F'}
+  }
+}
+static htypeFor(type, options){
+  if(undefined === options) options = {}
+  let dtype = this.TYPES2HTYPES[type]
+    , isFem = dtype.genre === 'F'
+  var str = dtype.fr
+  if(options.title || options.asTitle || options.titleize){
+    str = str.titleize()
+  }
+  if(options.before){
+    str = `${options.before.replace(/_e_/g, isFem ? 'e' : '')} ${str}`
+  }
+  if(options.after){
+    str = `${str} ${options.after.replace(/_e_/g, isFem ? 'e' : '')}`
+  }
+  return str
+}
+
 static deDim(str){
   if(this.dimsData == null) return str // pas de diminutifs
   this.forEachDim(function(dim, regDim, value){
