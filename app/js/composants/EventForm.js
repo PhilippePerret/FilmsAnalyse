@@ -444,7 +444,6 @@ submit(){
     $(this.event.firstErroredFieldId).focus().select()
   }
 
-
   my = null
 }
 
@@ -452,7 +451,7 @@ submit(){
  * Demande destruction de l'élément
  */
 destroy(){
-  if(!confirm("Êtes-vous certain de vouloir détruire à tout jamais cet event ?")) return
+  if(!confirm(T('confirm-destroy-event'))) return
   this.jqObj.remove()
   this.a.destroyEvent(this.id, this)
 }

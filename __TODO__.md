@@ -2,12 +2,12 @@
 
 
 * [BUGS]
-  - Il semblerait que je ne peux pas ouvrir l'eventer quand un event est édité (essayer avec un nouvel OOC)
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
     liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
+    + Il faudra faire un autre menu pour les procédés, et peut-être même un troisième, si on arrive à trois niveaux d'imbrication.
 
 * [ESSAIS]
   - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre.
@@ -52,12 +52,8 @@
       reste à faire.
     - ces valeurs seraient enregistrées
 
-* puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
-
 
 # EN COURS DE DÉVELOPPEMENT
-
-* Quand l'application est verrouillée, on met un cadenas à la place de la marque de modification
 
 * Mettre en place les tests manuels
   Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
