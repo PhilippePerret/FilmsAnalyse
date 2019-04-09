@@ -10,8 +10,8 @@
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
 * [ESSAIS]
-  - Essayer du javascript dans les ebook. Commencer par un bouton qui n'utilise qu'une alerte :
-    <button onclick="alert('Hello le monde')">Dire bonjour</button>
+  - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre.
+  Si ça ne fonctionne pas, développer les liens hypertextuels normaux.
 
 * [VÉRIFICATIONS]
 
@@ -70,10 +70,9 @@
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 
-* Construction des Fondamentales
-* Construction des statistiques de fin
-
 # TODO LIST
+
+* Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
 
 * Faire les méthodes `showTime`, `showEvent`, `showScene`, etc. qui doit donner des indications sur les éléments.
   - voir comment on se sert de javascript dans les eBooks

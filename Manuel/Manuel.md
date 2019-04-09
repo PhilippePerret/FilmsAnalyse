@@ -2,6 +2,9 @@
 
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)
+* [L'analyse de film](#lanalyse)
+  * [Protocole d'analyse](#analyse_protocole)
+  * [Verrouillage de l'analyse](#verrouillage_analyse)
 * [Les Events](#les_events)
   * [Les events « Scènes »](#les_events_scenes)
 * [Gestion des temps](#gestion_des_temps)
@@ -36,6 +39,23 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d'au moins une minute.
+
+---------------------------------------------------------------------
+
+
+## L'analyse de film {#lanalyse}
+
+L'*analyse de film* est le but ultime de l'application **Film Analyzer**, avec une orientation précise pour les eBooks.
+
+### Protocole d'analyse {#analyse_protocole}
+
+Grâce au menu « Affichage > Protocole de l'analyse », on peut avoir une idée de la démarche à suivre pour produire une analyse de film et son livre.
+
+### Verrouillage de l'analyse {#verrouillage_analyse}
+
+Pour ne perdre aucune donnée ou ne pas modifier l'analyse lorsque par exemple on la fait lire à quelqu'un d'autre ou on la partage par l'application, on peut verrouiller les données grâce au menu « Analyse > Verrouiller ».
+
+Cela empêche tout modification des données, à commencer par les *events* et les documents.
 
 ---------------------------------------------------------------------
 
