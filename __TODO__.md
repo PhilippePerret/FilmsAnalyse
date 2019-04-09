@@ -2,9 +2,8 @@
 
 
 * [BUGS]
-  - bug avec les statistiques (personnage, apparemment, quand ils ne sont pas définis)
   - Quand l'analyse est verrouillée, on ne devrait pas pouvoir enregistrer les documents
-  
+
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
     Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
