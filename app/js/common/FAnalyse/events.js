@@ -32,7 +32,7 @@ Object.assign(FAnalyse.prototype,{
         break
       case 'time':
         // Associer le temps courant
-        obj.times.push(this.locator.getRTimeRound())
+        obj.addTime(this.locator.getRTimeRound())
         break
       default:
         throw(T('unknown-associated-type', {type: dropped_type}))
@@ -45,8 +45,10 @@ Object.assign(FAnalyse.prototype,{
 * Cette méthode associe l'élément droppé +domEl+ à l'instance +obj+ qui
 * peut être, en substance, n'importe quel élément de l'analyse, un event, un
 * document, etc.
-*
-  @param  {Instance} obj  L'instance d'un objet quelconque qui peut être associé
+
+  @param  {Instance} obj    L'instance d'un objet quelconque qui peut être associé
+                            Noter qu'il n'est pas toujours défini, comme par
+                            exemple un event qui est en phase de création.
   @param {DOMElement} domEl L'helper qui a été déplacé sur l'objet
   @param  {MoveEvent} e     L'évènement triggué
 
@@ -56,7 +58,7 @@ Object.assign(FAnalyse.prototype,{
 **/
 ,
 getBaliseAssociation(obj, domEl, e){
-  console.log("-> getBaliseAssociation", obj, domEl)
+  // console.log("-> getBaliseAssociation", obj, domEl)
   var balise
     , domEl_type = domEl.attr('data-type')
     , domEl_id
@@ -88,13 +90,13 @@ getBaliseAssociation(obj, domEl, e){
         // => Le document édité
         domEl_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
       }
-      if (false === obj.addDocument(domEl_id)) return null
+      if (obj && false === obj.addDocument(domEl_id)) return null
       balise = `{{document:${domEl_id}}}`
       break
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
       if (undefined === domEl_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (false === obj.addEvent(domEl_id)){
+      if (obj && false === obj.addEvent(domEl_id)){
         return null
       }
       var isScene = this.ids[domEl_id].type == 'scene'

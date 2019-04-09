@@ -11,7 +11,8 @@ class Fonds {
 static init(analyse){
   this.analyse = this.a = analyse
   this.loaded = false
-  if(this.exists()) this.load()
+  if ( this.exists() ) this.load()
+  else this.loaded = true // pas de fondamentales
 }
 
 /**

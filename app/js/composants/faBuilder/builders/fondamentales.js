@@ -2,6 +2,7 @@
 
 module.exports = function(options){
   var my = this
+  if(!my.a.Fonds.exists()) return ''
   my.log("* Construction des Fondamentales")
   my.report.add('Construction des Fondamentales', 'title')
   let str = ''

@@ -4,6 +4,7 @@ const APPFOLDER = path.resolve('.')
 
 
 $(document).ready(() => {
+  log.info("DOM ready")
 
   var d = ipc.sendSync('get-screen-dimensions')
   ScreenWidth   = d.width

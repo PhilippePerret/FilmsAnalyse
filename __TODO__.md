@@ -1,8 +1,19 @@
 # SUR LE GRILL
 
+
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - Documenter le fait de verrouiller l'analyse
+  - construction du graphique de la dynamique narrative
+    Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
+  - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
+
+* [ESSAIS]
+  - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre.
+  Si ça ne fonctionne pas, développer les liens hypertextuels normaux.
+
+* [VÉRIFICATIONS]
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
@@ -10,28 +21,24 @@
 
 * Développer la méthode `FAEvent.as('<format>', FLAG)`.
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
-  - Il faut traiter les event, les documents et les temps associés.
 
 * PUBLICATION
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
-  Quelques essais sont à faire :
-    - sur le mobi (kindle), les display-inline ne sont pas respectés à la lettre
-    - sur le epub, ça prend trop de place donc les textes passent à la ligne
-    => essayer un fonctionnement avec les grids pour voir si ça marcherait mieux
-    => Pour faire ces tests, on pourrait avoir un builder fait exprès, par exemple 'test_mef.js'
-       Il suffit de mettre `BUILD test mef` dans le script d'assemblage pour produire les essais contenus dans le fichier
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  EN COURS : voir les problèmes de formatage des eBooks etc.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
-    - Mettre toujours un id dans les titres
+    - Mettre toujours un id dans les titres de chapitres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
-  - faire les statistiques par décor
+  - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
+  - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
+    - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
+      + conduit à la référence `12` (disons une scène dans le scénier final)
+      + définit le retour dans la référence `12` pour qu'il ramène là où on a cliqué.
 
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
@@ -43,11 +50,14 @@
     - une valeur globale de pourcentage
     - des descriptions plus précises de ce qui est fait et ce qui
       reste à faire.
+    - ces valeurs seraient enregistrées
 
 * puisque les documents ne sont pas des instances qui sont enregistrés (mais seulement des fichiers texte), faire le tour des events pour connaitre les events qui leur sont associés (leur propriété 'documents' contient la liste des documents auxquels ils sont associés)
 
 
 # EN COURS DE DÉVELOPPEMENT
+
+* Quand l'application est verrouillée, on met un cadenas à la place de la marque de modification
 
 * Mettre en place les tests manuels
   Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
@@ -60,10 +70,13 @@
 * Développer la main-timeline pour qu'elle affiche le paradigme de Field absolu, peut-être sous forme de point plutôt que de cases
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 
-* Construction des Fondamentales
-* Construction des statistiques de fin
-
 # TODO LIST
+
+* Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
+
+* Faire les méthodes `showTime`, `showEvent`, `showScene`, etc. qui doit donner des indications sur les éléments.
+  - voir comment on se sert de javascript dans les eBooks
+  - faire les styles associés aux liens utilisant ces méthodes (`lktime`, `lkscene`, `lkevent`, etc.)
 
 * Quand il y a un trop grand nombre de rapports, on détruit les plus anciens
 
@@ -108,6 +121,17 @@
 * Faire un mode d'emploi interactif
 * Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
+* Mettre en place la partie TESTS MANUELS
+  - pouvoir lire les fichiers YAML du dossier, les afficher avec des cases à cocher
+  - pouvoir enregistrer les résultats dans un fichier JSON
+  - peut-être que dès qu'une nouvelle version est en cours d'enregistrement, les tests se ré-initialisent et il faut les traiter.
 
 # PEUT-ÊTRE UN JOUR
 * API qui permettrait de récupérer les data des films online (au format json).
+
+
+Comment mettre en exergue les events affichés dans le reader ?
+Si on part du principe qu'il n'y en aura jamais beaucoup, ça peut se faire en lisant
+
+Et si c'était l'event lui-même qui vérifiait ? Tous les events, une fois affichés, mettent en route une méthode setInterval qui regarde le temps courant. Si l'évènement est dans le temps courant (à plus ou moins 2 secondes), il se met en exergue.
+C'est donc dans la méthode show.

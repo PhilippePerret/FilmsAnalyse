@@ -6,13 +6,11 @@ const App = {
 , type: 'object'
 , ready: false
 , onReady(){
-    console.log("App est prête.")
     UI.init()
+    log.info("--- APP READY ---")
     if (MODE_TEST) {
       Tests.initAndRun()
     } else {
-      // Voir si les préférences demandent que la dernière analyse soit chargée
-      // et la charger si elle est définie.
       FAnalyse.checkLast()
     }
   }
@@ -24,6 +22,7 @@ const AppLoader = {
 , REQUIRED_MODULES: [
       ['common', 'FAnalyse']
     , ['common', 'FAEvents']
+    , ['common', 'FAEvent']
   ]
 , start(){
     this.requiredModules = Object.assign([], this.REQUIRED_MODULES)

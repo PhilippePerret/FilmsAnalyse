@@ -2,6 +2,11 @@
 
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)
+* [L'analyse de film](#lanalyse)
+  * [Protocole d'analyse](#analyse_protocole)
+  * [Verrouillage de l'analyse](#verrouillage_analyse)
+* [Les Events](#les_events)
+  * [Les events « Scènes »](#les_events_scenes)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Déplacements par parties/zones](#move_by_parts_and_zones)
@@ -14,6 +19,7 @@
 * [L'Interface](#linterface)
   * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
+  * [Se déplacer rapidement à une scène particulière](#move_to_a_scene)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
 * [Les Documents](#les_documents)
   * [Quatre types de documents](#types_de_documents)
@@ -33,6 +39,39 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d'au moins une minute.
+
+---------------------------------------------------------------------
+
+
+## L'analyse de film {#lanalyse}
+
+L'*analyse de film* est le but ultime de l'application **Film Analyzer**, avec une orientation précise pour les eBooks.
+
+### Protocole d'analyse {#analyse_protocole}
+
+Grâce au menu « Affichage > Protocole de l'analyse », on peut avoir une idée de la démarche à suivre pour produire une analyse de film et son livre.
+
+### Verrouillage de l'analyse {#verrouillage_analyse}
+
+Pour ne perdre aucune donnée ou ne pas modifier l'analyse lorsque par exemple on la fait lire à quelqu'un d'autre ou on la partage par l'application, on peut verrouiller les données grâce au menu « Analyse > Verrouiller ».
+
+Cela empêche tout modification des données, à commencer par les *events* et les documents.
+
+---------------------------------------------------------------------
+
+## Les Events {#les_events}
+
+Dans **Film Analyzer**, l'*Event* est l'élément de base, l'*atome* de l'analyse. Il signifie « évènement » en français, mais on préfère la version courte anglaise.
+
+On pourrait dire que *tout est event* dans **Film Analyzer**. Un procédé est un event, une scène est un event, une note est un event, etc.
+
+### Les events « Scènes » {#les_events_scenes}
+
+Ils permettent de définir les scènes du film. Ce sont des *events* particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d'autres éléments.
+
+La scène, à la base, se définit par un *pitch* et un *résumé*. À la création de la scène, on remarque que le pitch, à mesure qu'on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l'affichage : si le résumé commence exactement comme le pitch, ce pitch n'est pas ajouté dans l'affichage complet des scènes. En revanche, il permet d'en faire un affichage réduit.
+
+---------------------------------------------------------------------
 
 ## Gestion des temps {#gestion_des_temps}
 
@@ -122,6 +161,16 @@ Le bouton STOP a trois comportement différents, dans l'ordre de priorité :
 2. la deuxième pression ramène au début du film, s'il est défini,
 3. la troisième pression ramène au début de la vidéo.
 
+
+### Se déplacer rapidement à une scène particulière {#move_to_a_scene}
+
+Pour se déplacer rapidement à une scène particulière, le mieux est d'utiliser l'*Eventers* qui affiche, par défaut, toutes les scènes :
+
+* ouvrir l'*Eventer* par le menu « Events > Nouvel eventer… » (ou faire `CMD MAJ E`),
+* trouver la scène dans le listing qui s'affiche,
+* cliquer sur son petit bouton play dans les outils au-dessus de la scène.
+
+---------------------------------------------------------------------
 
 ## Définir le Paradigme de Field Augmenté du film {#define_film_pfa}
 

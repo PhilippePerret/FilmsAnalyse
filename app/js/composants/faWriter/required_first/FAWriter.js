@@ -12,7 +12,7 @@ const FAWriter = {
 , ready: false      // pour savoir s'il est préparé
 , isOpened: false   // Pour savoir si le writer est ouvert ou fermé
 
-, currentDoc: undefined //l'instance FAWriterDoc courante (elle doit toujours exister)
+, currentDoc: undefined //l'instance FADocument courante (elle doit toujours exister)
 
   /**
    * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
@@ -44,7 +44,7 @@ const FAWriter = {
 , makeCurrent(kdoc){
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    if(undefined === this.writerDocs[kdoc]) this.writerDocs[kdoc] = new FAWriterDoc(kdoc)
+    if(undefined === this.writerDocs[kdoc]) this.writerDocs[kdoc] = new FADocument(kdoc)
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()
     this.currentDoc.display()
@@ -77,15 +77,20 @@ const FAWriter = {
   *   - annuler, donc ne pas poursuire (return false)
   **/
 , checkCurrentDocModified(){
+    var choix
     if(this.currentDoc && this.currentDoc.isModified()){
-      var choix = DIALOG.showMessageBox({
+      if(this.a.locked){
+        choix = 2 // Pour ignore les changements
+      } else {
+        choix = DIALOG.showMessageBox({
           type:       'warning'
-        , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
-        , title:      "Document courant non sauvegardé"
-        , defaultId:  0
-        , cancelId:   1
-        , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
-      })
+          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+          , title:      "Document courant non sauvegardé"
+          , defaultId:  0
+          , cancelId:   1
+          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
+        })
+      }
       switch (choix) {
         case 0:
           this.currentDoc.save()
@@ -386,7 +391,7 @@ const FAWriter = {
     $('input#cb-auto-visualize').on('change', my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
-    $('button#writer-btn-new-doc').on('click', FAWriterDoc.new.bind(FAWriterDoc))
+    $('button#writer-btn-new-doc').on('click', FADocument.new.bind(FADocument))
 
     // On rend le petit bouton pour drag-dropper le document courant
     // draggable
@@ -437,11 +442,11 @@ Object.defineProperties(FAWriter,{
         var files = glob.sync(path.join(this.a.folderFiles, '**', 'doc-*.md'))
         for(var file of files){
           var doc_id = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
-          this._customDocuments.push(new FAWriterDoc(doc_id))
+          this._customDocuments.push(new FADocument(doc_id))
           if(doc_id > last_id) last_id = 0 + doc_id
         }
         // On renseigne le dernier identifiant utilisé
-        FAWriterDoc.lastID = last_id
+        FADocument.lastID = last_id
       }
       return this._customDocuments
     }

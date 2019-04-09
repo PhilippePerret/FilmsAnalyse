@@ -14,3 +14,13 @@ String.prototype.camelize = function(){
   var str = this.valueOf()
   return str.split(/[_ ]/).map(m => m.titleize()).join('')
 }
+
+
+RegExp.escape = function(str){
+  str = str.replace(/\?/, '\\?')
+  str = str.replace(/\[/, '\\[')
+  str = str.replace(/\]/, '\\]')
+  str = str.replace(/\{/, '\\{')
+  str = str.replace(/\}/, '\\}')
+  return str
+}

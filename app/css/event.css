@@ -12,6 +12,11 @@
   margin-bottom:3px;
 }
 
+.event.current,
+.event.current * {
+  background-color:#EEFFEE;
+}
+
 /* Quand on le draggue */
 .event.myHighlight{
   border:2px solid red;
@@ -40,7 +45,7 @@
 
 .event.note {
   font-style:italic;
-  margin-left:2em;
+  /* margin-left:2em; */
   font-size:0.85em;
 }
 

@@ -5,6 +5,7 @@
   du récit.
 **/
 module.exports = function(options){
+  let my = this
   my.log("* Construction du diagramme dynamique")
   let str = ''
   str += '<h1 id="diagramme_dynamique-title">Diagramme dynamique</h1>'

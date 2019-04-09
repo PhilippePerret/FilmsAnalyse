@@ -4,7 +4,21 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times']}
+static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+
+/**
+  @return {Array} La liste des propriétés pour une sous-classe
+  précise.
+  La sous-classe doit appeler :
+  defP(this,'_TEXT_PROPERTIES',FAEvent.tProps(this.OWN_TEXT_PROPS))
+**/
+static tProps(own_text_properties){
+  var arr = Object.assign([], FAEvent.TEXT_PROPERTIES)
+  Object.assign(arr, own_text_properties)
+  return arr
+}
+
 
 /**
   Mémorise tous les events qui ont été créés ou modifiés au cours
@@ -97,7 +111,6 @@ set modified(v){
 
 reset(){
   delete this._asLink
-  delete this._asLinkScene
   delete this._endAt
   delete this._otime
   delete this._horl
@@ -112,29 +125,6 @@ get isADocument(){return false}
 // ---------------------------------------------------------------------
 //  Méthodes d'helper
 
-// Un lien cliquable pour se rendre au temps de l'event
-get link(){
-  return `-&gt; <a onclick="current_analyse.locator.setRTime(${this.time})">E #${this.id}</a>`
-}
-/**
- * Retourne le lien vers l'event
- * Pour remplacer par exemple une balise `event: <id>`
- *
- * Note : si ce texte est modifié, il faut aussi corriger les tests à :
- * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
- */
-asLink(alt_text){
-  if(undefined === this._asLink){
-    this._asLink = `<a class="link-to-event" onclick="showEvent(${this.id})">__TIT__</a>`
-  }
-  return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
-}
-asLinkScene(alt_text){
-  if(undefined === this._asLinkScene){
-    this._asLinkScene = `<a class="link-to-scene" onclick="showScene(${this.id})">__TIT__</a>`
-  }
-  return this._asLinkScene.replace(/__TIT__/, (alt_text || `scène ${this.numero} : « ${this.pitch} »`).trim())
-}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -170,6 +160,9 @@ set duration(v){
 }
 get duration(){return this._duration || (this.type === 'scene' ? 60 : 10)}
 
+// Alias
+get description(){return this.content}
+
 // ---------------------------------------------------------------------
 //  Méthodes d'association
 
@@ -195,6 +188,43 @@ addTime(time){
   if(this.times.indexOf(time) < 0){
     this.times.push(time)
     this.modified = true
+  }
+}
+
+/**
+
+  Répète la méthode +fn+ sur tous les events associés de
+  type +type+ (le nom du type au pluriel, comme la propriété)
+
+  @param {String} type  Soit 'events', 'documents', 'times'
+  @return {Void}
+
+**/
+forEachAssociate(type, fn){
+  if(type==='times' || type === 'time'){
+    for(var assoEvent of this[type]){
+      if(false === fn(new OTime(assoEvent))) break;
+    }
+  } else {
+    for(var assoEvent of this[type]){
+      if(false === fn(this.a.ids[assoEvent])) break;
+    }
+  }
+}
+
+/**
+  Méthode qui permet de boucler sur toutes les
+  propriétés textuelles de l'event, pour rechercher
+  des choses dans les textes, par exemple.
+
+  La méthode fonctionne avec la proprité TEXT_PROPERTIES de
+  l'event.
+
+**/
+forEachTextProperty(fn){
+  let my = this
+  for(var prop of my.constructor.TEXT_PROPERTIES){
+    if(false === fn(prop, my[prop])) break
   }
 }
 // ---------------------------------------------------------------------
@@ -233,6 +263,8 @@ showDiffere(){
  * Pour afficher l'évènement dans le reader de l'analyse
  */
 show(){
+  // console.log("-> show", this.id)
+  if(this.shown === true) return
   if(this.jqReaderObj && this.jqReaderObj.length){
     // <= l'objet DOM existe déjà
     // => On a juste à l'afficher
@@ -244,16 +276,47 @@ show(){
     this.observe()
   }
   this.makeAppear() // c'est l'opacité qui masque l'event affiché
+  // Pour se mettre en exergue lorsqu'il est survolé
+  this.startWatchingTime()
   // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
   // old-school
   this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+  this.shown = true
 }
 
 hide(){
   this.makeDesappear()
   this.jqReaderObj.hide()
+  this.stopWatchingTime()
+  this.shown = false
 }
 
+/**
+  Toutes les secondes, l'event va véfiier si le temps courant le
+  survole. Si c'est le cas, il se met en exergue.
+**/
+startWatchingTime(){
+  // console.log("-> startWatchingTime de ", this.id)
+  this.timerWatchingTime = setInterval(this.watchTime.bind(this), 1000)
+  // console.log("<- startWatchingTime de", this.id)
+}
+stopWatchingTime(){
+  // console.log("-> stopWatchingTime")
+  clearInterval(this.timerWatchingTime)
+  delete this.timerWatchingTime
+}
+watchTime(){
+  var rtime = this.a.locator.getRTime()
+  let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
+  if(this.isCurrent != iscur){
+    this.isCurrent = !!iscur
+    this.jqReaderObj[this.isCurrent?'addClass':'removeClass']('current')
+  }
+}
+get end(){
+  if(undefined === this._end) this._end = this.time + this.duration
+  return this._end
+}
 /**
  * Après édition de l'event, on peut avoir à updater son affichage dans
  * le reader. On va faire simplement un remplacement de div (le div du
@@ -357,92 +420,6 @@ get div(){
 }
 
 
-/**
-  Renvoie toutes les présentations possible de la scène
-
-  @param {String} format  Le format de retour
-  @param {Number} flag    Le drapeau permettant de déterminer les détails
-                          du retour, comme la présence des boutons d'édition,
-                          l'ajout de la durée, etc.
-                          DUREE|TIME|LINKED
-  @param {Object} options Options à utiliser (unisité pour le moment)
-**/
-as(format, flag, opts){
-  if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut (NON !)
-  // Pour le moment, on corrige par défaut
-  flag = flag | FORMATED
-
-  // console.log("-> as(format, flag)", format, flag)
-
-  var str
-  switch (format) {
-    case 'short':
-      str = this.asShort(opts)
-      break
-    case 'book':
-      // Sortie pour le livre
-      str = this.asBook(opts)
-      break
-    case 'full':
-      // Affiche complet, avec toutes les informations
-      str = this.asFull(opts)
-      break
-    case 'associate':
-      str = this.asAssociate(opts)
-      break
-    default:
-      str = this.title
-  }
-
-  if(flag & DUREE) str += ` (${this.hduree})`
-
-  if(flag & FORMATED) str = DFormater(str)
-
-  if(flag & LINKED){
-    str = this.linked(str)
-  }
-  return str
-}
-
-// Version courte commune
-asShort(opts){
-  let str = ''
-  str += `Ev.${this.id} « ${this.titre} »`
-  str += this.warnCommonMethod
-  return str
-}
-// Version livre commune
-asBook(opts){
-  let str = ''
-  str += this.warnCommonMethod
-  return str
-}
-// Version complète (reader) commune
-// C'est la version qui est ajoutée au `div` contenant les
-// boutons d'édition, etc.
-asFull(opts){
-  let str = ''
-  str += `<div>${this.asShort(opts)}</div>`
-  str += this.warnCommonMethod
-  return str
-}
-// Version associée, quand l'event est présenté en tant
-// qu'associé dans un autre event
-asAssociate(opts){
-  let str = ''
-  str += `<label class="type">${this.htype} : </label>`
-  str += `<span class="content">${this.content}</span>`
-  return str
-}
-
-/**
-  Méthode générale pour lier l'event
-**/
-linked(str){
-  return `<a onclick="showEvent(${this.id})">${str}</a>`
-}
-
 // Méthode de warning pour indiquer que la version d'affichage courante
 // est une version commune à tous les events, pas adaptée à l'event en
 // particulier. Elle s'affichera jusqu'à ce que l'event en particulier
@@ -509,7 +486,7 @@ get data(){
 set data(d){
   var fieldName ;
   for(var prop of FAEvent.OWN_PROPS){
-    if(undefined === d[prop] && null === d[prop]) continue
+    if(undefined === d[prop] || null === d[prop]) continue
     this[prop] = d[prop]
   }
 }

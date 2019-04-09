@@ -73,6 +73,7 @@ allComponantsLoaded(options, callback){
     this.a.Fonds.loaded || raise('Attente de fin de chargement des données fondamentales')
   } catch (e) {
     this.timerLoading = setTimeout(this.build.bind(this, options, callback), 50)
+    console.error(e)
     return false
   }
   return true

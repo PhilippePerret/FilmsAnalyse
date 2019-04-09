@@ -1,11 +1,14 @@
 const electron = require('electron')
 const { app, BrowserWindow } = require('electron')
+const log = require('electron-log')
 const { Menu, MenuItem } = require('electron')
 const path = require('path')
 const ipc = electron.ipcMain
 
+log.transports.console.level = 'warn'
+
 global.MODE_TEST = process.env.MODE_TEST == 'true'
-if(MODE_TEST) console.log("--- Mode Tests ---")
+if(MODE_TEST) log.info("--- Mode Tests ---")
 
 const Prefs = require('./app/js/main-process/Prefs.js')
 

@@ -9,6 +9,7 @@
  */
 FAnalyse.load = function(aFolder){
   try {
+    log.info(`[FAnalyse::load] Load analyse « ${aFolder} »`)
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
     this.resetAll()
@@ -16,12 +17,14 @@ FAnalyse.load = function(aFolder){
     current_analyse.load()
     return true
   } catch (e) {
+    log.error(e)
     UI.stopWait()
     return F.error(e)
   }
 }
 
 FAnalyse.resetAll = function(){
+  log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
   // On détruit la section vidéo de l'analyse courante
   if(window.current_analyse){
     // <= Il y a une analyse courante
@@ -37,6 +40,7 @@ FAnalyse.resetAll = function(){
     delete current_analyse.stater
   }
   // $('#section-videos').html()
+  log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
 }
 
 // ---------------------------------------------------------------------
@@ -52,6 +56,7 @@ Object.assign(FAnalyse.prototype, {
 
 */
 load(){
+  log.info("-> FAnalyse#load")
   var my = this
     , fpath ;
   // Les options peuvent être chargée en premier, de façon synchrone
@@ -66,6 +71,7 @@ load(){
   while(fpath = loadables.shift()){
     my.loadFile(fpath, my.PROP_PER_FILE[fpath])
   }
+  log.info("<- FAnalyse#load (mais traitement asynchrone)")
 }
 
 , onLoaded(fpath){
@@ -98,6 +104,8 @@ load(){
     this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
     EventForm.init()
     FAEscene.init()
+    FAEqrd.reset().init()
+    FAEpp.reset().init()
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()

@@ -36,6 +36,34 @@ static forEachDim(method){
   }
 }
 
+
+static get TYPES2HTYPES(){
+  return {
+    'time':   {fr: 'temps',   genre: 'M'}
+  , 'times':  {fr: 'temps',   genre: 'M'}
+  , 'event':  {fr: 'event',   genre: 'M'}
+  , 'events': {fr: 'events',  genre: 'M'}
+  , 'scene':  {fr: 'scène',   genre: 'F'}
+  , 'scenes': {fr: 'scènes',  genre: 'F'}
+  }
+}
+static htypeFor(type, options){
+  if(undefined === options) options = {}
+  let dtype = this.TYPES2HTYPES[type]
+    , isFem = dtype.genre === 'F'
+  var str = dtype.fr
+  if(options.title || options.asTitle || options.titleize){
+    str = str.titleize()
+  }
+  if(options.before){
+    str = `${options.before.replace(/_e_/g, isFem ? 'e' : '')} ${str}`
+  }
+  if(options.after){
+    str = `${str} ${options.after.replace(/_e_/g, isFem ? 'e' : '')}`
+  }
+  return str
+}
+
 static deDim(str){
   if(this.dimsData == null) return str // pas de diminutifs
   this.forEachDim(function(dim, regDim, value){
@@ -75,7 +103,7 @@ static deDoc(str){
   str = str.replace(this.DOC_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     doc_key = groups.key
-    return FAWriterDoc.get(doc_key).as_link()
+    return FADocument.get(doc_key).as_link()
   })
   return str
 }
@@ -186,7 +214,9 @@ get formated(){return this.formate()}
 setFormat(str, format){
   switch (format) {
     case HTML:
-      return CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+      str = CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
+      str = str.replace(/\n/g, '<br>')
+      return str
     case 'raw':
       return str
     default:
@@ -233,7 +263,7 @@ setFormat(str, format){
     else this.raw_string = str
     str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
       var groups = arguments[arguments.length - 1]
-      return current_analyse.ids[groups.event_id].asLinkScene(groups.alt_text)
+      return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
     })
     // console.log(founds)
     return str

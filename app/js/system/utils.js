@@ -86,7 +86,12 @@ function getValOrNull(domId, options){
     case 'duree':
       return parseFloat(field.attr('value'))
     default:
-      value = field.val().trim()
+      try {
+        value = field.val().trim()
+      } catch (e) {
+        console.error(`[getValOrNull] Impossible d'obtenir la valeur de ${domId} : `, e)
+        return null
+      }
   }
   if ( value === "" ) return null
   else if(options.type === 'number')  value = parseInt(value,10)
@@ -113,11 +118,12 @@ function DGet(DOMId){
 *
 **/
 function DCreate(typeElement, params){
+  // console.log("DCreate params:", params)
   var e = document.createElement(typeElement)
   if(undefined === params) return e
   if(params.id)     e.id = params.id
   if(params.class)  e.className = params.class
-  if(params.style)  e.style = params.style
+  if(params.style)  e.setAttribute('style', params.style)
   if(params.type)   e.type = params.type
   if(params.inner)  e.innerHTML = params.inner
   if(undefined !== params.value)  e.value = params.value

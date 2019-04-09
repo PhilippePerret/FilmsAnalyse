@@ -93,6 +93,7 @@ static filmHasSceneNearCurrentPos(){
 }
 
 static editEvent(ev){
+  if('number' === typeof ev) ev = this.a.ids[ev]
   var eForm
   this.playing && this.a.locator.togglePlay()
   if(undefined === this.eventForms[ev.id]){
@@ -298,9 +299,9 @@ peupleDecors(){
 }
 peupleSousDecors(decor){
   this.menuSousDecors.html('')
-  if (FAEscene.dataDecors[decor].length){
-    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: 'Choisir le sous-décor…'}))
-    for(var sdecor in FAEscene.dataDecors[decor].sous_decors){
+  if (FAEscene.dataDecors[decor].sousDecorsCount){
+    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: `Sous-décor de « ${decor} »…`}))
+    for(var sdecor in FAEscene.dataDecors[decor].sousDecors){
       this.menuSousDecors.append(DCreate('OPTION',{value:sdecor, inner:sdecor}))
     }
   }
@@ -326,6 +327,10 @@ domField(prop){
   return DGet(`event-${this.id}-${prop}`)
 }
 
+synchronizePitchAndResume(e){
+  this.jqField('content').val(this.jqField('titre').val())
+}
+
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
@@ -338,11 +343,16 @@ observe(){
   // bouton de sauvegarde
   this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
 
+  // Quand le type de l'event est scene et que le résumé est vide,
+  // on synchronise le pitch avec le résumé
+  if(this.type === 'scene' && this.isNew){
+    this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
+  }
+
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
   , drop: (e, ui) => {
-      // console.log("this:",this)
       var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
       if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
         $(e.target).insertAtCaret(balise)
@@ -464,7 +474,11 @@ setFormValues(){
   // Les valeurs communes
   for(prop of FAEvent.OWN_PROPS){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
-    this.jqField(prop).val(this.event[prop])
+    if (this.jqField(prop).length){
+      this.jqField(prop).val(this.event[prop])
+    } else {
+      // console.log("Le champs pour la propriété n'existe pas :", prop)
+    }
     // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
   }
   // Réglage spécial des temps 'time', 'duration', 'tps_reponse'
