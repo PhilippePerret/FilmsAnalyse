@@ -71,7 +71,7 @@ static findAssociations(){
         do {
           found = reg.exec(value)
           if(found != null){
-            console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
+            // console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
             if(undefined === dDocuments[found[1]]){
               dDocuments[found[1]] = []
             }
@@ -189,6 +189,7 @@ endLoading(code){
 
 // Pour sauver le document
 save(){
+  if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
   if(this.saving) return
   this.saving = true
   this.isNewCustom = this.type === 'customdoc' && !this.exists()

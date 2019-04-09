@@ -77,15 +77,20 @@ const FAWriter = {
   *   - annuler, donc ne pas poursuire (return false)
   **/
 , checkCurrentDocModified(){
+    var choix
     if(this.currentDoc && this.currentDoc.isModified()){
-      var choix = DIALOG.showMessageBox({
+      if(this.a.locked){
+        choix = 2 // Pour ignore les changements
+      } else {        
+        choix = DIALOG.showMessageBox({
           type:       'warning'
-        , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
-        , title:      "Document courant non sauvegardé"
-        , defaultId:  0
-        , cancelId:   1
-        , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
-      })
+          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+          , title:      "Document courant non sauvegardé"
+          , defaultId:  0
+          , cancelId:   1
+          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
+        })
+      }
       switch (choix) {
         case 0:
           this.currentDoc.save()

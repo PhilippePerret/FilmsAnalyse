@@ -2,7 +2,6 @@
 
 
 * [BUGS]
-  - Quand l'analyse est verrouillée, on ne devrait pas pouvoir enregistrer les documents
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
