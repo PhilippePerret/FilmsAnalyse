@@ -70,26 +70,18 @@
 
 * Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
 
-* Faire les méthodes `showTime`, `showEvent`, `showScene`, etc. qui doit donner des indications sur les éléments.
-  - voir comment on se sert de javascript dans les eBooks
+* Faire les méthodes `showTime`, `showEvent`, `showScene(<numero>)`, `showDocument(<doc id>)` etc. qui doit donner des indications sur les éléments.
+  - voir comment on se sert de javascript dans les eBooks (ça ne semble pas possible)
   - faire les styles associés aux liens utilisant ces méthodes (`lktime`, `lkscene`, `lkevent`, etc.)
 
-* Quand il y a un trop grand nombre de rapports, on détruit les plus anciens
+* Quand il y a un trop grand nombre de rapports, détruire les plus anciens
 
 * Pouvoir modifier la vitesse à l'aide des touches `CMD +` et `CMD -`
 
-* Implémenter les fonctions windows `showEvent(event_id)` et `showScene(event_id)` qui permettent d'afficher les events ou les scènes dans les textes finaux.
-  - Noter que la méthode showScene attend un identifiant d'event, PAS un numéro de scène (qui peut changer à tout moment)
-  - Implémenter de la même manière la méthode `showDocument(doc_id/type)` qui permet d'afficher/visualiser les documents
-
 * Rapports (class FAReport). Pouvoir recharger des rapports qui se trouvent dans le dossier 'reports' de l'analyse.
 * Pouvoir avoir plusieurs writers pour éditer plusieurs documents en même temps
-* Poursuivre les expériences pour exporter en ePub et autre format
-  - voir comment incorporer les fichiers dans le template
-    Peut-être chaque fichier doit-il avoir un ID (OUI), et une position:after
-    et :before qui le place, et d'autres propriétés comme la position x ou y
-    si c'est une image par exemple, ou des styles particuliers à appliquer,
-    etc.
+* Script d'assemblage : pouvoir insérer une image avec `IMAGE <image path>`
+  -> documenter
 
 * Faire un fichier `metadata.yml` pour les métadonnées du livre (pour les epubs fait avec pandoc)
 

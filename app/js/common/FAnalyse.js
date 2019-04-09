@@ -730,38 +730,4 @@ get folderExport(){
 get folder()  { return this._folder }
 set folder(v) { this._folder = v }
 
-/** ---------------------------------------------------------------------
-* Chargement des composants
-**/
-static loadSnippets(fn_callback){
-  return System.loadComponant('Snippets', fn_callback)
-}
-loadBuilder(fn_callback){
-  return System.loadComponant('faBuilder', fn_callback)
-}
-loadExporter(fn_callback){
-  return System.loadComponant('faExporter', fn_callback)
-}
-loadReporter(fn_callback){
-  return System.loadComponant('faReport', fn_callback)
-}
-loadTimeline(fn_callback){
-  return System.loadComponant('faTimeline', fn_callback)
-}
-loadStater(fn_callback){
-  return System.loadComponant('faStater', fn_callback)
-}
-loadWriter(fn_callback){
-  return System.loadComponant('faWriter', fn_callback)
-}
-loadProtocole(fn_callback){
-  return System.loadComponant('faProtocole', fn_callback)
-}
-// static loadReader(fn_callback){
-//   return System.loadComponant('faReader', fn_callback)
-// }
-loadReader(fn_callback){
-  return System.loadComponant('faReader', fn_callback)
-}
-
 }

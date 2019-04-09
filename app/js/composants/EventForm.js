@@ -269,15 +269,68 @@ afterBuilding(){
       var dstt = dataStt[nid]
       mstt.append(DCreate('OPTION', {value: nid, inner: dstt.hname}))
     }
+  } else if (typ === 'scene'){
+    // Si c'est une scène il faut peupler avec les décors existants
+    this.peupleDecors()
+  } else if (typ === 'proc'){
+    // Pour les procédés, tout dépend de là où on en est : si le procédé
+    // est défini, il faut l'afficher directement (en le recherchant dans
+    // sa catégorie [1]). Sinon, on affiche simplement le menu principal
+    // des catégories.
+    //
+    // [1] Cela rallonge un peu les procédures, mais permet de ne pas avoir
+    // un classement trop rigide. En plus, on fait un seul tour pour classer
+    // tous les procédés
+    //
+    // Pour le moment, je mets le menu principal
+    if(this.event && this.event.procType){
+      // Un procédé précis
+    } else {
+      this.implementeMenuCategorieProcedes()
+    }
   }
-
-  // Si c'est une scène il faut peupler avec les décors existants
-  // déjà
-  if(this.type === 'scene') this.peupleDecors()
-
   jqo = eid = typ = null
   this.built = true
 }
+
+
+// ---------------------------------------------------------------------
+//  Méthodes pour les PROCÉDÉS
+implementeMenuCategorieProcedes(){
+  this.jqObj.find('.div-procedes select').off('change')
+  this.jqObj.find('.div-procedes').html(FAProcede.menuCategories())
+  this.jqObj.find('.div-procedes select').on('change', this.onChooseCategorieProcedes.bind(this))
+}
+implementeMenuSousCategorieProcedes(cate_id){
+  this.jqObj.find('.div-procedes select').off('change')
+  this.jqObj.find('.div-procedes').html(FAProcede.menuSousCategories(cate_id))
+  this.jqObj.find('.div-procedes select').on('change', this.onChooseSousCategorieProcedes.bind(this))
+}
+implementeMenuProcedes(cate_id, scate_id){
+  this.jqObj.find('.div-procedes select').off('change')
+  this.jqObj.find('.div-procedes').html(FAProcede.menuProcedes(cate_id, scate_id))
+  this.jqObj.find('.div-procedes select').on('change', this.onChooseProcede.bind(this))
+}
+onChooseCategorieProcedes(e){
+  this.implementeMenuSousCategorieProcedes($(e.target).val())
+}
+onChooseSousCategorieProcedes(e){
+  let scate_id = $(e.target).val()
+    , cate_id  = $(e.target).attr('data-cate-id')
+  if(scate_id == '..'){
+    this.implementeMenuCategorieProcedes()
+  } else {
+    this.implementeMenuProcedes(cate_id, scate_id)
+  }
+}
+onChooseProcede(e){
+  let proc_id = $(e.target).val()
+}
+
+// /FIN méthodes pour les PROCÉDÉS
+// ---------------------------------------------------------------------
+
+
 
 // ---------------------------------------------------------------------
 //  MÉTHODES POUR LES DÉCORS

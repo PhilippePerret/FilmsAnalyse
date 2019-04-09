@@ -22,8 +22,8 @@ module.exports = `
       <duree id="event-__EID__-duration" class="small durationable">...</duree>
     </div>
 
-    <div class="div-form">
-      <label class="ff finfo fpp fdialog fscene fproc">Type</label>
+    <div class="div-form -fproc">
+      <label class="ff finfo fpp fdialog fscene">Type</label>
       <label class="ff fstt">Type du Nœud</label>
 
       <select class="event-sttID ff fstt" id="event-__EID__-sttID">
@@ -72,21 +72,16 @@ module.exports = `
         <option value="them">Thème</option>
       </select>
 
-      <select class="ff fproc" id="event-__EID__-procType">
-        <option value="n/d">...</option>
-        <option value="pp">Préparation/paiement</option>
-        <option value="irdr">Ironie dramatique</option>
-        <option value="revc">Révélateur de changement</option>
-        <option value="idea">Idéalisation</option>
-        <option value="autre">Autre…</option>
-      </select>
-
       <select class="ff fpp" id="event-__EID__-ppType">
         <option value="prep">Préparation</option>
         <option value="expl">Exploitation</option>
         <option value="paie">Paiement/Résolution</option>
         <option value="canc">Annulation</option>
       </select>
+    </div>
+
+    <div class="div-form ff fproc div-procedes">
+      <!-- Catégories > Sous-catégorie > Procédés -->
     </div>
 
     <div class="div-form">

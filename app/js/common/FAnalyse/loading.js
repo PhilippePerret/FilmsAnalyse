@@ -43,6 +43,10 @@ FAnalyse.resetAll = function(){
   log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
 }
 
+FAnalyse.loadSnippets = function(fn_callback){
+  return System.loadComponant('Snippets', fn_callback)
+}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 Object.assign(FAnalyse.prototype, {
@@ -91,6 +95,7 @@ load(){
   charge.
  */
 , onReady(){
+    if(NONE === typeof FAProcede) return this.loadProcede(this.onReady.bind(this))
     if(NONE === typeof FAReader) return this.loadReader(this.onReady.bind(this))
     if(NONE === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
     if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
@@ -102,6 +107,7 @@ load(){
     this.locator.init()
     this.locator.stop_points = this.stopPoints
     this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
+    FAProcede.reset().init()
     EventForm.init()
     FAEscene.init()
     FAEqrd.reset().init()
@@ -129,5 +135,48 @@ load(){
   my.onLoaded.bind(my)(fpath)
 }
 
+
+/** ---------------------------------------------------------------------
+* Chargement des composants
+**/
+,
+loadBuilder(fn_callback){
+  return System.loadComponant('faBuilder', fn_callback)
+}
+,
+loadExporter(fn_callback){
+  return System.loadComponant('faExporter', fn_callback)
+}
+,
+loadReporter(fn_callback){
+  return System.loadComponant('faReport', fn_callback)
+}
+,
+loadTimeline(fn_callback){
+  return System.loadComponant('faTimeline', fn_callback)
+}
+,
+loadStater(fn_callback){
+  return System.loadComponant('faStater', fn_callback)
+}
+,
+loadWriter(fn_callback){
+  return System.loadComponant('faWriter', fn_callback)
+}
+,
+loadProtocole(fn_callback){
+  return System.loadComponant('faProtocole', fn_callback)
+}
+,
+// static loadReader(fn_callback){
+//   return System.loadComponant('faReader', fn_callback)
+// }
+loadReader(fn_callback){
+  return System.loadComponant('faReader', fn_callback)
+}
+,
+loadProcede(fn_callback){
+  return System.loadComponant('faProcede', fn_callback)
+}
 
 })
