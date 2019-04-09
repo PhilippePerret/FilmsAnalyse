@@ -80,7 +80,7 @@ static set current(s){
   // }
   this._current = s
   this.a._currentScene = s
-  this.a.videoController.section.find('div.mark-current-scene').html(s ? s.as('short', FORMATED) : '...')
+  this.a.videoController.markCurrentScene.html(s ? s.asPitch() : '...')
 }
 static getCurrent(){
   if(this.count === 0) return

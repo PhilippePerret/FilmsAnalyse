@@ -6,6 +6,17 @@
 Object.assign(FAEscene.prototype,{
 
 /**
+  La version la plus courte de la scène, pour la marque de scène
+  au-dessus de la vidéo, pour le moment, et pour les liens
+**/
+asPitch(opts){
+  if(undefined === this._aspitch){
+    this._aspitch = DFormater(`${this.numero}. ${this.pitch}`)
+  }
+  return this._aspitch
+}
+,
+/**
   Version courte propre au scène
   Pour les scènes, le résumé (content) et le pitch (titre) peuvent
   commencer par le même texte. Dans ce cas-là, on ne prend que le
@@ -59,11 +70,11 @@ f_scene_heading(opts){
   }
   if(this.decor){
     headingElements.push(DCreate('SPAN', {inner:' – '}))
-    headingElements.push(DCreate('SPAN', {class:'scene-decor', inner: this.decor.toUpperCase()}))
+    headingElements.push(DCreate('SPAN', {class:'scene-decor', inner: DFormater(this.decor).toUpperCase()}))
   }
   if(this.sous_decor){
     headingElements.push(DCreate('SPAN', {inner: ' : '}))
-    headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: this.sous_decor.toUpperCase()}))
+    headingElements.push(DCreate('SPAN', {class:'scene-sous-decor', inner: DFormater(this.sous_decor).toUpperCase()}))
   }
   if(!opts.noTime){
     headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))

@@ -262,14 +262,6 @@ observe(){
   var horloges = UI.setHorlogeable(this.section.find('.video-header')[0], {synchro_video: true})
   this.locator.oMainHorloge = Object.values(horloges)[0]
 
-  // Pour afficher les scènes, le div est sensible au clic et permet
-  // d'éditer la scène
-  this.section.find('.mark-current-scene').on('click', () => {
-    if (current_analyse.currentScene){
-      EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
-    }
-  })
-
   // Boutons pour se déplacer de scène en scène (dans le contrôleur)
   var btnPrevScene = this.section.find('.btn-prev-scene')[0]
   var btnNextScene = this.section.find('.btn-next-scene')[0]
@@ -298,6 +290,14 @@ observe(){
   this.markMainPartRel.on('click', this.onClickMarkStt.bind(this, 'Main', 'Rel'))
   this.markSubPartRel.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
 
+  // Pour afficher les scènes, le div est sensible au clic et permet
+  // d'éditer la scène
+  this.markCurrentScene.on('click', () => {
+    if (current_analyse.currentScene){
+      EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+    }
+  })
+
   horloges = null
   my = null
 }
@@ -312,7 +312,7 @@ get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAb
 get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}
 get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel', this.section.find('.main-part-rel'))}
 get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('.sub-part-rel'))}
-
+get markCurrentScene(){return this._markCurrentScene||defP(this,'_markCurrentScene',this.section.find('.mark-current-scene'))}
 
 // Pour l'indicateur de position, une timeline sous
 // la vidéo.

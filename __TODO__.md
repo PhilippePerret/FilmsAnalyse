@@ -4,13 +4,11 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - Intitulé de scène : passer tout en majuscules
   - construction du graphique de la dynamique narrative
+    Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
 * [VÉRIFICATIONS]
-  - Vérifier que les temps associés s'affichent bien.
-    => Glisser un temps sur un temps (la vidéo)
 
 * OUTILS
   Peut-être faire un menu "Outils" s'il y en a suffisamment
