@@ -16,6 +16,7 @@
 * [L'Interface](#linterface)
   * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
+  * [Se déplacer rapidement à une scène particulière](#move_to_a_scene)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
 * [Les Documents](#les_documents)
   * [Quatre types de documents](#types_de_documents)
@@ -140,6 +141,16 @@ Le bouton STOP a trois comportement différents, dans l'ordre de priorité :
 2. la deuxième pression ramène au début du film, s'il est défini,
 3. la troisième pression ramène au début de la vidéo.
 
+
+### Se déplacer rapidement à une scène particulière {#move_to_a_scene}
+
+Pour se déplacer rapidement à une scène particulière, le mieux est d'utiliser l'*Eventers* qui affiche, par défaut, toutes les scènes :
+
+* ouvrir l'*Eventer* par le menu « Events > Nouvel eventer… » (ou faire `CMD MAJ E`),
+* trouver la scène dans le listing qui s'affiche,
+* cliquer sur son petit bouton play dans les outils au-dessus de la scène.
+
+---------------------------------------------------------------------
 
 ## Définir le Paradigme de Field Augmenté du film {#define_film_pfa}
 

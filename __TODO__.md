@@ -2,13 +2,17 @@
 
 
 * [BUGS]
-  - quand j'essaie de créer une note (avec référence à document mais je ne pense pas que ça joue : "Cette note est en lien avec le document : {{document:intro}}.")
-  - quand j'essaie d'associer une note à un document en glissant le document sur le texte de la note.
-
+  - bug avec les statistiques (personnage, apparemment, quand ils ne sont pas définis)
+  - Quand l'analyse est verrouillée, on ne devrait pas pouvoir enregistrer les documents
+  
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
     Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
+
+* [ESSAIS]
+  - Essayer du javascript dans les ebook. Commencer par un bouton qui n'utilise qu'une alerte :
+    <button onclick="alert('Hello le monde')">Dire bonjour</button>
 
 * [VÉRIFICATIONS]
 
@@ -32,6 +36,10 @@
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
+  - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
+    - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
+      + conduit à la référence `12` (disons une scène dans le scénier final)
+      + définit le retour dans la référence `12` pour qu'il ramène là où on a cliqué.
 
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
@@ -115,6 +123,10 @@
 * Faire un mode d'emploi interactif
 * Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
+* Mettre en place la partie TESTS MANUELS
+  - pouvoir lire les fichiers YAML du dossier, les afficher avec des cases à cocher
+  - pouvoir enregistrer les résultats dans un fichier JSON
+  - peut-être que dès qu'une nouvelle version est en cours d'enregistrement, les tests se ré-initialisent et il faut les traiter.
 
 # PEUT-ÊTRE UN JOUR
 * API qui permettrait de récupérer les data des films online (au format json).

@@ -54,7 +54,7 @@ static output(options){
     if(curIntensite > intensiteMax) intensiteMax = curIntensite
     curIntensite -= tr.q.length
   }
-  console.log("intensiteMax=", intensiteMax)
+  // console.log("intensiteMax=", intensiteMax)
 
   // On en fait des div
   var divsTranches = []
@@ -73,7 +73,7 @@ static output(options){
     divsTranches.push(DCreate('DIV', {
       class: 'GDtr', style: `left:${Math.round((tr.n - 1) * coefScene)}px;width:${sceneWidth}px;`, append:[
         DCreate('DIV', {class:'GDtrT', style:`height:${hT}px;`})
-      , DCreate('DIV', {class:'GDtrB', style:`height:${hB}px;`, attrs:{title: `Scène ${n}. Intensité courante : ${curIntensite}`}})
+      , DCreate('DIV', {class:'GDtrB', style:`height:${hB}px;`, attrs:{title: `Scène ${tr.n}. Intensité courante : ${curIntensite}`}})
       ], attrs:{onclick: `showScene(${tr.n})`}
     }))
     // L'intensité baisse d'autant de réponses données

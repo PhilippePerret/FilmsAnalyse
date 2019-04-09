@@ -16,3 +16,16 @@
       - Glisser l'icone drop du document intro sur le texte de la note.
     verifications:
       - La marque {{document:...}} doit s'inscrire dans le texte.
+  no_save_when_locked:
+    libelle: On ne doit pas pouvoir enregistrer de document lorsque l'analyse est verrouillée
+    synopsis:
+      - Ouvrir l'application
+      - Choisir une analyse
+      - Activer le verrouillage
+      - Ouvrir le writer de documents
+      - Choisir le document Introduction
+      - Modifier le document Introduction (nouvelle ligne)
+      - Enregistrer
+    verifications:
+      - Une alerte devrait dire que le document ne peut pas être enregistré
+      - Le document n'a pas pu être modifié. Relancer l'analyse et ouvrir le document pour s'en assurer.
