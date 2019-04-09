@@ -4,9 +4,19 @@ class FAEdyna extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['dynaType', ['libelle', 'inputtext-1']]}
+static get OWN_PROPS(){return ['dynaType', 'parent', ['libelle', 'inputtext-1']]}
 static get OWN_TEXT_PROPS(){ return ['libelle']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
+// Les types possibles de parent en fonction du type de l'event
+static get TYPESPARENT_PER_TYPE(){
+  return {
+      'objectif': null
+    , 'sous-objectif': ['objectif']
+    , 'moyen': ['objectif', 'sous-objectif']
+    , 'obstacle': ['objectif', 'sous-objectif', 'moyen']
+    , 'conflit':  ['obstacle']
+  }
+}
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier
@@ -25,52 +35,9 @@ static get dataType(){
   Initialise les éléments dynamiques
 **/
 static init(){
-  this.forEachQRD(dyna => {
-    if(dyna.reponse && dyna.reponse.length) return
-    // Sinon, on doit l'écrire dans la section
-    this.section.append(dyna.as('short', EDITABLE))
-  })
 }
 static reset(){
-  this.section.html('')
-  delete this._dynas
-  delete this._sorted
   return this // chainage
-}
-
-static get section(){return $('section#section-dyna-pp')}
-
-/**
-  Répète la méthode +fn+ sur toutes les QRD du film
-
-  @param {Function} fn La méthode à utiliser, qui doit recevoir l'event
-                        en premier argument.
-**/
-static forEachQRD(fn){
-  for(var dyna of this.dynas){
-    if(false === fn(dyna)) break // pour interrompre
-  }
-}
-static forEachSortedQRD(fn){
-  for(var dyna of this.sortedQrds){
-    if(false === fn(dyna)) break // pour interrompre
-  }
-}
-
-static get dynas(){return this._dynas||defP(this,'_dynas',this.defineLists().dynas)}
-static get sortedQrds(){return this._sorted||defP(this,'_sorted',this.defineLists().sorted)}
-
-static defineLists(){
-  var dynas    = []
-    , sorteds = []
-
-  current_analyse.forEachEvent(function(ev){
-    if(ev.type === 'dyna') dynas.push(ev)
-  })
-  sorteds = Object.assign([], dynas)
-  sorteds.sort((a, b) => {return a.time - b.time})
-
-  return {dynas: dynas, sorted: sorteds}
 }
 
 // ---------------------------------------------------------------------
@@ -90,11 +57,33 @@ get isValid(){
   // Définir ici les validité
   this.dynaType || errors.push({msg: "Le type (objectif, obstacle, etc.) est requis", prop: 'dynaType'})
   this.libelle  || errors.push({msg: "Le libellé est requis", prop: 'inputtext-1'})
-  this.parent || this.dynaType == 'objectif' || errors.push({msg: "Seul un objectif n'a pas besoin de parent.", prop: 'parent'})
+  let err_msg = this.parentIsValid()
+  !err_msg || errors.push({msg: err_msg, prop: 'parent'})
   this.content  || errors.push({msg: "La description de cet élément dynamique est requis.", prop: 'content'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0
+}
+
+parentIsValid(){
+  // console.log("-> parentIsValid() / this.parent = ", this.parent)
+  if(this.dynaType == 'objectif') return
+  if(!this.parent){
+    // Pas de parent défini
+    // => erreur
+    return T('parent-is-required', {ptypes: FAEdyna.TYPESPARENT_PER_TYPE[this.dynaType].join(', ')})
+  } else {
+      this.parent = parseInt(this.parent,10)
+      let pevent = this.a.ids[this.parent]
+        , ptype  = pevent.dynaType
+      console.log("parent:", pevent)
+      if (!ptype) T('good-parent-required', {bad: pevent.type, ptypes: FAEdyna.TYPESPARENT_PER_TYPE[this.dynaType].join(', ')})
+      if (FAEdyna.TYPESPARENT_PER_TYPE[this.dynaType].indexOf(ptype) < 0){
+      // Parent défini, mais de mauvais type
+      return T('good-parent-required', {bad: ptype, ptypes: FAEdyna.TYPESPARENT_PER_TYPE[this.dynaType].join(', ')})
+    }
+  }
+  // Sinon, on ne retourne rien
 }
 
 }

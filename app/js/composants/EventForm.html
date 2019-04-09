@@ -121,11 +121,14 @@ module.exports = `
     </div>
 
     <div class="div-form ff fdyna">
-      <label for="event-__EID__-parent">Event parent</label>
-      <div id="event-__EID__-parent" class="event-parent cadre">
-        <span class="small italic">(glisser ici l'event parent — </span>
-        <span class="ff fdyna small italic">l'objectif du sous-objectif ou du moyen, l'obstacle du conflit, etc.</span>
-        <span class="small italic">— utilisez par exemple un Eventer)</span>
+      <label>Parent de l'event</label>
+      <div class="event-parent cadre">
+        <div class="parent-designation small">
+          <span class="small italic">(glisser ici l'event parent — </span>
+          <span class="ff fdyna small italic">l'objectif du sous-objectif ou du moyen, l'obstacle du conflit, etc.</span>
+          <span class="small italic">— utilisez par exemple un Eventer)</span>
+        </div>
+        <input type="hidden" class="fdyna" id="event-__EID__-parent" value="">
       </div>
     </div>
 

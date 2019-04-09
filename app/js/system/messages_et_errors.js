@@ -5,7 +5,7 @@
 // la langue
 const ERRORS = {
   "--- ANALYSE ---":""
-, "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."  
+, "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 , "--- DOCUMENTS ---":""
@@ -33,6 +33,8 @@ const ERRORS = {
 , "proc-type-required": "Le type du procédé est requis."
 , "proc-install-required": "L'installation du procédé est requis."
 , "proc-description-required": "La description du procédé est requis."
+, "parent-is-required": "Un parent (de type : %{ptypes}) est requis pour cet event."
+, "good-parent-required": "Le parent défini n'est pas du bon type. Il est de type “%{bad}” alors que le ou les types acceptés sont : %{ptypes}."
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."

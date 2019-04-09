@@ -5,15 +5,8 @@
   - Il semblerait que je ne peux pas ouvrir l'eventer quand un event est édité (essayer avec un nouvel OOC)
 
 * [AMÉLIORATIONS]
-  - Eventer : quand on presse la touche CMD, ça inverse le sens de "Tous" pour mettre "Aucun" et tout déselectioner.
-  
-  - Poursuivre l'implémentation de l'event OOC (dyna)
   - construction du graphique de la dynamique narrative
-    Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
-    Réflexion :
-      - faut-il faire un type d'event qui enregistre tout (objectif, obstacle, conflit, etc.) ?
-      - un type d'event par type, objectif, obstacle, conflit, etc (ça ferait beaucoup de types, mais ça permettrait de les "mélanger")
-      - un seul type d'event, mais qui aurait pour sous-type "objectif", "obstacle", "conflit" (oui)
+    liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
 * [ESSAIS]
