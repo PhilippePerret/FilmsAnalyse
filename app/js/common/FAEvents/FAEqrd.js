@@ -5,6 +5,8 @@ class FAEqrd extends FAEvent {
 //  CLASSE
 
 static get OWN_PROPS(){return [['question', 'inputtext-1'], ['reponse', 'inputtext-2'], 'tps_reponse','exploitation']}
+static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
+static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier

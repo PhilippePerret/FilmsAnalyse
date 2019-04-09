@@ -1,13 +1,13 @@
 'use strict'
 /**
- * Class FAWriterDoc
+ * Class FADocument
  * ---------------
  * Classe pour gérer les documents
  *
  *
  */
 
-class FAWriterDoc {
+class FADocument {
 // ---------------------------------------------------------------------
 //  CLASSE
 
@@ -16,7 +16,7 @@ class FAWriterDoc {
 * créer un nouveau document.
 **/
 static new(){
-  var newDoc = new FAWriterDoc(this.newId())
+  var newDoc = new FADocument(this.newId())
   FAWriter.makeCurrent(newDoc.id)
   newDoc.setContents('# Titre du nouveau document'+RC+RC)
   FAWriter.message(T('new-custom-document-created'))
@@ -36,11 +36,38 @@ static newId(){
 static get(doc_id){
   if(undefined === this.documents) this.documents = {}
   if(undefined === this.documents[doc_id]){
-    this.documents[doc_id] = new FAWriterDoc(doc_id)
+    this.documents[doc_id] = new FADocument(doc_id)
   }
   return this.documents[doc_id]
 }
 
+/**
+  Méthode qui cherche toutes les associations avec les documents
+  Pour ce faire, elle regarde dans les events et cherche
+    - les associations directes (propriétés `documents`)
+    - les balises {{document:<id document>}} dans les textes
+
+  Note : pour le moment, cette méthode n'est utilisée nulle part
+**/
+static findAssociations(){
+  var dDocuments = {}
+  current_analyse.forEachEvent(function(ev){
+    // Dans la propriété `documents`
+    if(ev.documents.length) ev.documents.map(doc_id => {
+      if(undefined === dDocuments[doc_id]){
+        dDocuments[doc_id] = []
+      }
+      dDocuments[doc_id].push(ev)
+    })
+    // Dans les textes
+    ev.forEachTextProperty(function(prop, value){
+      console.log(`Je cherche dans ${prop} de event #${ev.id}`)
+      if(value.match(/\{\{document\:/)){
+
+      }
+    })
+  })
+}
 // ---------------------------------------------------------------------
 //  INSTANCE
 

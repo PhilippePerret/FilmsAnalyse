@@ -5,6 +5,20 @@ class FAEvent {
 //  CLASSE
 
 static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times']}
+static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+
+/**
+  @return {Array} La liste des propriétés pour une sous-classe
+  précise.
+  La sous-classe doit appeler :
+  defP(this,'_TEXT_PROPERTIES',FAEvent.tProps(this.OWN_TEXT_PROPS))
+**/
+static tProps(own_text_properties){
+  var arr = Object.assign([], FAEvent.TEXT_PROPERTIES)
+  Object.assign(arr, own_text_properties)
+  return arr
+}
+
 
 /**
   Mémorise tous les events qui ont été créés ou modifiés au cours
@@ -195,6 +209,22 @@ forEachAssociate(type, fn){
     for(var assoEvent of this[type]){
       if(false === fn(this.a.ids[assoEvent])) break;
     }
+  }
+}
+
+/**
+  Méthode qui permet de boucler sur toutes les
+  propriétés textuelles de l'event, pour rechercher
+  des choses dans les textes, par exemple.
+
+  La méthode fonctionne avec la proprité TEXT_PROPERTIES de
+  l'event.
+
+**/
+forEachTextProperty(fn){
+  let my = this
+  for(var prop of my.constructor.TEXT_PROPERTIES){
+    if(false === fn(prop, my[prop])) break
   }
 }
 // ---------------------------------------------------------------------

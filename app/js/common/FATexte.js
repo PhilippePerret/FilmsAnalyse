@@ -103,7 +103,7 @@ static deDoc(str){
   str = str.replace(this.DOC_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     doc_key = groups.key
-    return FAWriterDoc.get(doc_key).as_link()
+    return FADocument.get(doc_key).as_link()
   })
   return str
 }

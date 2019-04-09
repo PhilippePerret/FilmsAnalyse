@@ -55,7 +55,7 @@ Sandbox.run = function(){
 
 On peut charger des modules en inscrivant leur balise `<script>` dans le document grâce à la méthode `System.loadJSFolders(mainFolder, subFolders, fn_callback)`.
 
-L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FAWriterDoc` est définie, elle sera utilisable partout, à commencer par les modules chargés.
+L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FADocument` est définie, elle sera utilisable partout, à commencer par les modules chargés.
 
 C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui permet de rédiger les textes.
 

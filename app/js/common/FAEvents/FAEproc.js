@@ -5,6 +5,8 @@ class FAEproc extends FAEvent {
 //  CLASSE
 
 static get OWN_PROPS(){return ['procType', ['setup', 'inputtext-1'], ['payoff','inputtext-2'], ['tps_payoff', 'tps_reponse'], ['exploitation', 'content2']]}
+static get OWN_TEXT_PROPS(){ return ['setup', 'payoff', 'exploitation','content2']}
+static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier
