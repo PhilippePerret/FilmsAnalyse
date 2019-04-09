@@ -3,6 +3,7 @@
   font-size: 0.75em;
 }
 .bold {font-weight:bold;}
+.italic{font-style:italic;}
 
 .fleft {float:left;}
 .fright {float:right;}
@@ -18,6 +19,8 @@
 }
 
 .warning{color:red;}
+
+.cadre{border:1px solid;padding:0.1em 0.5em;}
 
 /* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
 button.main-button {

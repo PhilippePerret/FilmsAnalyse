@@ -91,13 +91,27 @@ onToggleFiltre(){
  * types. Pour tout déselectionner ou non.
  */
 onToggleFiltreAllTypes(e){
-  var all = DGet(`${this.domId}-cb-type-ALL`).checked
+  let all = DGet(`${this.domId}-cb-type-ALL`).checked
+    , invert = e.metaKey === true
+
   var ocontainer = this.jqObj.find('.pan-filter div.type-list')
   ocontainer.find('.cb-type > input').each(function(i, o){
-    if(i==0)return
-    if (all ) {
-      o.disabled  = true
-      o.checked   = all
+    if(i == 0){
+      if(invert){
+        o.checked   = false
+      }
+      return // le bouton "tous"/"aucun"
+    }
+    if (all) {
+      if(invert){
+        // Le sens inversé, pour tout décocher
+        o.disabled  = false
+        o.checked   = false
+      } else {
+        // Le sens normal, pour tout cocher
+        o.disabled  = true
+        o.checked   = true
+      }
     } else {
       o.disabled  = false
     }
@@ -196,11 +210,26 @@ observe(){
   this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
   this.horlogeFiltreFromTime.dispatch(dataHorloge)
   this.horlogeFiltreToTime.dispatch(dataHorloge)
+
+  // Juste pour changer le libellé de "Tous", dans le filtre, et mettre "Aucun"
+  this.fwindow.jqObj.on('keydown', this.onKeyDown.bind(this))
+  this.fwindow.jqObj.on('keyup', this.onKeyUp.bind(this))
+}
+
+onKeyDown(e){
+  if(e.metaKey !== true) return true
+  $(`label[for="${this.domId}-cb-type-ALL"]`).html('Aucun')
+}
+onKeyUp(e){
+  if(e.metaKey !== true){
+    $(`label[for="${this.domId}-cb-type-ALL"]`).html('Tous')
+  }
 }
 
 get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
 get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
 get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
+get jqPanFilter(){return this._jqPanFilter||defP(this,'_jqPanFilter',this.jqObj.find('div.pan-filter'))}
 get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
 get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
 get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}

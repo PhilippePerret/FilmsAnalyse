@@ -582,174 +582,189 @@ get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.form))}
 }
 
 // Template du formulaire d'édition de l'évènement
-const EVENT_FORM_TEMP = `
-  <input type="hidden" id="event-__EID__-id" />
-  <input type="hidden" id="event-__EID__-is_new" />
-  <input type="hidden" id="event-__EID__-type" />
-
-  <section class="header no-user-selection">
-    <button type="button" class="btn-close"></button>
-    <span class="event-type">...</span>
-  </section>
-
-  <section class="form">
-
-    <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
-
-    <div class="div-infos-temporelles no-user-selection">
-      <button class="btnplay right" size="30"></button>
-      <label>Position</label>
-      <horloge class="small" id="event-__EID__-time" value="">...</horloge>
-      <label>Durée</label>
-      <duree id="event-__EID__-duration" class="small durationable">...</duree>
-    </div>
-
-    <div class="div-form">
-      <label class="ff finfo fpp fdialog fscene fproc">Type</label>
-      <label class="ff fstt">Type du Nœud</label>
-
-      <select class="event-sttID ff fstt" id="event-__EID__-sttID">
-        <!-- sera rempli automatiquement à l'init de l'UI -->
-      </select>
-
-      <select class="ff fscene" id="event-__EID__-sceneType">
-        <option value="n/d">N/D</option>
-        <option value="generic">Générique</option>
-        <option value="expo">Expositionnelle</option>
-        <option value="action">Action</option>
-        <option value="dialogue">Dialogue</option>
-        <option value="rencontre">Rencontre</option>
-        <option value="rencontre">Travail</option>
-        <option value="flashback">Flashback</option>
-      </select>
-
-      <select class="ff faction" id="event-__EID__-actionType">
-        <option value="n/d">(sans type)</option>
-        <option value="inner">Physique</option>
-        <option value="conflit">Intellectuelle</option>
-        <option value="conflit">Artistique</option>
-      </select>
-
-      <select class="ff fdialog" id="event-__EID__-dialType">
-        <option value="n/d">(sans type)</option>
-        <option value="inner">Intérieur</option>
-        <option value="conflit">Conflictuel</option>
-        <option value="conflit">Confident</option>
-        <option value="conflit">informatif</option>
-      </select>
-
-      <select class="ff finfo" id="event-__EID__-infoType">
-        <option value="n/d">(sans type)</option>
-        <option value="pers">Personnage</option>
-        <option value="intr">Intrigue</option>
-        <option value="them">Thème</option>
-      </select>
-
-      <select class="ff fproc" id="event-__EID__-procType">
-        <option value="n/d">...</option>
-        <option value="pp">Préparation/paiement</option>
-        <option value="irdr">Ironie dramatique</option>
-        <option value="revc">Révélateur de changement</option>
-        <option value="idea">Idéalisation</option>
-        <option value="autre">Autre…</option>
-      </select>
-
-      <select class="ff fpp" id="event-__EID__-ppType">
-        <option value="prep">Préparation</option>
-        <option value="expl">Exploitation</option>
-        <option value="paie">Paiement/Résolution</option>
-        <option value="canc">Annulation</option>
-      </select>
-    </div>
-
-    <div class="div-form">
-
-      <!-- Champ pour le numéro de la scène -->
-      <label class="ff fscene">Num.</label>
-      <input type="text" id="event-__EID__-numero" class="temps-secondes ff fscene" disabled>
-
-      <!-- Menu pour l'effet de la scène -->
-      <select class="ff fscene" id="event-__EID__-lieu">
-        <option value="int">INT.</option>
-        <option value="ext">EXT.</option>
-        <option value="extint">INT. & EXT.</option>
-      </select>
-
-      <!-- Menu pour le lieu de la scène -->
-      <select class="ff fscene" id="event-__EID__-effet">
-        <option value="jour">JOUR</option>
-        <option value="nuit">NUIT</option>
-        <option value="matin">MATIN</option>
-        <option value="soir">SOIR</option>
-        <option value="noir">NOIR</option>
-        <option value="n/d">N.D.</option>
-      </select>
-
-    </div>
-
-    <div class="div-form">
-      <label for="event-__EID__-titre" class="-fscene">Titre générique (optionnel)</label>
-      <label for="event-__EID__-titre" class="ff fscene">Pitch</label>
-      <input type="text" id="event-__EID__-titre" class="bold" />
-    </div>
-
-    <div class="div-form">
-      <label class="ff fscene">Décor</label>
-      <label class="ff fdim">Diminutif</label>
-      <label class="ff fdim">@</label>
-      <label class="ff fqrd">Question</label>
-      <label class="ff fpp">Préparation</label>
-      <label class="ff fproc">Installation</label>
-      <select class="ff fscene decors"></select>
-      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-1" />
-    </div>
-
-    <div class="div-form">
-      <label class="ff fscene">Sous-décor</label>
-      <label class="ff fdim">Signification</label>
-      <label class="ff fqrd">Réponse</label>
-      <label class="ff fpp fproc">Paiement/résolution</label>
-      <select class="ff fscene sous_decors"></select>
-      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
-      <div class="right ff fqrd fpp fproc">
-        <label>Temps</label>
-        <input type="text" class="small horloge fqrd fpp fproc" id="event-__EID__-tps_reponse" />
-      </div>
-    </div>
-
-    <div class="div-form">
-      <div>
-        <label class="ff fscene fbrin">Résumé</label>
-        <label class="ff finfo">Information</label>
-        <label class="ff fevent faction fqd fpp fstt fproc">Description</label>
-        <label class="ff fdialog">Commentaire</label>
-        <label class="ff fnote">Contenu de la note</label>
-      </div>
-      <textarea id="event-__EID__-content" rows="4"></textarea>
-    </div>
-
-    <div class="div-form">
-      <div>
-        <label class="ff fproc">Exploitation</label>
-      </div>
-      <textarea class="ff fproc" id="event-__EID__-content2" rows="4"></textarea>
-    </div>
-
-    <div class="div-form">
-      <label class="block">Note subsidiaire</label>
-      <textarea id="event-__EID__-note" rows="3"></textarea>
-    </div>
-
-    <div class="event-form-buttons no-user-selection">
-      <button id="event-__EID__-destroy" class="btn-form-destroy warning small fleft" type="button">Détruire</button>
-      <button class="btn-form-cancel cancel small fleft" type="button">Renoncer</button>
-      <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
-    </div>
-  </section>
-
-  <section class="footer no-user-selection">
-    <span class="event-type">...</span>
-    <span class="event-id">...</span>
-    <span class="event-time">...</span>
-  </section>
-`
+const EVENT_FORM_TEMP = require('./js/composants/EventForm.html')
+// const EVENT_FORM_TEMP = `
+//   <input type="hidden" id="event-__EID__-id" />
+//   <input type="hidden" id="event-__EID__-is_new" />
+//   <input type="hidden" id="event-__EID__-type" />
+//
+//   <section class="header no-user-selection">
+//     <button type="button" class="btn-close"></button>
+//     <span class="event-type">...</span>
+//   </section>
+//
+//   <section class="form">
+//
+//     <!--  DIV SUPÉRIEUR avec : Temps, durée ou numéro -->
+//
+//     <div class="div-infos-temporelles no-user-selection">
+//       <button class="btnplay right" size="30"></button>
+//       <label>Position</label>
+//       <horloge class="small" id="event-__EID__-time" value="">...</horloge>
+//       <label>Durée</label>
+//       <duree id="event-__EID__-duration" class="small durationable">...</duree>
+//     </div>
+//
+//     <div class="div-form">
+//       <label class="ff finfo fpp fdialog fscene fproc">Type</label>
+//       <label class="ff fstt">Type du Nœud</label>
+//
+//       <select class="event-sttID ff fstt" id="event-__EID__-sttID">
+//         <!-- sera rempli automatiquement à l'init de l'UI -->
+//       </select>
+//
+//       <select class="ff fscene" id="event-__EID__-sceneType">
+//         <option value="n/d">N/D</option>
+//         <option value="generic">Générique</option>
+//         <option value="expo">Expositionnelle</option>
+//         <option value="action">Action</option>
+//         <option value="dialogue">Dialogue</option>
+//         <option value="rencontre">Rencontre</option>
+//         <option value="rencontre">Travail</option>
+//         <option value="flashback">Flashback</option>
+//       </select>
+//
+//       <select class="ff faction" id="event-__EID__-actionType">
+//         <option value="n/d">(sans type)</option>
+//         <option value="inner">Physique</option>
+//         <option value="conflit">Intellectuelle</option>
+//         <option value="conflit">Artistique</option>
+//       </select>
+//
+//       <select class="ff fdyna" id="event-__EID__-dynaType">
+//         <option value="">Type de l'élément dynamique :</option>
+//         <option value="objectif">Objectif</option>
+//         <option value="sous-objectif">Sous-objectif</option>
+//         <option value="moyen">Moyen</option>
+//         <option value="obstacle">Obstacle</option>
+//         <option value="conflit">Conflit</option>
+//       </select>
+//
+//       <select class="ff fdialog" id="event-__EID__-dialType">
+//         <option value="n/d">(sans type)</option>
+//         <option value="inner">Intérieur</option>
+//         <option value="conflit">Conflictuel</option>
+//         <option value="conflit">Confident</option>
+//         <option value="conflit">informatif</option>
+//       </select>
+//
+//       <select class="ff finfo" id="event-__EID__-infoType">
+//         <option value="n/d">(sans type)</option>
+//         <option value="pers">Personnage</option>
+//         <option value="intr">Intrigue</option>
+//         <option value="them">Thème</option>
+//       </select>
+//
+//       <select class="ff fproc" id="event-__EID__-procType">
+//         <option value="n/d">...</option>
+//         <option value="pp">Préparation/paiement</option>
+//         <option value="irdr">Ironie dramatique</option>
+//         <option value="revc">Révélateur de changement</option>
+//         <option value="idea">Idéalisation</option>
+//         <option value="autre">Autre…</option>
+//       </select>
+//
+//       <select class="ff fpp" id="event-__EID__-ppType">
+//         <option value="prep">Préparation</option>
+//         <option value="expl">Exploitation</option>
+//         <option value="paie">Paiement/Résolution</option>
+//         <option value="canc">Annulation</option>
+//       </select>
+//     </div>
+//
+//     <div class="div-form">
+//
+//       <!-- Champ pour le numéro de la scène -->
+//       <label class="ff fscene">Num.</label>
+//       <input type="text" id="event-__EID__-numero" class="temps-secondes ff fscene" disabled>
+//
+//       <!-- Menu pour l'effet de la scène -->
+//       <select class="ff fscene" id="event-__EID__-lieu">
+//         <option value="int">INT.</option>
+//         <option value="ext">EXT.</option>
+//         <option value="extint">INT. & EXT.</option>
+//       </select>
+//
+//       <!-- Menu pour le lieu de la scène -->
+//       <select class="ff fscene" id="event-__EID__-effet">
+//         <option value="jour">JOUR</option>
+//         <option value="nuit">NUIT</option>
+//         <option value="matin">MATIN</option>
+//         <option value="soir">SOIR</option>
+//         <option value="noir">NOIR</option>
+//         <option value="n/d">N.D.</option>
+//       </select>
+//
+//     </div>
+//
+//     <div class="div-form">
+//       <label for="event-__EID__-titre" class="-fscene">Titre générique (optionnel)</label>
+//       <label for="event-__EID__-titre" class="ff fscene">Pitch</label>
+//       <input type="text" id="event-__EID__-titre" class="bold" />
+//     </div>
+//
+//     <div class="div-form">
+//       <label class="ff fscene">Décor</label>
+//       <label class="ff fdim">Diminutif</label>
+//       <label class="ff fdim">@</label>
+//       <label class="ff fqrd">Question</label>
+//       <label class="ff fpp">Préparation</label>
+//       <label class="ff fproc">Installation</label>
+//       <select class="ff fscene decors"></select>
+//       <label class="ff fdyna">Libellé</label>
+//       <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-1" />
+//     </div>
+//
+//     <div class="div-form">
+//       <label class="ff fscene">Sous-décor</label>
+//       <label class="ff fdim">Signification</label>
+//       <label class="ff fqrd">Réponse</label>
+//       <label class="ff fpp fproc">Paiement/résolution</label>
+//       <select class="ff fscene sous_decors"></select>
+//       <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
+//       <div class="right ff fqrd fpp fproc">
+//         <label>Temps</label>
+//         <input type="text" class="small horloge fqrd fpp fproc" id="event-__EID__-tps_reponse" />
+//       </div>
+//     </div>
+//
+//     <div class="div-form">
+//       <div>
+//         <label class="ff fscene fbrin">Résumé</label>
+//         <label class="ff finfo">Information</label>
+//         <label class="ff fevent faction fqd fpp fstt fproc fdyna">Description</label>
+//         <label class="ff fdialog">Commentaire</label>
+//         <label class="ff fnote">Contenu de la note</label>
+//       </div>
+//       <textarea id="event-__EID__-content" rows="4"></textarea>
+//     </div>
+//
+//     <div class="div-form">
+//       <div>
+//         <label class="ff fproc">Exploitation</label>
+//       </div>
+//       <textarea class="ff fproc" id="event-__EID__-content2" rows="4"></textarea>
+//     </div>
+//
+//     <div class="div-form">
+//       <label class="block">Note subsidiaire</label>
+//       <textarea id="event-__EID__-note" rows="3"></textarea>
+//     </div>
+//
+//     <div class="div-form">
+//       <!-- Les éléments associés -->
+//     </div>
+//
+//     <div class="event-form-buttons no-user-selection">
+//       <button id="event-__EID__-destroy" class="btn-form-destroy warning small fleft" type="button">Détruire</button>
+//       <button class="btn-form-cancel cancel small fleft" type="button">Renoncer</button>
+//       <button class="btn-form-submit main-button" type="button">__SAVE_BUTTON_LABEL__</button>
+//     </div>
+//   </section>
+//
+//   <section class="footer no-user-selection">
+//     <span class="event-type">...</span>
+//     <span class="event-id">...</span>
+//     <span class="event-time">...</span>
+//   </section>
+// `
