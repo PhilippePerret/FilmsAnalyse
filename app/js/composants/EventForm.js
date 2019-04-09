@@ -370,10 +370,7 @@ observe(){
   // Quand le div pour déposer un parent (ou autre) est affiché, on doit
   // le rendre droppable
   let parentField = my.jqObj.find('div.event-parent')
-  if(parentField.is(':visible')){
-    console.log("Le div pour glisser un parent est visible")
-    parentField.droppable(dataDrop)
-  }
+  if(parentField.is(':visible')) parentField.droppable(dataDrop)
 
   // Pour savoir si l'on doit éditer dans les champs de texte ou
   // dans le mini-writer

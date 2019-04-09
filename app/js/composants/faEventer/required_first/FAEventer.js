@@ -20,8 +20,10 @@ static newId(){
   @return {FAEventer} L'instance créée
 **/
 static createNew(){
+  log.info("-> FAEventers::createNew")
   var newEventer = new FAEventer(current_analyse)
   newEventer.show()
+  log.info(`<- FAEventers::createNew() (ID #${newEventer.id})`)
   return newEventer
 }
 
@@ -36,7 +38,11 @@ constructor(analyse){
   this.built    = false
 }
 
-show(){this.fwindow.show()}
+show(){
+  log.info(`-> <<FAEventer #${this.id}>>#show()`)
+  this.fwindow.show()
+  log.info(`<- <<FAEventer #${this.id}>>#show()`)
+}
 close(){this.fwindow.hide()}
 
 /**
@@ -45,6 +51,7 @@ close(){this.fwindow.hide()}
  * des scènes seulement.
  */
 peuple(){
+  log.info(`-> <<FAEventer #${this.id}>>#peuple()`)
   var my  = this
     , o   = my.jqPanEvents
     , fe  = new EventsFilter(this, {filter: my.filter})
@@ -55,6 +62,7 @@ peuple(){
     ev.show()
     ev.observe(o)
   })
+  log.info(`<- <<FAEventer #${this.id}>>#peuple()`)
 }
 
 /**
@@ -133,6 +141,7 @@ getChosenTypes(){
  * Construction de l'eventeur
  */
 build(){
+  log.info(`-> <<FAEventer #${this.id}>>#build()`)
   var div = DCreate('DIV', {id: this.domId})
   // var div = DCreate('DIV', {id: this.domId, class: 'eventer'})
   div.innerHTML = `
@@ -159,19 +168,23 @@ build(){
 
   this.built = true
 
+  log.info(`<- <<FAEventer #${this.id}>>#build()`)
   return div // pour la FWindow
 }
 afterBuilding(){
   // Au tout début, on affiche seulement les scènes
+  log.info(`-> <<FAEventer #${this.id}>>#afterBuilding()`)
   this.filter = {eventTypes: ['scene']}
   this.peuple()
   this.peupleTypesInFilter()
+  log.info(`<- <<FAEventer #${this.id}>>#afterBuilding()`)
 }
 
 
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
   // Note : on récupère tout simplement les types d'event du dossier FAEvents
+  log.info(`-> <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
   var my = this
   var ocontainer = this.jqObj.find('.pan-filter div.type-list')
 
@@ -186,6 +199,7 @@ peupleTypesInFilter(){
       my.buildCbType(ocontainer, domid, classe.short_hname, classe.type)
     }
   })
+  log.info(`<- <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
 }
 
 buildCbType(ocontainer, domid, libelle, type){
@@ -197,6 +211,7 @@ buildCbType(ocontainer, domid, libelle, type){
 }
 
 observe(){
+  log.info(`-> <<FAEventer #${this.id}>>#observe()`)
   this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
   this.btnClose.on('click', this.close.bind(this))
   var horloges = UI.setHorlogeable(DGet(this.domId))
@@ -214,6 +229,7 @@ observe(){
   // Juste pour changer le libellé de "Tous", dans le filtre, et mettre "Aucun"
   this.fwindow.jqObj.on('keydown', this.onKeyDown.bind(this))
   this.fwindow.jqObj.on('keyup', this.onKeyUp.bind(this))
+  log.info(`<- <<FAEventer #${this.id}>>#observe()`)
 }
 
 onKeyDown(e){

@@ -91,21 +91,26 @@ static checkOverlaps(wf){
   // console.log("refTop/refLeft initiaux:", refTop, refLeft)
   var moveIt = false
   $('.fwindow').each(function(i,w){
-    if(w.id == wf.domId) return // la fenêtre qu'on checke
-    if(moveIt === true) return
+    if(w.id == wf.domId) return // c'est la fenêtre qu'on checke
+    if(moveIt === true) return  // On sait qu'on doit la bouger
     var {top, left} = $(w).offset()
     top   = Math.round(top)
     left  = Math.round(left)
     if(refTop.isCloseTo(top, 8) || refLeft.isCloseTo(left, 8)){
+      // console.log(`Trop près de #${w.id}, refLeft: ${refLeft}`)
       refTop  += 16
       refLeft += 16
       moveIt  = true
     }
   })
-  // TODO Peut-être qu'on l'a déplacée sur une autre
+  // console.log(`Doit être mise à ${refLeft}px à gauche pour être bien`)
+  // Peut-être qu'on l'a déplacée sur une autre
   // => Recommencer jusqu'à ce que ce soit bon
   if(moveIt === true){
-    // console.log("refTop/refLeft corrigés:", refTop, refLeft)
+    var {top: topParent, left: leftParent} = wf.jqObj.parent().offset()
+    refLeft -= Math.round(leftParent)
+    refTop -=  Math.round(topParent)
+    // console.log("refTop/refLeft corrigés (en fonction des parents) :", refTop, refLeft)
     wf.jqObj.css({left:`${refLeft}px`, top:`${refTop}px`})
     return this.checkOverlaps(wf)
   } else {
