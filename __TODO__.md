@@ -4,6 +4,7 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - Documenter le fait de verrouiller l'analyse
   - construction du graphique de la dynamique narrative
     Il faut d'abord réfléchir à comment consigner les éléments de la triade dynamique. Faut-il faire un type propre d'event ?
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
