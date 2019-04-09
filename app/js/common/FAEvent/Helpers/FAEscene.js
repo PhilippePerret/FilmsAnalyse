@@ -47,6 +47,11 @@ asFull(opts){
 }
 
 ,
+/**
+  Pour le livre
+  TODO Peut-être qu'il faudrait une appellation qui indique qu'il
+  s'agit du scénier (`inScenier`)
+**/
 asBook(opts){
   return  this.f_scene_heading(opts).outerHTML
           + this.f_pitch.outerHTML
@@ -112,7 +117,7 @@ asLink(alt_text){
   if(undefined === this._asLink){
     this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">__TIT__</a>`
   }
-  return this._asLink.replace(/__TIT__/, (alt_text || `scène ${this.numero} : « ${this.pitch} »`).trim())
+  return this._asLink.replace(/__TIT__/, (alt_text || this.asPitch()))
 }
 })
 

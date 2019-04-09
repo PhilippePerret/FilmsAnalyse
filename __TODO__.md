@@ -16,7 +16,6 @@
 
 * Développer la méthode `FAEvent.as('<format>', FLAG)`.
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
-  - Il faut traiter les event, les documents et les temps associés.
 
 * PUBLICATION
   - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
