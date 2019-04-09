@@ -5,3 +5,14 @@
     description: On tente d'enregistrer un document qui a été raccourci de plus de 20% de sa longueur. Une confirmation d'enregistrement devrait être demandée, pour annuler l'enregistrement.
     verifications:
       - Le document ne doit pas avoir été enregistré
+  association_par_drop:
+    libelle: Associer un texte à un document en glissant le document sur le texte.
+    synopsis:
+      - Ouvrir l'application
+      - Choisir une analyse
+      - Initier le document Introduction
+      - Se positionner à un endroit du film
+      - Créer une note
+      - Glisser l'icone drop du document intro sur le texte de la note.
+    verifications:
+      - La marque {{document:...}} doit s'inscrire dans le texte.

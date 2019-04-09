@@ -353,7 +353,6 @@ observe(){
     accept: '.event, .doc, .dropped-time'
   , tolerance: 'intersect'
   , drop: (e, ui) => {
-      // console.log("this:",this)
       var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
       if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
         $(e.target).insertAtCaret(balise)

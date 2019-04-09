@@ -50,23 +50,39 @@ static get(doc_id){
   Note : pour le moment, cette méthode n'est utilisée nulle part
 **/
 static findAssociations(){
-  var dDocuments = {}
+  var dDocuments = {}, found
   current_analyse.forEachEvent(function(ev){
     // Dans la propriété `documents`
-    if(ev.documents.length) ev.documents.map(doc_id => {
-      if(undefined === dDocuments[doc_id]){
-        dDocuments[doc_id] = []
-      }
-      dDocuments[doc_id].push(ev)
-    })
+    if(ev.documents.length){
+      ev.documents.map(doc_id => {
+        if(undefined === dDocuments[doc_id]){
+          dDocuments[doc_id] = []
+        }
+        dDocuments[doc_id].push(ev)
+      })
+      return // inutile de poursuivre
+    }
     // Dans les textes
+    let reg = /\{\{document\:([a-zA-Z0-9_]+)\}\}/g
     ev.forEachTextProperty(function(prop, value){
-      console.log(`Je cherche dans ${prop} de event #${ev.id}`)
+      // console.log(`Je cherche dans ${prop} de event #${ev.id} : ${value}`)
+      if(!value) return
       if(value.match(/\{\{document\:/)){
-
+        do {
+          found = reg.exec(value)
+          if(found != null){
+            console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
+            if(undefined === dDocuments[found[1]]){
+              dDocuments[found[1]] = []
+            }
+            dDocuments[found[1]].push(ev)
+            return // inutile de poursuivre
+          }
+        } while(found)
       }
     })
   })
+  return dDocuments
 }
 // ---------------------------------------------------------------------
 //  INSTANCE

@@ -2,6 +2,8 @@
 
 
 * [BUGS]
+  - quand j'essaie de créer une note (avec référence à document mais je ne pense pas que ça joue : "Cette note est en lien avec le document : {{document:intro}}.")
+  - quand j'essaie d'associer une note à un document en glissant le document sur le texte de la note.
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
@@ -29,6 +31,7 @@
   - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
+  - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
 
 * Pour l'estimation de l'avancée de l'analyse :
   On pourrait imaginer que chaque composant calcule lui-même, lorsqu'il est édité, son niveau d'avancement et l'enregistre dans un fichier qui sera lu tout simplement par la barre d'état.
