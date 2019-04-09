@@ -81,7 +81,7 @@ const FAWriter = {
     if(this.currentDoc && this.currentDoc.isModified()){
       if(this.a.locked){
         choix = 2 // Pour ignore les changements
-      } else {        
+      } else {
         choix = DIALOG.showMessageBox({
           type:       'warning'
           , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
