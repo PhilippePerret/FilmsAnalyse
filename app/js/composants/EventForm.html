@@ -23,33 +23,24 @@ module.exports = `
     </div>
 
     <div class="div-form -fproc">
-      <label class="ff finfo fpp fdialog fscene">Type</label>
+      <label class="ff finfo fpp fdialog fscene fnote">Type</label>
       <label class="ff fstt">Type du Nœud</label>
 
-      <select class="event-sttID ff fstt" id="event-__EID__-sttID">
-        <!-- sera rempli automatiquement à l'init de l'UI -->
-      </select>
+      <select class="event-sttID ff fstt" id="event-__EID__-sttID"></select>
 
-      <select class="scene-types ff fscene" id="event-__EID__-sceneType">
-      </select>
+      <select class="scene-types ff fscene" id="event-__EID__-sceneType"></select>
+      <select class="action-types ff faction" id="event-__EID__-actionType"></select>
+      <select class="dyna-types ff fdyna" id="event-__EID__-dynaType"></select>
+      <select class="dialog-types ff fdialog" id="event-__EID__-dialType"></select>
+      <select class="info-types ff finfo" id="event-__EID__-infoType"></select>
+      <select class="note-types ff fnote" id="event-__EID__-noteType"></select>
+      <select class="pp-types ff fpp" id="event-__EID__-ppType"></select>
 
-      <select class="action-types ff faction" id="event-__EID__-actionType">
-      </select>
-
-      <select class="dyna-types ff fdyna" id="event-__EID__-dynaType">
-      </select>
-
-      <select class="dialog-types ff fdialog" id="event-__EID__-dialType">
-      </select>
-
-      <select class="info-types ff finfo" id="event-__EID__-infoType">
-      </select>
-
-      <select class="pp-types ff fpp" id="event-__EID__-ppType">
-      </select>
-
-      <button type="button" class="update btn-update-types" title="Pour actualiser la liste des types">
+      <button type="button" class="ff fall -fproc -fstt -fqrd update btn-update-types" title="Pour actualiser la liste des types">
         <img src="img/update-2.png" alt="Actualiser la liste des types">
+      </button>
+      <button type="button" class="ff fall -fproc -fstt -fqrd modify btn-modify-types" title="Pour modifier la liste des types (ouvrir le fichier des données)">
+        <img src="img/btn-edit.png" alt="Modifier la liste des types">
       </button>
 
     </div>

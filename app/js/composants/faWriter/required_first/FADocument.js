@@ -98,6 +98,7 @@ constructor(dtype, id){
   if ('number' === typeof dtype || dtype.match(/^([0-9]+)$/)){
     [dtype, id] = ['customdoc', parseInt(dtype,10)]
   }
+  console.log("Document de type:", dtype, id)
   this.type = dtype
   this.id   = id // pour les customdoc
 }
@@ -148,6 +149,7 @@ get a() { return current_analyse }
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
+get isAbsoluteData(){return this.dataType.abs === true}
 
 get modified(){return this._modified || false}
 set modified(v){
@@ -189,7 +191,7 @@ endLoading(code){
 
 // Pour sauver le document
 save(){
-  if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
+  if(this.a.locked && !this.isAbsoluteData) return F.notify(T('analyse-locked-no-save'))
   if(this.saving) return
   this.saving = true
   this.isNewCustom = this.type === 'customdoc' && !this.exists()
@@ -218,6 +220,13 @@ afterSavingPerType(){
     case 'snippets':      return Snippets.updateData(YAML.safeLoad(this.contents))
     case 'dpersonnages':  return FAPersonnage.reset().init()
     case 'customdoc':     return this.addToMenuIfNew()
+    default:
+      if(this.isAbsoluteData){
+        // Quand c'est un document de données absolues qui a été
+        // modifié, il faut actualiser les menus type
+        var typ = this.type.split('_')[1]
+        EventForm.forEachForm(form => form.updateTypes(null, typ))
+      }
   }
 }
 
@@ -266,6 +275,7 @@ getContents(){
  */
 preparePerType(){
   var my = this
+  if(this.isAbsoluteData) return
   // Templates à proposer
   var tempFolderPath = path.join('.','app','analyse_files', this.type)
   var tempFilePath = `${tempFolderPath}.${this.extension}`
@@ -287,6 +297,7 @@ preparePerType(){
 // Le menu des modèles ne doit être affiché que si le contenu du document
 // est vide.
 toggleMenuModeles(){
+  if(this.isAbsoluteData) return
   var maskIt = this.contents && this.contents.length > 0
   $('#section-writer .header .modeles')[maskIt?'hide':'show']()
 }
@@ -294,6 +305,7 @@ maskSpanModeles(){
   $('#section-writer .header .modeles').hide()
 }
 afficheModeles(modeles){
+  if(this.isAbsoluteData) return
   var mModeles = $('#section-writer select#modeles-doc')
   var opts = []
   opts.push('<option value="">Choisir…</option>')
@@ -394,7 +406,9 @@ get extension(){
 get path(){ return this._path||defP(this,'_path',this.definePathPerType())}
 
 definePathPerType(){
-  if(this.type === 'customdoc'){
+  if(this.isAbsoluteData){
+    return path.join(APPFOLDER,'app','js','data',`${this.type}.yaml`)
+  } else if(this.type === 'customdoc'){
     return path.join(this.a.folderFiles,`doc-${this.id}.${this.extension}`)
   } else {
     return path.join(this.a.folderFiles,`${this.type}.${this.extension}`)

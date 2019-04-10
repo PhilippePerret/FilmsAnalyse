@@ -1,5 +1,9 @@
 # SUR LE GRILL
 
+* BRINS
+  - Créer le fichier exemple brin.yaml dans les fichiers d'analyse
+  - les traiter dans le livre, faire peut-être des graphiques
+
 * PROCÉDÉS
   - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
   - Faire la méthode `FAProcede#scene` qui retourne le numéro de la scène du procédé, pour les ajouter dans le fil du texte.
@@ -8,9 +12,9 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - construire tous les menus type à la création du formulaire (simple appel à `this.peupleTypes()`)
-    Note : les essayer tous
-    + Voir comment ça se passe au niveau des procédés, car le 'types' doit être pris comme catégorie de procédés. Il faut soit le zapper, soit mettre un nouveau noeud genre "categories" (et modifier toutes les méthodes qui gèrent les catégories et les procédés)
+  - [Writer] Quand on joue tabulation sur un document data et qu'il n'y a que des espaces avant, on doit ajouter encore deux espaces
+    + quand on supprime sur une ligne où il n'y a que des espaces avant, on essaie de supprimer deux espaces à la fois
+  - Pouvoir utiliser le Writer pour éditer les données de types d'event
   - construction du graphique de la dynamique narrative
     liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.

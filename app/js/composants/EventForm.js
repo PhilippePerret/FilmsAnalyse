@@ -27,6 +27,16 @@ static reset(){
   $('form.form-edit-event').remove()
 }
 
+/**
+  Pour faire tourner une méthode sur tous les formulaires
+  créés.
+**/
+static forEachForm(fn){
+  for(var form_id in this.eventForms){
+    if(false === fn(this.eventForms[form_id])) break
+  }
+}
+
 // Les formulaires déjà initiés (et donc cachés dans le DOM)
 static get eventForms(){
   if(undefined===this._eventForms){this._eventForms = {}}
@@ -309,6 +319,14 @@ afterBuilding(){
     } else {
       this.implementeMenuCategorieProcedes()
     }
+
+  } else if (this.type === 'qrd'){
+    // Pour le moment, juste pour empêcher de peupler les types, qui
+    // n'existent pas pour les qrd.
+    // TODO Mais plus tard, il faudra rationnaliser un peu tout ça.
+  } else {
+    // Pour les autres types, on a un menu type
+    this.peupleTypes()
   }
   jqo = eid = typ = null
   this.built = true
@@ -427,7 +445,19 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 // ---------------------------------------------------------------------
 
 // ---------------------------------------------------------------------
-// MÉTHODES D'ACTUALISATION DES TYPES (pour tous les types)
+// MÉTHODES DE GESTION DES TYPES (pour tous les types)
+
+/**
+  Méthode pour éditer les types +typ+ en ouvrant leur fichier
+  (dans le writer ?)
+
+  Note : le nom 'data_<typ>' correspond au nom du fichier
+**/
+modifyDataTypes(e, typ){
+  if(undefined === typ) typ = this.type
+  FAWriter.openDoc(`data_${typ}`)
+}
+
 updateTypes(e, typ){
   if(undefined === typ) typ = this.type
   if(EventForm._optionsTypes && EventForm._optionsTypes[typ]){
@@ -488,8 +518,10 @@ observe(){
     this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
   }
 
-  // Bouton pour actualiser le menu des types de tout élément
+  // Bouton pour actualiser le menu des types de tout élément et pour éditer
+  // le fichier de données
   this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
+  this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
 
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'

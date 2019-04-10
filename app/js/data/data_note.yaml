@@ -1,0 +1,12 @@
+---
+types:
+  n/d:
+    hname: Non défini
+  importante:
+    hname: Note ipFADmortante
+  note:
+    hname: À noter
+  remarque:
+    hname: Simple remarque
+  anecdote:
+    hname: Anecdote

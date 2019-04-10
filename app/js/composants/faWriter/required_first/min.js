@@ -48,6 +48,17 @@ const DATA_DOCUMENTS = {
 , annexes:          {hname: 'Annexes', type: 'real'}
 
 , customdoc:        {hname: 'Personnalisé', type:'real', menu: false}
+
+// --- Pour les documents des données absolues ---
+// La clé doit être le nom du fichier dans ./js/data/
+, data_note:        {hname: 'Date absolues notes', type:'data', abs:true, menu:false}
+, data_info:        {hname: 'Date absolues Infos', type:'data', abs:true, menu:false}
+, data_action:      {hname: 'Date absolues Actions', type:'data', abs:true, menu:false}
+, data_dialog:      {hname: 'Date absolues Dialogues', type:'data', abs:true, menu:false}
+, data_dyna:        {hname: 'Date absolues Éléments dynamique', type:'data', abs:true, menu:false}
+, data_pp:          {hname: 'Date absolues Préparations/paiement', type:'data', abs:true, menu:false}
+, data_scene:       {hname: 'Date absolues Scènes', type:'data', abs:true, menu:false}
+
 }
 
 // Pour les menus
