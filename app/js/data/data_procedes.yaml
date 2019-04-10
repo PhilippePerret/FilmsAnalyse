@@ -33,10 +33,10 @@ NONPLACES:
 
         effetallegorie:
           hname: "Effet d’allégorie"
-          description: |
+          description: >
             désigne un procédé qui consiste à faire un parallèle entre un personnage et un élément concret de
             l’histoire.
-          exemple: |
+          exemple: >
             Dans Titanic, le parallèle entre Rose et le bâtiment crée un effet d’allégorie : le naufrage du
             navire parle aussi de celui de Rose (qui aurait pu survenir sans l’histoire)
 
@@ -60,7 +60,7 @@ PERSONNAGE:
         acteheroique:
           hname: Acte héroïque
           description: désigne un acte héroïque accompli par le personnage, même s’il est artificiellement magnifié.
-          exemple: |
+          exemple: >
             Dans Le Dernier Samouraï, lorsque Tom Cruise se place devant le fusil d’un militaire pour prouver que ce militaire n’est pas prêt à se battre.
             Note : c’est en même temps un acte paradoxal.
         acteparadoxal:
@@ -276,7 +276,7 @@ EFFET:
         horschampnarratif:
           hname: Effet de Hors-champ narratif
           description: consiste à suggérer un élément du récit qui ne se trouve pas dans le récit, mais qui a eu lieu dans la « réalité » de l’histoire, souvent une scène.
-          exemple: |
+          exemple: >
             Dans A.I, Artificial Intelligence, lorsque Gigolo Joe trouve sa client morte dans son lit, on
             peut deviner la scène qui a pu se produire : un mari jaloux est venu l’assassiner.
 

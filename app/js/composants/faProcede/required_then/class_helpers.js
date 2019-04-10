@@ -35,6 +35,7 @@ descriptionProcede(cate_id, scate_id, proc_id){
   } else {
     let dprocede = this.data[cate_id].items[scate_id].items[proc_id]
       , msg = ''
+    msg += `<strong>${dprocede.hname}</strong> : `
     msg += dprocede.description  || `[DESCRIPTION MANQUANTE POUR LE PROCÉDÉ « ${dprocede.hname} » (#${proc_id})]`
     if (dprocede.exemple) msg += `${RC+RC}<label>Exemples : </label> ${dprocede.exemple}`
     return msg

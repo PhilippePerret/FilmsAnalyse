@@ -8,11 +8,9 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - définir le style `<label>` pour le flash; Pour le moment, il est trop grand (voir avec une description de procédé). Voir partout où il est défini et essayer d'uniformiser (penser que publishing.css n'est pas compris dans le lot)
   - construction du graphique de la dynamique narrative
     liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
-    + Il faudra faire un autre menu pour les procédés, et peut-être même un troisième, si on arrive à trois niveaux d'imbrication.
 
 * [ESSAIS]
   - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre.

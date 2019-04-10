@@ -69,7 +69,7 @@ showDescriptionOf(event_id){
     msg = this.descriptionProcede(cate_id, scate_id, value)
   }
 
-  F.notice(`Information sur les procédés :${RC+RC}${msg}`)
+  F.notice(`${msg}`)
 }
 ,
 

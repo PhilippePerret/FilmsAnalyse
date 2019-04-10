@@ -22,6 +22,12 @@
 
 .cadre{border:1px solid;padding:0.1em 0.5em;}
 
+label {
+  color:#999999;
+  font-size:0.88em;
+  font-style:italic;
+}
+
 /* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
 button.main-button {
   -webkit-appearance: none;
