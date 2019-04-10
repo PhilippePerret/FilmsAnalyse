@@ -11,12 +11,8 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
-  - [Writer] Quand on joue tabulation sur un document data et qu'il n'y a que des espaces avant, on doit ajouter encore deux espaces
-    + quand on supprime sur une ligne où il n'y a que des espaces avant, on essaie de supprimer deux espaces à la fois
-  - Pouvoir utiliser le Writer pour éditer les données de types d'event
   - construction du graphique de la dynamique narrative
     liste des OOC
-  - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
 
 * [ESSAIS]
   - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre.

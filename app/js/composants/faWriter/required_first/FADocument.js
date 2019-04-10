@@ -98,7 +98,6 @@ constructor(dtype, id){
   if ('number' === typeof dtype || dtype.match(/^([0-9]+)$/)){
     [dtype, id] = ['customdoc', parseInt(dtype,10)]
   }
-  console.log("Document de type:", dtype, id)
   this.type = dtype
   this.id   = id // pour les customdoc
 }
@@ -149,6 +148,7 @@ get a() { return current_analyse }
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
+get isData(){return this.dataType.type === 'data'}
 get isAbsoluteData(){return this.dataType.abs === true}
 
 get modified(){return this._modified || false}
