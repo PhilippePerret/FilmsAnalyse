@@ -8,6 +8,9 @@
 * [BUGS]
 
 * [AMÉLIORATIONS]
+  - construire tous les menus type à la création du formulaire (simple appel à `this.peupleTypes()`)
+    Note : les essayer tous
+    + Voir comment ça se passe au niveau des procédés, car le 'types' doit être pris comme catégorie de procédés. Il faut soit le zapper, soit mettre un nouveau noeud genre "categories" (et modifier toutes les méthodes qui gèrent les catégories et les procédés)
   - construction du graphique de la dynamique narrative
     liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.

@@ -108,6 +108,26 @@ static newId(){
   return ++ this.lastId
 }
 
+/**
+  @return {String}  les <option> définissant les types
+                    de scènes définies dans le fichier
+                    data/data_scenes.yaml
+**/
+static optionsTypes(typ){
+  if(undefined === this._optionsTypes) this._optionsTypes = {}
+  if(undefined === this._optionsTypes[typ]){
+    var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
+    let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
+    var opts = []
+    for(var ktype in dataE['types']){
+      opts.push(`<option value="${ktype}">${dataE['types'][ktype].hname}</option>`)
+    }
+    this._optionsTypes[typ] = opts.join(RC)
+    opts = null
+  }
+  return this._optionsTypes[typ]
+}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -272,6 +292,7 @@ afterBuilding(){
   } else if (typ === 'scene'){
     // Si c'est une scène il faut peupler avec les décors existants
     this.peupleDecors()
+    this.peupleTypesScenes()
   } else if (typ === 'proc'){
     // Pour les procédés, tout dépend de là où on en est : si le procédé
     // est défini, il faut l'afficher directement (en le recherchant dans
@@ -405,6 +426,31 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 // FIN des menus DECORS
 // ---------------------------------------------------------------------
 
+// ---------------------------------------------------------------------
+// MÉTHODES D'ACTUALISATION DES TYPES (pour tous les types)
+updateTypes(e, typ){
+  if(undefined === typ) typ = this.type
+  if(EventForm._optionsTypes && EventForm._optionsTypes[typ]){
+    delete EventForm._optionsTypes[typ]
+  }
+  this.peupleTypes(typ)
+  F.notify(`Liste des types « ${typ} » actualisée.`)
+}
+peupleTypes(typ){
+  if(undefined === typ) typ = this.type
+  this.menuTypes(typ).html(EventForm.optionsTypes(typ))
+}
+menuTypes(typ){
+  return this.jqObj.find(`select.${typ}-types`)
+}
+// ---------------------------------------------------------------------
+//  MÉTHODES POUR LES SCÈNES
+
+peupleTypesScenes(){this.peupleTypes('scene')}
+updateTypesScenes(){this.updateTypes(null, 'scene')}
+
+// /Fin méthodes scènes
+// ---------------------------------------------------------------------
 
 get jqf(){return this.jqField.bind(this)}
 
@@ -441,6 +487,9 @@ observe(){
   if(this.type === 'scene' && this.isNew){
     this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
   }
+
+  // Bouton pour actualiser le menu des types de tout élément
+  this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
 
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'
