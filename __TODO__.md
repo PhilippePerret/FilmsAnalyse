@@ -1,7 +1,6 @@
 # SUR LE GRILL
 
 * BRINS
-  - Créer le fichier exemple brin.yaml dans les fichiers d'analyse
   - les traiter dans le livre, faire peut-être des graphiques
 
 * PROCÉDÉS
