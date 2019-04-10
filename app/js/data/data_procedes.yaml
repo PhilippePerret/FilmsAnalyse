@@ -12,6 +12,16 @@
 #   <préparation paiement> > <personnages> > ’Révélateur de changement’
 #
 
+# POURVOIR:
+#   hname: Nouvelle catégorie pour voir
+#   items:
+#     pourvoir:
+#       hname: D’abord pour voir
+#       items: []
+#     pourrevoir:
+#       hname: Et pour revoir
+#       items: []
+
 # --- NON PLACÉS ---
 NONPLACES:
   hname: Procédés non placé

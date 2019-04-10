@@ -82,6 +82,13 @@ module.exports = `
 
     <div class="div-form ff fproc div-procedes">
       <!-- Catégories > Sous-catégorie > Procédés -->
+      <select></select>
+      <button type="button" class="info" title="Obtenir une information sur le procédé ou la catégorie courante" onclick="FAProcede.showDescriptionOf.bind(FAProcede)(__EID__)">
+        <img src="img/picto_info_dark.png" alt="Information sur le procédé courant">
+      </button>
+      <button type="button" class="update" title="Actualiser la liste des procédés si les données ont été changées" onclick="FAProcede.updateData.bind(FAProcede)()">
+        <img src="img/update-2.png" alt="Actualiser">
+      </button>
     </div>
 
     <div class="div-form">

@@ -296,20 +296,51 @@ afterBuilding(){
 
 // ---------------------------------------------------------------------
 //  Méthodes pour les PROCÉDÉS
+
+/**
+  Méthode (appelée par FAProcede) qui procède à l'actualisation
+  du menu procédé courant (catégorie, sous-catégorie ou procédés)
+**/
+updateMenusProcedes(){
+  let mProcedes     = this.jqObj.find('.div-procedes select.menu-procedes')
+    , mSCategories  = this.jqObj.find('.div-procedes select.menu-sous-categories-procedes')
+    , mCategories   = this.jqObj.find('.div-procedes select.menu-categories-procedes')
+  if(mProcedes.length){
+    let proc_id = mProcedes.val()
+    this.implementeMenuProcedes(mProcedes.attr('data-cate-id'), mProcedes.attr('data-scate-id'), proc_id)
+  } else if (mSCategories.length){
+    this.implementeMenuSousCategorieProcedes(mSCategories.attr('data-cate-id'))
+  } else {
+    this.implementeMenuCategorieProcedes()
+  }
+}
+implementeMenuForProcedes(DOMMenu, fn_onchange, value){
+  if (undefined === value) value = ''
+  let menuproc = this.jqObj.find('.div-procedes select')
+  menuproc.off('change')
+  menuproc.replaceWith(DOMMenu)
+  menuproc = this.jqObj.find('.div-procedes select') // l'autre
+  menuproc.on('change', this[fn_onchange].bind(this))
+  menuproc.val(value) // le premier menu ou le choisi
+}
+
 implementeMenuCategorieProcedes(){
-  this.jqObj.find('.div-procedes select').off('change')
-  this.jqObj.find('.div-procedes').html(FAProcede.menuCategories())
-  this.jqObj.find('.div-procedes select').on('change', this.onChooseCategorieProcedes.bind(this))
+  this.implementeMenuForProcedes(
+    FAProcede.menuCategories(),
+    'onChooseCategorieProcedes'
+  )
 }
 implementeMenuSousCategorieProcedes(cate_id){
-  this.jqObj.find('.div-procedes select').off('change')
-  this.jqObj.find('.div-procedes').html(FAProcede.menuSousCategories(cate_id))
-  this.jqObj.find('.div-procedes select').on('change', this.onChooseSousCategorieProcedes.bind(this))
+  this.implementeMenuForProcedes(
+    FAProcede.menuSousCategories(cate_id),
+    'onChooseSousCategorieProcedes'
+  )
 }
-implementeMenuProcedes(cate_id, scate_id){
-  this.jqObj.find('.div-procedes select').off('change')
-  this.jqObj.find('.div-procedes').html(FAProcede.menuProcedes(cate_id, scate_id))
-  this.jqObj.find('.div-procedes select').on('change', this.onChooseProcede.bind(this))
+implementeMenuProcedes(cate_id, scate_id, value){
+  this.implementeMenuForProcedes(
+    FAProcede.menuProcedes(cate_id, scate_id),
+    'onChooseProcede', value || ''
+  )
 }
 onChooseCategorieProcedes(e){
   this.implementeMenuSousCategorieProcedes($(e.target).val())
@@ -320,11 +351,20 @@ onChooseSousCategorieProcedes(e){
   if(scate_id == '..'){
     this.implementeMenuCategorieProcedes()
   } else {
-    this.implementeMenuProcedes(cate_id, scate_id)
+    this.implementeMenuProcedes(cate_id, scate_id, this.id)
   }
 }
 onChooseProcede(e){
   let proc_id = $(e.target).val()
+  if(proc_id == '..'){
+    // Il faut revenir à la sous-catégorie
+    let cate_id  = $(e.target).attr('data-cate-id')
+      , scate_id = $(e.target).val('data-scate-id')
+    this.implementeMenuSousCategorieProcedes(cate_id)
+  } else {
+    // On peut en rester là car le menu porte l'identifiant
+    // qu'il faut pour ramasser la valeur avec `getFormValues`
+  }
 }
 
 // /FIN méthodes pour les PROCÉDÉS

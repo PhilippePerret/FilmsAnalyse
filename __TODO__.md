@@ -1,9 +1,16 @@
 # SUR LE GRILL
 
+* PROCÉDÉS
+  - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
+  - Faire la méthode `FAProcede#scene` qui retourne le numéro de la scène du procédé, pour les ajouter dans le fil du texte.
+    Note : généraliser cette méthode en l'implémentant dans FAEvent.
 
 * [BUGS]
+  - L'actualisation des procédés en direct bogue.
 
 * [AMÉLIORATIONS]
+  - Changer les couleurs de flash (moins de couleurs)
+  - définir le style `<label>` pour le flash; Pour le moment, il est trop grand (voir avec une description de procédé). Voir partout où il est défini et essayer d'uniformiser (penser que publishing.css n'est pas compris dans le lot)
   - construction du graphique de la dynamique narrative
     liste des OOC
   - mettre les données absolues comme les types de procédés, etc. sous forme de fichier YAML et peupler les éléments de l'interface avec.
