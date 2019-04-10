@@ -13,6 +13,7 @@ PSEUDO:
   nom:
   ages:
   dim:        # sert pour les diminutifs
+  dimensions: # Liste des dimensions du personnage
 
 PSEUDO2:
   pseudo:

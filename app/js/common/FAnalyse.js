@@ -200,6 +200,8 @@ updateState(){
 init(){
   // On met le titre dans la fenêtre
   window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
+  // On règle le cadenas si elle est verrouillée
+  this.setMarkModified()
   // Si l'analyse courante définit une vidéo, on la charge et on prépare
   // l'interface. Sinon, on masque la plupart des éléments
   this.videoController.setVideoUI(!!this.videoPath)
@@ -438,7 +440,17 @@ indexOfEvent(event_id){
 **/
 toggleLock(){
   this.locked = !!!this.locked
-  this.saveData(true /* pour forcer le verrou */)
+  this.saveData(true /* pour forcer le verrou, seulement pour enregistrer cette valeur */)
+  this.setMarkModified()
+}
+
+/**
+  Méthode pour régler la marque de modification
+  Si l'analyse est verrouillée, un petit cadenas prend la place du rond,
+  sinon c'est un rond
+**/
+setMarkModified(){
+  this.markModified.html(this.locked ? '<img src="img/cadenas.png" style="width:15px;vertical-align:top;margin-left:6px;" />' : '•')
 }
 
 get SAVED_FILES(){
@@ -717,39 +729,5 @@ get folderExport(){
 
 get folder()  { return this._folder }
 set folder(v) { this._folder = v }
-
-/** ---------------------------------------------------------------------
-* Chargement des composants
-**/
-static loadSnippets(fn_callback){
-  return System.loadComponant('Snippets', fn_callback)
-}
-loadBuilder(fn_callback){
-  return System.loadComponant('faBuilder', fn_callback)
-}
-loadExporter(fn_callback){
-  return System.loadComponant('faExporter', fn_callback)
-}
-loadReporter(fn_callback){
-  return System.loadComponant('faReport', fn_callback)
-}
-loadTimeline(fn_callback){
-  return System.loadComponant('faTimeline', fn_callback)
-}
-loadStater(fn_callback){
-  return System.loadComponant('faStater', fn_callback)
-}
-loadWriter(fn_callback){
-  return System.loadComponant('faWriter', fn_callback)
-}
-loadProtocole(fn_callback){
-  return System.loadComponant('faProtocole', fn_callback)
-}
-// static loadReader(fn_callback){
-//   return System.loadComponant('faReader', fn_callback)
-// }
-loadReader(fn_callback){
-  return System.loadComponant('faReader', fn_callback)
-}
 
 }

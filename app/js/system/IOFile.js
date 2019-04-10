@@ -204,6 +204,7 @@ loadIfExists(options, fn_pour_suivre){
 
 endLoad(success){
   this.loaded = success
+  delete this._decodedCode
   if('function' === typeof this.methodAfterLoading){
     this.methodAfterLoading(success ? this.decodedCode : null /* ou raw code */)
   }

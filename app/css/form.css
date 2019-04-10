@@ -141,3 +141,25 @@ div.event-form-buttons {
 textarea#event-content {
   resize:none;
 }
+
+form.form-edit-event button.update,
+form.form-edit-event button.info
+{
+  all:unset;
+  vertical-align:sub;
+}
+form.form-edit-event button img {
+  width:20px;
+}
+
+form.form-edit-event div.div-procedes select {
+  max-width:380px; 
+}
+form.form-edit-event div.div-procedes select.menu-procedes,
+form.form-edit-event div.div-procedes select.menu-procedes *
+{
+  font-weight:bold;
+  color:darkblue;
+}
+form.form-edit-event div.div-procedes select.menu-procedes * {
+}

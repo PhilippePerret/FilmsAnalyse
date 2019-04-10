@@ -1,0 +1,17 @@
+# Tests concernant les PROCÉDÉS
+---
+updateprocedes:
+  libelle: On peut actualiser les procédés en direct
+  description: Inutile de recharger l'application pour actualiser les procédés, même lorsqu'ils ont déjà été chargés.
+  synopsis:
+    - lancer l'application
+    - ouvrir une analyse
+    - créer trois events de type Procédé
+    - dans le premier, choisir laisser le menu catégories
+    - dans le deuxième, choisir une catégorie (la liste des sous-catégories doit s'afficher)
+    - dans le troisième, choisir une sous-catégorie et un procédé
+    - modifier le fichier data/data_procedes.yaml
+    - activer le bouton d'actualisation des procédés dans la deuxième fenêtre de formulaire
+  verifications:
+    - les menus doivent avoir été actualisés
+    - la valeur des menus doit être restée la même

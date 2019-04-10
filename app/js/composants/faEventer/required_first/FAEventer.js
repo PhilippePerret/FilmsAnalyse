@@ -20,8 +20,10 @@ static newId(){
   @return {FAEventer} L'instance créée
 **/
 static createNew(){
+  log.info("-> FAEventers::createNew")
   var newEventer = new FAEventer(current_analyse)
   newEventer.show()
+  log.info(`<- FAEventers::createNew() (ID #${newEventer.id})`)
   return newEventer
 }
 
@@ -36,7 +38,11 @@ constructor(analyse){
   this.built    = false
 }
 
-show(){this.fwindow.show()}
+show(){
+  log.info(`-> <<FAEventer #${this.id}>>#show()`)
+  this.fwindow.show()
+  log.info(`<- <<FAEventer #${this.id}>>#show()`)
+}
 close(){this.fwindow.hide()}
 
 /**
@@ -45,6 +51,7 @@ close(){this.fwindow.hide()}
  * des scènes seulement.
  */
 peuple(){
+  log.info(`-> <<FAEventer #${this.id}>>#peuple()`)
   var my  = this
     , o   = my.jqPanEvents
     , fe  = new EventsFilter(this, {filter: my.filter})
@@ -55,6 +62,7 @@ peuple(){
     ev.show()
     ev.observe(o)
   })
+  log.info(`<- <<FAEventer #${this.id}>>#peuple()`)
 }
 
 /**
@@ -91,13 +99,27 @@ onToggleFiltre(){
  * types. Pour tout déselectionner ou non.
  */
 onToggleFiltreAllTypes(e){
-  var all = DGet(`${this.domId}-cb-type-ALL`).checked
+  let all = DGet(`${this.domId}-cb-type-ALL`).checked
+    , invert = e.metaKey === true
+
   var ocontainer = this.jqObj.find('.pan-filter div.type-list')
   ocontainer.find('.cb-type > input').each(function(i, o){
-    if(i==0)return
-    if (all ) {
-      o.disabled  = true
-      o.checked   = all
+    if(i == 0){
+      if(invert){
+        o.checked   = false
+      }
+      return // le bouton "tous"/"aucun"
+    }
+    if (all) {
+      if(invert){
+        // Le sens inversé, pour tout décocher
+        o.disabled  = false
+        o.checked   = false
+      } else {
+        // Le sens normal, pour tout cocher
+        o.disabled  = true
+        o.checked   = true
+      }
     } else {
       o.disabled  = false
     }
@@ -119,6 +141,7 @@ getChosenTypes(){
  * Construction de l'eventeur
  */
 build(){
+  log.info(`-> <<FAEventer #${this.id}>>#build()`)
   var div = DCreate('DIV', {id: this.domId})
   // var div = DCreate('DIV', {id: this.domId, class: 'eventer'})
   div.innerHTML = `
@@ -145,19 +168,23 @@ build(){
 
   this.built = true
 
+  log.info(`<- <<FAEventer #${this.id}>>#build()`)
   return div // pour la FWindow
 }
 afterBuilding(){
   // Au tout début, on affiche seulement les scènes
+  log.info(`-> <<FAEventer #${this.id}>>#afterBuilding()`)
   this.filter = {eventTypes: ['scene']}
   this.peuple()
   this.peupleTypesInFilter()
+  log.info(`<- <<FAEventer #${this.id}>>#afterBuilding()`)
 }
 
 
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
   // Note : on récupère tout simplement les types d'event du dossier FAEvents
+  log.info(`-> <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
   var my = this
   var ocontainer = this.jqObj.find('.pan-filter div.type-list')
 
@@ -172,6 +199,7 @@ peupleTypesInFilter(){
       my.buildCbType(ocontainer, domid, classe.short_hname, classe.type)
     }
   })
+  log.info(`<- <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
 }
 
 buildCbType(ocontainer, domid, libelle, type){
@@ -183,6 +211,7 @@ buildCbType(ocontainer, domid, libelle, type){
 }
 
 observe(){
+  log.info(`-> <<FAEventer #${this.id}>>#observe()`)
   this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
   this.btnClose.on('click', this.close.bind(this))
   var horloges = UI.setHorlogeable(DGet(this.domId))
@@ -196,11 +225,27 @@ observe(){
   this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
   this.horlogeFiltreFromTime.dispatch(dataHorloge)
   this.horlogeFiltreToTime.dispatch(dataHorloge)
+
+  // Juste pour changer le libellé de "Tous", dans le filtre, et mettre "Aucun"
+  this.fwindow.jqObj.on('keydown', this.onKeyDown.bind(this))
+  this.fwindow.jqObj.on('keyup', this.onKeyUp.bind(this))
+  log.info(`<- <<FAEventer #${this.id}>>#observe()`)
+}
+
+onKeyDown(e){
+  if(e.metaKey !== true) return true
+  $(`label[for="${this.domId}-cb-type-ALL"]`).html('Aucun')
+}
+onKeyUp(e){
+  if(e.metaKey !== true){
+    $(`label[for="${this.domId}-cb-type-ALL"]`).html('Tous')
+  }
 }
 
 get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
 get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
 get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
+get jqPanFilter(){return this._jqPanFilter||defP(this,'_jqPanFilter',this.jqObj.find('div.pan-filter'))}
 get btnClose(){return this.jqObj.find('.toolbox .btn-close')}
 get btnFiltre(){return this.jqObj.find('.toolbox .btn-filtre')}
 get domId(){return this._domId||defP(this,'_domId', `eventer-${this.id}`)}
