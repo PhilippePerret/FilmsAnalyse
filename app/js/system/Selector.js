@@ -30,9 +30,9 @@
   sel.remplace(txt)   => Remplace la sélection par `txt`
   sel.insert(txt)     => alias de remplace
 
-  sel.startOffset     => le début de la sélection
-  sel.endOffset       => la fin de la sélection
-  sel.line            => retourne la ligne de la sélection
+  sel.startOffset  (r/w)   => le début de la sélection
+  sel.endOffset    (r/w)   => la fin de la sélection
+  sel.line         (r)     => retourne la ligne de la sélection
 
 Notes sur versions
 ------------------

@@ -48,13 +48,20 @@ as(format, flag, opts){
 
   if(flag & FORMATED) str = DFormater(str)
 
-  if(flag & EDITABLE){
+  if(flag & ESCAPED){
+    // Note : il exclut editable et linked
+    str = str.replace(/<(.*?)>/g, '')
+    str = str.replace(/\"/g, '\\\"')
+    str = str.replace(/[\n\r]/,' --- ')
+  } else if ( flag & EDITABLE ){
     // Note : il exclut LINKED
     str = this.linkedToEdit(str)
-    console.log("str:", str)
+    // console.log("str:", str)
   } else if(flag & LINKED){
     str = this.linked(str)
   }
+
+
   return str
 }
 ,

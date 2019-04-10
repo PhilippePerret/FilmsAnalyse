@@ -82,6 +82,9 @@ FABuilder.prototype.buildAndAddChunk = function(what){
     case 'pfa':
       finalCode += my.loadAndRunBuilder('pfa')
       break;
+    case 'brins':
+      finalCode += my.loadAndRunBuilder('brins')
+      break
     case 'diagramme dramatique':
     case 'diagramme qrd':
       finalCode += my.loadAndRunBuilder('diagramme_dramatique')

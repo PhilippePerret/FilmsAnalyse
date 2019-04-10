@@ -23,61 +23,26 @@ module.exports = `
     </div>
 
     <div class="div-form -fproc">
-      <label class="ff finfo fpp fdialog fscene">Type</label>
+      <label class="ff finfo fpp fdialog fscene fnote">Type</label>
       <label class="ff fstt">Type du Nœud</label>
 
-      <select class="event-sttID ff fstt" id="event-__EID__-sttID">
-        <!-- sera rempli automatiquement à l'init de l'UI -->
-      </select>
+      <select class="event-sttID ff fstt" id="event-__EID__-sttID"></select>
 
-      <select class="ff fscene" id="event-__EID__-sceneType">
-        <option value="n/d">N/D</option>
-        <option value="generic">Générique</option>
-        <option value="expo">Expositionnelle</option>
-        <option value="action">Action</option>
-        <option value="dialogue">Dialogue</option>
-        <option value="rencontre">Rencontre</option>
-        <option value="rencontre">Travail</option>
-        <option value="flashback">Flashback</option>
-      </select>
+      <select class="scene-types ff fscene" id="event-__EID__-sceneType"></select>
+      <select class="action-types ff faction" id="event-__EID__-actionType"></select>
+      <select class="dyna-types ff fdyna" id="event-__EID__-dynaType"></select>
+      <select class="dialog-types ff fdialog" id="event-__EID__-dialType"></select>
+      <select class="info-types ff finfo" id="event-__EID__-infoType"></select>
+      <select class="note-types ff fnote" id="event-__EID__-noteType"></select>
+      <select class="pp-types ff fpp" id="event-__EID__-ppType"></select>
 
-      <select class="ff faction" id="event-__EID__-actionType">
-        <option value="n/d">(sans type)</option>
-        <option value="inner">Physique</option>
-        <option value="conflit">Intellectuelle</option>
-        <option value="conflit">Artistique</option>
-      </select>
+      <button type="button" class="ff fall -fproc -fstt -fqrd update btn-update-types" title="Pour actualiser la liste des types">
+        <img src="img/update-2.png" alt="Actualiser la liste des types">
+      </button>
+      <button type="button" class="ff fall -fproc -fstt -fqrd modify btn-modify-types" title="Pour modifier la liste des types (ouvrir le fichier des données)">
+        <img src="img/btn-edit.png" alt="Modifier la liste des types">
+      </button>
 
-      <select class="ff fdyna" id="event-__EID__-dynaType">
-        <option value="">Type de l'élément dynamique :</option>
-        <option value="objectif">Objectif</option>
-        <option value="sous-objectif">Sous-objectif</option>
-        <option value="moyen">Moyen</option>
-        <option value="obstacle">Obstacle</option>
-        <option value="conflit">Conflit</option>
-      </select>
-
-      <select class="ff fdialog" id="event-__EID__-dialType">
-        <option value="n/d">(sans type)</option>
-        <option value="inner">Intérieur</option>
-        <option value="conflit">Conflictuel</option>
-        <option value="conflit">Confident</option>
-        <option value="conflit">informatif</option>
-      </select>
-
-      <select class="ff finfo" id="event-__EID__-infoType">
-        <option value="n/d">(sans type)</option>
-        <option value="pers">Personnage</option>
-        <option value="intr">Intrigue</option>
-        <option value="them">Thème</option>
-      </select>
-
-      <select class="ff fpp" id="event-__EID__-ppType">
-        <option value="prep">Préparation</option>
-        <option value="expl">Exploitation</option>
-        <option value="paie">Paiement/Résolution</option>
-        <option value="canc">Annulation</option>
-      </select>
     </div>
 
     <div class="div-form ff fproc div-procedes">

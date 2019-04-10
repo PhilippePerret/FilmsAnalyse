@@ -8,6 +8,7 @@ FILE Synopsis
 BUILD Fondamentales
 BUILD PFA
 FILE Personnages
+BUILD Brins
 # BUILD Diagramme Dramatique
 BUILD Diagramme QRD
 FILE themes

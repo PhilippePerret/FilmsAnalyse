@@ -55,10 +55,26 @@ FAWriter.onKeyUp = function(e){
     }
   } else if (e.which === K_GUIL_DROIT) { // " => «  »
     return KeyUpAndDown.inTextField.insertChevrons(e, sel)
+  } else if (e.keyCode === KERASE && (sel.beforeUpTo(RC,false)||'').match(/^ +$/)){
+    if(this.currentDoc.isData){
+      // On doit effacer deux espaces
+      let st = 0 + sel.startOffset
+      sel.startOffset= st - 1
+      sel.remplace('')
+      stopEvent(e)
+      return false
+    } else {
+      return true
+    }
   } else if(e.keyCode === KTAB){
-    if(sel.before() == RC){
+    if( sel.before() == RC || !sel.before() ){
       // => suivant le type
       return KeyUpAndDown.inTextField.replaceTab(e, sel, this.currentDoc.dataType.type == 'data' ? '  ': '* ')
+    } else if((sel.beforeUpTo(RC,false)||'').match(/^ +$/)) {
+      // <= Seulement des espaces avant la sélection
+      // => Si c'est un fichier Data, on ajoute encore deux espaces,
+      //    sinon on ne fait rien.
+      return KeyUpAndDown.inTextField.replaceTab(e, sel, this.currentDoc.dataType.type == 'data' ? '  ': '')
     } else {
       // => Check snippet
       // On prend les lettres juste avant la sélection pour voir

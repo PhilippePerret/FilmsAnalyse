@@ -557,14 +557,11 @@ observe(container){
   * On rend l'event droppable pour qu'il puisse recevoir d'autres events
   * ainsi que des documents
   **/
-  o.droppable({
-    accept: '.event, .doc, .dropped-time'
-  , tolerance: 'intersect'
-  , drop: function(e,ui){
-      my.a.associateDropped(my, ui.helper)
-    }
-  , classes: {'ui-droppable-hover': 'survoled'}
-  })
+  o.droppable(
+    Object.assign({}, DATA_DROPPABLE, {drop: function(e,ui){
+        my.a.associateDropped(my, ui.helper)
+      }})
+  )
   /**
    * On rend l'event draggable pour pouvoir le déplacer sur un élément
    * dans lequel il doit être ajouté.

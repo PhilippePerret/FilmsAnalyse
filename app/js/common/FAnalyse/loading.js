@@ -96,6 +96,7 @@ load(){
  */
 , onReady(){
     if(NONE === typeof FAProcede) return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FABrin) return this.loadBrin(this.onReady.bind(this))
     if(NONE === typeof FAReader) return this.loadReader(this.onReady.bind(this))
     if(NONE === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
     if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
@@ -108,6 +109,7 @@ load(){
     this.locator.stop_points = this.stopPoints
     this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
     FAProcede.reset().init()
+    FABrin.reset().init()
     EventForm.init()
     FAEscene.init()
     FAEqrd.reset().init()
@@ -177,6 +179,10 @@ loadReader(fn_callback){
 ,
 loadProcede(fn_callback){
   return System.loadComponant('faProcede', fn_callback)
+}
+,
+loadBrin(fn_callback){
+  return System.loadComponant('faBrin', fn_callback)
 }
 
 })

@@ -27,6 +27,16 @@ static reset(){
   $('form.form-edit-event').remove()
 }
 
+/**
+  Pour faire tourner une méthode sur tous les formulaires
+  créés.
+**/
+static forEachForm(fn){
+  for(var form_id in this.eventForms){
+    if(false === fn(this.eventForms[form_id])) break
+  }
+}
+
 // Les formulaires déjà initiés (et donc cachés dans le DOM)
 static get eventForms(){
   if(undefined===this._eventForms){this._eventForms = {}}
@@ -106,6 +116,26 @@ static editEvent(ev){
 static newId(){
   if (undefined === this.lastId){ this.lastId = -1 }
   return ++ this.lastId
+}
+
+/**
+  @return {String}  les <option> définissant les types
+                    de scènes définies dans le fichier
+                    data/data_scenes.yaml
+**/
+static optionsTypes(typ){
+  if(undefined === this._optionsTypes) this._optionsTypes = {}
+  if(undefined === this._optionsTypes[typ]){
+    var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
+    let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
+    var opts = []
+    for(var ktype in dataE['types']){
+      opts.push(`<option value="${ktype}">${dataE['types'][ktype].hname}</option>`)
+    }
+    this._optionsTypes[typ] = opts.join(RC)
+    opts = null
+  }
+  return this._optionsTypes[typ]
 }
 
 // ---------------------------------------------------------------------
@@ -272,6 +302,7 @@ afterBuilding(){
   } else if (typ === 'scene'){
     // Si c'est une scène il faut peupler avec les décors existants
     this.peupleDecors()
+    this.peupleTypesScenes()
   } else if (typ === 'proc'){
     // Pour les procédés, tout dépend de là où on en est : si le procédé
     // est défini, il faut l'afficher directement (en le recherchant dans
@@ -288,6 +319,14 @@ afterBuilding(){
     } else {
       this.implementeMenuCategorieProcedes()
     }
+
+  } else if (this.type === 'qrd'){
+    // Pour le moment, juste pour empêcher de peupler les types, qui
+    // n'existent pas pour les qrd.
+    // TODO Mais plus tard, il faudra rationnaliser un peu tout ça.
+  } else {
+    // Pour les autres types, on a un menu type
+    this.peupleTypes()
   }
   jqo = eid = typ = null
   this.built = true
@@ -405,6 +444,43 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 // FIN des menus DECORS
 // ---------------------------------------------------------------------
 
+// ---------------------------------------------------------------------
+// MÉTHODES DE GESTION DES TYPES (pour tous les types)
+
+/**
+  Méthode pour éditer les types +typ+ en ouvrant leur fichier
+  (dans le writer ?)
+
+  Note : le nom 'data_<typ>' correspond au nom du fichier
+**/
+modifyDataTypes(e, typ){
+  if(undefined === typ) typ = this.type
+  FAWriter.openDoc(`data_${typ}`)
+}
+
+updateTypes(e, typ){
+  if(undefined === typ) typ = this.type
+  if(EventForm._optionsTypes && EventForm._optionsTypes[typ]){
+    delete EventForm._optionsTypes[typ]
+  }
+  this.peupleTypes(typ)
+  F.notify(`Liste des types « ${typ} » actualisée.`)
+}
+peupleTypes(typ){
+  if(undefined === typ) typ = this.type
+  this.menuTypes(typ).html(EventForm.optionsTypes(typ))
+}
+menuTypes(typ){
+  return this.jqObj.find(`select.${typ}-types`)
+}
+// ---------------------------------------------------------------------
+//  MÉTHODES POUR LES SCÈNES
+
+peupleTypesScenes(){this.peupleTypes('scene')}
+updateTypesScenes(){this.updateTypes(null, 'scene')}
+
+// /Fin méthodes scènes
+// ---------------------------------------------------------------------
 
 get jqf(){return this.jqField.bind(this)}
 
@@ -441,6 +517,11 @@ observe(){
   if(this.type === 'scene' && this.isNew){
     this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
   }
+
+  // Bouton pour actualiser le menu des types de tout élément et pour éditer
+  // le fichier de données
+  this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
+  this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
 
   var dataDrop = {
     accept: '.event, .doc, .dropped-time'

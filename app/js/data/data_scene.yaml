@@ -1,0 +1,29 @@
+---
+  types:
+    n/d:
+      hname: Non défini
+      description: Scène dont la nature, le type, n’est pas défini.
+    generic:
+      hname: Générique
+      description: Une scène de générique de début ou de fin.
+    expo:
+      hname: Exposition
+      description: Une scène qui expose une situation.
+    action:
+      hname: Scène d’action
+      description: Une scène où l’action prend une grande place.
+    dialogue:
+      hname: Scène de dialogue
+      description: Une scène où le dialogue prend une grande place.
+    rencontre:
+      hname: Scène de rencontre
+      description: Scène où deux personnages importants se rencontrent pour la première fois.
+    travail:
+      hname: Scène de travail
+      description: Scène présentant le quotidien du personnage à son travail.
+    flashback:
+      hname: Scène flashback
+      description: Scène présentant le passé du personnage.
+    enfance:
+      hname: Scène d’enfance
+      description: Scène présentant un moment fort de l’enfance du personnage.
