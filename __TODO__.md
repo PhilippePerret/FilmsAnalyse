@@ -2,6 +2,7 @@
 
 * BRINS
   - les traiter dans le livre, faire peut-être des graphiques
+  - enregistrer leurs données dans un fichier json (leur events seulement puisque leur définition se trouve dans le fichier dbrins.yaml)
 
 * PROCÉDÉS
   - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
@@ -90,9 +91,6 @@
 
 * Faire un fichier `metadata.yml` pour les métadonnées du livre (pour les epubs fait avec pandoc)
 
-* Menu pour passer à la version suivante de l'analyse
-  - faut-il conserver un certain nombre de versions ?
-
 * Développer l'affichage de l'état de l'analyse (la version détaillée).
 
 * Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type).
@@ -100,16 +98,7 @@
 * Mettre en place un système de Tips qui s'affichera au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
   -> Objet **Tips**
 
-* Quand un event est affiché et qu'on repasse sur son temps, le mettre en exergue dans le reader.
-  - de façon générale, il faut encore revoir le système d'affichage des events. Par exemple, si on revient en arrière, les nouveaux events sont affichés après ceux qui sont déjà présents
-  => mettre peut-être le temps de l'even dans sa balise, pour pouvoir insérer très facilement les nouveaux events (par leur temps)
-
 * On doit pouvoir changer la taille horizontale/verticale des flying-windows (deux pictos, peut-être ajoutés dans le 'header' du code construit dans le owner, qui permettent de le faire ? ou alors une bordure plus grande ?)
-* Toutes les données absolues du formulaire (les types, les catégories, etc.) doivent être enregistrées dans des fichiers JSON et les éléments du formulaire doivent être construits à la volée.
-  Bien se servir du type de l'évènement pour régler la class du tag
-  Faire un script pour les prendre en compte après changement
-* Les QD non actuellement résolues doivent s'afficher en bas à droite
-* Les PP non actuellement résolues doivent s'afficher en bas à droite
 
 * Faire un mode d'emploi interactif
 * Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
@@ -121,10 +110,3 @@
 
 # PEUT-ÊTRE UN JOUR
 * API qui permettrait de récupérer les data des films online (au format json).
-
-
-Comment mettre en exergue les events affichés dans le reader ?
-Si on part du principe qu'il n'y en aura jamais beaucoup, ça peut se faire en lisant
-
-Et si c'était l'event lui-même qui vérifiait ? Tous les events, une fois affichés, mettent en route une méthode setInterval qui regarde le temps courant. Si l'évènement est dans le temps courant (à plus ou moins 2 secondes), il se met en exergue.
-C'est donc dans la méthode show.

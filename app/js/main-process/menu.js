@@ -23,7 +23,7 @@ const CURRENT_THING_MENUS = [
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
-  'display-protocole', 'option-locked', 'new-version'
+  'display-protocole', 'option-locked', 'new-version', 'display-brins'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -307,6 +307,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Alt+Shift+F'
               , enabled: false
               , click: ()=>{execJsOnCurrent('displayFondamentales')}
+            }
+          , {
+                label: "Brins"
+              , id: 'display-brins'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+B'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayBrins')}
             }
           , {
                 label: "Statistiques"

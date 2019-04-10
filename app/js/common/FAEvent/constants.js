@@ -14,4 +14,22 @@ const NUMERO    = 64
 const NUM       = 128
 const LABELLED  = 256 // pour mettre le type et l'id devant
 const EDITABLE  = 512 // L'élément est lié à son édition
-// 256
+// pour escaper les guillemets, supprimer les balises <...>
+// et les retours chariot. C'est la version qui doit être
+// utilisée comme flag quand on doit placer le texte, par
+// exemple, dans l'attribut `title` d'une balise.
+const ESCAPED   = 1024
+
+/**
+  Données communes pour dropper les events, documents et times
+  @usage
+    <set jquery>.droppable(
+      Object.assign({),DATA_DROPPABLE, {drop: function(i,o){...}})
+    )
+**/
+const DATA_DROPPABLE = {
+  accept: '.event, .doc, .dropped-time'
+, tolerance: 'intersect'
+, drop: null
+, classes: {'ui-droppable-hover': 'survoled'}
+}

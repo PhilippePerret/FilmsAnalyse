@@ -263,6 +263,8 @@ displayFondamentales(){
   var method = require('./js/tools/building/fondamentales.js')
   method.bind(this)()
 }
+displayBrins(){FABrin.display()}
+
 displayStatistiques(){
   // TODO
   F.error("Les Statistiques ne sont pas encore implémentées.")
