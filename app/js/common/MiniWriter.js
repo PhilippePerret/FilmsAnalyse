@@ -163,17 +163,15 @@ observe(){
   this.textField.on('keydown',  this.onKeyDown.bind(this))
   this.textField.on('keyup',    this.onKeyUp.bind(this))
   // On peut déposer des éléments quelconques sur le champ de texte
-  this.textField.droppable({
-    accept: '.event, .doc, .dropped-time'
-  , tolerance: 'intersect'
-  , drop: function(e, ui){
-      stopEvent(e)
-      var balise = my.a.getBaliseAssociation(my, ui.helper)
-      balise && my.textField.insertAtCaret(balise)
-      return false
-  }
-  , classes: {'ui-droppable-hover': 'survoled'}
+  let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+    drop: function(e, ui){
+        stopEvent(e)
+        var balise = my.a.getBaliseAssociation(my, ui.helper)
+        balise && my.textField.insertAtCaret(balise)
+        return false
+    }
   })
+  this.textField.droppable(dataDrop)
 }
 
 onKeyDown(e){

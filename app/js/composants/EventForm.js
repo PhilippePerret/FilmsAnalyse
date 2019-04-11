@@ -523,19 +523,16 @@ observe(){
   this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
   this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
 
-  var dataDrop = {
-    accept: '.event, .doc, .dropped-time'
-  , tolerance: 'intersect'
-  , drop: (e, ui) => {
+  let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+    drop: (e, ui) => {
       var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
       if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
         $(e.target).insertAtCaret(balise)
       } else if(e.target.className.indexOf('event-parent') > -1){
         this.setParent(ui.helper)
       }
-  }
-  , classes: {'ui-droppable-hover': 'survoled'}
-  }
+    }
+  })
 
   // Les champs d'édition doit pouvoir recevoir des drops
   my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)

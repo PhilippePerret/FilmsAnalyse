@@ -137,7 +137,7 @@ displaySize(){
 
 as_link(options){
   if(undefined === options) options = {}
-  return `« <a onclick="showDocument('${this.id}')" class="doclink">${options.title || this.title}</a> »`
+  return `« <a onclick="showDocument('${this.id||this.type}')" class="doclink">${options.title || this.title}</a> »`
 }
 
 // ---------------------------------------------------------------------
@@ -377,16 +377,31 @@ get themePerType(){
 get title(){
   if(undefined === this._title){
     if(this.exists()){
-      var buf = Buffer.alloc(100)
+      var buf = Buffer.alloc(200)
       var fd  = fs.openSync(this.path, 'r');
-      fs.readSync(fd, buf, 0, 100, 0)
-      buf = buf.toString().split(RC)[0]
-      if (buf.substring(0,2) == '# '){
-        this._title = buf.substring(2, buf.length).trim()
+      fs.readSync(fd, buf, 0, 200, 0)
+      buf = buf.toString().split(RC)
+      let firstLine = buf.shift()
+      if (firstLine.substring(0,2) == '# '){
+        this._title = firstLine.substring(2, firstLine.length).trim()
+        this._firstContent = buf.join(RC)
+      } else {
+        this._firstContent = buf.unshift(firstLine).join(RC)
       }
+    } else {
+      this._firstContent = ''
     }
   }
   return this._title || (this.type === 'customdoc' ? `Doc #${this.id}` : this.dataType.hname)
+}
+
+/**
+  Retourne les à-peu-près 200 premiers caractères du texte, avec les
+  retours chariots et autres liens.
+**/
+get firstContent(){
+  if(undefined === this._firstContent) this.title // force le calcul
+  return this._firstContent
 }
 
 /**

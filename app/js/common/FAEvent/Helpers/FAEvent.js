@@ -12,7 +12,10 @@ Object.assign(FAEvent.prototype,{
                           du retour, comme la présence des boutons d'édition,
                           l'ajout de la durée, etc.
                           DUREE|TIME|LINKED
-  @param {Object} options Options à utiliser (unisité pour le moment)
+  @param {Object} options Options à utiliser
+                          :no_warn    Si true, pas d'avertissement pour dire que
+                                      c'est un modèle non personnalisé par
+                                      la sous-classe.
 **/
 as(format, flag, opts){
   if (undefined === flag) flag = 0
@@ -89,7 +92,7 @@ asFull(opts){
   let str = ''
   str += `<div class="${this.type} EVT${this.id}">`
   str += `${this.asShort(opts)}`
-  str += this.warnCommonMethod
+  if(!opts || !opts.no_warm) str += this.warnCommonMethod
   str += this.divAssociates('events')
   str += this.divAssociates('documents')
   str += this.divAssociates('times')
@@ -146,7 +149,8 @@ linkedToEdit(str){ return this.asLinkToEdit(str)}
   @return {String} Le code HTML
 **/
 divAssociates(type){
-  let options
+  let my = this
+  var options
   switch (typeof type) {
     case 'string':
       options = {types: [type]}
@@ -168,7 +172,11 @@ divAssociates(type){
     str += `<h3>${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}</h3>`
     str += `<div class="associates ${type}">`
     this.forEachAssociate(type, function(ev){
-      str += ev.asAssociate(options)
+      if(undefined === ev){
+        log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
+      } else {
+        str += ev.asAssociate(options)
+      }
     })
     str += '</div>'
   }

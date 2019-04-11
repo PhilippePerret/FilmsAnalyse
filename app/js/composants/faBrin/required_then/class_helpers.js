@@ -19,7 +19,8 @@ build(){
   , DCreate('DIV', {class:'explication small', inner: "(glissez les events/documents/times sur le cadre du brin à lier)"})
   , DCreate('DIV', {class:'div-brins', append:divbrins})
   , DCreate('DIV', {class:'footer right', append:[
-      DCreate('BUTTON', {type:'button', id:'btn-open-data-brins', inner:'Éditer les brins'})
+      DCreate('BUTTON', {type:'button', class:'update', id:'btn-update-listing-brins', inner:'<img src="img/update-2.png" class="update" />'})
+    , DCreate('BUTTON', {type:'button', id:'btn-open-data-brins', inner:'Éditer les brins'})
     ]})
   ]
 }
@@ -27,10 +28,23 @@ build(){
 observe(){
   // Tous les brins doivent réagir au drop avec des events,
   // des documents et tout le tralala
-  this.fwindow.jqObj.find('.brin').droppable(
-    Object.assign({}, DATA_DROPPABLE, {drop: this.onDrop.bind(this)})
-  )
+  // Ils peuvent aussi être glissé sur d'autres éléments
+  this.fwindow.jqObj.find('.brin')
+    .droppable(
+      Object.assign({}, DATA_DROPPABLE, {drop: this.onDrop.bind(this)})
+    )
+    .draggable({revert:true, helper:'clone'})
+
   this.fwindow.jqObj.find('#btn-open-data-brins').on('click',this.openDocData.bind(this))
+  this.fwindow.jqObj.find('#btn-update-listing-brins').on('click',this.updateListing.bind(this))
+  BtnToggleNext.observe(this.fwindow.jqObj)
+}
+,
+updateListing(e){
+  log.info('-> FABrin#updateListing')
+  this.fwindow.update.bind(this.fwindow)()
+  this.display()
+  log.info('<- FABrin#updateListing')
 }
 ,
 onDrop(e, ui){

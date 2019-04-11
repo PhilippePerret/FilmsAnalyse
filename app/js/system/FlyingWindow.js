@@ -161,12 +161,14 @@ toggle(){
   this[this.visible?'hide':'show']()
 }
 show(){
+  log.info(`-> FWindow.show() [built:${this.built}, visible:${this.visible}]`)
   if(!this.built) this.build().observe()
   this.jqObj.show()
+  this.visible = true
   this.constructor.setCurrent(this)
   FWindow.checkOverlaps(this)
   if ('function' === typeof this.owner.onShow) this.owner.onShow()
-  this.visible = true
+  log.info(`<- FWindow.show() [built:${this.built}, visible:${this.visible}]`)
 }
 hide(){
   if('function' === typeof this.owner.beforeHide){
@@ -174,16 +176,33 @@ hide(){
   }
   this.constructor.unsetCurrent(this)
   this.jqObj.hide()
-  if ('function' === typeof this.owner.onHide) this.owner.onHide()
   this.visible = false
+  if ('function' === typeof this.owner.onHide) this.owner.onHide()
 }
+
+/**
+  Actualisation demandée de la fenêtre
+
+  On récupère sa position actuelle pour pouvoir la remettre
+**/
 update(){
   if(!this.built) return
+  this.position = this.jqObj.position()
   this.remove()
 }
 // Pour détruire la fenêtre
 remove(){
+  log.info('-> FWindow.remove()')
+  this.constructor.unsetCurrent(this)
   this.jqObj.remove()
+  this.reset()
+  log.info('<- FWindow.remove()')
+}
+// Pour réinitialiser
+reset(){
+  this.built    = false
+  this.visible  = false
+  delete this._jqObj
 }
 // Pour mettre la Flying window en premier plan
 // Ne pas appeler ces méthodes directement, appeler la méthode
@@ -197,12 +216,17 @@ bringToBack(){
 }
 
 build(){
+  log.info('-> FWindow.build()')
+  // Si c'est une actualisation de la fenêtre, on a mémorisé sa
+  // position dans `this.position`
+  if(undefined === this.position) this.position = {}
+  // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate('DIV', {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
-  , style: `top:${this._y||0}px;left:${this._x||0}px;`
+  , style: `top:${this.position.top||this._y||0}px;left:${this.position.left||this._x||0}px;`
   })
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,
@@ -213,6 +237,7 @@ build(){
   if('function' === typeof this.owner.observe) this.owner.observe()
 
   this.built = true
+  log.info('<- FWindow.build()')
   return this // chainage
 }
 

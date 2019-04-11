@@ -354,6 +354,12 @@ addEvent(nev) {
 editEvent(event_id){
   return EventForm.editEvent.bind(EventForm, this.ids[event_id])()
 }
+// Pour éditer le document d'identifiant +doc_id+
+// Note : on pourrait y aller directement, mais c'est pour compatibiliser
+// les choses
+editDocument(doc_id){
+  return FAWriter.openDoc(doc_id)
+}
 
 /**
  * Procédure de description de l'event

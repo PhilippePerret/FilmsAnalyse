@@ -1,28 +1,34 @@
 'use strict'
 
 Object.assign(FABrin.prototype,{
-addDocument(doc){
-  // console.log("J'ajoute le document:", doc)
+addDocument(doc_id){
   this.addToList('documents', doc_id)
 }
 ,
 addEvent(ev_id){
-  // console.log("J'ajoute l'event :", ev_id)
   this.addToList('events', ev_id)
 }
 ,
 addTime(time){
-  // console.log("J'ajoute le time: ", time)
   this.addToList('times', time)
 }
 ,
-addToList(list, foo_id){
-  // console.log("addToList:", list, foo_id)
-  if(this[list].indexOf(foo_id) < 0){
-    this[list].push(foo_id)
+addBrin(brin_id){
+  if(this.id === brin_id){
+    return F.notify('Un brin ne peut pas être associé à lui-même, voyons…', {error: true})
+  }
+  this.addToList('brins', brin_id)
+}
+,
+addToList(list_id, foo_id){
+  console.log("addToList:", list_id, foo_id)
+  if(undefined === this.data[list_id] || this.data[list_id].indexOf(foo_id) < 0){
+    if (undefined === this.data[list_id]) this.data[list_id] = []
+    this.data[list_id].push(foo_id)
+    // console.log(`this.data[${list_id}] vaut maintenant:`,this.data[list_id])
     this.modified = true
   } else {
-    F.notify(`Le brin est déjà lié à cet élément « ${list} ».`)
+    F.notify(`Le brin est déjà lié à cet élément « ${list_id} ».`)
   }
 }
 })
@@ -38,6 +44,8 @@ modified:{
 }
 ,
 title:{get(){return DFormater(this.data.title)}}
+,
+libelle:{get(){return this.title}} // alias
 ,
 description:{get(){return DFormater(this.data.description)}}
 ,

@@ -74,6 +74,14 @@ button.btnplay img
   vertical-align:middle;
 }
 
+/*  Les boutons « toggle next » qui permettent d'ouvrir/fermer le noeud
+    qui les suit
+*/
+button.toggle-next {
+  all:unset;
+  float:left;
+}
+
 /* SELECT */
 
 /* Un séparateur. Ne contient rien, mais mieux que rien */

@@ -11,6 +11,15 @@ forEachBrin(fn){
 }
 
 ,
+/**
+  @param  {String} brin_id Identifiant du brin
+  @return {FABrin} l'instance du brin d'identifiant +brin_id
+**/
+get(brin_id){
+  return this.brins[brin_id]
+}
+
+,
 reset(){
   delete this.data
   delete this._brins
@@ -118,6 +127,8 @@ a:{get(){return current_analyse}}
   Noter que l'enregistrement des brins est automatique. Dès qu'une modification
   a été opérée, une boucle se met en route pour sauver les données 4 secondes
   plus tard (histoire de ne pas sauver à chaque ajout)
+
+  Lorsqu'il y a modification, on actualise aussi la fenêtre d'affichage.
 **/
 modified:{
   get(){return this._modified || false}
@@ -128,6 +139,7 @@ modified:{
       this.analyseWasNotModified = !this.a._modified
       this.a.modified = true
       this.timerSave  = setTimeout(this.save.bind(this), 3000)
+      this.updateListing()
     }
   }
 }

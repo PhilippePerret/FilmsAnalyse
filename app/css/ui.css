@@ -14,6 +14,10 @@ button:focus {
   outline:none;
 }
 
+button.unset {
+  all:unset;
+}
+
 /* Les boutons qui contiennent les boutons close */
 button.btn-close {
   all:unset;
@@ -28,6 +32,19 @@ button.btn-close {
 }
 button.btn-close:hover {
   background-image:url(../img/btn-window/b_close_over.png);
+}
+
+/* --- Les boutons d'actualisation ---
+  Ils utilisent l'image 'img/update-2.png'
+ */
+button.update {
+  all:unset;
+  vertical-align:baseline;
+  padding:0 8px;
+}
+button.update img {
+  width:22px;
+  vertical-align:sub;
 }
 
 .no-user-selection,
