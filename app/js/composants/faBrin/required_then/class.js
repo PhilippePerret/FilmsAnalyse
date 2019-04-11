@@ -27,8 +27,18 @@ get(brin_id){
 
 ,
 reset(){
+  if(this.timerSave){
+    clearTimeout(this.timerSave)
+    delete this.timerSave
+  }
+  if(this._fwindow){
+    this.fwindow.remove()
+    delete this._fwindow
+  }
   delete this.data
   delete this._brins
+  delete this._iofile
+  delete this._iofileData
   return this // chainage
 }
 ,

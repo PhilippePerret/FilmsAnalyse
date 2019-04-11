@@ -84,6 +84,14 @@ static findAssociations(){
   })
   return dDocuments
 }
+
+/**
+  Méthode qui compte le nombre de documents qui se trouvent dans le dossier
+  `analyse_files` et le renvoie (utilisé pour les tests manuels)
+**/
+static count(){
+  return glob.sync(`${current_analyse.folderFiles}/*.*`).length
+}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -219,6 +227,7 @@ afterSavingPerType(){
   switch (this.type) {
     case 'snippets':      return Snippets.updateData(YAML.safeLoad(this.contents))
     case 'dpersonnages':  return FAPersonnage.reset().init()
+    case 'dbrins':        return FABrin.reset().init()
     case 'customdoc':     return this.addToMenuIfNew()
     default:
       if(this.isAbsoluteData){

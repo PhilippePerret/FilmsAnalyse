@@ -3,6 +3,13 @@
   document_trop_court:
     libelle: Tentative d'enregistrement d'un document très raccourci
     description: On tente d'enregistrer un document qui a été raccourci de plus de 20% de sa longueur. Une confirmation d'enregistrement devrait être demandée, pour annuler l'enregistrement.
+    synopsis:
+      - ouvrir l'application
+      - ouvrir une analyse avec des documents
+      - éditer un document
+      - enregistrer le document
+      - supprimer plus de 20 % du document
+      - essayer de l'enregistrer
     verifications:
       - Le document ne doit pas avoir été enregistré
   association_par_drop:

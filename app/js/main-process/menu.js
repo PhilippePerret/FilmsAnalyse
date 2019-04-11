@@ -521,6 +521,19 @@ const DATA_MENUS = [
             }
         ]
     }
+  , {
+
+      label: 'Outils'
+    , submenu:[
+        {
+            label: 'Test manuel de l’application'
+          , enabled: true // TODO: plus tard, seulement en développement
+          , id:'test-manuel-app'
+          , accelerator: 'CmdOrCtrl+Alt+Shift+T'
+          , click: () => {execJS('App.runHandTests()')}
+        }
+      ]
+  }
 ]
 
 var dataMenuPreferences = {

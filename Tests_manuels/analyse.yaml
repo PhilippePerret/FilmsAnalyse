@@ -8,21 +8,14 @@
     synopsis:
       - ouvrir l'app
       - désactiver l'option « Charger la dernière analyse au chargement »
-      - quitter l'app
-      - rouvrir l'app (aucune analyse ne devrait s'ouvrir)
+      - quitter l'app et rouvrir (relancer ces tests pour poursuivre)
       - créer l'analyse en choisissant le dossier et le fichier vidéo
-      - procéder aux 'premiers_tests'
       - créer deux events
       - enregistrer l'analyse
-      - quitter l'app
-      - rouvrir l'app
-      - utiliser le menu « Ouvrir… » et choisir l'analyse créée.
+      - quitter l'app, la relancer, relancer ces tests et utiliser le menu « Ouvrir… » pour rouvrir la nouvelle analyse.
     verifications:
-      premiers_tests:
-        - La liste des events doit être nulle au départ
-      tests_suivants:
         - la vidéo doit être la bonne
-        - la liste des documents doit être vide
+        - on doit pouvoir lancer la vidéo et voir les deux events s'afficher au moment voulu.
 
   create_when_current:
     libelle: Création d'une nouvelle analyse avec une analyse courante
@@ -31,12 +24,9 @@
       - ouvrir l'app
       - activer l'option « Charger la dernière analyse au chargement »
       - ouvrir une analyse existante et fonctionnelle
-      - quitter l'app
-      - rouvrir l'app (l'analyse doit se charger)
+      - quitter l'app et la rouvrir, reprendre les tests jusqu'ici
       - créer une nouvelle analyse à partir du menu « Nouvelle… »
-      - procéder au premier_test
     verifications:
-      premier_test:
-        - La liste des events doit être nulle
-        - la vidéo doit être la bonne (et pas celle de l'autre analyse)
-        - la liste des documents doit être vide
+      - La liste des events doit être vide
+      - la vidéo doit être la bonne (et pas celle de l'autre analyse)
+      - la liste des documents doit être vide

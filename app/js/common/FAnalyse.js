@@ -620,7 +620,6 @@ set eventsIO(eventsData){
     this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?'visible':'hidden')
   }
 
-
   // ---------------------------------------------------------------------
   //  PATHS
 

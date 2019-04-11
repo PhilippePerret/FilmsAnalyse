@@ -1,9 +1,12 @@
 # SUR LE GRILL
 
-* Pour les tests manuels : faire les choses semi-automatiquement :
-  - avoir des phrases qui sont compréhensibles par le programme et qu'il
-    existe. Les autres, il demande à les faire à la main.
-  -> Faire un menu "Lancer les tests manuels"
+* HandTests
+  - Problème avec des steps passés (cf. le document brin) - problème de boutons appelés plusieurs fois ?
+  - Enregistrer les résultats au fur et à mesure
+    - se servir du `options` qu'on utilise pour le moment pour la position de la fenêtre
+  - Pouvoir utiliser 'verif:id_de_la_verification' pour lancer une vérification particulière à un moment particulier du test.
+  - Pouvoir lancer un test particulier (path rel du fichier)
+  - Pouvoir reprendre la suite de test au moment où on s'est arrêté : en fonction des réponses données, le programme devine où on doit reprendre.
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - il doit répondre à la méthode `tempsPresence` (qui renvoie une horloge durée)
@@ -12,6 +15,7 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
+  - Quand il n'y a pas d'analyse courante à charger (pas l'option activée), et qu'on ouvre une analyse, une erreur est produite : pas de reader.
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative

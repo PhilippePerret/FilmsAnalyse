@@ -3,6 +3,18 @@
   creation_brin:
     libelle: Création d'un brin
     description: pouvoir créer des brins à l'aide du document « Brins data »
+    synopsis:
+      - ouvrir l'application
+      - ouvrir une analyse
+      - déverrouiller l'analyse
+      - ouvrir le document dbrins
+      - définir des brins en s'inspirant de l'exemple
+      - enregistrer le document courant
+      - afficher la liste des brins
+    verifications:
+      - les nouveaux brins doivent être affichés dans la liste.
+      - Fermer les fenêtres pour pouvoir continuer.
+
   associations_event:
     libelle: Pouvoir associer un event à un brin
     synopsis:
@@ -47,7 +59,7 @@
   edition_associed:
     libelle: On doit pouvoir éditer ou afficher les associés depuis la fenêtre des brins
     synopsis:
-      - reprendre l'analyse du test précédent
+      - reprendre l'analyse précédente
       - ouvrir la fenêtre des brins
       - afficher la liste détaillés des associés d'un ou deux brins
       - éditer un event en cliquant dessus dans le listing détaillé

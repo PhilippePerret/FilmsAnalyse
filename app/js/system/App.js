@@ -14,7 +14,20 @@ const App = {
       FAnalyse.checkLast()
     }
   }
-}
+
+, runHandTests(){
+    if(undefined === this.nbTriesRunHandTests) this.nbTriesRunHandTests = 1
+    else {
+      ++ this.nbTriesRunHandTests
+      if (this.nbTriesRunHandTests > 10){
+        F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
+        return
+      }
+    }
+    if('undefined' === typeof(HandTests)) return System.loadComponant('HandTests', this.runHandTests.bind(this))
+    HandTests.initAndRun()
+  }
+}// /fin App
 
 const AppLoader = {
   class:  'AppLoader'
