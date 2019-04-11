@@ -6,6 +6,7 @@
 
 * BRINS
   - les traiter dans le livre, faire peut-être des graphiques
+  - les traiter dans les statistiques (ou plutôt : traiter les statistiques dans le listing, en tenant compte des scènes)
 
 * PROCÉDÉS
 

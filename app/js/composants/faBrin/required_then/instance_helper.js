@@ -62,7 +62,6 @@ asShort(opts){
 }
 ,
 asBook(opts){
-  return `« ${this.title} »`
 }
 ,
 asFull(opts){
@@ -83,14 +82,21 @@ linkedToEdit(str){
 
 ,
 asDiv(options){
-  return DCreate('DIV', {class: 'brin', append:[
-    DCreate('SPAN', {class: 'brin-title', inner: this.title})
-  , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
-  , DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`})
-  , DCreate('BUTTON', {type:'button', class: 'toggle-next'})
-  , DCreate('DIV', {class:'brin-associateds-detailled', style:'display:none;', append: this.divAssociateds()})
-  , DCreate('DIV', {style:'clear:both;'})
-], attrs:{'data-type':'brin', 'data-id': this.id}})
+  if(undefined === options) options = {}
+  var divs = [
+      DCreate('SPAN', {class: 'brin-title', inner: `Brin #${this.numero}. ${this.title}`})
+    , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
+  ]
+  if(options.forBook === true){
+    divs.push(DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()}))
+  } else {
+    divs.push(DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`}))
+    divs.push(DCreate('BUTTON', {type:'button', class: 'toggle-next'}))
+    divs.push(DCreate('DIV', {class:'brin-associateds-detailled', style:'display:none;', append: this.divAssociateds()}))
+  }
+  divs.push(DCreate('DIV', {style:'clear:both;'}))
+
+  return DCreate('DIV', {class: 'brin', append:divs, attrs:{'data-type':'brin', 'data-id': this.id}})
 }
 ,
 

@@ -1,6 +1,12 @@
 'use strict'
 Object.assign(FABrin,{
 
+newNumero(){
+  if(undefined === this.lastNumero) this.lastNumero = 0
+  return ++ this.lastNumero
+}
+,
+
 /**
   Boucle sur tous les brins
 **/
