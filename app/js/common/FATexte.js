@@ -43,6 +43,8 @@ static get TYPES2HTYPES(){
   , 'times':      {fr: 'temps',     genre: 'M'}
   , 'event':      {fr: 'event',     genre: 'M'}
   , 'events':     {fr: 'events',    genre: 'M'}
+  , 'brin':       {fr: 'brin',      genre: 'M'}
+  , 'brins':      {fr: 'brins',     genre: 'M'}
   , 'scene':      {fr: 'scène',     genre: 'F'}
   , 'scenes':     {fr: 'scènes',    genre: 'F'}
   , 'document':   {fr: 'document',  genre: 'M'}
@@ -109,6 +111,24 @@ static deDoc(str){
   })
   return str
 }
+
+/**
+  Traitement des balises brins dans les strings
+**/
+static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+
+static deBrin(str){
+  var groups, brin_id
+  str = str.replace(this.BRIN_REGEXP, function(){
+    groups  = arguments[arguments.length-1]
+    brin_id = groups.key
+    console.log("FABrin.get(brin_id):", FABrin.get(brin_id))
+    return FABrin.get(brin_id).as('short',LINKED|FORMATED)
+  })
+  return str
+}
+
+
 /**
   Méthode qui signale -- une seule fois -- l'absence de la définition
   de la variable +varname+ rencontrée dans le texte.
@@ -198,6 +218,7 @@ formate(str, options){
   str = this.deTimeTags(str)
   str = this.deDoc(str)
   str = this.deVar(str)
+  str = this.deBrin(str)
   str = this.deDim(str)
 
   // Si une option de format a été définie
@@ -305,6 +326,16 @@ setFormat(str, format){
     if(undefined === str) str = this.raw_string
     else this.raw_string = str
     return FATexte.deVar(str)
+  }
+
+  /**
+    @param {String} str   Texte qui peut contenir des balises {{brin: ...}}
+    @return {String} Les balises brin remplacées
+  **/
+  deBrin(str){
+    if(undefined === str) str = this.raw_string
+    else this.raw_string = str
+    return FATexte.deBrin(str)
   }
 
   /**

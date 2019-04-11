@@ -372,15 +372,13 @@ const FAWriter = {
 
     // On rend le champ de texte droppable pour pouvoir y déposer
     // n'importe quel event ou n'importe quel autre document
-    my.docField.droppable({
-        accept: '.event, .doc, .dropped-time'
-      , tolerance: 'intersect'
-      , drop: function(e, ui){
-          var balise = my.a.getBaliseAssociation(my.currentDoc, ui.helper)
+    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+      drop: function(e, ui){
+          var balise = my.a.getBaliseAssociation(my.currentDoc, ui.helper, e)
           if (balise) my.docField.insertAtCaret(balise)
         }
-      , classes: {'ui-droppable-hover': 'survoled'}
     })
+    my.docField.droppable(dataDrop)
 
     // Le bouton pour sauver le document courant
     my.btnSave.on('click',my.saveCurrentDoc.bind(my))

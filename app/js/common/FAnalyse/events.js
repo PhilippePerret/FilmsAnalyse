@@ -11,6 +11,7 @@ Object.assign(FAnalyse.prototype,{
   /**
     Méthode qui procède à l'association entre deux éléments/objets
     de l'analyse.
+
     Mais contrairement à la méthode `getBaliseAssociation` qui retourne
     une balise à insérer dans le texte (p.e. `{{event: 12}}`), cette
     méthode crée une association simple en dehors des textes.
@@ -21,6 +22,9 @@ Object.assign(FAnalyse.prototype,{
     var dropped_id = dropped.attr('data-id') // pas toujours défini
     if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
     switch (dropped_type) {
+      case 'brin':
+        obj.addBrin(dropped_id)
+        break
       case 'event':
         obj.addEvent(dropped_id)
         break
@@ -85,9 +89,11 @@ getBaliseAssociation(obj, domEl, e){
   if (domEl_id && domEl_id.match(/^([0-9]+)$/)) domEl_id = parseInt(domEl_id,10)
 
   switch (domEl_type) {
+    case 'brin':
+      balise = `{{brin:${domEl_id}}}`
+      break
     case 'document':
-      if(undefined === domEl_id){
-        // => Le document édité
+      if(undefined === domEl_id){// => On prend alors le document édité
         domEl_id = FAWriter.currentDoc.id || FAWriter.currentDoc.type
       }
       if (obj && false === obj.addDocument(domEl_id)) return null

@@ -13,12 +13,19 @@ addTime(time){
   this.addToList('times', time)
 }
 ,
+addBrin(brin_id){
+  if(this.id === brin_id){
+    return F.notify('Un brin ne peut pas être associé à lui-même, voyons…', {error: true})
+  }
+  this.addToList('brins', brin_id)
+}
+,
 addToList(list_id, foo_id){
   console.log("addToList:", list_id, foo_id)
   if(undefined === this.data[list_id] || this.data[list_id].indexOf(foo_id) < 0){
     if (undefined === this.data[list_id]) this.data[list_id] = []
     this.data[list_id].push(foo_id)
-    console.log(`this.data[${list_id}] vaut maintenant:`,this.data[list_id])
+    // console.log(`this.data[${list_id}] vaut maintenant:`,this.data[list_id])
     this.modified = true
   } else {
     F.notify(`Le brin est déjà lié à cet élément « ${list_id} ».`)
@@ -37,6 +44,8 @@ modified:{
 }
 ,
 title:{get(){return DFormater(this.data.title)}}
+,
+libelle:{get(){return this.title}} // alias
 ,
 description:{get(){return DFormater(this.data.description)}}
 ,

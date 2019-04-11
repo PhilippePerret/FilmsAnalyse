@@ -28,9 +28,13 @@ build(){
 observe(){
   // Tous les brins doivent réagir au drop avec des events,
   // des documents et tout le tralala
-  this.fwindow.jqObj.find('.brin').droppable(
-    Object.assign({}, DATA_DROPPABLE, {drop: this.onDrop.bind(this)})
-  )
+  // Ils peuvent aussi être glissé sur d'autres éléments
+  this.fwindow.jqObj.find('.brin')
+    .droppable(
+      Object.assign({}, DATA_DROPPABLE, {drop: this.onDrop.bind(this)})
+    )
+    .draggable({revert:true, helper:'clone'})
+
   this.fwindow.jqObj.find('#btn-open-data-brins').on('click',this.openDocData.bind(this))
   this.fwindow.jqObj.find('#btn-update-listing-brins').on('click',this.updateListing.bind(this))
   BtnToggleNext.observe(this.fwindow.jqObj)

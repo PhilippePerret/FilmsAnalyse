@@ -3,6 +3,85 @@
   Helpers d'instance
 **/
 Object.assign(FABrin.prototype,{
+
+/**
+  Pour conformité avec les autres éléments, events, documents, etc.
+  Cf. le détail des arguments dans FAEvent
+**/
+as(format, flag, opts){
+  if (undefined === flag) flag = 0
+  // Pour le moment, on lie par défaut (NON !)
+  // Pour le moment, on corrige par défaut
+  flag = flag | FORMATED
+
+  // console.log("-> as(format, flag)", format, flag)
+
+  var str
+  switch (format) {
+    case 'short':
+      str = this.asShort(opts)
+      break
+    case 'book':
+      // Sortie pour le livre
+      str = this.asBook(opts)
+      break
+    case 'full':
+      // Affiche complet, avec toutes les informations
+      str = this.asFull(opts)
+      break
+    case 'associate':
+      str = this.asAssociate(opts)
+      break
+    default:
+      str = this.title
+  }
+
+  if(flag & LABELLED) str = `<label>${this.htype} #${this.id} : </label> ${str}`
+
+  if(flag & DUREE) str += ` (${this.hduree})`
+
+  if(flag & FORMATED) str = DFormater(str)
+
+  if(flag & ESCAPED){
+    // Note : il exclut editable et linked
+    str = str.replace(/<(.*?)>/g, '')
+    str = str.replace(/\"/g, '\\\"')
+    str = str.replace(/[\n\r]/,' --- ')
+  } else if ( flag & EDITABLE ){
+    // Note : il exclut LINKED
+    str = this.linkedToEdit(str)
+    // console.log("str:", str)
+  } else if(flag & LINKED){
+    str = this.linked(str)
+  }
+  return str
+}
+,
+asShort(opts){
+  return `&lt;&lt;Brin: ${this.title}&gt;&gt;`
+}
+,
+asBook(opts){
+  return `« ${this.title} »`
+}
+,
+asFull(opts){
+  return `${this.libelle} -- ${this.description}`
+}
+,
+asAssociate(opts){
+  return this.asShort(opts)
+}
+,
+linked(str){
+  return `<a onclick="showBrin('${this.id}')">${str}</a>`
+}
+,
+linkedToEdit(str){
+  return this.linked(str)//pour le moment
+}
+
+,
 asDiv(options){
   return DCreate('DIV', {class: 'brin', append:[
     DCreate('SPAN', {class: 'brin-title', inner: this.title})
@@ -11,7 +90,7 @@ asDiv(options){
   , DCreate('BUTTON', {type:'button', class: 'toggle-next'})
   , DCreate('DIV', {class:'brin-associateds-detailled', style:'display:none;', append: this.divAssociateds()})
   , DCreate('DIV', {style:'clear:both;'})
-  ], attrs:{'data-id': this.id}})
+], attrs:{'data-type':'brin', 'data-id': this.id}})
 }
 ,
 

@@ -5,8 +5,6 @@
     existe. Les autres, il demande à les faire à la main.
 
 * BRINS
-  - Pouvoir mettre une balise {{brin:}} dans un document/texte quelconque
-    + traiter la balise {{brin:}} dans FAText
   - les traiter dans le livre, faire peut-être des graphiques
 
 * PROCÉDÉS

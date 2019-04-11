@@ -11,6 +11,15 @@ forEachBrin(fn){
 }
 
 ,
+/**
+  @param  {String} brin_id Identifiant du brin
+  @return {FABrin} l'instance du brin d'identifiant +brin_id
+**/
+get(brin_id){
+  return this.brins[brin_id]
+}
+
+,
 reset(){
   delete this.data
   delete this._brins

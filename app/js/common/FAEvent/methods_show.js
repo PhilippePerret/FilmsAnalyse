@@ -22,3 +22,8 @@ function showDocument(doc_id){
 function showScene(numero){
   current_analyse.locator.setRTime(FAEscene.getByNumero(numero).time)
 }
+
+// Permet de voir le brin (en fait, toute la liste)
+function showBrin(brin_id){
+  current_analyse.displayBrins(brin_id/*TODO : mettre en exergue ce brin-là*/)
+}

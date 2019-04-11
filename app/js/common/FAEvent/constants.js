@@ -28,7 +28,7 @@ const ESCAPED   = 1024
     )
 **/
 const DATA_DROPPABLE = {
-  accept: '.event, .doc, .dropped-time'
+  accept: '.event, .doc, .dropped-time, .brin'
 , tolerance: 'intersect'
 , drop: null
 , classes: {'ui-droppable-hover': 'survoled'}
