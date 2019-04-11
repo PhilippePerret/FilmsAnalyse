@@ -11,11 +11,12 @@ constructor(htest, idx, cmd){
   et demander à l'utilisateur de l'exécuter
 **/
 run(){
-  this.show()
-  this.observe()
+  this.write()
   if(this.isAutomaticStep()){
-    if(this.execAndTest()) this.markSuccess()
-    else this.markFailure()
+    // Note : on doit passer par les méthodes de HandTests pour pouvoir
+    // mémoriser le résultat
+    if(this.execAndTest()) HandTests.markSuccess()
+    else HandTests.markFailure()
   } else {
     // On donne la main à l'utilisateur
   }
@@ -24,7 +25,7 @@ end(){
   this.LI.addClass('done')
   this.htest.nextStep()
 }
-show(){
+write(){
   let liId = `${this.htest.id}-${this.index}`
   this.ULSteps.append(DCreate('LI',{id:liId, inner:this.command, class: 'htest-step running'}))
   this.LI = this.ULSteps.find(`li#${liId}`)
@@ -39,20 +40,7 @@ markFailure(){
   this.end()
 }
 
-observe(){
-  let jqo = this.htest.fwindow.jqObj
-    , btn_success = jqo.find('#btn-step-success')
-    , btn_failure = jqo.find('#btn-step-failure')
 
-  btn_success.off('click')
-  btn_failure.off('click')
-
-  btn_success.on('click',  this.markSuccess.bind(this))
-  btn_failure.on('click',  this.markFailure.bind(this))
-
-}
-
-
-get ULSteps(){return this._ulsteps||defP(this,'_ulsteps', this.htest.fwindow.jqObj.find('ul.htest-steps'))}
+get ULSteps(){return this._ulsteps||defP(this,'_ulsteps', HandTests.fwindow.jqObj.find('ul.htest-steps'))}
 
 }// /fin classe

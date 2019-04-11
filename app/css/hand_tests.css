@@ -15,7 +15,9 @@ div.htest .htest-header{
   background-color:#516468;
   color:white;
 }
-div.htest .htest-header h2 {margin-bottom:0}
+div.htest .htest-header h2 {
+  margin-bottom:0;
+}
 
 div.htest .htest-body {
   margin-top:140px;

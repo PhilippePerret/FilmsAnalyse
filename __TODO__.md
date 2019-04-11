@@ -1,21 +1,17 @@
 # SUR LE GRILL
 
 * HandTests
-  - Problème avec des steps passés (cf. le document brin) - problème de boutons appelés plusieurs fois ?
-  - Enregistrer les résultats au fur et à mesure
-    - se servir du `options` qu'on utilise pour le moment pour la position de la fenêtre
-  - Pouvoir utiliser 'verif:id_de_la_verification' pour lancer une vérification particulière à un moment particulier du test.
+  Ce qui serait bien, c'est d'écrire toutes les étapes, puis de les dégriser au fur et à mesure qu'on les passe
+  - Pouvoir utiliser 'verif:idx_de_la_verification' pour lancer une vérification particulière à un moment particulier du test.
   - Pouvoir lancer un test particulier (path rel du fichier)
-  - Pouvoir reprendre la suite de test au moment où on s'est arrêté : en fonction des réponses données, le programme devine où on doit reprendre.
+* [HANDTESTS] Pouvoir reprendre la suite de test au moment où on s'est arrêté : en fonction des réponses données, le programme devine où on doit reprendre. Les résulats précédents sont enregistrés dans `./Tests_manuels/resultats.json`.
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
-  - il doit répondre à la méthode `tempsPresence` (qui renvoie une horloge durée)
-  - il doit répondre à la méthode `pourcentagePresence`
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
-  - Quand il n'y a pas d'analyse courante à charger (pas l'option activée), et qu'on ouvre une analyse, une erreur est produite : pas de reader.
+  - Quand il n'y a pas d'analyse courante à charger (pas l'option activée), et qu'on ouvre une analyse, une erreur est produite : pas de reader => Créer toujours un reader avec l'analyse.
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative
@@ -26,10 +22,6 @@
   Si ça ne fonctionne pas, développer les liens hypertextuels normaux.
 
 * [VÉRIFICATIONS]
-
-* OUTILS
-  Peut-être faire un menu "Outils" s'il y en a suffisamment
-  - rejoindre la dernière scène définie
 
 * Développer la méthode `FAEvent.as('<format>', FLAG)` (et même *LES* méthodes as puisque tout élément possède maintenant cette méthode).
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)

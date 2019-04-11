@@ -15,18 +15,32 @@ const App = {
     }
   }
 
-, runHandTests(){
-    if(undefined === this.nbTriesRunHandTests) this.nbTriesRunHandTests = 1
+, runHandTests(options){
+    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
+    HandTests.initAndRun(options)
+  }
+  /**
+    Méthode pour rejouer les tests depuis le dernier
+  **/
+, runFromLastHandTest(){
+    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
+    F.notify('Je dois jouer depuis le dernier test.')
+    HandTests.initAndRun({from_last: true})
+  }
+
+, loadHandTests(fn_callback){
+    if(undefined === this.nbTriesLoadHandTests) this.nbTriesLoadHandTests = 1
     else {
-      ++ this.nbTriesRunHandTests
-      if (this.nbTriesRunHandTests > 10){
+      ++ this.nbTriesLoadHandTests
+      if (this.nbTriesLoadHandTests > 5){
         F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
-        return
+        return false
       }
     }
-    if('undefined' === typeof(HandTests)) return System.loadComponant('HandTests', this.runHandTests.bind(this))
-    HandTests.initAndRun()
+    if('undefined' === typeof(HandTests)) return System.loadComponant('HandTests', this.loadHandTests.bind(this, fn_callback))
+    fn_callback()
   }
+
 }// /fin App
 
 const AppLoader = {

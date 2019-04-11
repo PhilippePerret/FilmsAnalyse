@@ -23,7 +23,8 @@ const CURRENT_THING_MENUS = [
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
-  'display-protocole', 'option-locked', 'new-version', 'display-brins'
+  'display-protocole', 'option-locked', 'new-version', 'display-brins',
+  'goto-last-scene'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -531,6 +532,19 @@ const DATA_MENUS = [
           , id:'test-manuel-app'
           , accelerator: 'CmdOrCtrl+Alt+Shift+T'
           , click: () => {execJS('App.runHandTests()')}
+        }
+      , {
+            label: 'Rejoindre le dernier test manuel exécuté'
+          , enabled: true // TODO: plus tard, seulement en développement
+          , id: 'goto-last-test-manuel'
+          , click: () => {execJS('App.runFromLastHandTest()')}
+        }
+      , {type: 'separator'}
+      , {
+            label: 'Rejoindre la dernière scène définie'
+          , enabled: false
+          , id: 'goto-last-scene'
+          , click: () => {execJsOnCurrent('goToLastScene')}
         }
       ]
   }

@@ -1,0 +1,16 @@
+{
+  "date": 1554994126197,
+  "successCount": 4,
+  "failureCount": 0,
+  "pendingCount": 0,
+  "tests": {
+    "./analyse.yaml": {
+      "create_from_scratch": {
+        "0": 1,
+        "1": 1,
+        "2": 1,
+        "3": 1
+      }
+    }
+  }
+}

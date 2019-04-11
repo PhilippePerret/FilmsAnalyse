@@ -135,6 +135,15 @@ get nextScene(){
   if(!this.currentScene) return FAEscene.getByNumero(1)
   else return FAEscene.getByNumero(this.currentScene.numero + 1)
 }
+
+/**
+  Méthode appelée depuis le menu 'Outils' pour rejoindre la dernière
+  scène définie, (quand on est en mode collecte)
+**/
+goToLastScene(){
+  this.locator.setRTime(FAEscene.lastScene.time)
+}
+
 get PFA(){
   if(undefined === this._PFA){
     SttNode   = require('./js/common/PFA/SttNode.js')
