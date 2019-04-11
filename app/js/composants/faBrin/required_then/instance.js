@@ -63,4 +63,34 @@ times:{
   get(){return this.data.times || []}
 , set(v){this.data.times = v}
 }
+,
+/**
+  Retourne la liste des scènes du brin.
+  Cette méthode est indispensable à l'instance FAStats pour les calculs de
+  statistiques.
+  Mais ce comptage des scènes, pour les brins, est assez compliqué, puisqu'il
+  y a les scènes auxquelles il appartient par la scène elle-même, mais il y a
+  aussi les scènes des éléments associés, qui ne sont pas des event.scene.
+  Par convention, on ne tient pas compte des documents, qui ne peuvent pas
+  avoir de durée à proprement parler.
+
+  @return {Array of FAEscene} Liste des instances scène du brin
+**/
+scenes:{
+  get(){
+    if(undefined === this._scenes){
+      var arr = []
+      for(var time of this.times){
+        arr.push(FAEscene.at(time))
+      }
+      for(var ev_id of this.events){
+        arr.push(this.a.ids[ev_id].scene)
+      }
+      this._scenes = arr
+    }
+    return this._scenes
+  }
+}
+,
+stats:{get(){return this._stats||defP(this,'_stats',new FAStats(this))}}
 })

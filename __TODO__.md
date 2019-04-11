@@ -3,12 +3,13 @@
 * Pour les tests manuels : faire les choses semi-automatiquement :
   - avoir des phrases qui sont compréhensibles par le programme et qu'il
     existe. Les autres, il demande à les faire à la main.
+  -> Faire un menu "Lancer les tests manuels"
 
-* BRINS
-  - les traiter dans le livre, faire peut-être des graphiques
-  - les traiter dans les statistiques (ou plutôt : traiter les statistiques dans le listing, en tenant compte des scènes)
-
-* PROCÉDÉS
+* Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
+  - il doit répondre à la méthode `tempsPresence` (qui renvoie une horloge durée)
+  - il doit répondre à la méthode `pourcentagePresence`
+  - mais aussi : `scenesCount`
+  -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
 
@@ -42,6 +43,7 @@
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
+  - Ajouter une timeline aux brins, pour voir où se situent les scènes/events
   - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
     - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
       + conduit à la référence `12` (disons une scène dans le scénier final)

@@ -95,12 +95,13 @@ load(){
   charge.
  */
 , onReady(){
-    if(NONE === typeof FAProcede) return this.loadProcede(this.onReady.bind(this))
-    if(NONE === typeof FABrin) return this.loadBrin(this.onReady.bind(this))
-    if(NONE === typeof FAReader) return this.loadReader(this.onReady.bind(this))
-    if(NONE === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
+    if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
+    if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
+    if(NONE === typeof FAWriter)    return this.loadWriter(this.onReady.bind(this))
     if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
-    if(NONE === typeof FAStater) return this.loadStater(this.onReady.bind(this))
+    if(NONE === typeof FAStater)    return this.loadStater(this.onReady.bind(this))
+    if(NONE === typeof FAStats)     return this.loadStats(this.onReady.bind(this))
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new FAReader(this)
@@ -160,6 +161,10 @@ loadTimeline(fn_callback){
 ,
 loadStater(fn_callback){
   return System.loadComponant('faStater', fn_callback)
+}
+,
+loadStats(fn_callback){
+  return System.loadComponant('faStats', fn_callback)
 }
 ,
 loadWriter(fn_callback){

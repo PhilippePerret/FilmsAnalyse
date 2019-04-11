@@ -87,12 +87,23 @@ asDiv(options){
       DCreate('SPAN', {class: 'brin-title', inner: `Brin #${this.numero}. ${this.title}`})
     , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
   ]
+
+  let infosMasked = [
+    DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()})
+    // La partie statistique du brin
+  , DCreate('DIV', {class: 'brin-statistiques', append:[
+      DCreate('H4', {inner: 'Présence'})
+    , DCreate('LABEL', {inner: 'Durée du brin dans le film : '})
+    , DCreate('SPAN', {class: 'brin-temps-presence', inner: `${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
+    ]})
+
+  ]
   if(options.forBook === true){
-    divs.push(DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()}))
+    divs.push(DCreate('DIV', {class:'brin-infos-masked', append: infosMasked}))
   } else {
     divs.push(DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`}))
     divs.push(DCreate('BUTTON', {type:'button', class: 'toggle-next'}))
-    divs.push(DCreate('DIV', {class:'brin-associateds-detailled', style:'display:none;', append: this.divAssociateds()}))
+    divs.push(DCreate('DIV', {class:'brin-infos-masked', style:'display:none;', append: infosMasked}))
   }
   divs.push(DCreate('DIV', {style:'clear:both;'}))
 
