@@ -118,6 +118,8 @@ a:{get(){return current_analyse}}
   Noter que l'enregistrement des brins est automatique. Dès qu'une modification
   a été opérée, une boucle se met en route pour sauver les données 4 secondes
   plus tard (histoire de ne pas sauver à chaque ajout)
+
+  Lorsqu'il y a modification, on actualise aussi la fenêtre d'affichage.
 **/
 modified:{
   get(){return this._modified || false}
@@ -128,6 +130,7 @@ modified:{
       this.analyseWasNotModified = !this.a._modified
       this.a.modified = true
       this.timerSave  = setTimeout(this.save.bind(this), 3000)
+      this.updateListing()
     }
   }
 }

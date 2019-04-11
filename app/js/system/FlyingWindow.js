@@ -179,8 +179,15 @@ hide(){
   this.visible = false
   if ('function' === typeof this.owner.onHide) this.owner.onHide()
 }
+
+/**
+  Actualisation demandée de la fenêtre
+
+  On récupère sa position actuelle pour pouvoir la remettre
+**/
 update(){
   if(!this.built) return
+  this.position = this.jqObj.position()
   this.remove()
 }
 // Pour détruire la fenêtre
@@ -210,12 +217,16 @@ bringToBack(){
 
 build(){
   log.info('-> FWindow.build()')
+  // Si c'est une actualisation de la fenêtre, on a mémorisé sa
+  // position dans `this.position`
+  if(undefined === this.position) this.position = {}
+  // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate('DIV', {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
-  , style: `top:${this._y||0}px;left:${this._x||0}px;`
+  , style: `top:${this.position.top||this._y||0}px;left:${this.position.left||this._x||0}px;`
   })
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,

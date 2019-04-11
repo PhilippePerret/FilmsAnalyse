@@ -21,19 +21,19 @@ divAssociateds(){
   for(id of this.documents){
     ass = FADocument.get(id)
     divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
-      DCreate('SPAN', {class:'document-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
     ]}))
   }
   for(id of this.events){
     ass = FABrin.a.ids[id]
     divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
-      DCreate('SPAN', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
     ]}))
   }
   for(id of this.times){
     ass = new OTime(id)
     divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
-      DCreate('SPAN', {class:'time', inner: `<a onclick="showTime(${id})">Temps : ${ass.horloge_simple}</a>`})
+      DCreate('LI', {class:'time', inner: `<a onclick="showTime(${id})">Temps : ${ass.horloge_simple}</a>`})
     ]}))
   }
   return divs

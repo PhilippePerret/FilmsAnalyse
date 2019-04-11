@@ -3,13 +3,10 @@
 * Pour les tests manuels : faire les choses semi-automatiquement :
   - avoir des phrases qui sont compréhensibles par le programme et qu'il
     existe. Les autres, il demande à les faire à la main.
-    
+
 * BRINS
-  - [BUG] à l'association d'un brin et d'un document (en glissant le document sur le brin)
-  - [BUG] Pouvoir associer une scène à un brin (il ne se passe rien pour le moment)
   - Pouvoir mettre une balise {{brin:}} dans un document/texte quelconque
     + traiter la balise {{brin:}} dans FAText
-  - Actualiser la fenêtre lorsque l'on glisse un event/time/document
   - les traiter dans le livre, faire peut-être des graphiques
 
 * PROCÉDÉS

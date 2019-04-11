@@ -358,7 +358,7 @@ editEvent(event_id){
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
 editDocument(doc_id){
-  return FAWriter.opendDoc(doc_id)
+  return FAWriter.openDoc(doc_id)
 }
 
 /**
