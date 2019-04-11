@@ -8,9 +8,6 @@
   - les traiter dans le livre, faire peut-être des graphiques
 
 * PROCÉDÉS
-  - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
-  - Faire la méthode `FAProcede#scene` qui retourne le numéro de la scène du procédé, pour les ajouter dans le fil du texte.
-    Note : généraliser cette méthode en l'implémentant dans FAEvent.
 
 * [BUGS]
 
@@ -28,7 +25,7 @@
   Peut-être faire un menu "Outils" s'il y en a suffisamment
   - rejoindre la dernière scène définie
 
-* Développer la méthode `FAEvent.as('<format>', FLAG)`.
+* Développer la méthode `FAEvent.as('<format>', FLAG)` (et même *LES* méthodes as puisque tout élément possède maintenant cette méthode).
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
 
 * PUBLICATION

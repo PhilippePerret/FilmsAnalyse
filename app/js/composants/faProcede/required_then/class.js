@@ -9,6 +9,45 @@ Object.assign(FAProcede,{
 // ---------------------------------------------------------------------
 //  CLASS
 
+/**
+  Retourne le procédé qui a pour identifiant +proc_id+, quel que soit
+  sa catégorie et sa sous-catégorie. L'idée de détacher le procédé de
+  ses catégories et sous-catégories tient au fait qu'un procédé va pouvoir
+  "bouger" dans les catégories au fil du temps et de l'utilisation du
+  logiciel.
+
+  [1] Pour obtenir rapidement ce procédé sans passer par les catégories et
+      sous-catégories, on fait une première passe qui crée une table avec en
+      clé l'id du procédé et en valeur sa catégorie, sa sous-catégorie et son
+      id.
+  @return {FAProcede} Le procédé d'identifiant +proc_id+
+**/
+get(proc_id){
+  if(undefined === this.allProcs) this.getAllProcsTruplets()
+  if(undefined === this.procedes) this.procedes = {}
+  if(undefined === this.procedes[proc_id] && this.allProcsTruplets[proc_id]){
+    this.procedes[proc_id] = new FAProcede(...this.allProcsTruplets[proc_id])
+  }
+  return this.procedes[proc_id]
+}
+,
+// Lire la note [1] ci-dessus
+// Attention : cette méthode ne crée pas d'instances FAProcede, elle ne
+// fait que construire la table allProcsTruplets contenant l'id de la
+// catégorie, l'id de la sous-catégorie et l'id du procédé.
+getAllProcsTruplets(){
+  var d = {}
+  for (var cate_id in this.data){
+    for ( var scate_id in this.data[cate_id].items ){
+      for ( var proc_id in this.data[cate_id].items[scate_id].items ){
+        d[proc_id] = [cate_id, scate_id, proc_id]
+      }
+    }
+  }
+  this.allProcsTruplets = d
+  d = null
+}
+,
 init(){
   this.iofile.load({after:this.afterLoading.bind(this)})
   this.inited = true
