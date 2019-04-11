@@ -1,8 +1,16 @@
 # SUR LE GRILL
 
+* Pour les tests manuels : faire les choses semi-automatiquement :
+  - avoir des phrases qui sont compréhensibles par le programme et qu'il
+    existe. Les autres, il demande à les faire à la main.
+    
 * BRINS
+  - [BUG] à l'association d'un brin et d'un document (en glissant le document sur le brin)
+  - [BUG] Pouvoir associer une scène à un brin (il ne se passe rien pour le moment)
+  - Pouvoir mettre une balise {{brin:}} dans un document/texte quelconque
+    + traiter la balise {{brin:}} dans FAText
+  - Actualiser la fenêtre lorsque l'on glisse un event/time/document
   - les traiter dans le livre, faire peut-être des graphiques
-  - enregistrer leurs données dans un fichier json (leur events seulement puisque leur définition se trouve dans le fichier dbrins.yaml)
 
 * PROCÉDÉS
   - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
@@ -61,6 +69,8 @@
 
 # EN COURS DE DÉVELOPPEMENT
 
+* faire les styles associés aux liens utilisant ces méthodes (`lktime`, `lkscene`, `lkevent`, `lkdoc`)
+
 * Mettre en place les tests manuels
   Ce sont des fichiers YAML, on doit pouvoir les afficher à l'écran et enregistrer les résultats à partir de case à cocher.
 
@@ -76,9 +86,6 @@
 
 * Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
 
-* Faire les méthodes `showTime`, `showEvent`, `showScene(<numero>)`, `showDocument(<doc id>)` etc. qui doit donner des indications sur les éléments.
-  - voir comment on se sert de javascript dans les eBooks (ça ne semble pas possible)
-  - faire les styles associés aux liens utilisant ces méthodes (`lktime`, `lkscene`, `lkevent`, etc.)
 
 * Quand il y a un trop grand nombre de rapports, détruire les plus anciens
 

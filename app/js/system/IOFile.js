@@ -87,6 +87,13 @@ constructor(p_or_owner){
  * en bon fichier tout en faisant un backup de l'original.
  */
 save(options){
+  log.info('-> IOFile#save')
+  if(this.saving){
+    log.info('<- IOFile#save [retour immédiat : en cours de sauvegarde]')
+    return false
+  } else {
+    this.saving = true
+  }
   if(undefined===options)options={}
   UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
   this.options = options
@@ -109,17 +116,23 @@ save(options){
       console.error(e)
       F.error(e)
     }
+    log.info('<- IOFile#save (retour false après erreur)')
     return false
   }
+  log.info('<- IOFile#save')
 }
 
 afterTempSaved(err){
+  log.info('-> IOFile#afterTempSaved')
   try {
     if(err) throw(err)
     this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
     this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
-    if (this.isBackupable) this.backup()
-    else this.endSave()
+    if (this.isBackupable){
+      this.backup()
+    } else {
+      this.endSave()
+    }
   } catch (e) {
     this.endSavingInAnyCase()
     console.error(e)
@@ -128,11 +141,17 @@ afterTempSaved(err){
   }
 }
 endSave(err){
+  log.info('-> IOFile#endSave')
   try {
     if (err){
       this.endSavingInAnyCase()
       return F.error(err)
     }
+    // console.log({
+    //   tempPath: this.tempPath, path: this.path, op: 'rename'
+    // })
+    this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
+    this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
     fs.rename(this.tempPath, this.path, (err)=>{
       if (err) F.error(err)
       else {
@@ -214,6 +233,9 @@ endLoad(success){
 backup(){
   var my = this
   try {
+    // console.log({
+    //   op: 'rename dans backup()', src: my.path, dst: my.backupPath
+    // })
     fs.rename(my.path, my.backupPath, my.endSave.bind(my))
   } catch (e) {F.error(e)}
   my = null

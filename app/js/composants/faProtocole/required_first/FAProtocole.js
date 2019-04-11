@@ -22,7 +22,6 @@ constructor(analyse){
   Méthode appelée par le checkbox quand on le clique
 **/
 onCheckStep(e){
-  console.log(e.target.value)
   this.data[e.target.value] = true
   this.modified = true
 }

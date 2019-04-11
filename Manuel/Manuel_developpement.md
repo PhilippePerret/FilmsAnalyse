@@ -18,6 +18,7 @@
 * [Horloges et durées](#temporal_fields)
 * [Aspect visuel](#visual_aspect)
   * [Boutons de fermeture](#boutons_close)
+  * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
   * [Sauvegarde protégée des documents](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
@@ -349,6 +350,59 @@ Rien d'autre à faire pour qu'il apparaisse comme un bouton de fermeture et qu'i
 Si un traitement doit être opéré *avant* la fermeture de la boite, on peut implémenter la méthode `beforeHide` qui sera appelée avant. Si cette méthode renvoie `false`, le processus de fermeture est interrompue. **La méthode doit renvoyer `true` pour que la fermeture est bien lieu.**
 
 Si une méthode `cancel` existe dans le propriétaire du bouton, c'est cette méthode qui sera utilisée plutôt que `hide` dans FWindow suivant de `onHide` dans le propriétaire.
+
+### Boutons expand/collapse {#boutons_toggle_next}
+
+On appelle les boutons qui permette d'ouvrir et de refermer un container (comme une liste par exemple) des boutons « toggle next » (« next » parce qu'ils s'appliquent par défaut au nœud suivant).
+
+On implémente ces boutons simplement en inscrivant dans le code :
+
+```html
+
+<button class="toggle-next"></button>
+<ul id="le-container-suivant" style="display:none;">
+  <li>...</li>
+</ul>
+
+```
+
+… puis en appelant la méthode `BtnToggleNext.observe(cont)` où `cont` est le set jQuery qui contient le bouton en question.
+
+Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu'il ne soit pas rogné. Par exemple :
+
+```html
+
+<button class="toggle-next"></button>
+<ul id="le-container-suivant" style="display:none;">
+  <li>...</li>
+</ul>
+<div style="clear:both"></div>
+
+```
+
+Si l'on désire que le container soit ouvert, il suffit de forcer l'attribut `data-state` du bouton en lui donnant la valeur `opened` :
+
+```html
+
+<button class="toggle-next" data-state="opened"></button>
+<ul id="le-container-suivant"><!-- sera ouvert -->
+  <li>...</li>
+</ul>
+
+```
+
+On peut viser un autre nœud que le nœud suivant grâce à l'attribut `container` du bouton :
+
+```html
+
+<button class="toggle-next" container="#monDiv"></button>
+<!-- d'autres éléments ici -->
+<ol id="monListing">
+  <li>...</li>
+</ol>
+
+```
+
 
 ## Documents de l'analyse {#documents_analyse}
 

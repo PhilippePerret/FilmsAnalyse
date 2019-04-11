@@ -35,3 +35,10 @@
 #fwindow-brins button {
   font-size:0.87em;
 }
+
+#fwindow-brins div.brin-associateds-detailled,
+#fwindow-brins div.brin-associateds-detailled *
+{
+  font-size:13pt;
+  line-height:16pt;
+}

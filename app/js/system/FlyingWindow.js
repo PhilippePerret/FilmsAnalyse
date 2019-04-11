@@ -161,12 +161,14 @@ toggle(){
   this[this.visible?'hide':'show']()
 }
 show(){
+  log.info(`-> FWindow.show() [built:${this.built}, visible:${this.visible}]`)
   if(!this.built) this.build().observe()
   this.jqObj.show()
+  this.visible = true
   this.constructor.setCurrent(this)
   FWindow.checkOverlaps(this)
   if ('function' === typeof this.owner.onShow) this.owner.onShow()
-  this.visible = true
+  log.info(`<- FWindow.show() [built:${this.built}, visible:${this.visible}]`)
 }
 hide(){
   if('function' === typeof this.owner.beforeHide){
@@ -174,8 +176,8 @@ hide(){
   }
   this.constructor.unsetCurrent(this)
   this.jqObj.hide()
-  if ('function' === typeof this.owner.onHide) this.owner.onHide()
   this.visible = false
+  if ('function' === typeof this.owner.onHide) this.owner.onHide()
 }
 update(){
   if(!this.built) return
@@ -183,7 +185,17 @@ update(){
 }
 // Pour détruire la fenêtre
 remove(){
+  log.info('-> FWindow.remove()')
+  this.constructor.unsetCurrent(this)
   this.jqObj.remove()
+  this.reset()
+  log.info('<- FWindow.remove()')
+}
+// Pour réinitialiser
+reset(){
+  this.built    = false
+  this.visible  = false
+  delete this._jqObj
 }
 // Pour mettre la Flying window en premier plan
 // Ne pas appeler ces méthodes directement, appeler la méthode
@@ -197,6 +209,7 @@ bringToBack(){
 }
 
 build(){
+  log.info('-> FWindow.build()')
   // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate('DIV', {
     id: this.domId
@@ -213,6 +226,7 @@ build(){
   if('function' === typeof this.owner.observe) this.owner.observe()
 
   this.built = true
+  log.info('<- FWindow.build()')
   return this // chainage
 }
 
