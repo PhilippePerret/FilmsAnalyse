@@ -24,7 +24,6 @@ const App = {
   **/
 , runFromLastHandTest(){
     if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
-    F.notify('Je dois jouer depuis le dernier test.')
     HandTests.initAndRun({from_last: true})
   }
 

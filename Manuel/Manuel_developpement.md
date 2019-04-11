@@ -23,6 +23,7 @@
   * [Sauvegarde protégée des documents](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
+* [Test de la l'application](#test_application)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -520,3 +521,22 @@ Pour assembler l'analyse, l'application se sert principalement de la classe `FAB
 ## Script d'assemblage {#script_assemblage_analyse}
 
 Le « script d'assemblage » définit la façon d'assembler les différents composants de l'analyse pour composer le document final.
+
+---------------------------------------------------------------------
+
+## Test de la l'application {#test_application}
+
+Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que…).
+
+Ces tests manuels sont définis dans le dossier `./Tests_manuels/`. On peut s'inspirer des tests présents pour en créer d'autres.
+
+Un test manuel, au minimum, requiert :
+
+* Un `id`, identifiant unique dans le fichier.
+* Un `libelle` pour afficher ce qu'il fait.
+* Un `synopsis` qui est une liste d'actions (Array),
+* Une liste de `verifications` à faire pour valider l'essai.
+
+Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `verifications`.
+
+### Vérification insérée dans un synopsis

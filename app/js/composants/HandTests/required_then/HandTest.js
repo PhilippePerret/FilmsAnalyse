@@ -17,6 +17,7 @@ run(){
     HandTests.writeLibelle(this.libelle)
     HandTests.writeDescription(this.description)
     HandTests.writeNote(this.note)
+    this.writeAllSteps()
     this.index_step = -1
     this.nextStep()
   }
@@ -45,6 +46,17 @@ endAll(){
   HandTests.resumeTests(this.options)
 }
 
+/**
+  On écrit toutes les étapes dans la fenêtre, en grisé
+**/
+writeAllSteps(){
+  var liId
+  let ulsteps = HandTests.fwindow.jqObj.find('ul.htest-steps')
+  for(var istep in this.all_steps){
+    liId = `${this.id}-${istep}`
+    ulsteps.append(DCreate('LI',{id:liId, inner:this.all_steps[istep], class: 'htest-step sleeping'}))
+  }
+}
 
 testIsValid(){
   try {

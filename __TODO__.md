@@ -1,10 +1,11 @@
 # SUR LE GRILL
 
-* HandTests
-  Ce qui serait bien, c'est d'écrire toutes les étapes, puis de les dégriser au fur et à mesure qu'on les passe
+* HANDTESTS
+  [BUG] On commence directement à la troisième étape du premier test. Pourquoi ?
+  [BUG] On ne peut même pas atteindre le bout qu'on passe déjà au test d'après. Pourquoi ?
   - Pouvoir utiliser 'verif:idx_de_la_verification' pour lancer une vérification particulière à un moment particulier du test.
-  - Pouvoir lancer un test particulier (path rel du fichier)
-* [HANDTESTS] Pouvoir reprendre la suite de test au moment où on s'est arrêté : en fonction des réponses données, le programme devine où on doit reprendre. Les résulats précédents sont enregistrés dans `./Tests_manuels/resultats.json`.
+  - Pouvoir lancer un test particulier (relpath du fichier, et id du test)
+    Note : c'est important pour pouvoir faire rapidement des tests.
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`

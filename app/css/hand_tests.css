@@ -24,21 +24,28 @@ div.htest .htest-body {
   padding: 1em 2em 1em;
   overflow:auto;
 }
+
+div.htest .htest-body ul.htest-steps li.htest-step.sleeping {
+  opacity:0.25;
+  font-style:italic;
+  font-weight:normal;
+}
 div.htest .htest-body ul.htest-steps li.htest-step.running {
+  opacity:1;
   font-weight:bold;
 }
 div.htest .htest-body ul.htest-steps li.htest-step.failure {
+  opacity:1;
   font-weight:bold;
   color:red;
 }
 div.htest .htest-body ul.htest-steps li.htest-step.success {
+  opacity:1;
   font-weight:bold;
   color:green;
 }
 div.htest .htest-body ul.htest-steps li.htest-step.done {
-  font-weight:normal;
-  font-style:italic;
-  opacity:0.6;
+  opacity:1;
 }
 
 div.htest .htest-body .htest-path {

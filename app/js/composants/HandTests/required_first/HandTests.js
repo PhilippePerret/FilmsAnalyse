@@ -8,27 +8,37 @@ const HandTests = {
 , initAndRun(options){
     if(undefined === options) options = {}
     log.info('-> HandTests::initAndRun')
-    this.init()
+    this.init() // sauf le résultat
     if(options.from_last){
-      F.notify("Je ne sais pas encore jouer depuis le dernier test.")
+      // Pour rejoindre le dernier test effectué. Fonctionnement : on
+      // passe en revue tous les tests, jusqu'à trouver celui qui n'est
+      // pas complet.
+      this.mode_last = true
+      this.loadResultats()
+      console.log("Mode last. Résultats:", this.resultats)
     } else {
-      this.run()
+      this.mode_last = false
+      this.initResultats()
     }
+    this.run()
   }
 // Initialisation des tests manuels
 , init(){
     log.info('-> HandTests::init')
     log.info("*** Initialisation des tests manuels (HandTests)")
     this.index_current_htestfile = -1
-    // On prépare le résultat final
+    delete this._fwindow
+    log.info('<- HandTests::init')
+  }
+, initResultats(){
+    // On prépare le résultat final. noter qu'on ne le fait pas
+    // si l'on doit rejoindre le dernier test.
     this.resultats = {
       date: new Date().getTime(),
       successCount: 0, failureCount: 0, pendingCount: 0,
       tests:{}
     }
-    delete this._fwindow
-    log.info('<- HandTests::init')
-}
+  }
 , run(){
     log.info('-> HandTests::run')
     this.fwindow.show()
@@ -71,18 +81,20 @@ const HandTests = {
     }
     body.html(`<pre style="font-family:monospace;font-weight:bold;font-size:1.2em;color:${color}">${msg}</pre>`)
     this.saveResultats()
+    body.append(DCreate('DIV',{class:'small italic', inner: "Résultats enregistrés dans ./Tests_manuels/resultats.json."}))
   }
 
+
 , saveResultats(){
-    this.path   = path.join(this.folder, 'resultats.json')
-    this.iofile = new IOFile(this)
     this.code   = this.resultats
     this.iofile.save({after: this.endSaveResultats.bind(this)})
   }
 , endSaveResultats(){
-    F.notify("Résultats enregistrés dans ./Tests_manuels/resultats.json.")
   }
 
+, loadResultats(){
+    this.resultats = JSON.parse(fs.readFileSync(this.path,'utf8'))
+  }
 // ---------------------------------------------------------------------
 //  MÉTHODES D'HELPER
 
@@ -150,17 +162,20 @@ const HandTests = {
 }
 
 , markSuccess(){
+    if (this.mode_last) return
     this.resultats.successCount ++
     this.consigneResCurStep(1)
     this.currentHtestFile.currentHTest.currentStep.markSuccess()
   }
 , markFailure(){
+    if (this.mode_last) return
     this.resultats.failureCount ++
     this.consigneResCurStep(0)
     this.currentHtestFile.currentHTest.currentStep.markFailure()
   }
   // Quand on n'utilise ni le bouton OK ni le bouton ERROR
 , markPending(){
+    if (this.mode_last) return
     this.resultats.pendingCount ++
     this.consigneResCurStep(2)
   }
@@ -184,7 +199,13 @@ const HandTests = {
 
 } // /fin de HandTests
 Object.defineProperties(HandTests,{
-HTestFiles:{
+  path:{
+    get(){return path.join(this.folder, 'resultats.json')}
+  }
+, iofile:{
+    get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}
+  }
+, HTestFiles:{
   get(){
     if(undefined === this._HTestFiles){
       this._HTestFiles = glob.sync(`${this.folder}/**/*.yaml`)
