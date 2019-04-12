@@ -7,6 +7,10 @@
     synopsis:
       - lancer l'app
       - /ouvrir l'analyse 'vierge'/
+      - check:
+        - aucun event
+        - aucun document
+        - aucun brin
       - se placer sur un temps
       - activer le menu « Vidéo > Temps courant comme début du film »
     checks:

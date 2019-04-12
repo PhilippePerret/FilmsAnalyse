@@ -14,7 +14,37 @@ Object.assign(HandTestStep.prototype,{
     @return {Boolean} True si c'est un succès, False otherwise.
   **/
 , execTheCheck(){
-    var cmd = "" + this.command['check'].join(RC)
+    var cmd, pas, res
+
+    // D'abord, il faut voir si ce ne sont pas des automatic-steps
+
+    // POURSUIVRE CI-DESSOUS POUR POUVOIR SUPPRIMER LES COMMANDES QUI SONT
+    // DES ÉTAPES AUTOMATIQUES POUR NE GARDER QUE CELLES QUI S'INTERPRETENT
+    // LES REMPLACER SIMPLEMENT PAR DES ESPACES
+
+    let nb_cmds = this.command['check'].length
+    for(var i = 0; i < nb_cmds ; ++i){
+      cmd = this.command['check'][i]
+      pas = DATA_AUTOMATIC_STEPS[cmd]
+      if(undefined === pas) continue
+      try {
+        res = eval(pas.exec)
+        if(pas.expected != '---nothing---'){
+          res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+        }
+        this.command['check'][i] = '' // pour la retirer
+      } catch (e) {
+        console.error(e)
+        F.error(e)
+        return false // on s'arrête là
+      }
+    }
+
+    cmd = "" + this.command['check'].join(RC).trim()
+
+    // Il ne reste peut-être plus aucun check à évaluer
+    if (cmd == '') return true
+
     // Il faut analyse la phrase de check, qui peut être sous la forme :
     //  {{event:12}} existe
     //  {{event:24}} apparait dans le READER

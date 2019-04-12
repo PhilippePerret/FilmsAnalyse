@@ -1,7 +1,7 @@
 'use strict'
 
 // Pour définir le début du film
-let setFilmStartTimeAt = function(){
+const setFilmStartTimeAt = function(){
 
   // On prend le temps actuel pour pouvoir corriger les events et autres temps
   let initStartTime = this.filmStartTime ? parseInt(this.filmStartTime,10) : 0
@@ -14,6 +14,9 @@ let setFilmStartTimeAt = function(){
 
   if(diff === 0) return F.notify(T('same-start-time'))
 
+  console.log({
+    'FAEvent.count':FAEvent.count, 'FABrin.count': FABrin.count, 'FADocument.count': FADocument.count
+  })
   if(FAEvent.count || FABrin.count || FADocument.count){
     if(!confirm(T('confirm-on-change-start-time'))) return
     current_analyse.forEachEvent(ev => ev.time += diff)

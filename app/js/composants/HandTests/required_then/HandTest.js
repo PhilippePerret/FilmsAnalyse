@@ -69,7 +69,8 @@ writeAllSteps(){
     if('object' === typeof command && Object.keys(command)[0] == 'check'){
       // <= une liste
       // => c'est une liste de checks à faire
-      command = `[${command['check'].length} CHECKS À FAIRE]`
+      var nbChecks = command['check'].length
+      command = `[${nbChecks} VÉFICATION${nbChecks > 1?'S':''}]`
     } else if (command.match(/^\/(.*)\/$/)){
       // <= une expression régulière
       // => la raboter pour supprimer les '/.../'

@@ -82,7 +82,16 @@ Object.assign(HandTestStep.prototype,{
 })
 
 const DATA_AUTOMATIC_STEPS = {
-  "ouvrir l'app": [
+  "aucun event": [
+    {exec: 'FAEvent.count', expected: 0, error: "L'analyse ne devrait compter aucun event…"}
+  ]
+, "aucun document":[
+    {exec: 'FADocument.count', expected:0, error: "L'analyse ne devrait posséder aucun document…"}
+  ]
+, "aucun brin":[
+    {exec: 'FABrin.count', expected: 0, error: "L'analyse ne devrait comporter aucun brin…"}
+  ]
+, "ouvrir l'app": [
     {exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
   ]
 , "ouvrir l'analyse '(?<relpath>[\/a-zA-Z0-9_\-]+)'":[
