@@ -34,15 +34,25 @@ get otimePresence(){
   On calcule le temps de présence en fonction des scènes de l'élément
 **/
 calcDuree(){
-  if('undefined' !== typeof this.owner.scene){
+  if(undefined !== this.owner.scene){
     return this.owner.scene.duree
-  } else if ('undefined' !== typeof this.owner.scenes){
+  } else if (undefined !== this.owner.scenes){
     var duree = 0
-    for(var scene of this.owner.scenes) duree += scene.duree
+    for(var scene of this.owner.scenes){
+      if(scene && 'number' === typeof(scene.duree)){
+        duree += scene.duree
+      } else {
+        // Une erreur qui ne devrait pas arriver
+        let err_msg = `Dans FAStats#calcDuree, scene est null ou scene.duree n'est pas un nombre.`
+        log.error(err_msg)
+        console.error(err_msg)
+        F.notify('ERREUR DANS calcDuree. Consulter le log.')
+      }
+    }
     return duree
   } else {
     let msg_err = `Impossible de trouver la durée d'un élément de type "${this.owner.type || this.owner.constructor.name}". Il devrait posséder au moins une propriété 'scene' (renvoyant l'instance FAEscene) ou 'scenes' (renvoyant la liste Array des instances FAEscene).`
-    log.error(msg_err/*, backtrace*/)
+    log.error(msg_err/*, backtrace wanted */)
     F.error(msg_err)
     return 0
   }

@@ -119,6 +119,7 @@ load(){
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()
+    this.runTimerSave()
     log.info('<- <<FAanalyse>>#onReady')
   }
 
@@ -177,9 +178,6 @@ loadProtocole(fn_callback){
   return System.loadComponant('faProtocole', fn_callback)
 }
 ,
-// static loadReader(fn_callback){
-//   return System.loadComponant('faReader', fn_callback)
-// }
 loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)
 }

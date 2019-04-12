@@ -1,9 +1,6 @@
 # SUR LE GRILL
 
 * HANDTESTS
-  [BUG] On commence directement à la troisième étape du premier test. Pourquoi ?
-  [BUG] On ne peut même pas atteindre le bout qu'on passe déjà au test d'après. Pourquoi ?
-  - Pouvoir utiliser 'verif:idx_de_la_verification' pour lancer une vérification particulière à un moment particulier du test.
   - Pouvoir lancer un test particulier (relpath du fichier, et id du test)
     Note : c'est important pour pouvoir faire rapidement des tests.
 
@@ -12,9 +9,10 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
-  - Quand il n'y a pas d'analyse courante à charger (pas l'option activée), et qu'on ouvre une analyse, une erreur est produite : pas de reader => Créer toujours un reader avec l'analyse.
+  Le menu des décors ne s'actualise pas dans les formulaires déjà ouverts.
 
 * [AMÉLIORATIONS]
+  - Mettre en place l'enregistrement automatique
   - construction du graphique de la dynamique narrative
     liste des OOC
 
@@ -75,6 +73,9 @@
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 
 # TODO LIST
+
+* Une procédure de fix de l'analyse, lorsqu'elle comporte de graves erreurs. Ça peut arriver par exemple lorsqu'on définit des events et des brins associés, et qu'on oublie d'enregistrer les events de l'analyse.
+  Ça ne doit plus se produire avec l'enregistrement automatique de l'analyse
 
 * Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
 

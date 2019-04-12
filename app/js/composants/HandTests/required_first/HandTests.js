@@ -25,8 +25,12 @@ const HandTests = {
 , init(){
     log.info('-> HandTests::init')
     log.info("*** Initialisation des tests manuels (HandTests)")
+    if(this._fwindow){
+      this.fwindow.remove()
+      delete this._fwindow
+    }
+    this.fwindow.show()
     this.index_current_htestfile = -1
-    delete this._fwindow
     log.info('<- HandTests::init')
   }
 , initResultats(){
@@ -40,7 +44,6 @@ const HandTests = {
   }
 , run(){
     log.info('-> HandTests::run')
-    this.fwindow.show()
     this.nextHTestFile()
     log.info('<- HandTests::run')
   }
@@ -100,7 +103,7 @@ const HandTests = {
 // ---------------------------------------------------------------------
 //  MÉTHODES D'HELPER
 
-, writePath(rpath){ this.writeFoo('path', rpath) }
+, writePath(rpath){ this.fwindow.jqObj.find('input#htest-path').val(rpath) }
 , writeLibelle(lib){ this.writeFoo('libelle', lib) }
 , writeDescription(desc){ this.writeFoo('description', desc) }
 , writeNote(note){ this.writeFoo('note', note) }
@@ -119,9 +122,10 @@ const HandTests = {
     DCreate('BUTTON', {type: 'button', class:'btn-close'})
   , DCreate('H2', {class: 'htest-libelle', append:[DCreate('SPAN',{inner:'...'})]})
   ]
-  headers.push(DCreate('DIV', {class: 'htest-path', append:[
+  headers.push(DCreate('DIV', {class: 'div-htest-path', append:[
       DCreate('LABEL', {inner: 'Fichier : '})
-    , DCreate('SPAN', {inner: '...'})
+    , DCreate('INPUT', {id:'htest-path', type:'text', value:'...', class:'small'})
+    , DCreate('BUTTON', {id:'btn-htest-path', class:'small', inner: 'jouer'})
   ]}))
   this.description && headers.push(DCreate('DIV', {class: 'htest-description explication', append:[
       DCreate('LABEL', {inner: 'Description : '})
@@ -161,6 +165,8 @@ const HandTests = {
   jqo.find('#btn-step-success').on('click', this.markSuccess.bind(this))
   jqo.find('#btn-step-failure').on('click', this.markFailure.bind(this))
 
+  // Le bouton pour jouer le test entré dans le champ
+  jqo.find('#btn-htest-path').on('click', this.runThisTest.bind(this))
 }
 
 , markSuccess(){
@@ -201,6 +207,53 @@ const HandTests = {
   this.currentHtestFile.nextTest()
   }
 
+  /**
+    Méthode appelée par le bouton "Jouer" à côté du path relatif du test
+    pour jouer un test particulier, ou un dossier de test.
+    L'expression peut être régulière, elle est cherchée de toute façon
+    comme une expression régulière.
+
+    Le path peut se terminer par ":<id test>" pour jouer un test particulier
+    du fichier.
+    Une erreur est produite si aucun test n'est trouvé.
+
+  **/
+, runThisTest(){
+    let raw = this.fwindow.jqObj.find('#htest-path').val().trim()
+    if (raw === ''){
+      // <= Aucun test n'a été entré
+      // => Je signale l'erreur et je les prends tous.
+      return F.notify('Il faut indiquer le test à jouer. Je les prends tous.')
+    } else {
+      let [dpath, test_id] = raw.split(':')
+        , fullpath = path.join(this.folder,dpath)
+
+      // Servira à la class HandTestFile pour trouver le bon test
+      this.required_test_id = test_id
+
+      if(fs.existsSync(fullpath)){
+        // <= Le fichier indiqué existe
+        // => C'est celui-là que je peux jouer
+        this._HTestFiles = [fullpath]
+        return this.initAndRun()
+      } else {
+        // <= Ce n'est pas un test précis qui a été donné
+        // => On cherche le ou les tests par expression régulière
+        var arr = [], cfile
+        let reg = new RegExp(dpath)
+          , regRel = new RegExp(`^${path.join(this.folder)}/`)
+        this.HTestFiles.forEach(function(file){
+          cfile = file.replace(regRel,'')
+          if(cfile.match(reg)) arr.push(file)
+        })
+        this._HTestFiles = arr
+        arr = null
+        return this.initAndRun()
+      }
+    }
+
+    // TODO On réinitialise tout (on était peut-être en train de tester)
+  }
 } // /fin de HandTests
 Object.defineProperties(HandTests,{
   path:{

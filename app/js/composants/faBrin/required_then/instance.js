@@ -21,7 +21,7 @@ addBrin(brin_id){
 }
 ,
 addToList(list_id, foo_id){
-  console.log("addToList:", list_id, foo_id)
+  // console.log("addToList:", list_id, foo_id)
   if(undefined === this.data[list_id] || this.data[list_id].indexOf(foo_id) < 0){
     if (undefined === this.data[list_id]) this.data[list_id] = []
     this.data[list_id].push(foo_id)
@@ -79,12 +79,16 @@ times:{
 scenes:{
   get(){
     if(undefined === this._scenes){
-      var arr = []
+      var arr = [], ev
       for(var time of this.times){
         arr.push(FAEscene.at(time))
       }
       for(var ev_id of this.events){
-        arr.push(this.a.ids[ev_id].scene)
+        ev = this.a.ids[ev_id]
+        if(ev) arr.push(ev.scene)
+        else {
+          console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
+        }
       }
       this._scenes = arr
     }

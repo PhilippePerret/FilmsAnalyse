@@ -113,22 +113,28 @@ asDiv(options){
 
 divAssociateds(){
   var divs = [ DCreate('H4', {inner:'Associés'}) ]
-    , id, ass
+    , id, ass, time
   for(id of this.documents){
-    ass = FADocument.get(id)
-    divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
-      DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
-    ]}))
+    if(ass = FADocument.get(id)){
+      divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
+        DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      ]}))
+    } else {
+      console.error(`ERREUR Document introuvable. #${id}`)
+    }
   }
   for(id of this.events){
-    ass = FABrin.a.ids[id]
-    divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
-      DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
-    ]}))
+    if(ass = FABrin.a.ids[id]){
+      divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
+        DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      ]}))
+    } else {
+      console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)
+    }
   }
-  for(id of this.times){
-    ass = new OTime(id)
-    divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
+  for(time of this.times){
+    ass = new OTime(time)
+    divs.push(DCreate('DIV', {attrs:{'data-type':'time', 'data-time': time}, append:[
       DCreate('LI', {class:'time', inner: `<a onclick="showTime(${id})">Temps : ${ass.horloge_simple}</a>`})
     ]}))
   }

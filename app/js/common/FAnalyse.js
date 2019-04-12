@@ -92,8 +92,6 @@ static toggleGlobalOption(opt_id){
   require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
 }
 
-
-
 /**
  * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
  * valide. Il doit contenir les fichiers de base. Sinon, proposer à
@@ -261,24 +259,24 @@ displayLastReport(){
 }
 
 
-displayPFA(){this.PFA.toggle()}
-
+displayPFA(){
+  this.PFA.toggle()
+}
 displayInfosFilm(){
   var method = require('./js/tools/building/infos_film.js')
   method.bind(this)()
 }
-
 displayFondamentales(){
   var method = require('./js/tools/building/fondamentales.js')
   method.bind(this)()
 }
-displayBrins(){FABrin.display()}
-
+displayBrins(){
+  FABrin.display()
+}
 displayStatistiques(){
   // TODO
-  F.error("Les Statistiques ne sont pas encore implémentées.")
+  F.error("Les Statistiques ne sont pas encore implémentées. Passer par l'affichage de l'analyse (en ajoutant `BUILD Statistiques` au script d'assemblage).")
 }
-
 displayAnalyseState(){
   FAStater.displayFullState()
 }
@@ -414,6 +412,7 @@ updateEvent(ev, options){
 }
 
 getEventById(eid){
+  console.warn("DEPRECATED: Il vaut mieux utiliser la méthode FAEvent.get() que FAnalyse#getEventById")
   return this.ids[eid]
 }
 
@@ -493,8 +492,10 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
+  this.stopTimerSave() // ne fera rien si rien à faire
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   this.modified && this.save()
+  this.runTimerSave() // ne fera rien si analyse.locked
 }
 
 /**
@@ -502,6 +503,12 @@ saveIfModified(){
  */
 save() {
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  if(this.saveTimer){
+    // <= L'enregistrement automatique est activé
+    // => Il faut l'interrompre
+    // note : il sera remis en route à la toute fin de l'enregistrement
+    this.stopTimerSave()
+  }
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -563,7 +570,30 @@ setSaved(fpath){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false
-    if(this.methodAfterSaving) this.methodAfterSaving()
+    this.endSave()
+  }
+}
+/**
+  Méthode appelée à la toute fin de la sauvegarde
+  Elle remet en route le timer de sauvegarde et elle appelle la méthode
+  qui a été définie pour suivre.
+**/
+endSave(){
+  if(this.methodAfterSaving) this.methodAfterSaving()
+  this.runTimerSave()
+}
+
+// Mettre en route la sauvegarde automatique
+runTimerSave(){
+  if(this.locked) return
+  console.log("Mise en route du timer save")
+  this.saveTimer = setTimeout(this.saveIfModified.bind(this), 4000)
+}
+stopTimerSave(){
+  if(this.saveTimer){
+    console.log("Arrêt du timer save")
+    clearTimeout(this.saveTimer)
+    delete this.saveTimer
   }
 }
 

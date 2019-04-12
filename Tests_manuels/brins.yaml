@@ -24,6 +24,7 @@
     checks:
       - les events doivent avoir été associés
       - la fenêtre des brins doit avoir été actualisée
+
   associations_document:
     libelle: Pouvoir associer un document à un brin
     synopsis:

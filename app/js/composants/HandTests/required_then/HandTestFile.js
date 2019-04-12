@@ -1,7 +1,7 @@
 'use strict'
 
 class HandTestFile {
-constructor(path, options){
+constructor(path){
   this.HTestPath = this.path = path
 
   this.ref = `<<HandTestFile relpath="${this.relpath}">>`
@@ -21,9 +21,17 @@ run(){
 nextTest(){
   log.info(`-> ${this.ref}#nextTest`)
   HandTests.resetStepList()
-  let test_id = Object.keys(this.data)[++this.index_htest]
+
+  // On prend le test. Soit le premier (le suivant), soit celui
+  // voulu par le choix de l'user
+  let test_id
+  do {
+    test_id = Object.keys(this.data)[++this.index_htest]
+  } while(HandTests.required_test_id && test_id != HandTests.required_test_id)
+
   log.info(`     this.index_htest = ${this.index_htest}`)
   log.info(`     test_id = ${test_id}`)
+  
   if(test_id){
     this.currentHTest = new HandTest(this, test_id, this.data[test_id])
     this.currentHTest.run()

@@ -738,8 +738,10 @@ getFormValues(){
   // On récupère toutes les données (ça consiste à passer en revue tous
   // les éléments de formulaire qui ont la classe "f<type>")
   var ftype = `f${data_min.type}`
-  var fields = []
-  var idSansPref = null
+    , fields = []
+    , idSansPref = null
+    , err_msg
+    
   $('select,input[type="text"],input[type="hidden"],textarea,input[type="checkbox"]')
     .filter(function(){
       return /* $(this).id && */ ($(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
@@ -747,7 +749,18 @@ getFormValues(){
     .each(function(){
       if(this.id){
         idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
-        other_data[idSansPref] = getValOrNull(this.id)
+        // Des erreurs se produisent parfois ici, je préfère mettre dans un
+        // try pour mieux les appréhender
+        try {
+          var val = getValOrNull(this.id)
+        } catch (e) {
+          err_msg = `ERREUR dans getValOrNull avec:${RC}this.id: '${this.id}'${RC}idSansPref: '${idSansPref}'${RC}ERREUR: ${e}`
+          log.error(err_msg)
+          console.error(err_msg)
+          F.error(`Erreur avec '${this.id}'. Consultez le log.`)
+          val = undefined
+        }
+        other_data[idSansPref] = val
         // Pour vérification
         fields.push(this.id)
       }
