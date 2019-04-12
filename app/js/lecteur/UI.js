@@ -36,14 +36,12 @@ const UI = {
   }
 
 /**
- * Au chargement d'un analyse, ou à la création d'une nouvelle, cette
- * méthode est appelée pour ré-initialiser tout l'interface (en tout cas
- * les parties qui n'ont pas pu encore l'être)
+ * Au chargement d'un analyse
+
+ cf. aussi FAnalyse.resetAll (recherchable) qui est peut-être plus adapté
+ pour faire ça.
  */
-, reset(){
-    FAReader.reset()
-    EventForm.reset() // notamment destruction des formulaires
-  }
+, reset(){}
 
 // ---------------------------------------------------------------------
 //  Pour les boucles d'attente

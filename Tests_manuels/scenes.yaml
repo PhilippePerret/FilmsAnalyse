@@ -3,7 +3,7 @@
   insertion_scene:
     libelle: Insérer une scène entre deux autres
     description: Prendre une analyse avec trois scènes suffisamment séparées, et créer une nouvelle scène entre la 2 et la trois. Note : s'arranger pour que toutes les scènes soient affichées dans le reader.
-    verifications:
+    checks:
       - le numéro des scènes doit avoir été actualisé
       - l'affichage des numéros de scène doit avoir été modifié.
       - la durée des scènes doit avoir été recalculée
@@ -12,7 +12,7 @@
   destruction_scene:
     libelle: Détruire un event de type scène (par le biais du formulaire)
     description: On prend une analyse test, et on détruit une de ses scènes.
-    verifications:
+    checks:
       - Le numéro des autres scènes doit avoir été rectifié
       - La durée des autres scènes doit avoir été rectifiée
       - le nombre de scènes doit avoir changé (`FAEscene.count`)

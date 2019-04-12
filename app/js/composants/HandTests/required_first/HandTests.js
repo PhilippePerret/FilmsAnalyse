@@ -15,7 +15,6 @@ const HandTests = {
       // pas complet.
       this.mode_last = true
       this.loadResultats()
-      console.log("Mode last. Résultats:", this.resultats)
     } else {
       this.mode_last = false
       this.initResultats()
@@ -46,14 +45,18 @@ const HandTests = {
     log.info('<- HandTests::run')
   }
 , nextHTestFile(){
+    log.info('-> HandTests::nextHTestFile')
     ++ this.index_current_htestfile
+    log.info(`     this.index_current_htestfile = ${this.index_current_htestfile}`)
     let hTestFile = this.HTestFiles[this.index_current_htestfile]
+    log.info(`     hTestFile = "${hTestFile}"`)
     if(hTestFile){
       this.currentHtestFile = new HandTestFile(hTestFile)
       this.currentHtestFile.run()
     } else {
       this.resumeTests()
     }
+    log.info('<- HandTests::nextHTestFile')
   }
 
 // ---------------------------------------------------------------------
@@ -70,7 +73,6 @@ const HandTests = {
       , res  = this.resultats
       , color
     jqo.find('.htest-footer').hide()
-    console.log("résultats:", res)
     let msg = `success: ${res.successCount}    failures: ${res.failureCount}     pending: ${res.pendingCount}`
     if (res.failureCount){
       color = 'red'
@@ -162,15 +164,17 @@ const HandTests = {
 }
 
 , markSuccess(){
-    if (this.mode_last) return
-    this.resultats.successCount ++
-    this.consigneResCurStep(1)
+    if (false === this.mode_last){
+      this.resultats.successCount ++
+      this.consigneResCurStep(1)
+    }
     this.currentHtestFile.currentHTest.currentStep.markSuccess()
   }
 , markFailure(){
-    if (this.mode_last) return
-    this.resultats.failureCount ++
-    this.consigneResCurStep(0)
+    if (false === this.mode_last){
+      this.resultats.failureCount ++
+      this.consigneResCurStep(0)
+    }
     this.currentHtestFile.currentHTest.currentStep.markFailure()
   }
   // Quand on n'utilise ni le bouton OK ni le bouton ERROR

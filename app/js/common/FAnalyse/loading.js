@@ -9,7 +9,7 @@
  */
 FAnalyse.load = function(aFolder){
   try {
-    log.info(`[FAnalyse::load] Load analyse « ${aFolder} »`)
+    log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
     this.resetAll()
@@ -29,9 +29,9 @@ FAnalyse.resetAll = function(){
   if(window.current_analyse){
     // <= Il y a une analyse courante
     // => On doit tout initialiser
+    FAReader.reset()
+    EventForm.reset() // notamment destruction des formulaires
     current_analyse.videoController.remove()
-    current_analyse.reader.remove()
-
     FAEscene.reset()
 
     delete current_analyse.videoController
@@ -51,7 +51,7 @@ FAnalyse.loadSnippets = function(fn_callback){
 //  INSTANCE
 Object.assign(FAnalyse.prototype, {
 /**
-  Méthode pour charger l'analyse (courante ou pas)
+  Méthode d'instance pour charger l'analyse (courante ou pas)
 
   Il y aura plusieurs fichiers à charger pour une application,
   avec tous les éléments, il faut donc procéder à un chargement asynchrone
@@ -95,6 +95,7 @@ load(){
   charge.
  */
 , onReady(){
+    log.info('-> <<FAanalyse>>#onReady')
     if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
     if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
     if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
@@ -118,6 +119,7 @@ load(){
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()
+    log.info('<- <<FAanalyse>>#onReady')
   }
 
 

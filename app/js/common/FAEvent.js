@@ -8,6 +8,12 @@ static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'conte
 static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
 
 /**
+  @return {Instance} L'instance d'identifiant event_id
+**/
+static get(event_id){
+  return this.a.ids[parseInt(event_id,10)]
+}
+/**
   @return {Array} La liste des propriétés pour une sous-classe
   précise.
   La sous-classe doit appeler :

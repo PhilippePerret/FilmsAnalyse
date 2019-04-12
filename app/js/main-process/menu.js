@@ -534,7 +534,7 @@ const DATA_MENUS = [
           , click: () => {execJS('App.runHandTests()')}
         }
       , {
-            label: 'Rejoindre le dernier test manuel exécuté'
+            label: 'Poursuivre les tests (rejoindre le dernier)'
           , enabled: true // TODO: plus tard, seulement en développement
           , id: 'goto-last-test-manuel'
           , click: () => {execJS('App.runFromLastHandTest()')}

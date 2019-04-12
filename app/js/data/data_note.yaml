@@ -3,7 +3,7 @@ types:
   n/d:
     hname: Non défini
   importante:
-    hname: Note ipFADmortante
+    hname: Note importante
   note:
     hname: À noter
   remarque:

@@ -535,8 +535,44 @@ Un test manuel, au minimum, requiert :
 * Un `id`, identifiant unique dans le fichier.
 * Un `libelle` pour afficher ce qu'il fait.
 * Un `synopsis` qui est une liste d'actions (Array),
-* Une liste de `verifications` à faire pour valider l'essai.
+* Une liste de `checks` à faire pour valider l'essai.
 
-Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `verifications`.
+Par exemple :
+
+```YAML
+
+---
+  - id: mon_premier_test
+    libele: Libellé de mon premier test, en titre
+    description: C’est un tout premier test à faire
+    synopsis:
+      - ouvrir l'app
+      - ouvrir une analyse
+      - quitter l'app
+    checks:
+      - tout doit s’être bien passé
+      - l'app ne doit plus être affichée
+      - et moi non plus, d’ailleurs…
+
+```
+
+Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `checks`.
 
 ### Vérification insérée dans un synopsis
+
+Si des vérifications précises, à des moments précis du test, doivent être effectuées, on les indique de cette manière :
+
+```yaml
+synopsis:
+  - mon test à faire
+  - check: une_verification
+  - mon test à poursuivre
+
+checks:
+  une_verification:
+    - vérifier ça
+    - et puis vérifier ça aussi
+  then:
+    - check à faire ensuite
+    - et puis cette vérification aussi
+```

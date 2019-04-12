@@ -69,8 +69,9 @@ const DATA_AUTOMATIC_STEPS = {
 
 // ---------------------------------------------------------------------
 //  ALIAS
+// Dans l'ordre alphabétique
 
-, "ouvrir l'application": "ouvrir l'app"
 , "lancer l'app": "ouvrir l'app"
 , "lancer l'application":"ouvrir l'app"
+, "ouvrir l'application": "ouvrir l'app"
 }

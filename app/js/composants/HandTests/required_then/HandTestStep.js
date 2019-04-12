@@ -4,6 +4,8 @@ constructor(htest, idx, cmd){
   this.htest    = htest
   this.index    = idx
   this.command  = cmd
+
+  this.ref = `<<HandTestStep htest="${this.htest.id}" index=${this.index}>>`
 }
 /**
   On doit "jouer" l'étape.
@@ -11,15 +13,20 @@ constructor(htest, idx, cmd){
   et demander à l'utilisateur de l'exécuter
 **/
 run(){
-  this.LI.removeClass('sleeping')
-  this.LI.addClass('running')
-  if(this.isAutomaticStep()){
+  log.info(`-> ${this.ref}#run`)
+  this.LI.removeClass('sleeping').addClass('running')
+  if(this.isCheck()){
+    log.info('   -- CHECK --')
+    if(this.execTheCheck()) HandTests.markSuccess()
+    else HandTests.markFailure()
+  } else if(this.isAutomaticStep()){
+    log.info('   -- TEST AUTOMATIQUE --')
     // Note : on doit passer par les méthodes de HandTests pour pouvoir
     // mémoriser le résultat
     if(this.execAndTest()) HandTests.markSuccess()
     else HandTests.markFailure()
-    this.end()
   } else if (HandTests.mode_last) {
+    log.info('   -- mode_last --')
     // Si on est en mode "last", c'est-à-dire qu'on cherche le dernier
     // test exécuté, et que ce tests a été fait, on poursuit
     var res = HandTests.resultats.tests
@@ -61,12 +68,17 @@ run(){
       }
     }
   } else {
+    log.info('   -- Attente réponse user --')
     // On donne la main à l'utilisateur
   }
-}
+  log.info(`<- ${this.ref}#run`)
+} // /run
+
 end(){
+  log.info(`-> ${this.ref}#end`)
   this.LI.addClass('done')
   this.htest.nextStep()
+  log.info(`<- ${this.ref}#end`)
 }
 
 markSuccess(){

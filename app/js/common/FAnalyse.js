@@ -35,55 +35,55 @@ static checkLast(){
   }
 }
 
-  /**
-   * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
-   *
-   */
-  static onWantNewAnalyse(){
-    this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
-  }
-  /**
-   * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
-   * existante.
-   */
-  static chooseAnalyse(){
-    this.checkIfCurrentSavedBeforeExec('choose_analyse')
-  }
+/**
+ * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
+ *
+ */
+static onWantNewAnalyse(){
+  this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
+}
+/**
+ * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
+ * existante.
+ */
+static chooseAnalyse(){
+  this.checkIfCurrentSavedBeforeExec('choose_analyse')
+}
 
-  /**
-   * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
-   * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
-   * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
-   */
-  static checkIfCurrentSavedBeforeExec(toolName){
-    var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
-    if (current_analyse && current_analyse.modified && !current_analyse.locked){
-      var my = this
-      DIALOG.showMessageBox(null, {
-          type: 'question'
-        , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
-        , defaultId: 0
-        , title: 'Sauvegarde de l’analyse courante'
-        , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
-      }, (reponse) => {
-        // console.log("reponse:", reponse)
-        switch (reponse) {
-          case 0:
-            current_analyse.methodAfterSaving = toolMethod()
-            current_analyse.save()
-            return
-          case 1: // Annuler
-            return false
-          case 2: // ignorer les changements (sauf les data, normal)
-            current_analyse.saveData() // toujours enregistrées
-            toolMethod()
-            break
-        }
-      })
-    } else {
-      toolMethod()
-    }
+/**
+ * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
+ * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
+ * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
+ */
+static checkIfCurrentSavedBeforeExec(toolName){
+  var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
+  if (current_analyse && current_analyse.modified && !current_analyse.locked){
+    var my = this
+    DIALOG.showMessageBox(null, {
+        type: 'question'
+      , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
+      , defaultId: 0
+      , title: 'Sauvegarde de l’analyse courante'
+      , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
+    }, (reponse) => {
+      // console.log("reponse:", reponse)
+      switch (reponse) {
+        case 0:
+          current_analyse.methodAfterSaving = toolMethod()
+          current_analyse.save()
+          return
+        case 1: // Annuler
+          return false
+        case 2: // ignorer les changements (sauf les data, normal)
+          current_analyse.saveData() // toujours enregistrées
+          toolMethod()
+          break
+      }
+    })
+  } else {
+    toolMethod()
   }
+}
 
 static setGlobalOption(opt_id, opt_value){
   require('./js/tools/global_options.js').setGlobalOption(opt_id, opt_value)
