@@ -546,6 +546,17 @@ const DATA_MENUS = [
           , id: 'goto-last-scene'
           , click: () => {execJsOnCurrent('goToLastScene')}
         }
+      , {type: 'separator'}
+      , {
+            label: 'Manuel d’utilisation'
+          , enabled: true
+          , click: () => {execJS('App.openManuel()')}
+        }
+      , {
+            label: 'Manuel d’utilisation Développement'
+          , enabled: true
+          , click: () => {execJS('App.openManuelDeveloppement()')}
+        }
       ]
   }
 ]

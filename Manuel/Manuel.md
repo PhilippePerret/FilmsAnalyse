@@ -1,4 +1,5 @@
-# Manuel de l'analyse de films
+# Film Analyzer
+# Manuel d'utilisation
 
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)

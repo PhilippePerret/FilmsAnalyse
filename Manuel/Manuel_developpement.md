@@ -1,4 +1,5 @@
-# Manuel de développement de Film-Analyzer
+# Film-Analyzer
+# Manuel de développement
 
 * [Point d'entrée](#point_dentree)
 * [Essais/travail du code](#travail_code_sandbox_run)
@@ -20,6 +21,7 @@
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
+  * [Quatre types de documents](#les_types_de_documents)
   * [Sauvegarde protégée des documents](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
@@ -407,14 +409,14 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 ## Documents de l'analyse {#documents_analyse}
 
-Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
 
 Ces documents permettent de construire l'analyse de deux façons différentes :
 
 * en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
-### Quatre types de documents
+### Quatre types de documents {#les_types_de_documents}
 
 Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessibles depuis le menu « Documents » de l'application.
 
@@ -474,6 +476,7 @@ class monObjet {
 
 Si **le propriétaire n'est pas défini**, il faut explicitement définir le code de l'`iofile` :
 
+
 ```javascript
 
   this.iofile.code = "Mon code à enregistrer"
@@ -511,6 +514,8 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
   this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
 
 ```
+
+---------------------------------------------------------------------
 
 # Assemblage de l'analyse {#assemblage_analyse}
 
@@ -565,14 +570,13 @@ Si des vérifications précises, à des moments précis du test, doivent être e
 ```yaml
 synopsis:
   - mon test à faire
-  - check: une_verification
+  - check:
+    - "<le code de la vérification>"
+    - "<autre code de vérification>"
   - mon test à poursuivre
 
-checks:
-  une_verification:
-    - vérifier ça
-    - et puis vérifier ça aussi
-  then:
-    - check à faire ensuite
-    - et puis cette vérification aussi
 ```
+
+Ce code de vérification est un langage qui ressemble à ça : `L'{{event:0}} possède un {{type:note}}`. Ici, on vérifie que l'event qui a pour identifiant `0` possède bien un `type` (donc une propriété de nom `type`) qui vaut `note`.
+
+Cette partie est encore à l'état expérimental.

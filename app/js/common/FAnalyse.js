@@ -586,12 +586,10 @@ endSave(){
 // Mettre en route la sauvegarde automatique
 runTimerSave(){
   if(this.locked) return
-  console.log("Mise en route du timer save")
   this.saveTimer = setTimeout(this.saveIfModified.bind(this), 4000)
 }
 stopTimerSave(){
   if(this.saveTimer){
-    console.log("Arrêt du timer save")
     clearTimeout(this.saveTimer)
     delete this.saveTimer
   }
