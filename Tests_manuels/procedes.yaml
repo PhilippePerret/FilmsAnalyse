@@ -12,6 +12,6 @@ updateprocedes:
     - dans le troisième, choisir une sous-catégorie et un procédé
     - modifier le fichier data/data_procedes.yaml
     - activer le bouton d'actualisation des procédés dans la deuxième fenêtre de formulaire
-  verifications:
+  checks:
     - les menus doivent avoir été actualisés
     - la valeur des menus doit être restée la même

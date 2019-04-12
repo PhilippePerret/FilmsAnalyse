@@ -35,55 +35,55 @@ static checkLast(){
   }
 }
 
-  /**
-   * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
-   *
-   */
-  static onWantNewAnalyse(){
-    this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
-  }
-  /**
-   * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
-   * existante.
-   */
-  static chooseAnalyse(){
-    this.checkIfCurrentSavedBeforeExec('choose_analyse')
-  }
+/**
+ * Méthode appelée par le menu "Nouvelle…" pour créer une nouvelle analyse
+ *
+ */
+static onWantNewAnalyse(){
+  this.checkIfCurrentSavedBeforeExec('creation_new_analyse')
+}
+/**
+ * Méthode appelée par le menu "Ouvrir…" pour ouvrir une analyse
+ * existante.
+ */
+static chooseAnalyse(){
+  this.checkIfCurrentSavedBeforeExec('choose_analyse')
+}
 
-  /**
-   * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
-   * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
-   * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
-   */
-  static checkIfCurrentSavedBeforeExec(toolName){
-    var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
-    if (current_analyse && current_analyse.modified && !current_analyse.locked){
-      var my = this
-      DIALOG.showMessageBox(null, {
-          type: 'question'
-        , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
-        , defaultId: 0
-        , title: 'Sauvegarde de l’analyse courante'
-        , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
-      }, (reponse) => {
-        // console.log("reponse:", reponse)
-        switch (reponse) {
-          case 0:
-            current_analyse.methodAfterSaving = toolMethod()
-            current_analyse.save()
-            return
-          case 1: // Annuler
-            return false
-          case 2: // ignorer les changements (sauf les data, normal)
-            current_analyse.saveData() // toujours enregistrées
-            toolMethod()
-            break
-        }
-      })
-    } else {
-      toolMethod()
-    }
+/**
+ * Pour choisir une nouvelle analyse ou en créer une nouvelle, il faut
+ * d'abord s'assurer que l'analyse courante, si elle existe, a bien été
+ * sauvegardée. Si c'est le cas, alors on exécute la méthode suivante.
+ */
+static checkIfCurrentSavedBeforeExec(toolName){
+  var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
+  if (current_analyse && current_analyse.modified && !current_analyse.locked){
+    var my = this
+    DIALOG.showMessageBox(null, {
+        type: 'question'
+      , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
+      , defaultId: 0
+      , title: 'Sauvegarde de l’analyse courante'
+      , message: "L'analyse courante a été modifiée. Que souhaitez-vous faire avant de charger la suivante ?"
+    }, (reponse) => {
+      // console.log("reponse:", reponse)
+      switch (reponse) {
+        case 0:
+          current_analyse.methodAfterSaving = toolMethod()
+          current_analyse.save()
+          return
+        case 1: // Annuler
+          return false
+        case 2: // ignorer les changements (sauf les data, normal)
+          current_analyse.saveData() // toujours enregistrées
+          toolMethod()
+          break
+      }
+    })
+  } else {
+    toolMethod()
   }
+}
 
 static setGlobalOption(opt_id, opt_value){
   require('./js/tools/global_options.js').setGlobalOption(opt_id, opt_value)
@@ -91,8 +91,6 @@ static setGlobalOption(opt_id, opt_value){
 static toggleGlobalOption(opt_id){
   require('./js/tools/global_options.js').toggleGlobalOption(opt_id)
 }
-
-
 
 /**
  * Méthode qui checke si le dossier +folder+ est un dossier d'analyse
@@ -135,6 +133,15 @@ get nextScene(){
   if(!this.currentScene) return FAEscene.getByNumero(1)
   else return FAEscene.getByNumero(this.currentScene.numero + 1)
 }
+
+/**
+  Méthode appelée depuis le menu 'Outils' pour rejoindre la dernière
+  scène définie, (quand on est en mode collecte)
+**/
+goToLastScene(){
+  this.locator.setRTime(FAEscene.lastScene.time)
+}
+
 get PFA(){
   if(undefined === this._PFA){
     SttNode   = require('./js/common/PFA/SttNode.js')
@@ -252,24 +259,24 @@ displayLastReport(){
 }
 
 
-displayPFA(){this.PFA.toggle()}
-
+displayPFA(){
+  this.PFA.toggle()
+}
 displayInfosFilm(){
   var method = require('./js/tools/building/infos_film.js')
   method.bind(this)()
 }
-
 displayFondamentales(){
   var method = require('./js/tools/building/fondamentales.js')
   method.bind(this)()
 }
-displayBrins(){FABrin.display()}
-
+displayBrins(){
+  FABrin.display()
+}
 displayStatistiques(){
   // TODO
-  F.error("Les Statistiques ne sont pas encore implémentées.")
+  F.error("Les Statistiques ne sont pas encore implémentées. Passer par l'affichage de l'analyse (en ajoutant `BUILD Statistiques` au script d'assemblage).")
 }
-
 displayAnalyseState(){
   FAStater.displayFullState()
 }
@@ -405,6 +412,7 @@ updateEvent(ev, options){
 }
 
 getEventById(eid){
+  console.warn("DEPRECATED: Il vaut mieux utiliser la méthode FAEvent.get() que FAnalyse#getEventById")
   return this.ids[eid]
 }
 
@@ -484,8 +492,10 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
+  this.stopTimerSave() // ne fera rien si rien à faire
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
   this.modified && this.save()
+  this.runTimerSave() // ne fera rien si analyse.locked
 }
 
 /**
@@ -493,6 +503,12 @@ saveIfModified(){
  */
 save() {
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  if(this.saveTimer){
+    // <= L'enregistrement automatique est activé
+    // => Il faut l'interrompre
+    // note : il sera remis en route à la toute fin de l'enregistrement
+    this.stopTimerSave()
+  }
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -554,7 +570,28 @@ setSaved(fpath){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false
-    if(this.methodAfterSaving) this.methodAfterSaving()
+    this.endSave()
+  }
+}
+/**
+  Méthode appelée à la toute fin de la sauvegarde
+  Elle remet en route le timer de sauvegarde et elle appelle la méthode
+  qui a été définie pour suivre.
+**/
+endSave(){
+  if(this.methodAfterSaving) this.methodAfterSaving()
+  this.runTimerSave()
+}
+
+// Mettre en route la sauvegarde automatique
+runTimerSave(){
+  if(this.locked) return
+  this.saveTimer = setTimeout(this.saveIfModified.bind(this), 4000)
+}
+stopTimerSave(){
+  if(this.saveTimer){
+    clearTimeout(this.saveTimer)
+    delete this.saveTimer
   }
 }
 
@@ -619,7 +656,6 @@ set eventsIO(eventsData){
   setButtonGoToStart(){
     this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?'visible':'hidden')
   }
-
 
   // ---------------------------------------------------------------------
   //  PATHS

@@ -122,7 +122,6 @@ static deBrin(str){
   str = str.replace(this.BRIN_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     brin_id = groups.key
-    console.log("FABrin.get(brin_id):", FABrin.get(brin_id))
     return FABrin.get(brin_id).as('short',LINKED|FORMATED)
   })
   return str

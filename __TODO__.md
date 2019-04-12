@@ -1,20 +1,18 @@
 # SUR LE GRILL
 
-* Pour les tests manuels : faire les choses semi-automatiquement :
-  - avoir des phrases qui sont compréhensibles par le programme et qu'il
-    existe. Les autres, il demande à les faire à la main.
+* HANDTESTS
+  - Pouvoir lancer un test particulier (relpath du fichier, et id du test)
+    Note : c'est important pour pouvoir faire rapidement des tests.
 
-* BRINS
-  - les traiter dans le livre, faire peut-être des graphiques
-
-* PROCÉDÉS
-  - Faire la méthode `FAProcede.get(proc_id)` qui retourne l'instance FAProcede du procédé d'identifiant `proc_id`. On en aura besoin pour la publication.
-  - Faire la méthode `FAProcede#scene` qui retourne le numéro de la scène du procédé, pour les ajouter dans le fil du texte.
-    Note : généraliser cette méthode en l'implémentant dans FAEvent.
+* Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
+  - mais aussi : `scenesCount`
+  -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
+  Le menu des décors ne s'actualise pas dans les formulaires déjà ouverts.
 
 * [AMÉLIORATIONS]
+  - Mettre en place l'enregistrement automatique
   - construction du graphique de la dynamique narrative
     liste des OOC
 
@@ -24,11 +22,7 @@
 
 * [VÉRIFICATIONS]
 
-* OUTILS
-  Peut-être faire un menu "Outils" s'il y en a suffisamment
-  - rejoindre la dernière scène définie
-
-* Développer la méthode `FAEvent.as('<format>', FLAG)`.
+* Développer la méthode `FAEvent.as('<format>', FLAG)` (et même *LES* méthodes as puisque tout élément possède maintenant cette méthode).
   Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
 
 * PUBLICATION
@@ -44,6 +38,7 @@
     Note : quelle est la différence avec les "infos du film" ?
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
+  - Ajouter une timeline aux brins, pour voir où se situent les scènes/events
   - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
     - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
       + conduit à la référence `12` (disons une scène dans le scénier final)
@@ -78,6 +73,9 @@
   - noter que pour le moment le "slider" de l'instance FATimeline s'affiche au-dessus puisque la timeline est vide.
 
 # TODO LIST
+
+* Une procédure de fix de l'analyse, lorsqu'elle comporte de graves erreurs. Ça peut arriver par exemple lorsqu'on définit des events et des brins associés, et qu'on oublie d'enregistrer les events de l'analyse.
+  Ça ne doit plus se produire avec l'enregistrement automatique de l'analyse
 
 * Développer le protocole d'analyse avec la possibilité d'avoir le détail de la démarche à adopter.
 

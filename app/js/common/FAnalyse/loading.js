@@ -9,7 +9,7 @@
  */
 FAnalyse.load = function(aFolder){
   try {
-    log.info(`[FAnalyse::load] Load analyse « ${aFolder} »`)
+    log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
     this.resetAll()
@@ -29,9 +29,9 @@ FAnalyse.resetAll = function(){
   if(window.current_analyse){
     // <= Il y a une analyse courante
     // => On doit tout initialiser
+    FAReader.reset()
+    EventForm.reset() // notamment destruction des formulaires
     current_analyse.videoController.remove()
-    current_analyse.reader.remove()
-
     FAEscene.reset()
 
     delete current_analyse.videoController
@@ -51,7 +51,7 @@ FAnalyse.loadSnippets = function(fn_callback){
 //  INSTANCE
 Object.assign(FAnalyse.prototype, {
 /**
-  Méthode pour charger l'analyse (courante ou pas)
+  Méthode d'instance pour charger l'analyse (courante ou pas)
 
   Il y aura plusieurs fichiers à charger pour une application,
   avec tous les éléments, il faut donc procéder à un chargement asynchrone
@@ -95,12 +95,14 @@ load(){
   charge.
  */
 , onReady(){
-    if(NONE === typeof FAProcede) return this.loadProcede(this.onReady.bind(this))
-    if(NONE === typeof FABrin) return this.loadBrin(this.onReady.bind(this))
-    if(NONE === typeof FAReader) return this.loadReader(this.onReady.bind(this))
-    if(NONE === typeof FAWriter) return this.loadWriter(this.onReady.bind(this))
+    log.info('-> <<FAanalyse>>#onReady')
+    if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
+    if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
+    if(NONE === typeof FAWriter)    return this.loadWriter(this.onReady.bind(this))
     if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
-    if(NONE === typeof FAStater) return this.loadStater(this.onReady.bind(this))
+    if(NONE === typeof FAStater)    return this.loadStater(this.onReady.bind(this))
+    if(NONE === typeof FAStats)     return this.loadStats(this.onReady.bind(this))
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new FAReader(this)
@@ -117,6 +119,8 @@ load(){
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()
+    this.runTimerSave()
+    log.info('<- <<FAanalyse>>#onReady')
   }
 
 
@@ -162,6 +166,10 @@ loadStater(fn_callback){
   return System.loadComponant('faStater', fn_callback)
 }
 ,
+loadStats(fn_callback){
+  return System.loadComponant('faStats', fn_callback)
+}
+,
 loadWriter(fn_callback){
   return System.loadComponant('faWriter', fn_callback)
 }
@@ -170,9 +178,6 @@ loadProtocole(fn_callback){
   return System.loadComponant('faProtocole', fn_callback)
 }
 ,
-// static loadReader(fn_callback){
-//   return System.loadComponant('faReader', fn_callback)
-// }
 loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)
 }

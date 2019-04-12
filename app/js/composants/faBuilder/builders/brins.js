@@ -20,16 +20,19 @@ const BrinsBuilder = {
   Sortie générale du code des brins
 **/
 output(options){
-  var inner
   if(undefined === options) options = {}
-  if(FABrins.count === 0) {
+  if(FABrin.count === 0) {
     log.warning('Construction du chapitre des BRINS demandée, mais aucun brin défini.')
     return '<span class="warning">[LES BRINS SONT À DÉFINIR]</span>'
   }
-  
+  var inner = []
+
+  FABrin.forEachBrin(brin => inner.push(brin.asDiv({forBook: true})))
+  inner = DCreate('UL', {class:'brins', append: inner})
+
   if(options.format === 'html'){
     return inner.outerHTML
-  } else {
+  } else { // ou format 'dom'
     return inner
   }
 }

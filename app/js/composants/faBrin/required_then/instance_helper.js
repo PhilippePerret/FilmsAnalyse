@@ -62,7 +62,6 @@ asShort(opts){
 }
 ,
 asBook(opts){
-  return `« ${this.title} »`
 }
 ,
 asFull(opts){
@@ -83,35 +82,59 @@ linkedToEdit(str){
 
 ,
 asDiv(options){
-  return DCreate('DIV', {class: 'brin', append:[
-    DCreate('SPAN', {class: 'brin-title', inner: this.title})
-  , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
-  , DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`})
-  , DCreate('BUTTON', {type:'button', class: 'toggle-next'})
-  , DCreate('DIV', {class:'brin-associateds-detailled', style:'display:none;', append: this.divAssociateds()})
-  , DCreate('DIV', {style:'clear:both;'})
-], attrs:{'data-type':'brin', 'data-id': this.id}})
+  if(undefined === options) options = {}
+  var divs = [
+      DCreate('SPAN', {class: 'brin-title', inner: `Brin #${this.numero}. ${this.title}`})
+    , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
+  ]
+
+  let infosMasked = [
+    DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()})
+    // La partie statistique du brin
+  , DCreate('DIV', {class: 'brin-statistiques', append:[
+      DCreate('H4', {inner: 'Présence'})
+    , DCreate('LABEL', {inner: 'Durée du brin dans le film : '})
+    , DCreate('SPAN', {class: 'brin-temps-presence', inner: `${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
+    ]})
+
+  ]
+  if(options.forBook === true){
+    divs.push(DCreate('DIV', {class:'brin-infos-masked', append: infosMasked}))
+  } else {
+    divs.push(DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`}))
+    divs.push(DCreate('BUTTON', {type:'button', class: 'toggle-next'}))
+    divs.push(DCreate('DIV', {class:'brin-infos-masked', style:'display:none;', append: infosMasked}))
+  }
+  divs.push(DCreate('DIV', {style:'clear:both;'}))
+
+  return DCreate('DIV', {class: 'brin', append:divs, attrs:{'data-type':'brin', 'data-id': this.id}})
 }
 ,
 
 divAssociateds(){
   var divs = [ DCreate('H4', {inner:'Associés'}) ]
-    , id, ass
+    , id, ass, time
   for(id of this.documents){
-    ass = FADocument.get(id)
-    divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
-      DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
-    ]}))
+    if(ass = FADocument.get(id)){
+      divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
+        DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      ]}))
+    } else {
+      console.error(`ERREUR Document introuvable. #${id}`)
+    }
   }
   for(id of this.events){
-    ass = FABrin.a.ids[id]
-    divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
-      DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
-    ]}))
+    if(ass = FABrin.a.ids[id]){
+      divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
+        DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
+      ]}))
+    } else {
+      console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)
+    }
   }
-  for(id of this.times){
-    ass = new OTime(id)
-    divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
+  for(time of this.times){
+    ass = new OTime(time)
+    divs.push(DCreate('DIV', {attrs:{'data-type':'time', 'data-time': time}, append:[
       DCreate('LI', {class:'time', inner: `<a onclick="showTime(${id})">Temps : ${ass.horloge_simple}</a>`})
     ]}))
   }

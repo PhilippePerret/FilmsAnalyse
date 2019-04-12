@@ -15,7 +15,7 @@ class FAReader {
 static get TIME_AROUND(){ return 5*60 }
 
 static reset(){
-  new FAReader().container.innerHTML = ''
+  $('section#section-reader').html('')
 }
 
 // ---------------------------------------------------------------------

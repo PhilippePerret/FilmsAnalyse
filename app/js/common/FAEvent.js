@@ -4,9 +4,15 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times', 'brins']}
 static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
 
+/**
+  @return {Instance} L'instance d'identifiant event_id
+**/
+static get(event_id){
+  return this.a.ids[parseInt(event_id,10)]
+}
 /**
   @return {Array} La liste des propriétés pour une sous-classe
   précise.
@@ -94,6 +100,7 @@ constructor(analyse, data){
   this.events     = data.events     || []
   this.documents  = data.documents  || []
   this.times      = data.times      || []
+  this.brins      = data.brins      || []
 
 }
 
@@ -136,6 +143,8 @@ get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duration)}
 // On utilise un getter et un setter pour réinitialiser d'autres propriétés
 get time(){return this._time}
 set time(v){ this._time = v ; delete this._horl ; delete this._otime }
+
+get scene(){return this._scene||defP(this,'_scene',FAEscene.at(this.time))}
 
 get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
 get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
@@ -187,6 +196,13 @@ addEvent(event_id){
 addTime(time){
   if(this.times.indexOf(time) < 0){
     this.times.push(time)
+    this.modified = true
+  }
+}
+
+addBrin(brin_id){
+  if(!this.brins || this.brins.indexOf(brin_id) < 0){
+    this.brins.push(brin_id)
     this.modified = true
   }
 }

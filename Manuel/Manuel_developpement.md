@@ -1,4 +1,5 @@
-# Manuel de développement de Film-Analyzer
+# Film-Analyzer
+# Manuel de développement
 
 * [Point d'entrée](#point_dentree)
 * [Essais/travail du code](#travail_code_sandbox_run)
@@ -20,9 +21,11 @@
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
+  * [Quatre types de documents](#les_types_de_documents)
   * [Sauvegarde protégée des documents](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
+* [Test de la l'application](#test_application)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -406,14 +409,14 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 ## Documents de l'analyse {#documents_analyse}
 
-Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises <script> afin d'exposer facilement tous les objets, constantes et autres.
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
 
 Ces documents permettent de construire l'analyse de deux façons différentes :
 
 * en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
-### Quatre types de documents
+### Quatre types de documents {#les_types_de_documents}
 
 Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessibles depuis le menu « Documents » de l'application.
 
@@ -473,6 +476,7 @@ class monObjet {
 
 Si **le propriétaire n'est pas défini**, il faut explicitement définir le code de l'`iofile` :
 
+
 ```javascript
 
   this.iofile.code = "Mon code à enregistrer"
@@ -511,6 +515,8 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
 
 ```
 
+---------------------------------------------------------------------
+
 # Assemblage de l'analyse {#assemblage_analyse}
 
 Cette partie traite de l'assemblage de l'analyse côté programmation.
@@ -520,3 +526,57 @@ Pour assembler l'analyse, l'application se sert principalement de la classe `FAB
 ## Script d'assemblage {#script_assemblage_analyse}
 
 Le « script d'assemblage » définit la façon d'assembler les différents composants de l'analyse pour composer le document final.
+
+---------------------------------------------------------------------
+
+## Test de la l'application {#test_application}
+
+Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que…).
+
+Ces tests manuels sont définis dans le dossier `./Tests_manuels/`. On peut s'inspirer des tests présents pour en créer d'autres.
+
+Un test manuel, au minimum, requiert :
+
+* Un `id`, identifiant unique dans le fichier.
+* Un `libelle` pour afficher ce qu'il fait.
+* Un `synopsis` qui est une liste d'actions (Array),
+* Une liste de `checks` à faire pour valider l'essai.
+
+Par exemple :
+
+```YAML
+
+---
+  - id: mon_premier_test
+    libele: Libellé de mon premier test, en titre
+    description: C’est un tout premier test à faire
+    synopsis:
+      - ouvrir l'app
+      - ouvrir une analyse
+      - quitter l'app
+    checks:
+      - tout doit s’être bien passé
+      - l'app ne doit plus être affichée
+      - et moi non plus, d’ailleurs…
+
+```
+
+Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `checks`.
+
+### Vérification insérée dans un synopsis
+
+Si des vérifications précises, à des moments précis du test, doivent être effectuées, on les indique de cette manière :
+
+```yaml
+synopsis:
+  - mon test à faire
+  - check:
+    - "<le code de la vérification>"
+    - "<autre code de vérification>"
+  - mon test à poursuivre
+
+```
+
+Ce code de vérification est un langage qui ressemble à ça : `L'{{event:0}} possède un {{type:note}}`. Ici, on vérifie que l'event qui a pour identifiant `0` possède bien un `type` (donc une propriété de nom `type`) qui vaut `note`.
+
+Cette partie est encore à l'état expérimental.
