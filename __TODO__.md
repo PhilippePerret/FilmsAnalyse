@@ -1,12 +1,9 @@
 # SUR LE GRILL
 
-Régler [2]
-puis [1]
-puis [3]
+### Traiter :
+[3]
 
 * HANDTESTS
-  - [1] Pour l'affichage, quand expression régulière, supprimer les "/.../" au début et à la fin.
-    => Une version "formated_step" qui s'en charge pour l'affichage
   - Bien documenter l'utilisation des expressions régulières dans les étapes de tests
     - se servir de `ouvrir l'analyse`
     - bien commenter l'utilisation de l'asynchronicité avec un `return null` qui
@@ -24,11 +21,6 @@ puis [3]
   Le menu des décors ne s'actualise pas dans les formulaires déjà ouverts.
 
 * [AMÉLIORATIONS]
-  - [2] Dans la méthode de confirmation lorsque le document est 20 % plus court que
-    sa version précédente, il faut préciser le nom du fichier (avec dossier) pour
-    le reconnaitre.
-    + Possibilité de sauter cette vérification avec une option
-      (no_warn_when_reduction)
   - construction du graphique de la dynamique narrative
     liste des OOC
 

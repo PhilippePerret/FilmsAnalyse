@@ -64,10 +64,16 @@ writeAllSteps(){
   var liId, command
   let ulsteps = HandTests.fwindow.jqObj.find('ul.htest-steps')
   for(var istep in this.all_steps){
-    liId = `${this.id}-${istep}`
+    liId    = `${this.id}-${istep}`
     command = this.all_steps[istep]
     if('object' === typeof command && Object.keys(command)[0] == 'check'){
+      // <= une liste
+      // => c'est une liste de checks à faire
       command = `[${command['check'].length} CHECKS À FAIRE]`
+    } else if (command.match(/^\/(.*)\/$/)){
+      // <= une expression régulière
+      // => la raboter pour supprimer les '/.../'
+      command = command.substring(1, command.length - 1)
     }
     ulsteps.append(DCreate('LI',{id:liId, inner: command, class: 'htest-step sleeping'}))
   }
