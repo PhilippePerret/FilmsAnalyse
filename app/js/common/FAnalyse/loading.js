@@ -6,14 +6,22 @@
 /**
   Méthode de classe qui charge l'analyse dont le dossier est +aFolder+
   et en fait l'analyse courante.
+
+  @param {String}   aFolder           Chemin d'accès au dossier de l'analyse
+  @param {Function} fn_afterLoading   La méthode a appeler après le chargement
+                    complet de l'analyse. Utilisé par les tests seulement pour
+                    le moment.
  */
-FAnalyse.load = function(aFolder){
+FAnalyse.load = function(aFolder, fn_afterLoading){
   try {
     log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
     this.resetAll()
     window.current_analyse = new FAnalyse(aFolder)
+    if(undefined !== fn_afterLoading){
+      window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+    }
     current_analyse.load()
     return true
   } catch (e) {
@@ -90,9 +98,11 @@ load(){
 }
 
 /**
-  Méthode appelé ci-dessu quand l'analyse est prête, c'est-à-dire que toutes ses
+  Méthode appelé ci-dessus quand l'analyse est prête, c'est-à-dire que toutes ses
   données ont été chargées et traitées. Si un fichier vidéo existe, on le
   charge.
+
+  À la fin de cette méthode, tout a été préparé, tout est OK
  */
 , onReady(){
     log.info('-> <<FAanalyse>>#onReady')
@@ -120,6 +130,13 @@ load(){
     this.setOptionsInMenus()
     this.videoController.init()
     this.runTimerSave()
+    // Si une méthode après le chargement est requise, on
+    // l'invoque.
+    // Pour le moment, la méthode est surtout utilisée pour les
+    // tests (même seulement pour les tests)
+    if('function' === typeof this.methodAfterLoadingAnalyse){
+      this.methodAfterLoadingAnalyse()
+    }
     log.info('<- <<FAanalyse>>#onReady')
   }
 

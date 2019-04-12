@@ -23,8 +23,17 @@ run(){
     log.info('   -- TEST AUTOMATIQUE --')
     // Note : on doit passer par les méthodes de HandTests pour pouvoir
     // mémoriser le résultat
-    if(this.execAndTest()) HandTests.markSuccess()
-    else HandTests.markFailure()
+    // Trois réponses (explicites) sont possibles :
+    //  1. true   => C'est un succès. On le marque et on passe à la suite
+    //  2. false  => C'est un échec. On le marque et on passe à la suite
+    //  3. null   => Test asynchrone qui appellera lui-même la marque et la
+    //               suite
+    let res = this.execAndTest()
+    // console.log("RETOUR DE execAndTest : ", res)
+    if(res === true) HandTests.markSuccess()
+    else if (res === false) HandTests.markFailure()
+    else if (res === null) return
+    else throw("Le retour de execAndTest n'est pas valide (true, false ou null attendu)")
   } else if (HandTests.mode_last) {
     log.info('   -- mode_last --')
     // Si on est en mode "last", c'est-à-dire qu'on cherche le dernier

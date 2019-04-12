@@ -46,8 +46,12 @@ const ERRORS = {
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 }
 const MESSAGES = {
-  "conf-created-analyse": "Nouvelle analyse créée avec succès."
+  "--- messages ANALYSE ---":""
+, "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "
+, "same-start-time": "Le temps de départ n'a pas changé, rien à faire."
+, "confirm-on-change-start-time": "Si le temps de départ est modifié, il faut corriger le temps de tous les éléments existants. Je le ferai dès confirmation."
+, "confirm-start-time": "Le temps %{time} correspond au début réel du film."
 , "--- messages VIDÉO ---":""
 , "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
 , "--- messages SCÈNES ---":""

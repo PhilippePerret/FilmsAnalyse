@@ -13,6 +13,13 @@ static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
 static get(event_id){
   return this.a.ids[parseInt(event_id,10)]
 }
+
+/**
+  @return {Number} Le nombre d'events actuels
+**/
+static count(){
+  return this.a.events.length
+}
 /**
   @return {Array} La liste des propriétés pour une sous-classe
   précise.

@@ -2,11 +2,35 @@
 
 Object.assign(HandTestStep.prototype,{
   /**
+    Regarde si l'étape donnée est une étape automatique et renvoie true
+    le cas échéant.
+    L'étape peut être explicitement exacte (simplement entre guillemets)
+    ou elle peut être une expression régulière
     @return {Boolean} true si c'est une étape automatique
   **/
   isAutomaticStep(){
-    this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[this.command.toLowerCase()]
-    if (undefined === this.dataAutomaticStep) return false
+    let cmd = this.command
+    this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[cmd.toLowerCase()]
+    if (undefined === this.dataAutomaticStep){
+      // console.log("Recherche de ", cmd)
+      if(cmd.substring(0,1) == '/'){
+        // C'est une expression régulière
+        // console.log("Oui, elle commence par /")
+        for(var kcmd in DATA_AUTOMATIC_STEPS){
+          if(DATA_AUTOMATIC_STEPS[kcmd][0].regular){
+            // Est-ce cette expression là ?
+            if(cmd.match(new RegExp(kcmd))){
+              // Oui ! on l'a trouvé
+              console.log("Expression régulière trouvée !", kcmd)
+              this.dataAutomaticStep    = DATA_AUTOMATIC_STEPS[kcmd]
+              this.keyDataAutomaticStep = kcmd
+              return true
+            }
+          }
+        }
+      }
+      return false
+    }
     if('string' === typeof this.dataAutomaticStep /* un "alias" */){
       this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[this.dataAutomaticStep]
     }
@@ -20,11 +44,32 @@ Object.assign(HandTestStep.prototype,{
   **/
 , execAndTest(){
     var pas, res
+
+    // La clé, quand c'est une expression régulière, a été mise
+    // dans this.keyDataAutomaticStep
+    let regExp = this.keyDataAutomaticStep
+
     try {
       for(pas of this.dataAutomaticStep){
-        res = eval(pas.exec)
-        if(pas.expected != '---nothing---'){
-          res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+        if( pas.regular === true ){
+          // Par expression regulière
+
+          res = this.command.match(regExp )
+          var re
+          if(res.groups){
+            for(var prop in res.groups){
+              re = new RegExp(`__${prop}__`,'g')
+              pas.exec = pas.exec.replace(re, res.groups[prop])
+            }
+          }
+          return eval(pas.exec)
+
+        } else {
+          // Par expression explicite
+          res = eval(pas.exec)
+          if(pas.expected != '---nothing---'){
+            res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+          }
         }
       }
       return true
@@ -39,6 +84,9 @@ Object.assign(HandTestStep.prototype,{
 const DATA_AUTOMATIC_STEPS = {
   "ouvrir l'app": [
     {exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
+  ]
+, "ouvrir l'analyse '(?<relpath>[\/a-zA-Z0-9_\-]+)'":[
+    {regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
   ]
 , "enregistrer l'analyse":[
     {exec: "current_analyse.save()", expected: '---nothing---'}
