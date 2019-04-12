@@ -60,7 +60,7 @@ const MESSAGES = {
 , "confirm-destroy-event": "Êtes-vous certain de vouloir détruire à tout jamais cet event ?…"
 , "---- DOCUMENT ----":""
 , "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
-, "confirm-content-much-shorter": "Le document est plus de 20% plus court que sa version précédente… Confirmez-vous cet enregistrement ?"
+, "confirm-content-much-shorter": "Le document \"%{doc_name}\" est plus de 20% plus court que sa version précédente… Confirmez-vous quand même cet enregistrement ?"
 }
 
 /**

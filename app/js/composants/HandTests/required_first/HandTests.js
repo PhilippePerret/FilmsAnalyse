@@ -92,7 +92,7 @@ const HandTests = {
 
 , saveResultats(){
     this.code   = this.resultats
-    this.iofile.save({after: this.endSaveResultats.bind(this)})
+    this.iofile.save({after: this.endSaveResultats.bind(this), no_warm_if_shorter: true})
   }
 , endSaveResultats(){
   }
