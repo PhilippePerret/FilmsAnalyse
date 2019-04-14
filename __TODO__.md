@@ -1,12 +1,11 @@
 # SUR LE GRILL
 
 ### Traiter :
-                [3]
                 Poursuivre avec [4]
 
 * HANDTESTS
   [4] Poursuivre le développement des tests manuels,
-    + + + + Commencer par bien documenter, pour se remettre dedans 
+    + + + + Commencer par bien documenter, pour se remettre dedans
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
     - traitement des étapes automatiques dynamique (comme `ouvrir analyse '...'`)
   - Bien documenter l'utilisation des expressions régulières dans les étapes de tests
@@ -21,10 +20,6 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [BUGS]
-  [3] En changeant le temps de début dans l'analyse 'MANUEL/vierge', il y a demande de confirmation alors que normalement l'analyse ne contient ni document ni event…
-  EN FAIT, il reste 3 brins dans l'analyse vierge, qui viennent de je ne sais pas quoi. Peut-être de l'analyse chargée au tout début. => RESETTER VRAIMENT LES BRINS AU CHANGEMENT D'ANALYSE
-  Si elle en contient, c'est que l'initialisation se fait mal et conserve des events et documents.
-  Le menu des décors ne s'actualise pas dans les formulaires déjà ouverts.
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative

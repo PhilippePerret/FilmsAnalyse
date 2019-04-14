@@ -125,7 +125,7 @@ static get allDocuments(){
   Méthode qui compte le nombre de documents qui se trouvent dans le dossier
   `analyse_files` et le renvoie (utilisé pour les tests manuels)
 **/
-static count(){
+static get count(){
   return glob.sync(`${current_analyse.folderFiles}/*.*`).length
 }
 // ---------------------------------------------------------------------

@@ -91,6 +91,9 @@ const DATA_AUTOMATIC_STEPS = {
 , "aucun brin":[
     {exec: 'FABrin.count', expected: 0, error: "L'analyse ne devrait comporter aucun brin…"}
   ]
+, "aucun personnage":[
+    {exec: 'FAPersonnage.count', expected: 0, error: "L'analyse ne devrait comporter aucun personnage…"}
+  ]
 , "ouvrir l'app": [
     {exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
   ]

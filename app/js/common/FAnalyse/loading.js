@@ -41,6 +41,8 @@ FAnalyse.resetAll = function(){
     EventForm.reset() // notamment destruction des formulaires
     current_analyse.videoController.remove()
     FAEscene.reset()
+    FABrin.reset()
+    FAPersonnage.reset()
 
     delete current_analyse.videoController
     delete current_analyse.locator

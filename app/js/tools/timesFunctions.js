@@ -15,9 +15,10 @@ const setFilmStartTimeAt = function(){
   if(diff === 0) return F.notify(T('same-start-time'))
 
   console.log({
-    'FAEvent.count':FAEvent.count, 'FABrin.count': FABrin.count, 'FADocument.count': FADocument.count
+    'FAEvent.count':FAEvent.count, 'FABrin.count': FABrin.count, 'FADocument.count': FADocument.count,
+    'Personnage count':FAPersonnage.count
   })
-  if(FAEvent.count || FABrin.count || FADocument.count){
+  if(FAEvent.count || FABrin.count || FADocument.count{
     if(!confirm(T('confirm-on-change-start-time'))) return
     current_analyse.forEachEvent(ev => ev.time += diff)
     // TODO Corriger toutes les balises {{time:...}} qu'on

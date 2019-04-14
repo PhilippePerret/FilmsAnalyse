@@ -37,8 +37,11 @@ reset(){
   }
   delete this.data
   delete this._brins
+  delete this._path
   delete this._iofile
+  delete this._pathData
   delete this._iofileData
+  delete this.lastNumero
   return this // chainage
 }
 ,
