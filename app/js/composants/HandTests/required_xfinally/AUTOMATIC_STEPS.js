@@ -21,7 +21,7 @@ Object.assign(HandTestStep.prototype,{
             // Est-ce cette expression là ?
             if(cmd.match(new RegExp(kcmd))){
               // Oui ! on l'a trouvé
-              console.log("Expression régulière trouvée !", kcmd)
+              // console.log("Expression régulière trouvée !", kcmd)
               this.dataAutomaticStep    = DATA_AUTOMATIC_STEPS[kcmd]
               this.keyDataAutomaticStep = kcmd
               return true

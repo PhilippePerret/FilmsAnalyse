@@ -497,7 +497,14 @@ domField(prop){
 }
 
 synchronizePitchAndResume(e){
-  this.jqField('content').val(this.jqField('titre').val())
+  if(undefined === this.pitchAndResumeSynchronizable){this.checkIfSynchronizable()}
+  if(this.pitchAndResumeSynchronizable){
+    this.jqField('content').val(this.jqField('titre').val())
+  }
+}
+// Méthode qui regarde si le synopsis est synchronisable avec le pitch
+checkIfSynchronizable(e){
+  this.pitchAndResumeSynchronizable = this.jqField('content').val() == ''
 }
 
 // ---------------------------------------------------------------------
@@ -516,6 +523,7 @@ observe(){
   // on synchronise le pitch avec le résumé
   if(this.type === 'scene' && this.isNew){
     this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
+    this.jqField('content').on('keyup', my.checkIfSynchronizable.bind(my))
   }
 
   // Bouton pour actualiser le menu des types de tout élément et pour éditer
@@ -741,7 +749,7 @@ getFormValues(){
     , fields = []
     , idSansPref = null
     , err_msg
-    
+
   $('select,input[type="text"],input[type="hidden"],textarea,input[type="checkbox"]')
     .filter(function(){
       return /* $(this).id && */ ($(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)

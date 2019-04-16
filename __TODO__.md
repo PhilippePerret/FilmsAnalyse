@@ -1,25 +1,30 @@
 # SUR LE GRILL
 
 ### Traiter :
-                Poursuivre avec [4]
+
+* [BUGS]
+  - Quand on rentre le pitch de la scène, il ne faut le recopier dans le résumé (synopsis) que si ce champ est vide, ne surtout pas effacer ce qui s'y trouve.
 
 * HANDTESTS
-  [4] Poursuivre le développement des tests manuels,
-    + + + + Commencer par bien documenter, pour se remettre dedans
+  - Il ne faut pas que les étapes du synopsis entrainent des success.
+  + + + + Commencer par bien documenter, pour se remettre dedans
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
-    - traitement des étapes automatiques dynamique (comme `ouvrir analyse '...'`)
-  - Bien documenter l'utilisation des expressions régulières dans les étapes de tests
+    - traitement des étapes automatiques dynamique (à l'instar de `ouvrir analyse '...'`)
+  + Implémenter le passage au fichier suivant + mettre bouton
+  - [Implémentation] Bien documenter l'utilisation des expressions régulières dans les étapes de tests
     - se servir de `ouvrir l'analyse`
-    - bien commenter l'utilisation de l'asynchronicité avec un `return null` qui
+    - bien documenter l'utilisation de l'asynchronicité avec un `return null` qui
       interrompt le test, et la méthode qui doit donc explicitement appeler les
       marques de réussite ou d'échec (HandTests.markSuccess/markFailure)
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
+* Voir comment obtenir un numéro ISBN
+
+* Liste détaillée des décors avec les scènes, pour correction par exemple (Affichage > Décors).
+
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
-
-* [BUGS]
 
 * [AMÉLIORATIONS]
   - construction du graphique de la dynamique narrative

@@ -6,7 +6,11 @@ Object.assign(HandTestStep.prototype,{
                       à faire en cours de route ou à la fin.
   **/
   isCheck(){
-    return 'object' === typeof(this.command) && Object.keys(this.command)[0] == 'check'
+    let ok = 'object' === typeof(this.command) && Object.keys(this.command)[0] == 'check'
+    if(ok === false) return false
+    // Avant, on pouvait donner une liste de checks, maintenant on ne peut plus
+    if(Array.isArray(this.command['check'])) throw("Il faut un seul check par ligne 'check:'")
+    return true
   }
   /**
     Exécute le check
@@ -14,62 +18,65 @@ Object.assign(HandTestStep.prototype,{
     @return {Boolean} True si c'est un succès, False otherwise.
   **/
 , execTheCheck(){
-    var cmd, pas, res
+    var cmd = this.command['check']
+      , cmd_init = "" + this.command['check']
+      , pas
+      , res
 
-    // D'abord, il faut voir si ce ne sont pas des automatic-steps
-
-    // POURSUIVRE CI-DESSOUS POUR POUVOIR SUPPRIMER LES COMMANDES QUI SONT
-    // DES ÉTAPES AUTOMATIQUES POUR NE GARDER QUE CELLES QUI S'INTERPRETENT
-    // LES REMPLACER SIMPLEMENT PAR DES ESPACES
-
-    let nb_cmds = this.command['check'].length
-    for(var i = 0; i < nb_cmds ; ++i){
-      cmd = this.command['check'][i]
-      pas = DATA_AUTOMATIC_STEPS[cmd]
-      if(undefined === pas) continue
+    // Est-ce que la commande est une étape automatique ?
+    pas = DATA_AUTOMATIC_STEPS[cmd]
+    if (pas){
+      // Une step automatique
       try {
         res = eval(pas.exec)
         if(pas.expected != '---nothing---'){
           res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+          return true
         }
-        this.command['check'][i] = '' // pour la retirer
       } catch (e) {
-        console.error(e)
-        F.error(e)
-        return false // on s'arrête là
+        console.error(e); return F.error(e) // on s'arrête là
+      }
+    } else if (res = this.isElementNumerisable(cmd)) {
+      // Un objet numérisable => un check numérique (il y a x trucs)
+      if(res.ok === true){
+        return true
+      } else if (res.error === null){
+        // Il faut continuer pour voir
+      } else {
+        // Une erreur
+        return false
       }
     }
 
-    cmd = "" + this.command['check'].join(RC).trim()
-
-    // Il ne reste peut-être plus aucun check à évaluer
-    if (cmd == '') return true
-
-    // Il faut analyse la phrase de check, qui peut être sous la forme :
+    // Il faut analyser la phrase de check, qui peut être sous la forme :
     //  {{event:12}} existe
     //  {{event:24}} apparait dans le READER
     //  etc.
 
     // On commence par supprimer les petits mots inutiles
     cmd = cmd.replace(/(^| )(le|la|de|des|un)( |$)/ig, ' ')
-    console.log("Commande : ", cmd)
     for(var reg in HandTestStep.TABLE_SUBSTITUTIONS){
       cmd = cmd.replace(new RegExp(reg, 'gi'), HandTestStep.TABLE_SUBSTITUTIONS[reg])
     }
-    console.log("Commande : ", cmd)
+    // console.log("Commande : ", cmd)
     cmd = cmd.replace(/  +/,' ').trim()
-    console.log("Commande : ", cmd)
+    // console.log("Commande : ", cmd)
 
     cmd = cmd.split(RC)
-    console.log("Commande : ", cmd)
+    // console.log("Commande : ", cmd)
 
-    this.analyseAndCheckAll(cmd)
+    // la valeur retournée peut être triple :
+    //  true    Le test est un succès, on passe à la suite
+    //  false   Le test est un échec (ou problème), on passe à la suite
+    //  null    Le test est manuel, on attend la réponse de l'utilisateur
+    return this.analyseAndCheck(cmd))
 
-    return true // pour le moment
   }
-, analyseAndCheckAll(checks){
-    checks.map(check => this.analyseAndCheck(check))
-  }
+/**
+  Grande méthode qui analyse la phrase de check +check+ et l'exécute
+  si c'est une phrase de check automatique. Dans le cas contraire, elle la
+  renvoie telle quelle pour exécution manuelle.
+**/
 , analyseAndCheck(check){
     let sujet, sujet_id, verbe, expected
     check = check.replace(/^\{\{([a-zA-Z_]+):(.*?)\}\}/,function(tout, suj, suj_id){
@@ -77,6 +84,19 @@ Object.assign(HandTestStep.prototype,{
       sujet_id = suj_id
       return ''
     })
+    // On prend le sujet
+    let isujet = this.getSujet(sujet, sujet_id)
+    if(false === isujet){
+      // c'est peut-être simplement un check manuel (mais ça peut être aussi
+      // une erreur de test)
+      return null
+    }
+    else if (undefined === isujet){
+      err_msg = `Impossible de trouver le sujet de type "${sujet}" et d'identifiant ${sujet_id}…`
+      console.error(err_msg)
+      return F.error(err_msg)
+    }
+
     check = check.replace(/ ([a-zA-Z_\-]+) /, function(tout, verb){
       verbe = verb.toUpperCase()
       return ''
@@ -96,16 +116,6 @@ Object.assign(HandTestStep.prototype,{
     console.log({
       check:check, expected: expected
     })
-
-    // On prend le sujet
-    let isujet = this.getSujet(sujet, sujet_id)
-    if(false === isujet) return false // problème de définition de test
-    else if (undefined === isujet){
-      err_msg = `Impossible de trouver le sujet de type "${sujet}" et d'identifiant ${sujet_id}…`
-      console.error(err_msg)
-      return F.error(err_msg)
-    }
-    console.log("isujet:", isujet)
 
     // La suite dépend du verbe
     switch (verbe) {
@@ -128,7 +138,8 @@ Object.assign(HandTestStep.prototype,{
         console.error(`Impossible de traiter le verbe "${verbe}". Je dois renoncer.`)
         return false
     }
-
+    // Si tout s'est bien passé, on retourne true
+    return true
   }
   /**
     @param {String} suj   Le type du sujet, p.e. 'event' ou 'document'
@@ -137,18 +148,45 @@ Object.assign(HandTestStep.prototype,{
 
     @return {Instance} Instance de l'objet dont il est question.
   **/
+
 , getSujet(suj, suj_id){
-    switch (suj) {
-      case 'event':
-        return FAEvent.get(suj_id)
-      case 'document':
-        return FADocument.get(suj_id)
-      case 'brin':
-        return FABrin.get(suj_id)
-      default:
-        console.error(`Je ne sais pas traiter le sujet "${suj}"`)
-        return false
+    delement = HandTests.AppElements[suj]
+    if (undefined === delement){
+      log.warn(`"${suj}" n'est pas un sujet.`)
+      return false
+    } else {
+      return (delement.getMethod)(suj_id)
     }
+  }
+/**
+  Méthode pour savoir si l'élément est un élément numérisable, donc un
+  élément en nombre de l'application. Pour une bibliothèque, ce serait
+  les livres et les auteurs, par exemple.
+
+  @param {String} cmd   Quelque chose comme "x trucs" où "truc" est un
+                        élément défini de l'application. Ou Rien.
+  @return {Object} Une table contenant {:ok, :error}
+**/
+, isElementNumerisable(cmd){
+    var res, countEl
+    if(res = cmd.match(this.regexpElementsNumerisable())){
+      // La commande concerne un élément numérisable, on le teste
+      let [tout, nombre, element] = res
+      nombre = parseInt(nombre,10)
+      if ((countEl = this.getCount(element)) === nombre){
+        return {ok: true}
+      } else {
+        return {ok: false, error: `Nombre de "${element}s" attendus : ${nombre}. Trouvés : ${countEl}`}
+      }
+    } else {
+      return {ok: false, error: null}
+    }
+  }
+, regexpElementsNumerisable(){
+    if (undefined==this._regexpElNum){
+      this._regexpElNum = new RegExp(`([0-9]+) (${Object.keys(HandTests.AppElements).join('|')})s`)
+    }
+    return this._regexpElNum
   }
 })
 
