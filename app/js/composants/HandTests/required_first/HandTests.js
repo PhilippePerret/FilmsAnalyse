@@ -169,6 +169,12 @@ const HandTests = {
   jqo.find('#btn-htest-path').on('click', this.runThisTest.bind(this))
 }
 
+, markNormalStep(){
+    if(false === this.mode_last){
+      this.consigneResCurStep(2)
+    }
+    this.currentHtestFile.currentHTest.currentStep.markNormalStep()
+}
 , markSuccess(){
     if (false === this.mode_last){
       this.resultats.successCount ++

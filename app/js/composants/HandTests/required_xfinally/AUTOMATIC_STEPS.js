@@ -49,6 +49,8 @@ Object.assign(HandTestStep.prototype,{
     // dans this.keyDataAutomaticStep
     let regExp = this.keyDataAutomaticStep
 
+    // console.log("-> execAndTest, avec commande : ", this.command)
+
     try {
       for(pas of this.dataAutomaticStep){
         if( pas.regular === true ){
@@ -62,7 +64,13 @@ Object.assign(HandTestStep.prototype,{
               pas.exec = pas.exec.replace(re, res.groups[prop])
             }
           }
-          return eval(pas.exec)
+          switch (eval(pas.exec)) {
+            case true:  return pas.NaT ? 2 : 1
+            case false: return 0
+            case null:  return null // traitement asynchrone
+            default:
+              console.log("Ni true, ni false, ni null:", eval(pas.exec))
+          }
 
         } else {
           // Par expression explicite
@@ -72,11 +80,11 @@ Object.assign(HandTestStep.prototype,{
           }
         }
       }
-      return true
+      return pas.NaT ? 2 : 1
     } catch (e) {
       console.error(e)
       F.error(e)
-      return false
+      return 0
     }
   }
 })
@@ -95,26 +103,26 @@ const DATA_AUTOMATIC_STEPS = {
     {exec: 'FAPersonnage.count', expected: 0, error: "L'analyse ne devrait comporter aucun personnage…"}
   ]
 , "ouvrir l'app": [
-    {exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
+    {NaT: true /* pas un test */, exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
   ]
 , "ouvrir l'analyse '(?<relpath>[\/a-zA-Z0-9_\-]+)'":[
-    {regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
+    {NaT: true, regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
   ]
 , "enregistrer l'analyse":[
-    {exec: "current_analyse.save()", expected: '---nothing---'}
+    {NaT: true, exec: "current_analyse.save()", expected: '---nothing---'}
   ]
 , "déverrouiller l'analyse":[
-    {exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
+    {NaT: true, exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
   ]
 , "enregistrer le document courant":[
-    {exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
+    {NaT: true, exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
   ]
 , "afficher la liste des brins": "ouvrir la fenêtre des brins"
 , "ouvrir la fenêtre des brins":[
-    {exec: "current_analyse.displayBrins()", expected: '---nothing---'}
+    {NaT: true, exec: "current_analyse.displayBrins()", expected: '---nothing---'}
   ]
 , "ouvrir le document dbrins":[
-    {exec: "FAWriter.openDoc('dbrins')", expected: '---nothing---'}
+    {NaT: true, exec: "FAWriter.openDoc('dbrins')", expected: '---nothing---'}
   ]
 
 // ---------------------------------------------------------------------

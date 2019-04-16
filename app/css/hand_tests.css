@@ -56,6 +56,9 @@ div.htest .htest-body ul.htest-steps li.htest-step.success {
   color:green;
 }
 div.htest .htest-body ul.htest-steps li.htest-step.done {
+  opacity:0.5;
+  font-weight:normal;
+  font-style:italic;
 }
 
 div.htest .htest-body .htest-path {

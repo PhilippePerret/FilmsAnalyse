@@ -23,6 +23,8 @@ Object.assign(HandTestStep.prototype,{
       , pas
       , res
 
+    console.log("Exécution du check : ", cmd)
+
     // Est-ce que la commande est une étape automatique ?
     pas = DATA_AUTOMATIC_STEPS[cmd]
     if (pas){
@@ -31,20 +33,20 @@ Object.assign(HandTestStep.prototype,{
         res = eval(pas.exec)
         if(pas.expected != '---nothing---'){
           res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
-          return true
+          return pas.NaT ? 2 : 1
         }
       } catch (e) {
-        console.error(e); return F.error(e) // on s'arrête là
+        console.error(e); F.error(e) ; return 0 // on s'arrête là
       }
     } else if (res = this.isElementNumerisable(cmd)) {
       // Un objet numérisable => un check numérique (il y a x trucs)
       if(res.ok === true){
-        return true
+        return 1
       } else if (res.error === null){
         // Il faut continuer pour voir
       } else {
         // Une erreur
-        return false
+        return 0
       }
     }
 
@@ -62,14 +64,11 @@ Object.assign(HandTestStep.prototype,{
     cmd = cmd.replace(/  +/,' ').trim()
     // console.log("Commande : ", cmd)
 
-    cmd = cmd.split(RC)
-    // console.log("Commande : ", cmd)
-
     // la valeur retournée peut être triple :
     //  true    Le test est un succès, on passe à la suite
     //  false   Le test est un échec (ou problème), on passe à la suite
     //  null    Le test est manuel, on attend la réponse de l'utilisateur
-    return this.analyseAndCheck(cmd))
+    return this.analyseAndCheck(cmd)
 
   }
 /**
@@ -94,7 +93,8 @@ Object.assign(HandTestStep.prototype,{
     else if (undefined === isujet){
       err_msg = `Impossible de trouver le sujet de type "${sujet}" et d'identifiant ${sujet_id}…`
       console.error(err_msg)
-      return F.error(err_msg)
+      F.error(err_msg)
+      return 0
     }
 
     check = check.replace(/ ([a-zA-Z_\-]+) /, function(tout, verb){
@@ -131,15 +131,15 @@ Object.assign(HandTestStep.prototype,{
             break
           default:
             console.error(`Impossible de traiter le lieu "${expected}". Je dois renoncer.`)
-            return false
+            return 0
         }
         break
       default:
         console.error(`Impossible de traiter le verbe "${verbe}". Je dois renoncer.`)
-        return false
+        return 0
     }
     // Si tout s'est bien passé, on retourne true
-    return true
+    return 1
   }
   /**
     @param {String} suj   Le type du sujet, p.e. 'event' ou 'document'
@@ -150,9 +150,9 @@ Object.assign(HandTestStep.prototype,{
   **/
 
 , getSujet(suj, suj_id){
-    delement = HandTests.AppElements[suj]
+    let delement = HandTests.AppElements[suj]
     if (undefined === delement){
-      log.warn(`"${suj}" n'est pas un sujet.`)
+      log.info(`"${suj}" n'est pas un sujet.`)
       return false
     } else {
       return (delement.getMethod)(suj_id)

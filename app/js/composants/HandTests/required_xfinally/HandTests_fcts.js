@@ -13,16 +13,16 @@ Object.assign(HandTests,{
         return null // null exactement, pour attendre la suite
       } catch (e) {
         console.error(e)
-        return false // pour marquer faux et poursuivre
+        return 0 // pour marquer faux et poursuivre
       }
     } else {
       F.notice(`L'analyse "./analyse/tests/MANUELS/${relpath}" n'existe pas encore. Il faut que tu la crées, si tu veux automatiser cette étape.`)
-      return false
+      return 0
     }
   }
 , endLoadAnalyseAndWait(){
     log.info('-> HandTests::HandTests')
-    this.markSuccess()
+    this.markNormalStep()
     log.info('<- HandTests::HandTests')
   }
 })

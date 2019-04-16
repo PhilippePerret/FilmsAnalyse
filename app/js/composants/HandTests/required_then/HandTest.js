@@ -68,7 +68,7 @@ writeAllSteps(){
     command = this.all_steps[istep]
     if('object' === typeof command && Object.keys(command)[0] == 'check'){
       // => c'est un check à faire
-      command = command['check']
+      command = `⚐ ${command['check']}`
     } else if (command.match(/^\/(.*)\/$/)){
       // <= une expression régulière
       // => la raboter pour supprimer les '/.../'
