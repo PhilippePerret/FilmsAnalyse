@@ -24,7 +24,7 @@ const CURRENT_THING_MENUS = [
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
-  'goto-last-scene'
+  'goto-last-scene', 'display-decors'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -315,6 +315,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Alt+Shift+B'
               , enabled: false
               , click: ()=>{execJsOnCurrent('displayBrins')}
+            }
+          , {
+                label: "Décors"
+              , id: 'display-decors'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+D'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('displayDecors')}
             }
           , {
                 label: "Statistiques"

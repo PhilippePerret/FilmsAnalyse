@@ -92,7 +92,7 @@ Nombre personnages   ${FAPersonnage.count}
     , DCreate('SPAN', {inner: 'Durée',   class: 'label center'})
     ]}))
 
-    FAEscene.forEachDecor(function(decor){
+    FADecor.forEachDecor(function(decor){
       decorsList.push(decor.asStats())
     })
 

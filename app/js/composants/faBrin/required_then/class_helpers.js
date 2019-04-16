@@ -55,5 +55,5 @@ onDrop(e, ui){
 
 })
 Object.defineProperties(FABrin,{
-  fwindow:{get(){return this._fwindow||defP(this,'_fwindow',new FWindow(this,{id:'fwindow-brins'}))}}
+  fwindow:{get(){return this._fwindow||defP(this,'_fwindow',new FWindow(this,{id:'fwindow-brins', class:'fwindow-listing-type'}))}}
 })

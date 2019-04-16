@@ -1,9 +1,10 @@
 # SUR LE GRILL
 
 ### Traiter :
+* Liste détaillée des décors avec les scènes, pour correction par exemple (Affichage > Décors).
+  Il faut faire le tri au niveau des scènes, pour ne mettre dans le décor principal que les scènes qui n'appartiennent pas à des sous-décors.
 
 * [BUGS]
-  - Quand on rentre le pitch de la scène, il ne faut le recopier dans le résumé (synopsis) que si ce champ est vide, ne surtout pas effacer ce qui s'y trouve.
 
 * HANDTESTS
   - Il ne faut pas que les étapes du synopsis entrainent des success.
@@ -20,7 +21,6 @@
 
 * Voir comment obtenir un numéro ISBN
 
-* Liste détaillée des décors avec les scènes, pour correction par exemple (Affichage > Décors).
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`

@@ -34,6 +34,11 @@ as(format, flag, opts){
       // Sortie pour le livre
       str = this.asBook(opts)
       break
+    case 'pitch':
+      // Pour le méthode qui répondent à la méthode `asPitch`
+      // à commencer par la scène
+      str = this.asPitch(opts)
+      break
     case 'full':
       // Affiche complet, avec toutes les informations
       str = this.asFull(opts)

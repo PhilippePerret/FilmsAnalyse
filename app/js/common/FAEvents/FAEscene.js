@@ -141,45 +141,8 @@ static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().ti
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
 static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
 
-static get dataDecors(){return this._dataDecors||defP(this,'_dataDecors',this.getDataDecors())}
-
-/**
-  Récupère la donnée des décors dans la liste des scènes, directement
-  C'est une liste une contient en clé le nom du décor principal et en
-  valeur la liste des sous-décors qu'il possède.
-**/
-static getDataDecors(){
-  var dinst = {}  // table avec des instances
-
-  this.forEachScene(function(scene){
-    // console.log("scene:",scene)
-    if(scene.decor && scene.decor != ''){
-      if(undefined === dinst[scene.decor]){
-        dinst[scene.decor] = new FADecor(scene.decor)
-      }
-      dinst[scene.decor].addScene(scene.numero)
-      // Il faut que le décor existe pour que le sous-décor puisse
-      // exister, c'est pour ça qu'on le met là.
-      if(scene.sous_decor && scene.sous_decor != ''){
-        if(undefined === dinst[scene.decor].sousDecor(scene.sous_decor)){
-          dinst[scene.decor].addSousDecor(scene.sous_decor)
-        }
-        dinst[scene.decor].sousDecor(scene.sous_decor).addScene(scene.numero)
-      }
-    }
-  })
-  // console.log("Données décors :", dinst)
-  return dinst
-}
-
-static get decorsCount(){
-  return Object.keys(this.dataDecors).length
-}
-static forEachDecor(fn){
-  for(var decor in this.dataDecors){
-    fn(this.dataDecors[decor] /* instance FADecor */)
-  }
-}
+static get dataDecors(){return FADecor.data}
+static get decorsCount(){return FADecor.count}
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event

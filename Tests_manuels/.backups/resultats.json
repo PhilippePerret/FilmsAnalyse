@@ -1,15 +1,15 @@
 {
-  "date": 1555382675281,
-  "successCount": 19,
-  "failureCount": 1,
-  "pendingCount": 0,
+  "date": 1555383225903,
+  "successCount": 18,
+  "failureCount": 0,
+  "pendingCount": 2,
   "tests": {
     "./__edition_event.yaml": {
       "0": {
         "0": 1,
         "1": 1,
-        "2": 1,
-        "3": 1,
+        "2": 2,
+        "3": 2,
         "4": 1
       },
       "1": {
@@ -29,7 +29,7 @@
         "5": 1,
         "6": 1,
         "7": 1,
-        "8": 0
+        "8": 1
       }
     }
   }
