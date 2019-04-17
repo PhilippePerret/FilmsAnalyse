@@ -1,12 +1,10 @@
 # SUR LE GRILL
 
 ### Traiter :
-* Liste détaillée des décors avec les scènes, pour correction par exemple (Affichage > Décors).
-  Il faut faire le tri au niveau des scènes, pour ne mettre dans le décor principal que les scènes qui n'appartiennent pas à des sous-décors.
 
 * [BUGS]
-  - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
   - Je ne suis pas parvenu à créer une ironie dramatique (à 1 heure environ, dans Her). Il me disait qu'il fallait définir le type alors que le type était défini.
+  - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
   - Quand j'ai voulu créer un event (simple event), ça a produit plusieurs erreurs à voir.
     - note : il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
 

@@ -18,16 +18,27 @@ build(){
   } else {
     FADecor.forEachDecor(function(decor){
       // les scènes qui n'appartiennent pas à des sous-décors
+      // On commence par faire la liste des scènes qui appartiennent aux
+      // sous-décors du décor, pour ne pas avoir à les prendre
+      var scenesSousDecors = {}
+      decor.forEachSousDecor(function(sousdec){
+        sousdec.forEachScene(scene => scenesSousDecors[scene.numero] = true)
+      })
+      // Maintenant que la liste des toutes les scènes qui appartiennent à
+      // des sous-décors du décor est établie, on peut traiter les scènes qui
+      // n'appartienne qu'au décor, pas à un sous-décor.
       var divsScenesMain = []
       decor.forEachScene(function(scene){
-        divsScenesMain.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE|LABELLED)}))
+        if (undefined === scenesSousDecors[scene.numero]){
+          divsScenesMain.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE)}))
+        }
       })
       // Les sous-décors
       var divsSousDecors = []
       decor.forEachSousDecor(function(sousdec){
         var divsScenes = []
         sousdec.forEachScene(function(scene){
-          divsScenes.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE|LABELLED)}))
+          divsScenes.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE)}))
         })
         divsSousDecors.push(DCreate('DIV', {class:'sous-decor', inner: DFormater(sousdec.name)}))
         divsSousDecors.push(DCreate('DIV', {class:'scenes', append:divsScenes}))
