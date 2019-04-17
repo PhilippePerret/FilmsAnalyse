@@ -352,7 +352,6 @@ forEachEvent(method, options){
  */
 addEvent(nev) {
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
-  nev.type === 'scene' && FAEscene.updateAll()
   FAStater.update()
 }
 
@@ -396,7 +395,10 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  ev.type === 'scene' && FAEscene.updateAll()
+  if (ev.type === 'scene'){
+    FAEscene.updateAll()
+    FADecor.checkDecorOfScene(ev)
+  }
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée

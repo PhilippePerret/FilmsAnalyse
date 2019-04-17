@@ -29,15 +29,7 @@ static updateAll(){
   var my = this
   my.reset()
   my.updateNumerosScenes()
-  if(my.a.options.get('option_duree_scene_auto')){
-    var prev_scene
-    my.forEachSortedScene(function(scene){
-      if(scene.numero > 1){
-        prev_scene = my.getByNumero(scene.numero - 1)
-        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
-      }
-    })
-  }
+  my.updateDureeScenes()
   this.a.modified = true
 }
 
@@ -51,6 +43,22 @@ static updateNumerosScenes(){
     scene.numero = ++ num
     scene.updateNumero()
     if (oldNum != num) scene.modified = true
+  })
+}
+
+/**
+  Actualisation de la durée des scènes (si l'option
+  le demande)
+**/
+static updateDureeScenes(){
+  if(!this.a.options.get('option_duree_scene_auto')) return
+  let my = this
+  var prev_scene
+  my.forEachSortedScene(function(scene){
+    if(scene.numero > 1){
+      prev_scene = my.getByNumero(scene.numero - 1)
+      prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
+    }
   })
 }
 
@@ -361,10 +369,11 @@ onModify(){
 // Pour vérifier si c'est un nouveau décor
 checkForDecor(){
   if(this.decor){
-    if(undefined === FAEscene.dataDecors[this.decor]){
-      delete FAEscene._dataDecors
-    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sousDecor(this.sous_decor)){
-      delete FAEscene._dataDecors
+    if(undefined === FADecor.data[this.decor]){
+      FADecor.resetAll()
+    } else if (this.sous_decor && undefined === FADecor.data[this.decor].sousDecor(this.sous_decor)){
+      FADecor.data[this.decor].reset()
+      FADecor.resetAll()
     }
   }
 }

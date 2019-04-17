@@ -109,6 +109,7 @@ load(){
 , onReady(){
     log.info('-> <<FAanalyse>>#onReady')
     if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FADecor)      return this.loadDecor(this.onReady.bind(this))
     if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
     if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
     if(NONE === typeof FAWriter)    return this.loadWriter(this.onReady.bind(this))
@@ -207,6 +208,10 @@ loadProcede(fn_callback){
 ,
 loadBrin(fn_callback){
   return System.loadComponant('faBrin', fn_callback)
+}
+,
+loadDecor(fn_callback){
+  return System.loadComponant('faDecor', fn_callback)
 }
 
 })

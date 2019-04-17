@@ -9,6 +9,9 @@
     expo:
       hname: Exposition
       description: Une scène qui expose une situation.
+    paysage:
+      hname: Scène paysage
+      description : Une scène dont le but principal est de montrer un beau décor, un beau paysage, une belle vue.
     action:
       hname: Scène d’action
       description: Une scène où l’action prend une grande place.

@@ -232,6 +232,8 @@ toggleForm(){
 
 onShow(){
   this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
+  // Les décors peuvent avoir changé à chaque fois
+  this.peupleDecors()
 }
 
 /**
@@ -301,7 +303,7 @@ afterBuilding(){
     }
   } else if (typ === 'scene'){
     // Si c'est une scène il faut peupler avec les décors existants
-    this.peupleDecors()
+    // this.peupleDecors()
     this.peupleTypesScenes()
   } else if (typ === 'proc'){
     // Pour les procédés, tout dépend de là où on en est : si le procédé
@@ -423,21 +425,12 @@ onChooseSousDecor(){
   this.jqField('inputtext-2').val(this.menuSousDecors.val())
 }
 peupleDecors(){
-  this.menuDecors.html('')
-  this.menuDecors.append(DCreate('OPTION',{value:'', inner:'Choisir…'}))
-  for(var decor in FAEscene.dataDecors){
-    this.menuDecors.append(DCreate('OPTION',{value:decor, inner:decor}))
-  }
+  this.menuDecors.html(FADecor.optionsDecors.bind(FADecor))
 }
 peupleSousDecors(decor){
-  this.menuSousDecors.html('')
-  if (FAEscene.dataDecors[decor].sousDecorsCount){
-    this.menuSousDecors.append(DCreate('OPTION',{value:'', inner: `Sous-décor de « ${decor} »…`}))
-    for(var sdecor in FAEscene.dataDecors[decor].sousDecors){
-      this.menuSousDecors.append(DCreate('OPTION',{value:sdecor, inner:sdecor}))
-    }
-  }
+  this.menuSousDecors.html(FADecor.data[decor].optionsSousDecors.bind(FADecor.data[decor]))
 }
+
 get menuDecors(){return this._menuDecors||defP(this,'_menuDecors', this.jqObj.find('select.decors'))}
 get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', this.jqObj.find('select.sous_decors'))}
 

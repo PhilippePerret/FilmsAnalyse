@@ -25,7 +25,13 @@ let addEvent = function(nev){
   this.locator.addEvent(nev)
   // Si le nouvel event est une scène, il faut peut-être numéroter
   // les suivantes
-  nev.type === 'scene' && FAEscene.updateAll()
+  if(nev.type === 'scene'){
+    FAEscene.updateAll()
+    // À la création d'une scène, il faut voir si c'est un
+    // nouveau décor et dans tous les cas, on doit l'ajouter
+    // à son décor
+    FADecor.checkDecorOfScene(nev)
+  }
   // Si le nouvel event est un noeud structurel, il faut l'enregistrer
   // dans les données du paradigme de Field
   if(nev.type === 'stt'){

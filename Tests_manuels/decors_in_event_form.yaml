@@ -1,0 +1,33 @@
+# Feuille de test pour tester la gestion des décors
+# dans le formulaire d'events
+# Les décors doivent toujours être mis par fréquence
+# d'utilisation.
+---
+  - id: classement_decors
+    libelle: Les décors doivent se classer par importance
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - "créer une scène à 0:00:00 avec le décor 'Maison'"
+      - "créer une scène à 2:00"
+      - check: La liste des décors doit contenir Maison
+      - choisir le décor 'Bureau' pour la scène 2
+      - "créer une scène à 3:00"
+      - check: La liste des décors doit contenir 'Maison, Bureau'
+      - choisir le décor 'Bureau' pour la 3e scène
+      - "créer un scène à 4:00"
+    checks:
+      - Le menu décors doit contenir maintenant 'Bureau, Maison' (bureau en premier)
+  - id: sort_sous_decors
+    libelle: Les sous-décors doivent se classer par ordre d'importance
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène à zéro avec le décor 'Maison' et le sous décor 'Salon'
+      - créer une scène au quart avec le décor 'Maison' et le sous-décor 'Chambre'
+      - créer une scène au milieu avec le décor 'Maison'
+      - check: Le sous-décor doit contenir dans cet ordre 'Salon, Chambre'
+      - choisir le sous-décor 'Chambre'
+      - créer une scène un peu plus loin avec le décor 'Maison'
+    checks:
+      - Les sous-décors doivent afficher dans l'ordre 'Chambre, Salon'
