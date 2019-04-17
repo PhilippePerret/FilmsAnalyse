@@ -355,11 +355,11 @@ updateMenusProcedes(){
     this.implementeMenuCategorieProcedes()
   }
 }
-implementeMenuForProcedes(DOMMenu, fn_onchange, value){
+implementeMenuForProcedes(domMenu, fn_onchange, value){
   if (undefined === value) value = ''
   let menuproc = this.jqObj.find('.div-procedes select')
   menuproc.off('change')
-  menuproc.replaceWith(DOMMenu)
+  menuproc.replaceWith(domMenu)
   menuproc = this.jqObj.find('.div-procedes select') // l'autre
   menuproc.on('change', this[fn_onchange].bind(this))
   menuproc.val(value) // le premier menu ou le choisi
@@ -379,7 +379,7 @@ implementeMenuSousCategorieProcedes(cate_id){
 }
 implementeMenuProcedes(cate_id, scate_id, value){
   this.implementeMenuForProcedes(
-    FAProcede.menuProcedes(cate_id, scate_id),
+    FAProcede.menuProcedes(cate_id, scate_id,this.id),
     'onChooseProcede', value || ''
   )
 }
@@ -745,6 +745,8 @@ getFormValues(){
 
   $('select,input[type="text"],input[type="hidden"],textarea,input[type="checkbox"]')
     .filter(function(){
+      // On filtre pour ne prendre que les champs valides, c'est-à-dire ceux
+      // qui portent la class `f<type>`
       return /* $(this).id && */ ($(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
     })
     .each(function(){

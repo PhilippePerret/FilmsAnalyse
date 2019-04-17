@@ -29,6 +29,7 @@ constructor(analyse, data){
   this.setup        = data.setup
   this.payoff       = data.payoff
   this.exploitation = data.exploitation
+
 }
 
 get htype(){ return 'Procédé' }

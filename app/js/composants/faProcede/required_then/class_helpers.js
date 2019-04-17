@@ -102,7 +102,7 @@ menuProcedes(cate_id, scate_id, event_id){
     for (var proc_id in scat_items){
       options.push(DCreate('OPTION',{value:proc_id, inner:scat_items[proc_id].hname}))
     }
-    this._menusProcedesSCat[scate_id] = DCreate('SELECT',{id:`event-${event_id}-procType`, append:options, class:'menu-procedes', attrs:{'data-cate-id':cate_id, 'data-scate-id': scate_id, 'data-event-id': event_id}})
+    this._menusProcedesSCat[scate_id] = DCreate('SELECT',{id:`event-${event_id}-procType`, append:options, class:'menu-procedes fproc', attrs:{'data-cate-id':cate_id, 'data-scate-id': scate_id, 'data-event-id': event_id}})
   }
   return $(this._menusProcedesSCat[scate_id]).clone()
 }
