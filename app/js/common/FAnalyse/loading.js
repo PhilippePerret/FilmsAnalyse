@@ -128,7 +128,6 @@ load(){
     EventForm.init()
     FAEscene.init()
     FAEqrd.reset().init()
-    FAEpp.reset().init()
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()

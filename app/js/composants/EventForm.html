@@ -23,7 +23,7 @@ module.exports = `
     </div>
 
     <div class="div-form -fproc">
-      <label class="ff finfo fpp fdialog fscene fnote">Type</label>
+      <label class="ff finfo fdialog fscene fnote">Type</label>
       <label class="ff fstt">Type du Nœud</label>
 
       <select class="event-sttID ff fstt" id="event-__EID__-sttID"></select>
@@ -34,7 +34,6 @@ module.exports = `
       <select class="dialog-types ff fdialog" id="event-__EID__-dialType"></select>
       <select class="info-types ff finfo" id="event-__EID__-infoType"></select>
       <select class="note-types ff fnote" id="event-__EID__-noteType"></select>
-      <select class="pp-types ff fpp" id="event-__EID__-ppType"></select>
 
       <button type="button" class="ff fall -fproc -fstt -fqrd update btn-update-types" title="Pour actualiser la liste des types">
         <img src="img/update-2.png" alt="Actualiser la liste des types">
@@ -99,28 +98,25 @@ module.exports = `
       </div>
     </div>
 
-    <div class="div-form">
+    <div class="div-form -fproc">
       <label class="ff fdyna">Libellé</label>
       <label class="ff fscene">Décor</label>
       <label class="ff fdim">Diminutif</label>
       <label class="ff fdim">@</label>
       <label class="ff fqrd">Question</label>
-      <label class="ff fpp">Préparation</label>
-      <label class="ff fproc">Installation</label>
       <select class="ff fscene decors"></select>
-      <input type="text" class="ff fscene fpp fdim fqrd fproc fdyna" id="event-__EID__-inputtext-1" />
+      <input type="text" class="ff fscene fdim fqrd fdyna" id="event-__EID__-inputtext-1" />
     </div>
 
-    <div class="div-form">
+    <div class="div-form -fproc">
       <label class="ff fscene">Sous-décor</label>
       <label class="ff fdim">Signification</label>
       <label class="ff fqrd">Réponse</label>
-      <label class="ff fpp fproc">Paiement/résolution</label>
       <select class="ff fscene sous_decors"></select>
-      <input type="text" class="ff fscene fpp fdim fqrd fproc" id="event-__EID__-inputtext-2" />
-      <div class="right ff fqrd fpp fproc">
+      <input type="text" class="ff fscene fdim fqrd" id="event-__EID__-inputtext-2" />
+      <div class="right ff fqrd">
         <label>Temps</label>
-        <input type="text" class="small horloge fqrd fpp fproc" id="event-__EID__-tps_reponse" />
+        <input type="text" class="small horloge fqrd" id="event-__EID__-tps_reponse" />
       </div>
     </div>
 
@@ -128,18 +124,18 @@ module.exports = `
       <div>
         <label class="ff fscene fbrin">Résumé</label>
         <label class="ff finfo">Information</label>
-        <label class="ff fevent faction fqd fpp fstt fproc fdyna">Description</label>
+        <label class="ff fevent faction fqd fstt fproc fdyna">Description</label>
         <label class="ff fdialog">Commentaire</label>
         <label class="ff fnote">Contenu de la note</label>
       </div>
       <textarea id="event-__EID__-content" rows="4"></textarea>
     </div>
 
-    <div class="div-form">
+    <div class="div-form -proc">
       <div>
-        <label class="ff fproc">Exploitation</label>
+        <label class="ff">Exploitation</label>
       </div>
-      <textarea class="ff fproc" id="event-__EID__-content2" rows="4"></textarea>
+      <textarea class="ff" id="event-__EID__-content2" rows="4"></textarea>
     </div>
 
     <div class="div-form">

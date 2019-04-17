@@ -14,7 +14,6 @@ const EVENTS_DATA = {
 , stt:    {id: 'stt',     hname: 'Nœud structurel', btn_name: 'N.STT'}
 , dyna:   {id: 'dyna',    hname: 'Élément dynamique', btn_name: 'O.O.C.'}
 , proc:   {id: 'proc',    hname: 'Procédé', btn_name: 'Proc.'}
-, pp:     {id: 'pp',      hname: 'Préparation/paiement', btn_name: 'P/P'}
 , info:   {id: 'info',    hname: 'Info', btn_name: 'Info'}
 , note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
 , qrd:    {id: 'qrd',     hname: 'Question/Réponse Dramatique', btn_name: 'QRD'}

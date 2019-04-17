@@ -1,6 +1,7 @@
 # SUR LE GRILL
 
 ### Traiter :
+  [1]
 
 * [BUGS]
   - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
@@ -28,6 +29,8 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
+    - supprimer la sous-catégorie "les temps de l'ironie dramatique" (qui contient "installation", etc.), car ça crée beaucoup de confusion.
   - construction du graphique de la dynamique narrative
     liste des OOC
 
