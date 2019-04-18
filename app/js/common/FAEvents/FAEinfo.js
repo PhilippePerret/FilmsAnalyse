@@ -33,7 +33,7 @@ get htype(){ return 'Information' }
     var errors = []
 
     // Définir ici les validité
-    this.content || errors.push({msg: "Le contenu de l'information est requis.", prop: 'content'})
+    this.content || errors.push({msg: "Le contenu de l'information est requis.", prop: 'longtext1'})
 
     if(errors.length){super.onErrors(this, errors)}
     return errors.length == 0

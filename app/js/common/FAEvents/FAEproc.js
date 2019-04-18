@@ -34,7 +34,7 @@ get isValid(){
 
   // Définir ici les validité
   this.procType || errors.push({msg: T('proc-type-required'), prop: 'procType'})
-  this.content  || errors.push({msg: T('proc-description-required'), prop: 'content'})
+  this.content  || errors.push({msg: T('proc-description-required'), prop: 'longtext1'})
   this.setup    || errors.push({msg: T('proc-setup-required'), prop: 'longtext2'})
 
   if(errors.length){super.onErrors(this, errors)}

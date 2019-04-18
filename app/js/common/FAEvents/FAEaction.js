@@ -33,7 +33,7 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'content'})
+  this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

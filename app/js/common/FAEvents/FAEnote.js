@@ -33,7 +33,7 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.content || errors.push({msg: "Le contenu de la note est requis.", prop: 'content'})
+  this.content || errors.push({msg: "Le contenu de la note est requis.", prop: 'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

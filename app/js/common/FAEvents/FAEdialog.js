@@ -33,7 +33,7 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.content || errors.push({msg: "La description du dialogue est indispensable.", prop: 'content'})
+  this.content || errors.push({msg: "La description du dialogue est indispensable.", prop: 'longtext1'})
   this.dialType || errors.push({msg: "Le type de dialogue est à définir.", prop: 'dialType'})
 
   if(errors.length){super.onErrors(this, errors)}

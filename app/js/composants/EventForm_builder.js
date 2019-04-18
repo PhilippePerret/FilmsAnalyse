@@ -47,19 +47,25 @@ EventForm.buildFormOfType = function(type){
 
   /*  Pour le type particulier de l'event */
   if(type != 'qrd'){
-    dom.push(DCreate('DIV', {class:`div-form div-${type}-types`, append:[
-      DCreate('LABEL', {inner:type === 'stt' ? 'Type du nœud' : 'Type'})
+    var fieldsType = []
+    fieldsType.push(
+        DCreate('LABEL', {inner:type === 'stt' ? 'Type du nœud' : 'Type'})
       , DCreate('SELECT', {id: formId(`${type}Type`), class: `${type}-types`})
-      , DCreate('BUTTON', {type:'button', class:'update btn-update-types', title: T('tit-update-type-list'), append:[
-        DCreate('IMG', {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
-      ]})
-      , DCreate('BUTTON', {type:'button', class:'modify btn-modify-types', title: T('tit-modify-type-list'), append:[
-        DCreate('IMG', {src: 'img/btn-edit.png', alt: 'Modifier la liste des types'})
-      ]})
-      , DCreate('BUTTON', {type:'button', class:'info btn-info-proc', append:[
-        DCreate('IMG', {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant'})
-      ], style: `visibility:${type === 'proc'?'visible':'hidden'}`})
-    ]}))
+    )
+    if(type !== 'stt'){
+      fieldsType.push(
+          DCreate('BUTTON', {type:'button', class:'update btn-update-types', title: T('tit-update-type-list'), append:[
+            DCreate('IMG', {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
+          ]})
+        , DCreate('BUTTON', {type:'button', class:'modify btn-modify-types', title: T('tit-modify-type-list'), append:[
+            DCreate('IMG', {src: 'img/btn-edit.png', alt: 'Modifier la liste des types'})
+          ]})
+        , DCreate('BUTTON', {type:'button', class:'info btn-info-proc', append:[
+            DCreate('IMG', {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant', style:`visibility:${type === 'proc'?'visible':'hidden'}`})
+          ]})
+      )
+    }
+    dom.push(DCreate('DIV',{class:`div-form div-${type}-types`, append:fieldsType}))
   }
 
   if( type === 'scene' ){
@@ -89,12 +95,11 @@ EventForm.buildFormOfType = function(type){
     ]}))
 
 
-  var parentDesign = [DCreate('SPAN', {class:'small', inner:'(glisser ici l’event parent — '})]
+  var parentDesign = [DCreate('SPAN', {class:'small', inner:'PARENT (glisser ici l’event parent — '})]
   if(type==='dyna') parentDesign.push(DCreate('SPAN', {class:'small italic', inner:'l’objectif du sous-objectif ou du moyen, l’obstacle du conflit, etc. — '}))
   parentDesign.push(DCreate('SPAN', {class:'small italic', inner:'utilisez par exemple un Eventer)'}))
   dom.push(DCreate('DIV', {class:'div-form', append:[
-      DCreate('LABEL', {inner:'Parent de l’event'})
-    , DCreate('DIV', {class:'event-parent cadre', append:[
+      DCreate('DIV', {class:'event-parent cadre', append:[
         DCreate('DIV', {class:'parent-designation small', append:parentDesign})
       ]})
     , DCreate('INPUT', {type:'HIDDEN', id:formId('parent'), value:''})
@@ -149,7 +154,7 @@ EventForm.buildFormOfType = function(type){
   })(type)
   dom.push(DCreate('DIV',{class:'div-form', append:[
       DCreate('LABEL', {inner:label})
-    , DCreate('TEXTAREA', {id: formId('longtext1'), rows: '4'})
+    , DCreate('TEXTAREA', {id: formId('longtext1'), attrs:{rows: '4'}})
     ]}))
 
   label = (typ => {
@@ -163,7 +168,7 @@ EventForm.buildFormOfType = function(type){
   if(undefined !== label){
     dom.push(DCreate('DIV', {class:'div-form', append:[
         DCreate('LABEL', {inner:label})
-      , DCreate('TEXTAREA', {id: formId('longtext2'), rows:'4'})
+      , DCreate('TEXTAREA', {id: formId('longtext2'), attrs:{rows:'4'}})
       ]}))
   }
 
@@ -178,13 +183,13 @@ EventForm.buildFormOfType = function(type){
   if(undefined !== label){
     dom.push(DCreate('DIV', {class:'div-form', append:[
         DCreate('LABEL', {inner:label})
-      , DCreate('TEXTAREA', {id: formId('longtext3'), rows:'4'})
+      , DCreate('TEXTAREA', {id: formId('longtext3'), attrs:{rows:'4'}})
       ]}))
   }
 
   label = (typ => {
     switch(typ){
-      case 'idee':
+      case 'idee': return 'Fonctions <span class="small">(une par ligne)</span>'
       case 'proc': return 'Résolution <span class="small">(time: description)</span>'
       default:     return
     }
@@ -192,14 +197,14 @@ EventForm.buildFormOfType = function(type){
   if(undefined !== label){
     dom.push(DCreate('DIV', {class:'div-form', append:[
         DCreate('LABEL', {inner:label})
-      , DCreate('TEXTAREA', {id: formId('longtext4'), rows:'4'})
+      , DCreate('TEXTAREA', {id: formId('longtext4'), attrs:{rows:'4'}})
       ]}))
   }
 
   /*  Note subsidiaire terminale  */
   dom.push(DCreate('DIV', {class:'div-form', append:[
       DCreate('LABEL', {inner: 'Note subsidiaire'})
-    , DCreate('TEXTAREA', {id:formId('note'), rows:'3'})
+    , DCreate('TEXTAREA', {id:formId('note'), attrs:{rows:'3'}})
     ]}))
 
   /*  Buttons de pas de page */

@@ -88,7 +88,7 @@ get isValid(){
 
   // Définir ici les validité
   this.question || errors.push({msg: "La Question Dramatique est requise.", prop: 'inputtext1'})
-  this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'content'})
+  this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'longtext1'})
   if(this.reponse){
     this.tps_reponse || errors.push({msg: "Le temps de la réponse est requis.", prop: 'tps_reponse'})
   }

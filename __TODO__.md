@@ -3,25 +3,13 @@
 ### Traiter :
   [1], puis [2]
 
-  - Dans le reader, il faut utiliser LABELLED pour afficher les events, sauf les scènes, pour qu'on sache ce que c'est
-  - Rationnaliser le nom des champs en utilisant shorttext1, shorttext2, etc. et longtext1, longtext2
-    - Ajouter un nouveau champ longtext3 pour la résolution du procédé (et autre)
-    - Pour le nouvel event 'idee', ajouter un longtext avec "pourquoi c'est une idée" ou alors plutôt "fonctions de l'idée" (ou autre mot équivalent)
-    Attention : cela va changer beaucoup de choses dans la lecture du formulaire d'event, mais de
-    toute façon il faut changer beaucoup de choses
-    Ça change aussi des choses dans la définition des own-properties de chaque event
-    + et peut-être d'autres choses aussi à voir, à l'usure
-
-
 * [BUGS]
   - Quand on clique sur la durée d'une (nouvelle ?) scène, ça bogue.
   - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
-  - [2] Créer l'idée "idée"
-  - [3] Quand j'ai voulu créer un event (simple event), ça a produit plusieurs erreurs à voir.
-    - note : il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
 
 * HANDTESTS
-  - Il ne faut pas que les étapes du synopsis entrainent des success.
+  - Il ne faut pas que les simples étapes du synopsis entrainent des success.
+  - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
   + + + + Commencer par bien documenter, pour se remettre dedans
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
     - traitement des étapes automatiques dynamique (à l'instar de `ouvrir analyse '...'`)

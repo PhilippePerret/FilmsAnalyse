@@ -425,65 +425,6 @@ get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.def
 
 get domId(){ return `revent-${this.id}`}
 
-/**
-  Retourne le div qui s'affichera dans le reader
-
-  Son contenu propre provient de la méthode `as('full')` donc
-  de la méthode `asFull` qui devrait être propre à l'event.
-
-  @return {DOMElement} Le div à placer dans le reader
-**/
-get div(){
-  if (undefined === this._div){
-    // L'horloge des outils
-    var h = DCreate('SPAN',{
-      class:'horloge horloge-event'
-    , attrs:{'data-id': this.id}
-    , inner: this.otime.horloge
-    })
-    var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
-    var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
-
-    var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
-    var cont = DCreate('DIV', {class:'content', inner: this.as('full', FORMATED)})
-
-    this._div = DCreate('DIV',{
-      id: this.domId
-    , class: `event ${this.type} EVT${this.id}`
-    , style: 'opacity:0;'
-    , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
-    , append: [etools, cont]
-    })
-  }
-  return this._div
-}
-
-
-// Méthode de warning pour indiquer que la version d'affichage courante
-// est une version commune à tous les events, pas adaptée à l'event en
-// particulier. Elle s'affichera jusqu'à ce que l'event en particulier
-// possède sa propre méthode d'helper.
-get warnCommonMethod(){
-  return '<div class="small"><span class="small">Cette version est la version commune d’affichage de l’event. Pour une version personnalisée, créer la méthode `asFull`.</span></div>'
-}
-
-divNote(opts){
-  if(this.note){
-    return `<div class="note"><label>Note : </label>${this.note}</div>`
-  } else {
-     return ''
-  }
-}
-
-/**
-  Retourne le div des éléments associés qui ajoute des procédés,
-  des notes, des informations, etc.
-**/
-divAssociates(opts){
-  let str = ''
-  this.events.forEach( ev => str += ev.as('associate', FORMATED, opts) )
-  return str
-}
 
 get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 

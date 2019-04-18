@@ -6,7 +6,7 @@ class FAEstt extends FAEvent {
 //  CLASSE
 
 // Propriétés propres
-static get OWN_PROPS(){return ['sttID']}
+static get OWN_PROPS(){return [['sttID', 'sttType']]}
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier
@@ -34,14 +34,17 @@ get htype(){ return 'Nœud structurel' }
 get isValid(){
   var errors = []
   // console.log("-> isValid")
-  // On ne peut pas créer une propriété qui existe déjà
-  var nstt = this.analyse.PFA.node(this.sttID)
-  if (nstt.event_id && nstt.event_id != this.id){
-    errors.push({msg: `Il existe déjà un nœud structurel « ${nstt.hname} » défini à ${nstt.event.horloge} (${nstt.event.link})`})
+  if(!this.sttID){
+    errors.push({msg: "L'ID structurel est indispensable et doit être choisi avec soin.", prop: 'sttType'})
   } else {
-    // Définir ici les validité
-    this.sttID   || errors.push({msg: "L'ID structurel est indispensable et doit être choisi avec soin.", prop: 'sttID'})
-    this.content || errors.push({msg: "La description du nœud structurel est indispensable.", prop: 'content'})
+    // On ne peut pas créer une propriété qui existe déjà
+    var nstt = this.analyse.PFA.node(this.sttID)
+    if (nstt.event_id && nstt.event_id != this.id){
+      errors.push({msg: `Il existe déjà un nœud structurel « ${nstt.hname} » défini à ${nstt.event.horloge} (${nstt.event.link})`})
+    } else {
+      // Définir ici les validité
+      this.content || errors.push({msg: "La description du nœud structurel est indispensable.", prop: 'longtext1'})
+    }
   }
 
   // console.log("<- isValid")

@@ -292,7 +292,7 @@ afterBuilding(){
   // Si c'est pour un nœud structurel, il faut peupler le menu des types
   if (typ === 'stt'){
     var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
-    var mstt = jqo.find('.event-sttID')
+    var mstt = jqo.find('.stt-types')
     mstt.append(DCreate('OPTION', {value: '', inner: 'Choisir l’ID du nœud'}))
     for(var nid in dataStt){
       var dstt = dataStt[nid]
@@ -752,7 +752,7 @@ getFormValues(){
       all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
     }
 
-    console.log("all_data:", all_data)
+    // console.log("all_data:", all_data)
 
     this.isNew = dform.is_new
 
