@@ -26,7 +26,7 @@ constructor(analyse, data){
   super(analyse, data)
   this.type   = 'stt'
   // Mettre ici les données propres
-  this.sttID  = data.sttID // p.e. 'incDec' ou 'DEV1', une clé dans PFA.DATA_STT_NODES
+  // this.sttID  = data.sttID // p.e. 'incDec' ou 'DEV1', une clé dans PFA.DATA_STT_NODES
 }
 
 get htype(){ return 'Nœud structurel' }

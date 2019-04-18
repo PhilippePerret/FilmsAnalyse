@@ -3,7 +3,7 @@
 ### Traiter :
   [1], puis [2]
 
-  - Ajouter la propriété 'parent' à tous les events
+  - Dans le reader, il faut utiliser LABELLED pour afficher les events, sauf les scènes, pour qu'on sache ce que c'est
   - Rationnaliser le nom des champs en utilisant shorttext1, shorttext2, etc. et longtext1, longtext2
     - Ajouter un nouveau champ longtext3 pour la résolution du procédé (et autre)
     - Pour le nouvel event 'idee', ajouter un longtext avec "pourquoi c'est une idée" ou alors plutôt "fonctions de l'idée" (ou autre mot équivalent)
@@ -33,7 +33,8 @@
       marques de réussite ou d'échec (HandTests.markSuccess/markFailure)
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
-* Voir comment obtenir un numéro ISBN
+
+* Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
 
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)

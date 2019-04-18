@@ -147,6 +147,14 @@ form.form-edit-event button.info,
 form.form-edit-event button.modify
 {
   all:unset;
+  margin-left:8px;
+}
+
+form.form-edit-event button.update {
+}
+form.form-edit-event button.info,
+form.form-edit-event button.modify
+{
   vertical-align:sub;
 }
 form.form-edit-event button img {

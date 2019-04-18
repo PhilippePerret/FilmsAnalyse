@@ -4,8 +4,20 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times', 'brins']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
 static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+
+static get ALL_PROPS(){
+  if(undefined === this._all_props){
+    var arr = []
+    arr.push(...FAEvent.OWN_PROPS)
+    arr.push(...this.OWN_PROPS)
+    this._all_props = arr
+    arr = null
+    // console.log("this.type, ALL_PROPS", this.type, this._all_props)
+  }
+  return this._all_props
+}
 
 /**
   @return {Instance} L'instance d'identifiant event_id
@@ -95,19 +107,15 @@ static get a(){return current_analyse}
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
-  // this.type     = data.type  // Sera défini par la sous-classe
-  this.id       = parseInt(data.id,10)
-  this.titre    = data.titre    // String
-  this.time     = data.time.round(2)     // Number
-  this.duration = (data.duration||10).round(2) // Number (seconds) [1]
-  this.content  = data.content  // String
-  this.note     = data.note     // String
+  this.id       = parseInt(this.id,10)
 
-  // Les éléments en relation
-  this.events     = data.events     || []
-  this.documents  = data.documents  || []
-  this.times      = data.times      || []
-  this.brins      = data.brins      || []
+  this.dispatch(data)
+
+  // Valeurs par défaut indispensables
+  this.events     = this.events     || []
+  this.documents  = this.documents  || []
+  this.times      = this.times      || []
+  this.brins      = this.brins      || []
 
 }
 
@@ -181,6 +189,14 @@ get description(){return this.content}
 
 // ---------------------------------------------------------------------
 //  Méthodes d'association
+
+/**
+  Pour définir que l'event d'id +event_id+ est le parent de l'event
+**/
+setParent(event_id){
+  this.parent = event_id
+  this.modified = true
+}
 
 addDocument(doc_id){
   if(this.documents.indexOf(doc_id) < 0){
@@ -505,6 +521,7 @@ get data(){
 /**
  * Dispatch les données communes (autres que celles qui permettent à
  * l'instanciation et la création)
+ Normalement, cette méthode ne devrait plus être utilisée.
  */
 set data(d){
   var fieldName ;
@@ -515,8 +532,8 @@ set data(d){
 }
 
 dispatch(d){
-  var fieldName ;
-  for(var prop of this.constructor.OWN_PROPS){
+  var fieldName, prop ;
+  for(prop of this.constructor.ALL_PROPS){
     if('string' === typeof(prop)){
       // <= Seulement le nom de la propriété donnée
       // => Le champ s'appelle comme la propriété

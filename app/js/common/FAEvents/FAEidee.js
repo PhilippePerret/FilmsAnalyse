@@ -1,10 +1,10 @@
 'use strict'
 
-class FAEproc extends FAEvent {
+class FAEidee extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['procType', ['setup', 'longtext2'], ['exploit','longtext3'], ['payoff','longtext4']]}
+static get OWN_PROPS(){return ['ideeType', ['setup', 'longtext2'], ['exploit','longtext3'], ['payoff','longtext4']]}
 static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
@@ -15,27 +15,27 @@ static dispatchData(){
 }
 static get dataType(){
   return {
-      hname:        'Procédé'
-    , short_hname:  'Procédé'
-    , type:         'proc'
+      hname:        'Idée'
+    , short_hname:  'Idée'
+    , type:         'idee'
   }
 }
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type         = 'proc'
+  this.type         = 'idee'
 }
 
-get htype(){ return 'Procédé' }
+get htype(){ return 'Idée' }
 
 get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.procType || errors.push({msg: T('proc-type-required'), prop: 'procType'})
-  this.content  || errors.push({msg: T('proc-description-required'), prop: 'content'})
-  this.setup    || errors.push({msg: T('proc-setup-required'), prop: 'longtext2'})
+  this.ideeType || errors.push({msg: T('idee-type-required'), prop: 'ideeType'})
+  this.content  || errors.push({msg: T('idee-description-required'), prop: 'longtext1'})
+  this.setup    || errors.push({msg: T('idee-setup-required'), prop: 'longtext2'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0
@@ -46,4 +46,4 @@ get div(){
   return n
 }
 }
-FAEproc.dispatchData()
+FAEidee.dispatchData()

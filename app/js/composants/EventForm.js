@@ -120,13 +120,15 @@ static newId(){
 
 /**
   @return {String}  les <option> définissant les types
-                    de scènes définies dans le fichier
-                    data/data_scenes.yaml
+                    définis dans chaque fichier data
+                    p.e. `data/data_scenes.yaml`. Mais ce fichier peut ne pas
+                    exister.
 **/
 static optionsTypes(typ){
   if(undefined === this._optionsTypes) this._optionsTypes = {}
   if(undefined === this._optionsTypes[typ]){
     var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
+    if(false == fs.existsSync(p)) return '' // "dépeuplera" le menu
     let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
     var opts = []
     for(var ktype in dataE['types']){
@@ -487,12 +489,12 @@ domField(prop){
 synchronizePitchAndResume(e){
   if(undefined === this.pitchAndResumeSynchronizable){this.checkIfSynchronizable()}
   if(this.pitchAndResumeSynchronizable){
-    this.jqField('content').val(this.jqField('titre').val())
+    this.jqField('longtext1').val(this.jqField('titre').val())
   }
 }
 // Méthode qui regarde si le synopsis est synchronisable avec le pitch
 checkIfSynchronizable(e){
-  this.pitchAndResumeSynchronizable = this.jqField('content').val() == ''
+  this.pitchAndResumeSynchronizable = this.jqField('longtext1').val() == ''
 }
 
 // ---------------------------------------------------------------------
@@ -511,7 +513,7 @@ observe(){
   // on synchronise le pitch avec le résumé
   if(this.type === 'scene' && this.isNew){
     this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
-    this.jqField('content').on('keyup', my.checkIfSynchronizable.bind(my))
+    this.jqField('longtext1').on('keyup', my.checkIfSynchronizable.bind(my))
   }
 
   // Bouton pour actualiser le menu des types de tout élément et pour éditer
@@ -534,10 +536,14 @@ observe(){
   my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
   my.jqObj.find('.header').droppable(dataDrop)
 
+  // Les champs d'édition répondent au cmd-enter pour soumettre le
+  // formulaire (enfin… façon de parler)
+  my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
+
   // Quand le div pour déposer un parent (ou autre) est affiché, on doit
   // le rendre droppable
   let parentField = my.jqObj.find('div.event-parent')
-  if(parentField.is(':visible')) parentField.droppable(dataDrop)
+  parentField.droppable(dataDrop)
 
   // Pour savoir si l'on doit éditer dans les champs de texte ou
   // dans le mini-writer
@@ -563,36 +569,20 @@ submit(){
   // dans l'analyse courante
   var initTime = this.isNew ? null : Math.round(this.event.time)
 
-  var [data_min, other_data] = this.getFormValues()
-
-  // Création d'objet particulier, qui ne sont pas des sous-classes
-  // de FAEvent
-  switch (data_min.type) {
-    case 'dim':
-      // TODO Création d'un diminutif
-      throw("Je ne sais pas encore créer une DIMINUTIF")
-      return
-    case 'brin':
-      // TODO Création d'un brin
-      throw("Je ne sais pas encore créer un BRIN")
-      return
-  }
-
-  // console.log("Champs trouvés:", fields)
-  // console.log("Data finale min:", data_min)
-  // console.log("Data finale autres:", other_data)
+  var all_data = this.getFormValues()
+  this.isNew = all_data.is_new
 
   // On crée ou on update l'évènement
   if(this.isNew){
     // CRÉATION
     // On crée l'évènement du type voulu
-    var eClass = eval(`FAE${data_min.type}`)
-    this._event = new eClass(this.a, data_min)
+    var eClass = eval(`FAE${all_data.type}`)
+    this._event = new eClass(this.a, all_data)
   } else {
-    this.event.data = data_min // ça va les dispatcher
+    this.event.dispatch(all_data)
   }
   // Et on dispatche les autres données
-  this.event.dispatch(other_data)
+
   if (this.event.isValid) {
     if(this.isNew){
       // CRÉATION
@@ -606,7 +596,7 @@ submit(){
   }
 
   if (this.event.isValid){
-    this.isNew = false // il a été enregistré, maintenant
+    this.isNew    = false // il a été enregistré, maintenant
     this.modified = false
     this.endEdition()
   } else if(this.event.firstErroredFieldId) {
@@ -618,7 +608,7 @@ submit(){
 }
 
 /**
- * Demande destruction de l'élément
+ * Demande de destruction de l'élément
  */
 destroy(){
   if(!confirm(T('confirm-destroy-event'))) return
@@ -644,7 +634,6 @@ endEdition(){
 
 /**
   Réglage du parent lorsqu'on glisse un event dessus
-  (par exemple pour les éléments dynamiques)
   Note : ici, on ne signale aucune erreur, on enregistre simplement l'id
   du parent dans le champ hidden approprié et on règle la valeur du parent
   pour le connaitre.
@@ -654,6 +643,7 @@ endEdition(){
 setParent(helper){
   let parent_id = parseInt(helper.attr('data-id'),10)
     , pev = this.a.ids[parent_id]
+  if(this.id == parent_id) return F.notify(T('event-not-itself-parent'), {error: true})
   // On le mémorise dans le champ hidden qui sera soumis
   this.jqField('parent').val(parent_id)
   // On affiche un "résumé" du parent
@@ -719,61 +709,70 @@ setNumeroScene(){
  */
 getFormValues(){
   var my = this
-  // --- Les champs communs à tous les types ---
-  var data_min    = {}
-  var other_data  = {}
+    , all_data = {}
+    , prefId = `event-${this.id}-`
+    , prop
+    , id
+    , val
 
-  data_min.id       = getValOrNull(this.fieldID('id'), {type: 'number'})
-  data_min.titre    = getValOrNull(this.fieldID('titre'))
-  data_min.type     = getValOrNull(this.fieldID('type'))  // p.e. 'scene'
-  data_min.isNew    = getValOrNull(this.fieldID('is_new')) === '1'
-  data_min.content  = getValOrNull(this.fieldID('content'))
-  data_min.note     = getValOrNull(this.fieldID('note'))
-  data_min.time     = getValOrNull(this.fieldID('time'), {type: 'horloge'})
-  data_min.duration = getValOrNull(this.fieldID('duration'), {type: 'duree'})
 
-  // console.log("data_min:", data_min)
-
-  // On récupère toutes les données (ça consiste à passer en revue tous
-  // les éléments de formulaire qui ont la classe "f<type>")
-  var ftype = `f${data_min.type}`
-    , fields = []
-    , idSansPref = null
-    , err_msg
-
-  $('select,input[type="text"],input[type="hidden"],textarea,input[type="checkbox"]')
-    .filter(function(){
-      // On filtre pour ne prendre que les champs valides, c'est-à-dire ceux
-      // qui portent la class `f<type>`
-      return /* $(this).id && */ ($(this).hasClass(ftype) || $(this).hasClass('fall') ) && !$(this).hasClass(`-${ftype}`)
-    })
-    .each(function(){
-      if(this.id){
-        idSansPref = this.id.replace(`event-${my.id}-`,'') // attention this != my ici
-        // Des erreurs se produisent parfois ici, je préfère mettre dans un
-        // try pour mieux les appréhender
-        try {
-          var val = getValOrNull(this.id)
-        } catch (e) {
-          err_msg = `ERREUR dans getValOrNull avec:${RC}this.id: '${this.id}'${RC}idSansPref: '${idSansPref}'${RC}ERREUR: ${e}`
-          log.error(err_msg)
-          console.error(err_msg)
-          F.error(`Erreur avec '${this.id}'. Consultez le log.`)
-          val = undefined
+  // On boucle sur tous les éléments d'édition du formulaire
+  var dform = {}
+  $(`form#form-edit-event-${this.id}`)
+    .find(`select, input[type="text"], input[type="hidden"], input[type="checkbox"], textarea`)
+    .each(function(i, o){
+      id    = o.id
+      // Si un élément n'a pas d'identifiant, c'est qu'il n'est pas à considérer
+      if(!id) return
+      prop  = id.replace(prefId, '')
+      val   = ((prop, val) => {
+        // console.log("prop, val init:", prop, val)
+        if(null === val) return null
+        else if ('n/d' === val) return undefined
+        switch(prop){
+          // Tout ce qui doit être transformé en nombre
+          case 'id':
+          case 'parent':
+            return parseInt(val,10)
+          // Tout ce qui doit être transformé en flottant
+          case 'time':
+          case 'duration':
+            return parseFloat(val).round(2)
+          case 'is_new':
+            return val == '1'
+          default:
+            return val
         }
-        other_data[idSansPref] = val
-        // Pour vérification
-        fields.push(this.id)
-      }
+      })(prop, getValOrNull(o.id))
+      all_data[prop] = val
+      // console.log({id:id, prop:prop, val: val})
     })
+    // Les temps
+    for(prop of ['time', 'duration']){
+      all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
+    }
 
-  // console.log({
-  //   fields: fields, data_min: data_min, other_data: other_data
-  // })
+    console.log("all_data:", all_data)
+
+    this.isNew = dform.is_new
+
   my = null
-  return [data_min, other_data]
+  return all_data // pour le moment
+
+
 }
 //getFormValues
+
+// ---------------------------------------------------------------------
+//  Méthodes d'évènements
+
+onKeyDownOnTextFields(e){
+  if(e.metaKey && e.keyCode === KRETURN){
+    this.submit()
+    return stopEvent(e)
+  }
+  return true
+}
 
 // ---------------------------------------------------------------------
 

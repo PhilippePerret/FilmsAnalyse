@@ -24,7 +24,6 @@ static get dataType(){
 constructor(analyse, data){
   super(analyse, data)
   this.type     = 'info'
-  this.infoType = data.infoType
 }
 
 get htype(){ return 'Information' }

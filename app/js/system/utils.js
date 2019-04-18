@@ -77,9 +77,10 @@ function clip(str){
  *                          faut retourner des secondes et frames.
  */
 function getValOrNull(domId, options){
-  if(undefined===options) options = {}
+  if(undefined === options) options = {}
   if(domId.substr(0,1)!='#') domId = `#${domId}`
   var field = $(`${domId}`)
+  if(field.length === 0 || field.val() === null) return null
   var value ;
   switch (options.type) {
     case 'horloge':
@@ -126,6 +127,8 @@ function DCreate(typeElement, params){
   if(params.style)  e.setAttribute('style', params.style)
   if(params.type)   e.type = params.type
   if(params.inner)  e.innerHTML = params.inner
+  if(params.src)    e.src = params.src
+  if(params.alt)    e.setAttribute('alt', params.alt)
   if(undefined !== params.value)  e.value = params.value
   if(undefined !== params.disabled)  e.disabled = params.disabled
   if(params.append){

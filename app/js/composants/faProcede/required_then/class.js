@@ -117,7 +117,7 @@ get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
 // path au fichier contenant toutes les données des procédés
 get path(){
-  if(undefined === this._path) this._path = path.join(APPFOLDER,'app','js','data','data_procedes.yaml')
+  if(undefined === this._path) this._path = path.join(APPFOLDER,'app','js','data','data_proc.yaml')
   return this._path
 }
 

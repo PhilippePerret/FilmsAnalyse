@@ -2,6 +2,8 @@
 #
 # CE FICHIER PERMET DE PEUPLER LES MENUS DES PROCÉDÉS
 #
+# ATTENTION : IL EST QUAND MÊME DIFFÉRENT DES AUTRES FICHIERS DE DONNÉES
+#
 #
 # On part pour le moment sur 3 niveaux de données :
 #   procédé > sous-procédé > procédé-précis
