@@ -1,11 +1,23 @@
 # SUR LE GRILL
 
 ### Traiter :
-  [1]
+  [1], puis [2]
+
+  - Ajouter la propriété 'parent' à tous les events
+  - Rationnaliser le nom des champs en utilisant shorttext1, shorttext2, etc. et longtext1, longtext2
+    - Ajouter un nouveau champ longtext3 pour la résolution du procédé (et autre)
+    - Pour le nouvel event 'idee', ajouter un longtext avec "pourquoi c'est une idée" ou alors plutôt "fonctions de l'idée" (ou autre mot équivalent)
+    Attention : cela va changer beaucoup de choses dans la lecture du formulaire d'event, mais de
+    toute façon il faut changer beaucoup de choses
+    Ça change aussi des choses dans la définition des own-properties de chaque event
+    + et peut-être d'autres choses aussi à voir, à l'usure
+
 
 * [BUGS]
+  - Quand on clique sur la durée d'une (nouvelle ?) scène, ça bogue.
   - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
-  - Quand j'ai voulu créer un event (simple event), ça a produit plusieurs erreurs à voir.
+  - [2] Créer l'idée "idée"
+  - [3] Quand j'ai voulu créer un event (simple event), ça a produit plusieurs erreurs à voir.
     - note : il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
 
 * HANDTESTS
@@ -29,7 +41,7 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
-  - Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
+  - [1] Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
     - supprimer la sous-catégorie "les temps de l'ironie dramatique" (qui contient "installation", etc.), car ça crée beaucoup de confusion.
   - construction du graphique de la dynamique narrative
     liste des OOC

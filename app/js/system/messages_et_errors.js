@@ -46,7 +46,11 @@ const ERRORS = {
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 }
 const MESSAGES = {
-  "--- messages ANALYSE ---":""
+  "--- UI ---":""
+, "tit-update-type-list": "Pour actualiser la liste des types"
+, "tit-modify-type-list": "Pour modifier la liste des types (ouvrir le fichier des données)"
+
+, "--- messages ANALYSE ---":""
 , "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "
 , "same-start-time": "Le temps de départ n'a pas changé, rien à faire."

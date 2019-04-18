@@ -156,14 +156,14 @@ form.form-edit-event button.modify img {
   width:18px;
 }
 
-form.form-edit-event div.div-procedes select {
+form.form-edit-event div.div-proc-types select {
   max-width:380px;
 }
-form.form-edit-event div.div-procedes select.menu-procedes,
-form.form-edit-event div.div-procedes select.menu-procedes *
+form.form-edit-event div.div-proc-types select.menu-procedes,
+form.form-edit-event div.div-proc-types select.menu-procedes *
 {
   font-weight:bold;
   color:darkblue;
 }
-form.form-edit-event div.div-procedes select.menu-procedes * {
+form.form-edit-event div.div-proc-types select.menu-procedes * {
 }

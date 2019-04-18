@@ -243,7 +243,9 @@ build(){
   return DCreate('FORM', {
     id: `form-edit-event-${this.id}`
   , class: 'form-edit-event'
-  , inner: EVENT_FORM_TEMP.replace(/__EID__/g, this.id).replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
+  , inner: TEMP_EVENT_FORM_BUILDER(this.type)
+            .replace(/__EID__/g, this.id)
+            .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
   })
 }
 afterBuilding(){
@@ -251,11 +253,6 @@ afterBuilding(){
     , typ = this.type
     , eid = this.id
     ;
-  // --- Champs à voir et à masquer --
-  jqo.find('.ff').hide()
-  jqo.find(`.f${typ}`).show()
-  jqo.find(`.fall`).show()
-  jqo.find(`.-f${typ}`).hide()
 
   // --- Valeurs définies ---
   this.jqf('id').val(eid)
@@ -264,8 +261,6 @@ afterBuilding(){
   this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
   this.jqf('time').html(this.a.locator.getRTime())
   this.jqf('duration').html(this.duration)
-  jqo.find('.footer .event-type').html(typ.toUpperCase())
-  jqo.find('.header .event-type').html(typ.toUpperCase())
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
 
@@ -343,9 +338,9 @@ afterBuilding(){
   du menu procédé courant (catégorie, sous-catégorie ou procédés)
 **/
 updateMenusProcedes(){
-  let mProcedes     = this.jqObj.find('.div-procedes select.menu-procedes')
-    , mSCategories  = this.jqObj.find('.div-procedes select.menu-sous-categories-procedes')
-    , mCategories   = this.jqObj.find('.div-procedes select.menu-categories-procedes')
+  let mProcedes     = this.jqObj.find('.div-proc-types select.menu-procedes')
+    , mSCategories  = this.jqObj.find('.div-proc-types select.menu-sous-categories-procedes')
+    , mCategories   = this.jqObj.find('.div-proc-types select.menu-categories-procedes')
   if(mProcedes.length){
     let proc_id = mProcedes.val()
     this.implementeMenuProcedes(mProcedes.attr('data-cate-id'), mProcedes.attr('data-scate-id'), proc_id)
@@ -357,10 +352,10 @@ updateMenusProcedes(){
 }
 implementeMenuForProcedes(domMenu, fn_onchange, value){
   if (undefined === value) value = ''
-  let menuproc = this.jqObj.find('.div-procedes select')
+  let menuproc = this.jqObj.find('.div-proc-types select')
   menuproc.off('change')
   menuproc.replaceWith(domMenu)
-  menuproc = this.jqObj.find('.div-procedes select') // l'autre
+  menuproc = this.jqObj.find('.div-proc-types select') // l'autre
   menuproc.on('change', this[fn_onchange].bind(this))
   menuproc.val(value) // le premier menu ou le choisi
 }
@@ -418,11 +413,11 @@ onChooseProcede(e){
 
 onChooseDecor(){
   var decor = this.menuDecors.val()
-  this.jqField('inputtext-1').val(decor)
+  this.jqField('inputtext1').val(decor)
   this.peupleSousDecors(decor)
 }
 onChooseSousDecor(){
-  this.jqField('inputtext-2').val(this.menuSousDecors.val())
+  this.jqField('inputtext2').val(this.menuSousDecors.val())
 }
 peupleDecors(){
   this.menuDecors.html(FADecor.optionsDecors.bind(FADecor))
@@ -553,6 +548,9 @@ observe(){
   if(this.type === 'scene'){
     this.menuDecors.on('change', this.onChooseDecor.bind(this))
     this.menuSousDecors.on('change', this.onChooseSousDecor.bind(this))
+  } else if (this.type === 'proc'){
+    $('button.btn-info-proc').on('click', FAProcede.showDescriptionOf.bind(FAProcede,this.id))// prop aux procédés, celui-là
+    $('div.div-proc-types button.update').on('click', FAProcede.updateData.bind(FAProcede)) // ATTENTION : button commun
   }
   my = null
 }
@@ -794,4 +792,4 @@ get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.form))}
 }
 
 // Template du formulaire d'édition de l'évènement
-const EVENT_FORM_TEMP = require('./js/composants/EventForm.html')
+const TEMP_EVENT_FORM_BUILDER = require('./js/composants/EventForm_builder.js').bind(EventForm)

@@ -4,7 +4,7 @@ class FAEqrd extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return [['question', 'inputtext-1'], ['reponse', 'inputtext-2'], 'tps_reponse','exploitation']}
+static get OWN_PROPS(){return [['question', 'inputtext1'], ['reponse', 'inputtext2'], 'tps_reponse','exploitation']}
 static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
@@ -91,7 +91,7 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.question || errors.push({msg: "La Question Dramatique est requise.", prop: 'inputtext-1'})
+  this.question || errors.push({msg: "La Question Dramatique est requise.", prop: 'inputtext1'})
   this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'content'})
   if(this.reponse){
     this.tps_reponse || errors.push({msg: "Le temps de la réponse est requis.", prop: 'tps_reponse'})

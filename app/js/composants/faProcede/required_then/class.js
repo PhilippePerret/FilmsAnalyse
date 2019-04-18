@@ -95,7 +95,7 @@ afterUpdateData(data){
 ,
 
 showDescriptionOf(event_id){
-  let menu = $(`form#form-edit-event-${event_id} div.div-procedes select`)
+  let menu = $(`form#form-edit-event-${event_id} div.div-proc-types select`)
     , value     = menu.val()
     , cate_id   = menu.attr('data-cate-id')
     , scate_id  = menu.attr('data-scate-id')
