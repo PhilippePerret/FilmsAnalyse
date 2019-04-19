@@ -4,7 +4,6 @@
   [1], puis [2]
 
 * [BUGS]
-  - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
 
 * HANDTESTS
   - Il ne faut pas que les simples étapes du synopsis entrainent des success.

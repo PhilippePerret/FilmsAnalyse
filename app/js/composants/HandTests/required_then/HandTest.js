@@ -31,12 +31,10 @@ run(){
 // Dans tous les cas il l'affiche.
 nextStep(){
   log.info(`-> ${this.ref}#nextStep`)
-  let step_cmd = this.all_steps[++this.index_step] // synopsis + checks
-    , step
+  this.currentStep = this.all_steps[++this.index_step] // synopsis + checks
   log.info(`     this.index_step = ${this.index_step}`)
-  log.info(`     step_cmd = "${step_cmd}"`)
-  if(step_cmd){
-    this.currentStep = new HandTestStep(this, this.index_step, step_cmd)
+  if(this.currentStep){
+    log.info(`     step command = "${this.currentStep.command}"`)
     this.currentStep.run()
   } else {
     // <= Plus d'étape
@@ -63,10 +61,10 @@ writeAllSteps(){
   log.info(`-> ${this.ref}#writeAllSteps`)
   var liId, command, cmdchk
   let ulsteps = HandTests.fwindow.jqObj.find('ul.htest-steps')
-  for(var istep in this.all_steps){
-    liId    = `${this.id}-${istep}`
-    command = this.all_steps[istep]
-    if('object' === typeof command && Object.keys(command)[0] == 'check'){
+  for(var istep of this.all_steps){
+    liId    = `${this.id}-${istep.index}`
+    command = istep.command
+    if('object' === typeof(command) && Object.keys(command)[0] == 'check'){
       // => c'est un check à faire
       command = `⚐ ${command['check']}`
     } else if (command.match(/^\/(.*)\/$/)){
@@ -95,11 +93,25 @@ testIsValid(){
 
 get libelle(){return this.data.libelle || this.data.titre }
 get description(){return this.data.description}
+/**
+  Toutes les étapes du test courant.
+  C'est une liste d'instances HandTestStep où l'on précise si le pas est
+  un pas de synopsis ou de check.
+**/
 get all_steps(){
   if (undefined === this._all_steps){
+    var st, istep, idx = -1
     this._all_steps = []
-    Object.assign(this._all_steps, this.synopsis)
-    this._all_steps.push(...this.checks.map(x => `⚐ ${x}`))
+    for(st of this.synopsis){
+      istep = new HandTestStep(this, ++idx, st)
+      istep.isSynopsis = 'string' === typeof(st) // sinon {check: ....}
+      this._all_steps.push(istep)
+    }
+    for(st of this.checks){
+      istep = new HandTestStep(this, ++idx, `⚐ ${st}`)
+      istep.isSynopsis = false
+      this._all_steps.push(istep)
+    }
     // console.log("this._all_steps:",this._all_steps)
   }
   return this._all_steps

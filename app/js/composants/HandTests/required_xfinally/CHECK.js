@@ -23,7 +23,7 @@ Object.assign(HandTestStep.prototype,{
       , pas
       , res
 
-    console.log("Exécution du check : ", cmd)
+    // console.log("Exécution du check : ", cmd)
 
     // Est-ce que la commande est une étape automatique ?
     pas = DATA_AUTOMATIC_STEPS[cmd]

@@ -15,16 +15,18 @@ constructor(htest, idx, cmd){
 **/
 run(){
   log.info(`-> ${this.ref}#run`)
+  var res
   this.LI.removeClass('sleeping').addClass('running')
   if(this.isCheck()){
     log.info('   -- CHECK --')
-    switch(this.execTheCheck()){
-      case 1: HandTests.markSuccess() ; break
-      case 0: HandTests.markFailure() ; break
-      case 2: HandTests.markNormalStep() ; break
+    switch(res = this.execTheCheck()){
+      case 1: HandTests.markSuccess()     ; break
+      case 0: HandTests.markFailure()     ; break
+      case 2: HandTests.markNormalStep()  ; break
       case null:
         // On attend que le testeur définisse manuellement le résultat
     }
+    console.log("[CHECK] Retour de execTheCheck():", res)
   } else if(this.isAutomaticStep()){
     log.info('   -- TEST AUTOMATIQUE --')
     // Note : on doit passer par les méthodes de HandTests pour pouvoir
@@ -36,7 +38,7 @@ run(){
     //  3. null   => Test asynchrone qui appellera lui-même la marque et la
     //               suite
     // console.log("RETOUR DE execAndTest : ", res)
-    switch (this.execAndTest()) {
+    switch (res = this.execAndTest()) {
       case 0: HandTests.markFailure() ;   break
       case 1: HandTests.markSuccess() ;   break
       case 2: HandTests.markNormalStep(); break
@@ -46,6 +48,7 @@ run(){
       default:
         throw("Le retour de execAndTest n'est pas valide (0, 1, 2 ou null attendu)")
     }
+    console.log("[AUTOMATIC STEP] Retour de execAndTest():", res)
   } else if (HandTests.mode_last) {
     log.info('   -- mode_last --')
     // Si on est en mode "last", c'est-à-dire qu'on cherche le dernier
