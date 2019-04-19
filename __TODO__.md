@@ -6,12 +6,8 @@
 * [BUGS]
 
 * HANDTESTS
-  - Il ne faut pas que les simples étapes du synopsis entrainent des success.
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
-  + + + + Commencer par bien documenter, pour se remettre dedans
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
-    - traitement des étapes automatiques dynamique (à l'instar de `ouvrir analyse '...'`)
-  + Implémenter le passage au fichier suivant + mettre bouton
   - [Implémentation] Bien documenter l'utilisation des expressions régulières dans les étapes de tests
     - se servir de `ouvrir l'analyse`
     - bien documenter l'utilisation de l'asynchronicité avec un `return null` qui
