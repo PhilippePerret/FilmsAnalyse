@@ -36,6 +36,7 @@ class DOMHorloge {
   get id(){return this._id || defP(this,'_id', this.domObj.id)}
   get time(){return this._time || 0}
   set time(v){
+    // console.log("-> set time", v, this.domObj)
     this._time = v
     this.domObj.setAttribute('value', v)
     this._otime = undefined
@@ -89,7 +90,7 @@ class DOMHorloge {
   }
 
   onActivateEdition(ev){
-    $('body').unbind('mouseup') // au cas om
+    $('body').unbind('mouseup') // au cas où
     $('body').bind('mouseup', this.onEndMoving.bind(this))
     $('body').bind('mousemove', this.onMoving.bind(this))
     // console.log(ev)
@@ -166,9 +167,15 @@ class DOMDuration extends DOMHorloge {
   // C'est lui qui est affiché lorsqu'on change la durée à l'aide de la souris
   get endTime(){ return this.startTime + this.time }
 
-  get duration(){return this._duration}
+  get duration(){
+    if(undefined === this._duration){
+      this._duration = parseFloat(this.domObj.getAttribute('value'))
+    }
+    return this._duration
+  }
   set duration(v){
-    // console.log("-> duration", v)
+    // console.log("-> set duration", v)
+    v = v.round(2)
     this._endTime = this.startTime + v
     this.domObj.setAttribute('value', v)
     this._duration = v
@@ -176,7 +183,8 @@ class DOMDuration extends DOMHorloge {
 
   // Surclasse la méthode principale
   set time(v){
-    if(v <= 0) return
+    // console.log("-> set time (Durationable)", v, this.domObj)
+    if(v <= 0 || undefined === v) return
     this.duration = v
   }
   get time(){return this.duration}

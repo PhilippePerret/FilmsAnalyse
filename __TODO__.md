@@ -4,7 +4,6 @@
   [1], puis [2]
 
 * [BUGS]
-  - Quand on clique sur la durée d'une (nouvelle ?) scène, ça bogue.
   - Hand-tests : les simples étapes se présentent toujours comme des succès quand on les valide.
 
 * HANDTESTS

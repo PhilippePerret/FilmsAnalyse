@@ -670,6 +670,7 @@ setFormValues(){
   for(prop of ['time', 'duration', 'tps_reponse']){
     otime = new OTime(this.event[prop])
     this.jqf(prop).html(prop == 'duration' ? this.event.hduree : otime.horloge)
+    this.jqf(prop).attr(('value', prop == 'duration' ? this.event.duree : this.event[prop]).round(2))
   }
   // Les valeurs propres au type d'event
   for(prop of this.event.constructor.OWN_PROPS){
