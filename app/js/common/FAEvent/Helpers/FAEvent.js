@@ -34,8 +34,15 @@ as(format, flag, opts){
       // Sortie pour le livre
       str = this.asBook(opts)
       break
+    case 'pitch':
+      // Pour le méthode qui répondent à la méthode `asPitch`
+      // à commencer par la scène
+      str = this.asPitch(opts)
+      break
     case 'full':
       // Affiche complet, avec toutes les informations
+      // TODO Pour le moment, c'est ce format qui est utilisé pour le reader,
+      // mais ce n'est peut-être pas la meilleure option.
       str = this.asFull(opts)
       break
     case 'associate':
@@ -90,13 +97,13 @@ asFull(opts){
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   let str = ''
-  str += `<div class="${this.type} EVT${this.id}">`
+  str += `<span class="${this.type} EVT${this.id}">`
   str += `${this.asShort(opts)}`
   if(!opts || !opts.no_warm) str += this.warnCommonMethod
   str += this.divAssociates('events')
   str += this.divAssociates('documents')
   str += this.divAssociates('times')
-  str += '</div>'
+  str += '</span>'
   return str
 }
 ,
@@ -134,10 +141,9 @@ asLinkToEdit(str){
 ,
 // Alias
 linked(str){ return this.asLink(str) }
-,
+
 // Alias
-linkedToEdit(str){ return this.asLinkToEdit(str)}
-,
+, linkedToEdit(str){ return this.asLinkToEdit(str)}
 
 /**
 
@@ -148,45 +154,111 @@ linkedToEdit(str){ return this.asLinkToEdit(str)}
           {Object} Les options.
   @return {String} Le code HTML
 **/
-divAssociates(type){
-  let my = this
-  var options
-  switch (typeof type) {
-    case 'string':
-      options = {types: [type]}
-      break
-    case 'object':
-      options = type
-      if(undefined === options.types){
-        options.types = ['events','documents','times']
-      }
-      break
-    default:
-      log.warn("Mauvais argument pour divAssociates: ", type)
-      return ''
+, divAssociates(type){
+    let my = this
+    var options
+    switch (typeof type) {
+      case 'string':
+        options = {types: [type]}
+        break
+      case 'object':
+        options = type
+        if(undefined === options.types){
+          options.types = ['events','documents','times']
+        }
+        break
+      default:
+        log.warn("Mauvais argument pour divAssociates: ", type)
+        return ''
+    }
+    var str = ''
+    for(type of options.types){
+      // console.log("Traitement du type", type)
+      if(this[type].length === 0) continue
+      str += `<h3>${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}</h3>`
+      str += `<div class="associates ${type}">`
+      this.forEachAssociate(type, function(ev){
+        if(undefined === ev){
+          log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
+        } else {
+          str += ev.asAssociate(options)
+        }
+      })
+      str += '</div>'
+    }
+    return str
   }
-  var str = ''
-  for(type of options.types){
-    // console.log("Traitement du type", type)
-    if(this[type].length === 0) continue
-    str += `<h3>${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}</h3>`
-    str += `<div class="associates ${type}">`
-    this.forEachAssociate(type, function(ev){
-      if(undefined === ev){
-        log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
-      } else {
-        str += ev.asAssociate(options)
-      }
-    })
-    str += '</div>'
+
+, divNote(opts){
+    if(this.note){
+      return `<div class="note"><label>Note : </label>${this.note}</div>`
+    } else {
+       return ''
+    }
   }
-  return str
-}
+
+/**
+  Retourne le div des éléments associés qui ajoute des procédés,
+  des notes, des informations, etc.
+**/
+, divAssociates(opts){
+    let str = ''
+    this.events.forEach( ev => str += ev.as('associate', FORMATED, opts) )
+    return str
+  }
+
 
 })
 
 Object.defineProperties(FAEvent.prototype,{
-  link:{
+  /**
+    Retourne le div qui s'affichera dans le reader
+
+    Son contenu propre provient de la méthode `as('full')` donc
+    de la méthode `asFull` qui devrait être propre à l'event.
+
+    @return {DOMElement} Le div à placer dans le reader
+  **/
+  div:{
+    get(){
+      if (undefined === this._div){
+        // flag pour la méthode 'as'
+        var asFlag = FORMATED
+        if(this.type !== 'scene') asFlag = asFlag | LABELLED
+        // L'horloge des outils
+        var h = DCreate('SPAN',{
+          class:'horloge horloge-event'
+        , attrs:{'data-id': this.id}
+        , inner: this.otime.horloge
+        })
+        var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
+        var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
+
+        var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
+        var cont = DCreate('DIV', {class:'content', inner: this.as('full', asFlag)})
+
+        this._div = DCreate('DIV',{
+          id: this.domId
+        , class: `event ${this.type} EVT${this.id}`
+        , style: 'opacity:0;'
+        , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
+        , append: [etools, cont]
+        })
+      }
+      return this._div
+    }
+  }
+, link:{
     get(){return `-&gt; <a onclick="current_analyse.locator.setRTime(${this.time})">E #${this.id}</a>`}
   }
+// Méthode de warning pour indiquer que la version d'affichage courante
+// est une version commune à tous les events, pas adaptée à l'event en
+// particulier. Elle s'affichera jusqu'à ce que l'event en particulier
+// possède sa propre méthode d'helper.
+, warnCommonMethod: {
+    get(){
+      return '<div class="small"><span class="small">Cette version est la version commune d’affichage de l’event. Pour une version personnalisée, créer la méthode `asFull`.</span></div>'
+    }
+  }
+
 })

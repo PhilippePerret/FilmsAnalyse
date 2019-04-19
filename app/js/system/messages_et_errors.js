@@ -35,6 +35,11 @@ const ERRORS = {
 , "proc-description-required": "La description du procédé est requis."
 , "parent-is-required": "Un parent (de type : %{ptypes}) est requis pour cet event."
 , "good-parent-required": "Le parent défini n'est pas du bon type. Il est de type “%{bad}” alors que le ou les types acceptés sont : %{ptypes}."
+, "event-not-itself-parent": "Un event ne peut pas être son propre parent, voyons…"
+, "proc-setup-required":"L'installation d'un procédé est toujours requise."
+, "idee-type-required":"Le type de l'idée est requis."
+, "idee-description-required":"La description de l'idée est requise (précise si possible)"
+, "idee-setup-required":"L'installation de l'idée est requise"
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
@@ -46,8 +51,16 @@ const ERRORS = {
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 }
 const MESSAGES = {
-  "conf-created-analyse": "Nouvelle analyse créée avec succès."
+  "--- UI ---":""
+, "tit-update-type-list": "Pour actualiser la liste des types"
+, "tit-modify-type-list": "Pour modifier la liste des types (ouvrir le fichier des données)"
+
+, "--- messages ANALYSE ---":""
+, "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "
+, "same-start-time": "Le temps de départ n'a pas changé, rien à faire."
+, "confirm-on-change-start-time": "Si le temps de départ est modifié, il faut corriger le temps de tous les éléments existants. Je le ferai dès confirmation."
+, "confirm-start-time": "Le temps %{time} correspond au début réel du film."
 , "--- messages VIDÉO ---":""
 , "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
 , "--- messages SCÈNES ---":""
@@ -56,7 +69,7 @@ const MESSAGES = {
 , "confirm-destroy-event": "Êtes-vous certain de vouloir détruire à tout jamais cet event ?…"
 , "---- DOCUMENT ----":""
 , "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
-, "confirm-content-much-shorter": "Le document est plus de 20% plus court que sa version précédente… Confirmez-vous cet enregistrement ?"
+, "confirm-content-much-shorter": "Le document \"%{doc_name}\" est plus de 20% plus court que sa version précédente… Confirmez-vous quand même cet enregistrement ?"
 }
 
 /**

@@ -1,18 +1,20 @@
 /**
- * Pour la gestion des messages affichés à l'écran
- *
- * Version 1.0.3
- * Date    jan. 2019
- * Author  Philippe Perret <philippe.perret@yahoo.fr>
- *
- * Alias : F
- *
- * ### 1.0.2
- *    Notify peut recevoir duration:'auto' pour régler la longueur en fonction
- *    du contenu.
- * ### 1.0.3
- *    Pour empêcher d'utiliser la méthode `show` au lieu de `message` ou
- *    `notice`
+Pour la gestion des messages affichés à l'écran
+Version 1.0.4
+Date    jan. 2019
+Author  Philippe Perret <philippe.perret@yahoo.fr>
+Alias : F
+
+### 1.0.4
+  Possibilité de cliquer sur une notification pour la fermer
+  tout de suite.
+### 1.0.3
+    Pour empêcher d'utiliser la méthode `show` au lieu de `message` ou
+  `notice`
+### 1.0.2
+  Notify peut recevoir duration:'auto' pour régler la longueur en fonction
+  du contenu.
+
  */
 
 const RC = `
@@ -79,7 +81,11 @@ const Flash = {
       jqIn = this[jqIn];
       this.reset();
       jqIn.html(this.treat_message(msg)).show();
-      if(options && options.no_buttons){ this.hide_buttons(); }
+      if(options && options.no_buttons){
+        this.hide_buttons()
+        // Mais on peut cliquer sur la notification pour la fermer
+        jqIn.on('click',this.denotify.bind(this))
+      }
       else { this.show_buttons() };
       this.open();
     }

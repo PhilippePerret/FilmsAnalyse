@@ -6,14 +6,22 @@
 /**
   Méthode de classe qui charge l'analyse dont le dossier est +aFolder+
   et en fait l'analyse courante.
+
+  @param {String}   aFolder           Chemin d'accès au dossier de l'analyse
+  @param {Function} fn_afterLoading   La méthode a appeler après le chargement
+                    complet de l'analyse. Utilisé par les tests seulement pour
+                    le moment.
  */
-FAnalyse.load = function(aFolder){
+FAnalyse.load = function(aFolder, fn_afterLoading){
   try {
     log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
     this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
     UI.startWait(T('loading-analyse'))
     this.resetAll()
     window.current_analyse = new FAnalyse(aFolder)
+    if(undefined !== fn_afterLoading){
+      window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+    }
     current_analyse.load()
     return true
   } catch (e) {
@@ -33,6 +41,8 @@ FAnalyse.resetAll = function(){
     EventForm.reset() // notamment destruction des formulaires
     current_analyse.videoController.remove()
     FAEscene.reset()
+    FABrin.reset()
+    FAPersonnage.reset()
 
     delete current_analyse.videoController
     delete current_analyse.locator
@@ -90,13 +100,16 @@ load(){
 }
 
 /**
-  Méthode appelé ci-dessu quand l'analyse est prête, c'est-à-dire que toutes ses
+  Méthode appelé ci-dessus quand l'analyse est prête, c'est-à-dire que toutes ses
   données ont été chargées et traitées. Si un fichier vidéo existe, on le
   charge.
+
+  À la fin de cette méthode, tout a été préparé, tout est OK
  */
 , onReady(){
     log.info('-> <<FAanalyse>>#onReady')
     if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FADecor)      return this.loadDecor(this.onReady.bind(this))
     if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
     if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
     if(NONE === typeof FAWriter)    return this.loadWriter(this.onReady.bind(this))
@@ -115,11 +128,17 @@ load(){
     EventForm.init()
     FAEscene.init()
     FAEqrd.reset().init()
-    FAEpp.reset().init()
     FAPersonnage.reset().init()
     this.setOptionsInMenus()
     this.videoController.init()
     this.runTimerSave()
+    // Si une méthode après le chargement est requise, on
+    // l'invoque.
+    // Pour le moment, la méthode est surtout utilisée pour les
+    // tests (même seulement pour les tests)
+    if('function' === typeof this.methodAfterLoadingAnalyse){
+      this.methodAfterLoadingAnalyse()
+    }
     log.info('<- <<FAanalyse>>#onReady')
   }
 
@@ -188,6 +207,10 @@ loadProcede(fn_callback){
 ,
 loadBrin(fn_callback){
   return System.loadComponant('faBrin', fn_callback)
+}
+,
+loadDecor(fn_callback){
+  return System.loadComponant('faDecor', fn_callback)
 }
 
 })

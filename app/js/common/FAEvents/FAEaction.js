@@ -4,6 +4,9 @@ class FAEaction extends FAEvent {
   // ---------------------------------------------------------------------
   //  CLASSE
 
+  // Propriétés propres
+  static get OWN_PROPS(){ return ['actionType'] }
+
   // Pour dispatcher les données propre au type
   // Note : la méthode est appelée en fin de fichier
   static dispatchData(){
@@ -21,19 +24,16 @@ class FAEaction extends FAEvent {
   constructor(analyse, data){
     super(analyse, data)
     this.type         = 'action'
-    this.actionType   = data.actionType
+    // this.actionType   = data.actionType
   }
 
 get htype(){ return 'Action' }
-
-// Propriétés propres
-static get OWN_PROPS(){return ['actionType']}
 
 get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'content'})
+  this.content || errors.push({msg: "La description de l'action est indispensable.", prop: 'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

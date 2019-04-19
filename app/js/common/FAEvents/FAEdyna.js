@@ -4,7 +4,7 @@ class FAEdyna extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['dynaType', 'parent', ['libelle', 'inputtext-1']]}
+static get OWN_PROPS(){return ['dynaType', 'parent', ['libelle', 'shorttext1']]}
 static get OWN_TEXT_PROPS(){ return ['libelle']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 // Les types possibles de parent en fonction du type de l'event
@@ -45,8 +45,6 @@ static reset(){
 constructor(analyse, data){
   super(analyse, data)
   this.type         = 'dyna'
-  this.libelle      = data.libelle
-  this.parent       = data.parent
 }
 
 get htype(){ return 'Élément dynamique' }
@@ -56,10 +54,10 @@ get isValid(){
 
   // Définir ici les validité
   this.dynaType || errors.push({msg: "Le type (objectif, obstacle, etc.) est requis", prop: 'dynaType'})
-  this.libelle  || errors.push({msg: "Le libellé est requis", prop: 'inputtext-1'})
+  this.libelle  || errors.push({msg: "Le libellé est requis", prop: 'shorttext1'})
   let err_msg = this.parentIsValid()
   !err_msg || errors.push({msg: err_msg, prop: 'parent'})
-  this.content  || errors.push({msg: "La description de cet élément dynamique est requis.", prop: 'content'})
+  this.content  || errors.push({msg: "La description de cet élément dynamique est requis.", prop: 'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0
@@ -67,7 +65,7 @@ get isValid(){
 
 parentIsValid(){
   // console.log("-> parentIsValid() / this.parent = ", this.parent)
-  if(this.dynaType == 'objectif') return
+  if(this.dynaType == 'objectif' || !this.dynaType) return
   if(!this.parent){
     // Pas de parent défini
     // => erreur

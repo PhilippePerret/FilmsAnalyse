@@ -9,15 +9,15 @@
 **/
 
 const EVENTS_DATA = {
-  event:  {id: 'event',   hname: 'Évènement', btn_name: 'Ev.'}
-, scene:  {id: 'scene',   hname: 'Scène', btn_name: 'Scène'}
+  scene:  {id: 'scene',   hname: 'Scène', btn_name: 'Scène'}
 , stt:    {id: 'stt',     hname: 'Nœud structurel', btn_name: 'N.STT'}
 , dyna:   {id: 'dyna',    hname: 'Élément dynamique', btn_name: 'O.O.C.'}
 , proc:   {id: 'proc',    hname: 'Procédé', btn_name: 'Proc.'}
-, pp:     {id: 'pp',      hname: 'Préparation/paiement', btn_name: 'P/P'}
+, idee:   {id: 'idee',    hname: 'Idée', btn_name: 'Idée'}
 , info:   {id: 'info',    hname: 'Info', btn_name: 'Info'}
 , note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
 , qrd:    {id: 'qrd',     hname: 'Question/Réponse Dramatique', btn_name: 'QRD'}
 , action: {id: 'action',  hname: 'Action', btn_name: 'Action'}
 , dialog: {id: 'dialog',  hname: 'Dialogue', btn_name: 'Dial.'}
+, event:  {id: 'event',   hname: 'Évènement', btn_name: 'Ev.'}
 }

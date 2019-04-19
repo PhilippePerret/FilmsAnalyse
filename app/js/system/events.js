@@ -9,7 +9,9 @@ function stopEvent(e){
 }
 
 const KTAB          = 9   // keycode
-const KRETURN       = 13  // keyCode
+const KENTER  = 13 // keyCode
+const KENTREE = 13 // keyCode
+const KRETURN = 13 // keyCode
 const KERASE        = 8   // keyCode
 const KESCAPE       = 27  // touche escape
 

@@ -2,11 +2,35 @@
 
 Object.assign(HandTestStep.prototype,{
   /**
+    Regarde si l'étape donnée est une étape automatique et renvoie true
+    le cas échéant.
+    L'étape peut être explicitement exacte (simplement entre guillemets)
+    ou elle peut être une expression régulière
     @return {Boolean} true si c'est une étape automatique
   **/
   isAutomaticStep(){
-    this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[this.command.toLowerCase()]
-    if (undefined === this.dataAutomaticStep) return false
+    let cmd = this.command
+    this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[cmd.toLowerCase()]
+    if (undefined === this.dataAutomaticStep){
+      // console.log("Recherche de ", cmd)
+      if(cmd.substring(0,1) == '/'){
+        // C'est une expression régulière
+        // console.log("Oui, elle commence par /")
+        for(var kcmd in DATA_AUTOMATIC_STEPS){
+          if(DATA_AUTOMATIC_STEPS[kcmd][0].regular){
+            // Est-ce cette expression là ?
+            if(cmd.match(new RegExp(kcmd))){
+              // Oui ! on l'a trouvé
+              // console.log("Expression régulière trouvée !", kcmd)
+              this.dataAutomaticStep    = DATA_AUTOMATIC_STEPS[kcmd]
+              this.keyDataAutomaticStep = kcmd
+              return true
+            }
+          }
+        }
+      }
+      return false
+    }
     if('string' === typeof this.dataAutomaticStep /* un "alias" */){
       this.dataAutomaticStep = DATA_AUTOMATIC_STEPS[this.dataAutomaticStep]
     }
@@ -20,41 +44,85 @@ Object.assign(HandTestStep.prototype,{
   **/
 , execAndTest(){
     var pas, res
+
+    // La clé, quand c'est une expression régulière, a été mise
+    // dans this.keyDataAutomaticStep
+    let regExp = this.keyDataAutomaticStep
+
+    // console.log("-> execAndTest, avec commande : ", this.command)
+
     try {
       for(pas of this.dataAutomaticStep){
-        res = eval(pas.exec)
-        if(pas.expected != '---nothing---'){
-          res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+        if( pas.regular === true ){
+          // Par expression regulière
+
+          res = this.command.match(regExp )
+          var re
+          if(res.groups){
+            for(var prop in res.groups){
+              re = new RegExp(`__${prop}__`,'g')
+              pas.exec = pas.exec.replace(re, res.groups[prop])
+            }
+          }
+          switch (eval(pas.exec)) {
+            case true:  return pas.NaT ? 2 : 1
+            case false: return 0
+            case null:  return null // traitement asynchrone
+            default:
+              console.log("Ni true, ni false, ni null:", eval(pas.exec))
+          }
+
+        } else {
+          // Par expression explicite
+          res = eval(pas.exec)
+          if(pas.expected != '---nothing---'){
+            res === pas.expected || raise(pas.error.replace(/\%\{res\}/g, res))
+          }
         }
       }
-      return true
+      return pas.NaT ? 2 : 1
     } catch (e) {
       console.error(e)
       F.error(e)
-      return false
+      return 0
     }
   }
 })
 
 const DATA_AUTOMATIC_STEPS = {
-  "ouvrir l'app": [
-    {exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
+  "aucun event": [
+    {exec: 'FAEvent.count', expected: 0, error: "L'analyse ne devrait compter aucun event…"}
+  ]
+, "aucun document":[
+    {exec: 'FADocument.count', expected:0, error: "L'analyse ne devrait posséder aucun document…"}
+  ]
+, "aucun brin":[
+    {exec: 'FABrin.count', expected: 0, error: "L'analyse ne devrait comporter aucun brin…"}
+  ]
+, "aucun personnage":[
+    {exec: 'FAPersonnage.count', expected: 0, error: "L'analyse ne devrait comporter aucun personnage…"}
+  ]
+, "ouvrir l'app": [
+    {NaT: true /* pas un test */, exec: '"undefined"!==typeof(FAnalyse)', expected: true, error: 'FAnalyse devrait être défini'}
+  ]
+, "ouvrir l'analyse '(?<relpath>[\/a-zA-Z0-9_\-]+)'":[
+    {NaT: true, regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
   ]
 , "enregistrer l'analyse":[
-    {exec: "current_analyse.save()", expected: '---nothing---'}
+    {NaT: true, exec: "current_analyse.save()", expected: '---nothing---'}
   ]
 , "déverrouiller l'analyse":[
-    {exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
+    {NaT: true, exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
   ]
 , "enregistrer le document courant":[
-    {exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
+    {NaT: true, exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
   ]
 , "afficher la liste des brins": "ouvrir la fenêtre des brins"
 , "ouvrir la fenêtre des brins":[
-    {exec: "current_analyse.displayBrins()", expected: '---nothing---'}
+    {NaT: true, exec: "current_analyse.displayBrins()", expected: '---nothing---'}
   ]
 , "ouvrir le document dbrins":[
-    {exec: "FAWriter.openDoc('dbrins')", expected: '---nothing---'}
+    {NaT: true, exec: "FAWriter.openDoc('dbrins')", expected: '---nothing---'}
   ]
 
 // ---------------------------------------------------------------------

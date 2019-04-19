@@ -95,7 +95,7 @@ afterUpdateData(data){
 ,
 
 showDescriptionOf(event_id){
-  let menu = $(`form#form-edit-event-${event_id} div.div-procedes select`)
+  let menu = $(`form#form-edit-event-${event_id} div.div-proc-types select`)
     , value     = menu.val()
     , cate_id   = menu.attr('data-cate-id')
     , scate_id  = menu.attr('data-scate-id')
@@ -117,7 +117,7 @@ get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
 // path au fichier contenant toutes les données des procédés
 get path(){
-  if(undefined === this._path) this._path = path.join(APPFOLDER,'app','js','data','data_procedes.yaml')
+  if(undefined === this._path) this._path = path.join(APPFOLDER,'app','js','data','data_proc.yaml')
   return this._path
 }
 

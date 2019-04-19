@@ -11,20 +11,44 @@ constructor(htest, idx, cmd){
   On doit "jouer" l'étape.
   Soit c'est une étape automatique (connue), soit il faut simplement l'afficher
   et demander à l'utilisateur de l'exécuter
+  Soit c'est un check à faire, qui peut lui aussi être manuel ou automatique.
 **/
 run(){
   log.info(`-> ${this.ref}#run`)
+  var res
   this.LI.removeClass('sleeping').addClass('running')
   if(this.isCheck()){
     log.info('   -- CHECK --')
-    if(this.execTheCheck()) HandTests.markSuccess()
-    else HandTests.markFailure()
+    switch(res = this.execTheCheck()){
+      case 1: HandTests.markSuccess()     ; break
+      case 0: HandTests.markFailure()     ; break
+      case 2: HandTests.markNormalStep()  ; break
+      case null:
+        // On attend que le testeur définisse manuellement le résultat
+    }
+    console.log("[CHECK] Retour de execTheCheck():", res)
   } else if(this.isAutomaticStep()){
     log.info('   -- TEST AUTOMATIQUE --')
     // Note : on doit passer par les méthodes de HandTests pour pouvoir
     // mémoriser le résultat
-    if(this.execAndTest()) HandTests.markSuccess()
-    else HandTests.markFailure()
+    // Trois réponses (explicites) sont possibles :
+    //  1. 1   => C'est un succès. On le marque et on passe à la suite
+    //  2. 0  => C'est un échec. On le marque et on passe à la suite
+    //  3. 2  => Etape normale sans test
+    //  3. null   => Test asynchrone qui appellera lui-même la marque et la
+    //               suite
+    // console.log("RETOUR DE execAndTest : ", res)
+    switch (res = this.execAndTest()) {
+      case 0: HandTests.markFailure() ;   break
+      case 1: HandTests.markSuccess() ;   break
+      case 2: HandTests.markNormalStep(); break
+      case null:
+        // console.log("Le retour de execAndTest est exactement NULL")
+        return // pour attendre l'opération manuelle ou asynchrone
+      default:
+        throw("Le retour de execAndTest n'est pas valide (0, 1, 2 ou null attendu)")
+    }
+    console.log("[AUTOMATIC STEP] Retour de execAndTest():", res)
   } else if (HandTests.mode_last) {
     log.info('   -- mode_last --')
     // Si on est en mode "last", c'est-à-dire qu'on cherche le dernier
@@ -62,7 +86,8 @@ run(){
           switch (res) {
             case 0: this.markFailure(); break
             case 1: this.markSuccess(); break
-            case 2: this.end(); break
+            case 2: this.markNormalStep(); break
+            case null: return
           }
         }
       }
@@ -76,11 +101,14 @@ run(){
 
 end(){
   log.info(`-> ${this.ref}#end`)
-  this.LI.addClass('done')
   this.htest.nextStep()
   log.info(`<- ${this.ref}#end`)
 }
 
+markNormalStep(){
+  this.LI.addClass('done')
+  this.end()
+}
 markSuccess(){
   this.LI.addClass('success')
   this.end()

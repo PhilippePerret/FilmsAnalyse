@@ -5,7 +5,7 @@ class FAEdialog extends FAEvent {
   //  CLASSE
 
   // Propriétés propres au dialogue
-  static get OWN_PROPS(){return ['dialType']}
+  static get OWN_PROPS(){return ['dialType', ['quote', 'longtext2']]}
 
   // Pour dispatcher les données propre au type
   // Note : la méthode est appelée en fin de fichier
@@ -24,7 +24,6 @@ class FAEdialog extends FAEvent {
 constructor(analyse, data){
   super(analyse, data)
   this.type       = 'dialog'
-  this.dialType   = data.dialType
 }
 
 get htype(){ return 'Dialogue' }
@@ -34,7 +33,7 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.content || errors.push({msg: "La description du dialogue est indispensable.", prop: 'content'})
+  this.content || errors.push({msg: "La description du dialogue est indispensable.", prop: 'longtext1'})
   this.dialType || errors.push({msg: "Le type de dialogue est à définir.", prop: 'dialType'})
 
   if(errors.length){super.onErrors(this, errors)}

@@ -92,7 +92,7 @@ const HandTests = {
 
 , saveResultats(){
     this.code   = this.resultats
-    this.iofile.save({after: this.endSaveResultats.bind(this)})
+    this.iofile.save({after: this.endSaveResultats.bind(this), no_warm_if_shorter: true})
   }
 , endSaveResultats(){
   }
@@ -146,8 +146,9 @@ const HandTests = {
     // Les boutons dans le footer
   , DCreate('DIV', {class: 'htest-footer', append: [
       DCreate('BUTTON', {id: 'btn-finir',     inner: 'FINIR'})
-    , DCreate('BUTTON', {id: 'btn-next-test', inner: 'Test suivant'})
-    , DCreate('BUTTON', {id: 'btn-next-step', inner: 'Étape suivante'})
+    , DCreate('BUTTON', {id: 'btn-next-file', inner: 'Next File'})
+    , DCreate('BUTTON', {id: 'btn-next-test', inner: 'Next Test'})
+    , DCreate('BUTTON', {id: 'btn-next-step', inner: 'Next Step'})
     , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:100px;'})
     , DCreate('BUTTON', {id: 'btn-step-success', inner: 'OK'})
     , DCreate('BUTTON', {id: 'btn-step-failure', inner: 'ERROR'})
@@ -159,16 +160,39 @@ const HandTests = {
 , observe(){
   let jqo = this.fwindow.jqObj
 
+  jqo.find('#btn-next-file').on('click',  this.nextFile.bind(this))
   jqo.find('#btn-next-test').on('click',  this.nextTest.bind(this))
   jqo.find('#btn-next-step').on('click',  this.nextStep.bind(this))
   jqo.find('#btn-finir').on('click',      this.resumeTests.bind(this))
-  jqo.find('#btn-step-success').on('click', this.markSuccess.bind(this))
+  jqo.find('#btn-step-success').on('click', this.markSuccessOrNormal.bind(this))
   jqo.find('#btn-step-failure').on('click', this.markFailure.bind(this))
 
   // Le bouton pour jouer le test entré dans le champ
   jqo.find('#btn-htest-path').on('click', this.runThisTest.bind(this))
 }
 
+/**
+  Méthode qui marque un succès ou une étape normale.
+  En fait, cette méthode répond au bouton "OK" qui peut signifier deux choses :
+  - si on est sur une étape de synopsis, elle signifie qu'on a exécuté l'action
+    demandée. Ce n'est pas un success à proprement parler, on n'incrémente pas
+    les succès et l'on ne marque pas l'étape en vert.
+  - en revanche, si on est sur une étape de check, ce "OK" signifie vraiment
+    un succès, qu'on doit marquer tel quel.
+**/
+, markSuccessOrNormal(){
+    if (this.currentHtestFile.currentHTest.currentStep.isSynopsis){
+      this.markNormalStep()
+    } else {
+      this.markSuccess()
+    }
+  }
+, markNormalStep(){
+    if(false === this.mode_last){
+      this.consigneResCurStep(2)
+    }
+    this.currentHtestFile.currentHTest.currentStep.markNormalStep()
+}
 , markSuccess(){
     if (false === this.mode_last){
       this.resultats.successCount ++
@@ -200,11 +224,17 @@ const HandTests = {
     this.resultats.tests[this.currentHtestFile.relpath][this.currentHtestFile.currentHTest.id][this.currentHtestFile.currentHTest.currentStep.index] = valRes
   }
 , nextStep(){
-  this.markPending()
-  this.currentHtestFile.currentHTest.nextStep()
+    this.markPending()
+    this.currentHtestFile.currentHTest.nextStep()
   }
 , nextTest(){
-  this.currentHtestFile.nextTest()
+    this.markPending()
+    this.currentHtestFile.nextTest()
+  }
+  // Pour passer au fichier suivant
+, nextFile(){
+    this.markPending()
+    this.nextHTestFile()
   }
 
   /**

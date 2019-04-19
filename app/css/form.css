@@ -39,12 +39,15 @@ form.form-edit-event.modified button.btn-form-submit
 form.form-edit-event .div-form {
   display:block;
   margin-top:8px;
+  padding:0 6px 0 7px;
 }
 form.form-edit-event .error {
   background-color:#FFCCCC;
 }
-form.form-edit-event textarea {
-  width:96%;
+form.form-edit-event .div-form textarea,
+form.form-edit-event .div-form input[type="text"]
+{
+  width:98.6%;
   resize:none;
 }
 form.form-edit-event label {
@@ -147,6 +150,14 @@ form.form-edit-event button.info,
 form.form-edit-event button.modify
 {
   all:unset;
+  margin-left:8px;
+}
+
+form.form-edit-event button.update {
+}
+form.form-edit-event button.info,
+form.form-edit-event button.modify
+{
   vertical-align:sub;
 }
 form.form-edit-event button img {
@@ -156,14 +167,14 @@ form.form-edit-event button.modify img {
   width:18px;
 }
 
-form.form-edit-event div.div-procedes select {
-  max-width:380px;
+form.form-edit-event div.div-proc-types select {
+  max-width:300px;
 }
-form.form-edit-event div.div-procedes select.menu-procedes,
-form.form-edit-event div.div-procedes select.menu-procedes *
+form.form-edit-event div.div-proc-types select.menu-procedes,
+form.form-edit-event div.div-proc-types select.menu-procedes *
 {
   font-weight:bold;
   color:darkblue;
 }
-form.form-edit-event div.div-procedes select.menu-procedes * {
+form.form-edit-event div.div-proc-types select.menu-procedes * {
 }

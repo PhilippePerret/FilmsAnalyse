@@ -23,6 +23,9 @@ const destroyEvent = function(event_id, form_instance){
     // Cas particulier de la destruction d'une scène
     FAEscene.destroy(ev.numero)
 
+    // Il faudra forcément actualiser la liste des décors
+    FADecor.resetAll()
+
   } else if (ev.type === 'stt'){
     // Cas particulier de la destruction d'un event de structure (qui doit
     // donc être en relation avec un sttNode)

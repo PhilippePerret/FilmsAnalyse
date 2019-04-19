@@ -23,9 +23,9 @@ const FAStatistiques = {
 , output(options){
     // Les "briques" des statistiques
     var appends = []
-    FAPersonnage.count    && appends.push(this.divStatsPersonnages())
-    FAEscene.count        && appends.push(this.divStatsScenes())
-    FAEscene.decorsCount  && appends.push(this.divStatsDecors())
+    FAPersonnage.count  && appends.push(this.divStatsPersonnages())
+    FAEscene.count      && appends.push(this.divStatsScenes())
+    FABrin.count        && appends.push(this.divStatsDecors())
     // Le div final (body)
     let div = DCreate('DIV', {class:'body', append:appends})
 
@@ -92,7 +92,7 @@ Nombre personnages   ${FAPersonnage.count}
     , DCreate('SPAN', {inner: 'Durée',   class: 'label center'})
     ]}))
 
-    FAEscene.forEachDecor(function(decor){
+    FADecor.forEachDecor(function(decor){
       decorsList.push(decor.asStats())
     })
 

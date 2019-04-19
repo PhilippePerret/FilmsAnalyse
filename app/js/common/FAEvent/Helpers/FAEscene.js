@@ -53,8 +53,11 @@ asFull(opts){
   s'agit du scénier (`inScenier`)
 **/
 asBook(opts){
-  return  this.f_scene_heading(opts).outerHTML
-          + this.f_pitch.outerHTML
+  var str =  this.f_scene_heading(opts).outerHTML
+  let re = new RegExp(this.pitch)
+  if (!this.content.match(re)) str += `${this.f_pitch.outerHTML} — `
+  str += this.content
+  return str
 }
 
 ,
@@ -87,24 +90,6 @@ f_scene_heading(opts){
   // On peut assembler l'entête
   return DCreate('DIV', {class: 'scene-heading', append: headingElements})
 }
-
-// ,
-// /**
-//  * Div construit pour la scène
-//  */
-// formateContenu(){
-//   console.log("-> FAEscene#formateContenu")
-//   var h
-//   if(this.isGenerique){ h = "GÉNÉRIQUE" }
-//   else {
-//     var decor  = this.decor ? ` — ${FATexte.deDim(this.decor)}` : ''
-//     var sdecor = this.sous_decor ? ` : ${FATexte.deDim(this.sous_decor)}` : ''
-//     h = `${this.numeroFormated}. ${(this.lieu || 'INT').toUpperCase()}. ${(this.effet || 'jour').toUpperCase()}${decor}${sdecor}`
-//   }
-//   this._formated = `<div class="scene-heading">${h}</div><span class="scene-resume">${FATexte.deDim(this.content)}</span>`
-//   return this._formated
-// }
-
 ,
 /**
  * Retourne le lien vers l'event
@@ -125,12 +110,12 @@ Object.defineProperties(FAEscene.prototype,{
   f_pitch:{
     get(){
       if(undefined === this._f_pitch){
-        this._f_pitch = DCreate('DIV', {class:'scene-pitch', inner: this.pitch})
+        this._f_pitch = DCreate('span', {class:'scene-pitch', inner: this.pitch})
       }
       return this._f_pitch
     }
   }
-  , numeroFormated:{
+, numeroFormated:{
     get(){
       if(undefined===this._numeroFormated){
         this._numeroFormated = `<span class="numero-scene" data-id="${this.id}">${this.numero}</span>`

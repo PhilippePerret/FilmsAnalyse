@@ -86,10 +86,46 @@ static findAssociations(){
 }
 
 /**
+  Méthode pour boucler sur tous les documents actuels
+**/
+static forEachDocument(fn){
+  for(var doc of this.allDocuments){
+    if(false === fn(doc)) break // pour pouvoir interrompre
+  }
+}
+
+/**
+
+  Retourne la liste de tous les documents courant,
+  sous forme d'instance FADocument.
+
+  Note : on se sert de `this.documents` qui a pu être
+  défini avant (cf. la méthode `get`) et en même temps
+  on la complète en passant tous les documents en revue.
+
+**/
+static get allDocuments(){
+  var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
+    , affixe, doc_id
+    , alldocs = []
+  for(var pdoc of all){
+    affixe = path.basename(pdoc,path.extname(pdoc))
+    if(affixe.substring(0,4)=='doc-'){
+      doc_id = parseInt(affixe.split('-')[1],10)
+    } else {
+      doc_id = affixe
+    }
+    this.get(doc_id)
+  }
+  all = null
+  return this.documents
+}
+
+/**
   Méthode qui compte le nombre de documents qui se trouvent dans le dossier
   `analyse_files` et le renvoie (utilisé pour les tests manuels)
 **/
-static count(){
+static get count(){
   return glob.sync(`${current_analyse.folderFiles}/*.*`).length
 }
 // ---------------------------------------------------------------------

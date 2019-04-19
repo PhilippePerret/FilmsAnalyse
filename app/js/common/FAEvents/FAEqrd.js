@@ -4,7 +4,7 @@ class FAEqrd extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return [['question', 'inputtext-1'], ['reponse', 'inputtext-2'], 'tps_reponse','exploitation']}
+static get OWN_PROPS(){return [['question', 'shorttext1'], ['reponse', 'shorttext2'], 'tps_reponse',['exploit', 'longtext3']]}
 static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
@@ -79,10 +79,6 @@ static defineLists(){
 constructor(analyse, data){
   super(analyse, data)
   this.type         = 'qrd'
-  this.question     = data.question
-  this.reponse      = data.reponse
-  this.tps_reponse  = data.tps_reponse
-  this.exploitation = data.exploitation
 }
 
 get htype(){ return 'Question/réponse dramatique' }
@@ -91,8 +87,8 @@ get isValid(){
   var errors = []
 
   // Définir ici les validité
-  this.question || errors.push({msg: "La Question Dramatique est requise.", prop: 'inputtext-1'})
-  this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'content'})
+  this.question || errors.push({msg: "La Question Dramatique est requise.", prop: 'inputtext1'})
+  this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'longtext1'})
   if(this.reponse){
     this.tps_reponse || errors.push({msg: "Le temps de la réponse est requis.", prop: 'tps_reponse'})
   }

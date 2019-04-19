@@ -5,7 +5,7 @@ class FAEscene extends FAEvent {
 //  CLASSE
 
 // Les propriétés propres aux instances (constante de classe)
-static get OWN_PROPS(){return ['numero', ['decor', 'inputtext-1'], ['sous_decor', 'inputtext-2'],'lieu','effet','sceneType']}
+static get OWN_PROPS(){return ['numero', ['decor', 'shorttext1'], ['sous_decor', 'shorttext2'],'lieu','effet','sceneType']}
 static get OWN_TEXT_PROPS(){ return ['decor', 'sous_decor']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
@@ -29,15 +29,7 @@ static updateAll(){
   var my = this
   my.reset()
   my.updateNumerosScenes()
-  if(my.a.options.get('option_duree_scene_auto')){
-    var prev_scene
-    my.forEachSortedScene(function(scene){
-      if(scene.numero > 1){
-        prev_scene = my.getByNumero(scene.numero - 1)
-        prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
-      }
-    })
-  }
+  my.updateDureeScenes()
   this.a.modified = true
 }
 
@@ -51,6 +43,22 @@ static updateNumerosScenes(){
     scene.numero = ++ num
     scene.updateNumero()
     if (oldNum != num) scene.modified = true
+  })
+}
+
+/**
+  Actualisation de la durée des scènes (si l'option
+  le demande)
+**/
+static updateDureeScenes(){
+  if(!this.a.options.get('option_duree_scene_auto')) return
+  let my = this
+  var prev_scene
+  my.forEachSortedScene(function(scene){
+    if(scene.numero > 1){
+      prev_scene = my.getByNumero(scene.numero - 1)
+      prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
+    }
   })
 }
 
@@ -141,45 +149,8 @@ static get byTime(){return this._by_time||defP(this,'_by_time',this.doLists().ti
 static get sortedByTime(){return this._sortedByTime||defP(this,'_sortedByTime',this.doLists().sorted)}
 static get sortedByDuree(){return this._sortedByDuree||defP(this,'_sortedByDuree', this.doLists().sorted_duree)}
 
-static get dataDecors(){return this._dataDecors||defP(this,'_dataDecors',this.getDataDecors())}
-
-/**
-  Récupère la donnée des décors dans la liste des scènes, directement
-  C'est une liste une contient en clé le nom du décor principal et en
-  valeur la liste des sous-décors qu'il possède.
-**/
-static getDataDecors(){
-  var dinst = {}  // table avec des instances
-
-  this.forEachScene(function(scene){
-    // console.log("scene:",scene)
-    if(scene.decor && scene.decor != ''){
-      if(undefined === dinst[scene.decor]){
-        dinst[scene.decor] = new FADecor(scene.decor)
-      }
-      dinst[scene.decor].addScene(scene.numero)
-      // Il faut que le décor existe pour que le sous-décor puisse
-      // exister, c'est pour ça qu'on le met là.
-      if(scene.sous_decor && scene.sous_decor != ''){
-        if(undefined === dinst[scene.decor].sousDecor(scene.sous_decor)){
-          dinst[scene.decor].addSousDecor(scene.sous_decor)
-        }
-        dinst[scene.decor].sousDecor(scene.sous_decor).addScene(scene.numero)
-      }
-    }
-  })
-  // console.log("Données décors :", dinst)
-  return dinst
-}
-
-static get decorsCount(){
-  return Object.keys(this.dataDecors).length
-}
-static forEachDecor(fn){
-  for(var decor in this.dataDecors){
-    fn(this.dataDecors[decor] /* instance FADecor */)
-  }
-}
+static get dataDecors(){return FADecor.data}
+static get decorsCount(){return FADecor.count}
 /**
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
@@ -331,12 +302,6 @@ static get dataType(){
 constructor(analyse, data){
   super(analyse, data)
   this.type       = 'scene'
-  this.numero     = data.numero
-  this.decor      = data.decor
-  this.sous_decor = data.sous_decor
-  this.effet      = data.effet
-  this.lieu       = data.lieu
-  this.sceneType  = data.sceneType
 }
 
 // ---------------------------------------------------------------------
@@ -398,10 +363,11 @@ onModify(){
 // Pour vérifier si c'est un nouveau décor
 checkForDecor(){
   if(this.decor){
-    if(undefined === FAEscene.dataDecors[this.decor]){
-      delete FAEscene._dataDecors
-    } else if (this.sous_decor && undefined === FAEscene.dataDecors[this.decor].sousDecor(this.sous_decor)){
-      delete FAEscene._dataDecors
+    if(undefined === FADecor.data[this.decor]){
+      FADecor.resetAll()
+    } else if (this.sous_decor && undefined === FADecor.data[this.decor].sousDecor(this.sous_decor)){
+      FADecor.data[this.decor].reset()
+      FADecor.resetAll()
     }
   }
 }

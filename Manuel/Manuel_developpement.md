@@ -26,6 +26,19 @@
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
 * [Test de la l'application](#test_application)
+* [Les « Hand-Tests », test manuels de l'application](#tests_manuels)
+  * [Lancement des hand-tests](#running_hand_tests)
+    * [Astuce pour toujours commencer par le test en cours](#tip_start_with_current_test)
+    * [Passage au test suivant](#next_hand_test)
+    * [Passage au fichier suivant](#next_file_hand_tests)
+    * [Interrompre les tests](#interrompre_hand_tests)
+  * [Composition des étapes des hand-tests](#compositing_hand_tests_steps)
+  * [Vérification dans le synopsis (check)](#checks_in_synopsis)
+  * [Implémentation des hand-tests](#developping_hand_tests)
+    * [Implémentation des checks](#implementer_checks)
+    * [Définir les *éléments numérisables* de l'application](#define_numerisable_elements)
+    * [Définir les checks dynamiques](#define_dynamique_checks)
+
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -80,7 +93,7 @@ La propriété de classe `OWN_PROPS` permet de définir les propriétés propres
 * soit un `String` si la propriété possède le même nom (suffixe d'id) que le champ où elle est éditée,
 * soit un `Array` de deux éléments `[propriété, suffixe d'id]` si le champ pour l'éditer n'est pas propre à la propriété.
 
-Par exemple, pour la propriété personnelle `procType` de la classe `FAEproc`, le menu porte le nom `event-<id event>-procType`. Le suffixe est `procType`, on peut donc mettre juste le string `procType` dans `OWN_PROPS`. En revanche, la propriété `setup` (installation du procédé) est édité dans le champ `event-<id>-inputtext-1`, donc il faut mettre la valeur `['setup', 'inputtext-1']` dans `OWN_PROPS`.
+Par exemple, pour la propriété personnelle `procType` de la classe `FAEproc`, le menu porte le nom `event-<id event>-procType`. Le suffixe est `procType`, on peut donc mettre juste le string `procType` dans `OWN_PROPS`. En revanche, la propriété `setup` (installation du procédé) est édité dans le champ `event-<id>-inputtext1`, donc il faut mettre la valeur `['setup', 'inputtext1']` dans `OWN_PROPS`.
 
 ### Exécution d'une opération après la création
 
@@ -531,11 +544,19 @@ Le « script d'assemblage » définit la façon d'assembler les différents co
 
 ## Test de la l'application {#test_application}
 
-Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que…).
+Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que tout puisse être pris en charge, ce qui est le but à long terme).
 
-Ces tests manuels sont définis dans le dossier `./Tests_manuels/`. On peut s'inspirer des tests présents pour en créer d'autres.
+---------------------------------------------------------------------
 
-Un test manuel, au minimum, requiert :
+## Les « Hand-Tests », test manuels de l'application {#tests_manuels}
+
+Les tests manuels — qu'on pourrait aussi appeler « tests semi-automatiques », sont composés de phases automatisées et de phases manuels que l'utilisateur — le programmeur — doit exécuter.
+
+Tous les tests manuels sont définis dans le dossier `./Tests_manuels/`. On peut s'inspirer des tests présents pour en créer d'autres.
+
+Chaque fichier définit plusieurs hand-tests.
+
+Un hand-test, au minimum, requiert :
 
 * Un `id`, identifiant unique dans le fichier.
 * Un `libelle` pour afficher ce qu'il fait.
@@ -552,7 +573,9 @@ Par exemple :
     description: C’est un tout premier test à faire
     synopsis:
       - ouvrir l'app
-      - ouvrir une analyse
+      - ouvrir l'analyse 'monAnalyse'
+      - check: aucun event
+      - check: aucun document
       - quitter l'app
     checks:
       - tout doit s’être bien passé
@@ -561,21 +584,115 @@ Par exemple :
 
 ```
 
-Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `checks`.
+### Lancement des hand-tests {#running_hand_tests}
 
-### Vérification insérée dans un synopsis
+On lance les hand-tests en activant le menu « Outils > Lancer les tests manuels » (ou item similaire). L'item « Reprendre les tests manuels » (ou similaire) permet de reprendre les tests là où on s'était arrêté la dernière fois.
 
-Si des vérifications précises, à des moments précis du test, doivent être effectuées, on les indique de cette manière :
+
+### Astuce pour toujours commencer par le test en cours (#tip_start_with_current_test)
+
+Quand un test est en cours d'élaboration, ou en cours de jeu pendant le développement du code qu'il concerne, on peut le rejoindre dès le lancement des tests en lui donnant un nom commençant par exemple par un trait plat ou par un 0. Il passera alors toujours avant les tests suivants.
+
+Il faudra seulement penser à retirer ce trait plat du nom, une fois les choses achevéees, pour pouvoir utiliser l'astuce pour le nouveau test courant.
+
+Essayer par exemple en implémentant un fichier de tests qui s'appellerait `_mon_premier_test.yaml` et qui contiendrait :
 
 ```yaml
-synopsis:
-  - mon test à faire
-  - check:
-    - "<le code de la vérification>"
-    - "<autre code de vérification>"
-  - mon test à poursuivre
-
+- id: mon_premier_test
+  libelle: Essai d'un test au-dessus
+  synopsis:
+    - ouvrir l'application
+  checks:
+    - Ce test est lancé en premier.
 ```
+
+### Passage au test suivant {#next_hand_test}
+
+On peut passer au test suivant du fichier courant (ou le premier du fichier suivant si on est au dernier test du fichier) en cliquant le bouton « Test suivant » en bas de la fenêtre de test.
+
+### Passage au fichier suivant {#next_file_hand_tests}
+
+On peut passer au fichier de test suivant en cliquant le bouton « Fichier suivant » en bas de la fenêtre de test.
+
+### Interrompre les tests {#interrompre_hand_tests}
+
+On peut interrompre les tests manuels à tout moment en cliquant sur le bouton « FINIR » en bas de la fenêtre des tests.
+
+On peut alors utiliser le menu « Outils > Poursuivre les tests » pour repartir là où on s'est arrêté.
+
+Noter que si les boutons « Test suivant » ou « Fichier suivant » ont été utilisés, le menu « Poursuivre les tests » reconduira toujours au premier test qui n'a pas été validé.
+
+### Composition des étapes des hand-tests (synopsis) {#compositing_hand_tests_steps}
+
+Pour composer le *synopsis* d'un test, comprendre la suite de ses étapes (`steps`), il faut comprendre qu'il existe deux sortes d'étape :
+
+* les steps automatiques,
+* les steps manuelles.
+
+Les secondes sont simplement composées de textes qui indiquent ce qu'il faut faire, sans que ces phrases signifie quelque chose pour l'application. Par exemple « glisser le petit icone à gauche vers la grosse partie de droite » ne signifiant rien pour les tests, ces tests l'afficheront simplement comme une étape à exécuter manuellement et attendront qu'on l'exécute pour passer à la suite.
+
+Les premières, au contraire, les *steps automatiques*, s'exécutent comme leur nom l'indique de façon automatique, sans intervention du testeur.
+
+Une étape automatique ne peut être définie qu'en fonction de l'application et ses besoins propres. Par exemple, pour le test de l'application **Film Analyzer** pour lesquels ces tests automatiques ont été créés, on trouve l'étape automatique `ouvrir l'analyse 'monAnalyse'` qui permet d'ouvrir de façon automatique l'analyse précisée, ici `monAnalyse` (c'est-à-dire, précisément, une analyse se trouvant dans le dossier `./analyses/tests/MANUELS/` de l'application **Film Analyzer**).
+
+La première chose à faire, donc, pour le testeur, est de définir ces étapes. Voir la partie [implémentation des étapes automatiques](#developping_hand_tests), ci-dessous, pour voir comment procéder. Ces étapes seront définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`.
+
+Il suffit ensuite d'utiliser ces étapes dans le `synopsis` ou les `checks`.
+
+### Vérification dans le synopsis (check) {#checks_in_synopsis}
+
+Il existe deux types de vérifications (*checks*) :
+
+* les vérifications finales du test, pour voir si l'opération testée s'est déroulée conformément aux attentes,
+* et les vérifications mineures en cours de synopsis, juste pour savoir si les choses se passent bien avant de poursuivre plus avant. Dans le synopsis, ces vérifications doivent se démarquer avec le préfixe `check:` (sans espace avant les deux points).
+
+On peut trouver par exemple :
+
+```yaml
+- id: mon_test
+  libelle: Un test avec check au cours du synopsis
+  synopsis:
+    - Vous devez faire ça
+    - Et puis faire ça
+    check: "Première vérification à faire : compter les events affichés dans le reader. Il doit y en avoir 3"
+    check: 4 events
+    check: aucun document
+    - Poursuivre en faisant ça
+    - Et terminer en faisant ça
+  checks:
+    - Vous devez être parvenu au bout
+```
+
+Ici, les vérifications `4 events` et `aucun document` sont des checks automatiques définis dans le fichier `AUTOMATIC_STEPS.js` dont il est question plus haut. En revanche, la vérification "Première verification [etc.]" est une vérification manuelle que le testeur doit accomplir.
+
+---------------------------------------------------------------------
+
+### Implémentation des hand-tests {#developping_hand_tests}
+
+Les opérations automatiques sont définies dans le fichier `./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js`. Il suffit de les reprendre telles quelles dans le `synopsis` ou les `checks`.
+
+#### Implémentation des checks {#implementer_checks}
+
+Les étapes de check ont trois formats possibles :
+
+* les étapes manuelles, qui seront affichées telles quelles au cours du tests,
+* des étapes automatiques normales, définies dans le fichier `AUTOMATIC_STEPS.js` — par exemple `4 documents` —,
+* des étapes automatiques à interpréter, à évaluer, avec du code dynamique. Par exemple `{{event:12}} de type {{type:note}}`.
+
+Pour les deuxièmes, on trouve par exemple des choses comme `aucun event` qui vérifie qu'il n'y ait aucun event dans l'analyse courante, ou encore `aucun document`, `aucun brin`. On trouve aussi, pour les deuxièmes, des checks dynamiques qui peuvent préciser le nombre de choses attendues. Par exemple : `4 events`, `1 document`, `3 brins`. Ces éléments sont appelés les *éléments numérisables* de l'application.
+
+Pour composer les troisièmes, cf. [Définir les checks dynamiques](#define_dynamique_checks).
+
+#### Définir les *éléments numérisables* de l'application {#define_numerisable_elements}
+
+Pour utiliser les *éléments numérisables* dans les checks de tests, il y a deux impératifs :
+
+* définir leur nom,
+* définir la façon de les dénombrer.
+
+On les définit dans la constante `HandTests.AppElements` (dans le fichier `HandTests/require_finally/elements.js`). C'est une table qui contient aussi les méthodes `countMethod` et `getMethod` qui permettent respectivement de récupérer le nombre d'éléments et l'élément par son ID dans l'application.
+
+#### Définir les checks dynamiques {#define_dynamique_checks}
 
 Ce code de vérification est un langage qui ressemble à ça : `L'{{event:0}} possède un {{type:note}}`. Ici, on vérifie que l'event qui a pour identifiant `0` possède bien un `type` (donc une propriété de nom `type`) qui vaut `note`.
 

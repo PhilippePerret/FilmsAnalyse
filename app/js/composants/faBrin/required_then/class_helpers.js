@@ -13,14 +13,16 @@ build(){
   this.forEachBrin(brin => divbrins.push(brin.asDiv()))
   return [
     DCreate('DIV', {class:'header', append:[
-      DCreate('BUTTON',{type:'button', class:'btn-close'})
-    , DCreate('H2', {inner: 'BRINS DU FILM'})
+        DCreate('BUTTON',{type:'button', class:'btn-close'})
+      , DCreate('H3', {inner: 'Brins du film'})
     ]})
-  , DCreate('DIV', {class:'explication small', inner: "(glissez les events/documents/times sur le cadre du brin à lier)"})
-  , DCreate('DIV', {class:'div-brins', append:divbrins})
+  , DCreate('DIV', {class:'body', append:[
+        DCreate('DIV', {class:'explication small', inner: "(glissez les events/documents/times sur le cadre du brin à lier)"})
+      , DCreate('DIV', {class:'div-brins', append:divbrins})
+    ]})
   , DCreate('DIV', {class:'footer right', append:[
-      DCreate('BUTTON', {type:'button', class:'update', id:'btn-update-listing-brins', inner:'<img src="img/update-2.png" class="update" />'})
-    , DCreate('BUTTON', {type:'button', id:'btn-open-data-brins', inner:'Éditer les brins'})
+        DCreate('BUTTON', {type:'button', class:'update', id:'btn-update-listing-brins', inner:'<img src="img/update-2.png" class="update" />'})
+      , DCreate('BUTTON', {type:'button', id:'btn-open-data-brins', inner:'Éditer les brins'})
     ]})
   ]
 }
@@ -55,5 +57,5 @@ onDrop(e, ui){
 
 })
 Object.defineProperties(FABrin,{
-  fwindow:{get(){return this._fwindow||defP(this,'_fwindow',new FWindow(this,{id:'fwindow-brins'}))}}
+  fwindow:{get(){return this._fwindow||defP(this,'_fwindow',new FWindow(this,{id:'fwindow-brins', class:'fwindow-listing-type'}))}}
 })

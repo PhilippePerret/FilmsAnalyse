@@ -12,6 +12,9 @@
     paysage:
       hname: Scène paysage
       description : Une scène dont le but principal est de montrer un beau décor, un beau paysage, une belle vue.
+    elliptique:
+      hname: Scène elliptique
+      description: Scène qui sert à faire passer une ellipse temporelle, à marquer le temps qui passe.
     action:
       hname: Scène d’action
       description: Une scène où l’action prend une grande place.

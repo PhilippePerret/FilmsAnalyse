@@ -85,6 +85,10 @@ constructor(p_or_owner){
  * Sauvegarde "prudente" du fichier. On l'enregistre d'abord dans un fichier
  * temporaire, puis une fois qu'on s'est assuré de sa validité, on le met
  * en bon fichier tout en faisant un backup de l'original.
+
+ @param {Object|Undefined} options  Pour définir des options
+    :no_warm_if_shorter   Si true, ne produira pas l'alerte de document 20 %
+                          moins gros.
  */
 save(options){
   log.info('-> IOFile#save')
@@ -94,7 +98,7 @@ save(options){
   } else {
     this.saving = true
   }
-  if(undefined===options)options={}
+  if(undefined === options) options = {}
   UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
   this.options = options
   if(options.after) this.methodAfterSaving = options.after
@@ -107,7 +111,9 @@ save(options){
     let err_code = IOFile.codeIsOK(scode, IOFile.getFormatFromExt(this.path))
     err_code === null   || raise(T('code-to-save-not-ok', {raison: err_code}))
     scode.length > 0    || raise(T('code-to-save-is-empty'))
-    if(false === this.confirmIfMuchShorter(scode)) raise(null)
+    if(!options.no_warm_if_shorter){
+      if(false === this.confirmIfMuchShorter(scode)) raise(null)
+    }
     if(this.tempExists()) fs.unlinkSync(this.tempPath)
     fs.writeFile(this.tempPath,scode,'utf8', this.afterTempSaved.bind(this))
   } catch (e) {
@@ -283,7 +289,7 @@ confirmIfMuchShorter(scode){
   if(this.exists()){
     let vingtPourcent = this.size * 80 / 100
       , newLength = Buffer.from(scode).length
-    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter'))
+    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter'), {doc_name: this.nameWithFolder})
   }
   return true
 }
@@ -389,6 +395,9 @@ get format(){return this._format||defP(this,'_format',IOFile.getFormatFromExt(th
 // ---------------------------------------------------------------------
 //  Données de path
 
+get nameWithFolder(){
+  return this._nameWithFolder || defP(this,'_nameWithFolder', `${path.basename(this.folder)}/${this.name}`)
+}
 get folder(){
   return this._folder || defP(this,'_folder', path.dirname(this.path))
 }

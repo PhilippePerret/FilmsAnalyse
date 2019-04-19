@@ -4,14 +4,33 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'content', 'note', 'events', 'documents', 'times', 'brins']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
 static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+
+static get ALL_PROPS(){
+  if(undefined === this._all_props){
+    var arr = []
+    arr.push(...FAEvent.OWN_PROPS)
+    arr.push(...this.OWN_PROPS)
+    this._all_props = arr
+    arr = null
+    // console.log("this.type, ALL_PROPS", this.type, this._all_props)
+  }
+  return this._all_props
+}
 
 /**
   @return {Instance} L'instance d'identifiant event_id
 **/
 static get(event_id){
   return this.a.ids[parseInt(event_id,10)]
+}
+
+/**
+  @return {Number} Le nombre d'events actuels
+**/
+static count(){
+  return this.a.events.length
 }
 /**
   @return {Array} La liste des propriétés pour une sous-classe
@@ -88,19 +107,15 @@ static get a(){return current_analyse}
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
-  // this.type     = data.type  // Sera défini par la sous-classe
-  this.id       = parseInt(data.id,10)
-  this.titre    = data.titre    // String
-  this.time     = data.time.round(2)     // Number
-  this.duration = (data.duration||10).round(2) // Number (seconds) [1]
-  this.content  = data.content  // String
-  this.note     = data.note     // String
+  this.id       = parseInt(this.id,10)
 
-  // Les éléments en relation
-  this.events     = data.events     || []
-  this.documents  = data.documents  || []
-  this.times      = data.times      || []
-  this.brins      = data.brins      || []
+  this.dispatch(data)
+
+  // Valeurs par défaut indispensables
+  this.events     = this.events     || []
+  this.documents  = this.documents  || []
+  this.times      = this.times      || []
+  this.brins      = this.brins      || []
 
 }
 
@@ -174,6 +189,14 @@ get description(){return this.content}
 
 // ---------------------------------------------------------------------
 //  Méthodes d'association
+
+/**
+  Pour définir que l'event d'id +event_id+ est le parent de l'event
+**/
+setParent(event_id){
+  this.parent = event_id
+  this.modified = true
+}
 
 addDocument(doc_id){
   if(this.documents.indexOf(doc_id) < 0){
@@ -402,65 +425,6 @@ get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.def
 
 get domId(){ return `revent-${this.id}`}
 
-/**
-  Retourne le div qui s'affichera dans le reader
-
-  Son contenu propre provient de la méthode `as('full')` donc
-  de la méthode `asFull` qui devrait être propre à l'event.
-
-  @return {DOMElement} Le div à placer dans le reader
-**/
-get div(){
-  if (undefined === this._div){
-    // L'horloge des outils
-    var h = DCreate('SPAN',{
-      class:'horloge horloge-event'
-    , attrs:{'data-id': this.id}
-    , inner: this.otime.horloge
-    })
-    var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
-    var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
-
-    var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
-    var cont = DCreate('DIV', {class:'content', inner: this.as('full', FORMATED)})
-
-    this._div = DCreate('DIV',{
-      id: this.domId
-    , class: `event ${this.type} EVT${this.id}`
-    , style: 'opacity:0;'
-    , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
-    , append: [etools, cont]
-    })
-  }
-  return this._div
-}
-
-
-// Méthode de warning pour indiquer que la version d'affichage courante
-// est une version commune à tous les events, pas adaptée à l'event en
-// particulier. Elle s'affichera jusqu'à ce que l'event en particulier
-// possède sa propre méthode d'helper.
-get warnCommonMethod(){
-  return '<div class="small"><span class="small">Cette version est la version commune d’affichage de l’event. Pour une version personnalisée, créer la méthode `asFull`.</span></div>'
-}
-
-divNote(opts){
-  if(this.note){
-    return `<div class="note"><label>Note : </label>${this.note}</div>`
-  } else {
-     return ''
-  }
-}
-
-/**
-  Retourne le div des éléments associés qui ajoute des procédés,
-  des notes, des informations, etc.
-**/
-divAssociates(opts){
-  let str = ''
-  this.events.forEach( ev => str += ev.as('associate', FORMATED, opts) )
-  return str
-}
 
 get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 
@@ -498,6 +462,7 @@ get data(){
 /**
  * Dispatch les données communes (autres que celles qui permettent à
  * l'instanciation et la création)
+ Normalement, cette méthode ne devrait plus être utilisée.
  */
 set data(d){
   var fieldName ;
@@ -508,8 +473,8 @@ set data(d){
 }
 
 dispatch(d){
-  var fieldName ;
-  for(var prop of this.constructor.OWN_PROPS){
+  var fieldName, prop ;
+  for(prop of this.constructor.ALL_PROPS){
     if('string' === typeof(prop)){
       // <= Seulement le nom de la propriété donnée
       // => Le champ s'appelle comme la propriété

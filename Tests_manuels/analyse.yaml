@@ -23,30 +23,26 @@
       - quitter l'app et rouvrir (relancer ces tests pour poursuivre)
       - Activer le menu « Analyse > Nouvelle… » pour créer l'analyse en choisissant le dossier et la vidéo
       - créer une note au début de la vidéo, de type “à noter”
-      - check:
-        - "{{event:0}} existe"
-        - "{{event:0}} possède le {{type:note}}"
-        - "{{event:0}} possède le {{noteType:note}}"
-        - "{{event:0}} apparait dans le READER"
+      - check: "{{event:0}} existe"
+      - check: "{{event:0}} possède le {{type:note}}"
+      - check: "{{event:0}} possède le {{noteType:note}}"
+      - check: "{{event:0}} apparait dans le READER"
       - créer une info à 1 minute environ, de type personnage
-      - check:
-        - "{{event:1}} existe"
-        - "{{event:1}} est de {{type:info}}"
-        - "{{event:1}} est de {{typeInfo:personnage}}"
-        - "{{event:1}} apparait dans le READER"
+      - check: "{{event:1}} existe"
+      - check: "{{event:1}} est de {{type:info}}"
+      - check: "{{event:1}} est de {{typeInfo:personnage}}"
+      - check: "{{event:1}} apparait dans le READER"
       - enregistrer l'analyse
       - quitter l'app, la relancer, relancer ces tests et utiliser le menu « Ouvrir… » pour rouvrir la nouvelle analyse.
     checks:
-      - check:
-        - "{{event:0}} existe"
-        - "{{event:0}} possède le {{type:note}}"
-        - "{{event:0}} possède le {{noteType:note}}"
-        - "{{event:0}} apparait dans le READER"
-      - check:
-        - "{{event:1}} existe"
-        - "{{event:1}} est de {{type:info}}"
-        - "{{event:1}} est de {{typeInfo:personnage}}"
-        - "{{event:1}} apparait dans le READER"
+      - "{{event:0}} existe"
+      - "{{event:0}} possède le {{type:note}}"
+      - "{{event:0}} possède le {{noteType:note}}"
+      - "{{event:0}} apparait dans le READER"
+      - "{{event:1}} existe"
+      - "{{event:1}} est de {{type:info}}"
+      - "{{event:1}} est de {{typeInfo:personnage}}"
+      - "{{event:1}} apparait dans le READER"
       - la vidéo doit être la bonne
       - on doit pouvoir lancer la vidéo et voir les deux events s'afficher au moment voulu.
 

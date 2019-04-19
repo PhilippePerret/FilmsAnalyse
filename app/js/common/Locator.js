@@ -624,7 +624,7 @@ addEvent(ev){
     // console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
     var etested
     for(var i=0;i<len;++i){
-      etested = this.analyse.getEventById(this._events_by_tranche_time[tranche][i])
+      etested = FAEvent.get(this._events_by_tranche_time[tranche][i])
       if (etested.time > ev.time){
         this._events_by_tranche_time[tranche].splice(i, 0, ev.id)
         break

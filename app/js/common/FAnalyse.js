@@ -159,6 +159,8 @@ get Fonds(){
   return this._Fonds
 }
 
+get decors(){ return FADecor }
+
 // {FAProtocole} Le protocole de l'analyse courante
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 
@@ -263,23 +265,20 @@ displayPFA(){
   this.PFA.toggle()
 }
 displayInfosFilm(){
-  var method = require('./js/tools/building/infos_film.js')
-  method.bind(this)()
+  require('./js/tools/building/infos_film.js').bind(this)()
+}
+displayDecors(){
+  require('./js/tools/building/decors.js').bind(this)()
 }
 displayFondamentales(){
-  var method = require('./js/tools/building/fondamentales.js')
-  method.bind(this)()
+  require('./js/tools/building/fondamentales.js').bind(this)()
 }
-displayBrins(){
-  FABrin.display()
-}
+displayBrins(){ FABrin.display() }
 displayStatistiques(){
   // TODO
   F.error("Les Statistiques ne sont pas encore implémentées. Passer par l'affichage de l'analyse (en ajoutant `BUILD Statistiques` au script d'assemblage).")
 }
-displayAnalyseState(){
-  FAStater.displayFullState()
-}
+displayAnalyseState(){ FAStater.displayFullState() }
 
 newVersionRequired(){
   var method = require('./js/tools/new_version.js')
@@ -353,7 +352,6 @@ forEachEvent(method, options){
  */
 addEvent(nev) {
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
-  nev.type === 'scene' && FAEscene.updateAll()
   FAStater.update()
 }
 
@@ -397,7 +395,10 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  ev.type === 'scene' && FAEscene.updateAll()
+  if (ev.type === 'scene'){
+    FAEscene.updateAll()
+    FADecor.checkDecorOfScene(ev)
+  }
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
   // On marque l'analyse modifiée
