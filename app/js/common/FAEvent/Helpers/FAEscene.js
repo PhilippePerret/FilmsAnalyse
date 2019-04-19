@@ -55,8 +55,8 @@ asFull(opts){
 asBook(opts){
   var str =  this.f_scene_heading(opts).outerHTML
   let re = new RegExp(this.pitch)
-  if (!this.content.match(re)) str += `${this.f_pitch.outerHTML} — `
-  str += this.content
+  if (!(this.content||'--non défini--').match(re)) str += `${this.f_pitch.outerHTML} — `
+  str += this.content || '--non défini--'
   return str
 }
 

@@ -316,10 +316,10 @@ get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hdu
 //  MÉTHODES DE DONNÉES
 
 get pitch(){return this.titre}
-get resume(){return this.content}
+get resume(){return this.content || '--non défini--'}
 get description(){
   console.error("DEPRECATED Il ne faut pas utiliser 'description', pour une scène, mais 'resume'")
-  return this.content} // TODO Remplacer par resume
+  return this.content || '--non défini--'} // TODO Remplacer par resume
 get duree(){return this.duration}
 
 // ---------------------------------------------------------------------
@@ -333,7 +333,7 @@ get isValid(){
 
   this.numero  || errors.push({msg:"Le numéro de la scène devrait être défini.", prop: 'numero'})
   this.titre   || errors.push({msg:"Le pitch doit être défini.", prop:'titre'})
-  this.content || errors.push({msg:"Le résumé de la scène est indispensable.", prop:'content'})
+  this.content || errors.push({msg:"Le résumé de la scène est indispensable.", prop:'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

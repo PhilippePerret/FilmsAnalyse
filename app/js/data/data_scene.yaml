@@ -33,3 +33,6 @@
     enfance:
       hname: Scène d’enfance
       description: Scène présentant un moment fort de l’enfance du personnage.
+    annonce:
+      hname: Annonce de scène
+      description: Scène qui se réduit à présenter un moment futur, une prise de rendez-vous, etc. qui annonce souvent une scène ultérieur.

@@ -444,12 +444,8 @@ get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content
  * Les données qui seront enregistrées
  */
 get data(){
-  var d = {}
-  for(var prop of FAEvent.OWN_PROPS){
-    if(null === this[prop] || undefined === this[prop]) continue
-    d[prop] = this[prop]
-  }
-  for(var prop of this.constructor.OWN_PROPS){
+  var d = {}, prop
+  for(prop of this.constructor.ALL_PROPS){
     if('string' !== typeof(prop)){ // cf. ci-dessous dans `dispatch`
       prop = prop[0]
     }
@@ -497,6 +493,9 @@ dispatch(d){
     if(undefined === (d[fieldName] || d[prop])) continue
     this[prop] = d[fieldName] /* depuis le formulaire */ || d[prop] /* depuis le fichier */
   }
+  // rectification de certaines données
+  if (this.time)      this.time     = this.time.round(2)
+  if (this.duration)  this.duration = this.duration.round(2)
 }
 
 togglePlay(){

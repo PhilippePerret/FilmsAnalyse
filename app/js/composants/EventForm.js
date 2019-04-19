@@ -655,34 +655,40 @@ setParent(helper){
  * champs.
  */
 setFormValues(){
-  var prop, sufProp, otime
-  // Les valeurs communes
-  for(prop of FAEvent.OWN_PROPS){
-    if(null === this.event[prop] || undefined === this.event[prop]) continue
-    if (this.jqField(prop).length){
-      this.jqField(prop).val(this.event[prop])
-    } else {
-      // console.log("Le champs pour la propriété n'existe pas :", prop)
-    }
-    // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
-  }
-  // Réglage spécial des temps 'time', 'duration', 'tps_reponse'
-  for(prop of ['time', 'duration', 'tps_reponse']){
-    otime = new OTime(this.event[prop])
-    this.jqf(prop).html(prop == 'duration' ? this.event.hduree : otime.horloge)
-    this.jqf(prop).attr(('value', prop == 'duration' ? this.event.duree : this.event[prop]).round(2))
-  }
-  // Les valeurs propres au type d'event
-  for(prop of this.event.constructor.OWN_PROPS){
+  var prop, fieldSufid, otime
+
+  for(prop of this.event.constructor.ALL_PROPS){
+
+    // La propriété, dans ALL_PROPS, peut être définie soit par la propriété
+    // elle-même (donc un string), soit par un duet avec en première valeur
+    // le nom de la propriété, et en seconde valeur le nom du champ qui doit
+    // recevoir la valeur de cette propriété
     if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
-      sufProp = prop
+      fieldSufid = prop
     } else {
-      [prop, sufProp] = prop
+      [prop, fieldSufid] = prop
     }
+
     if(null === this.event[prop] || undefined === this.event[prop]) continue
-    this.jqField(sufProp).val(this.event[prop])
-    // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
+
+    switch(prop){
+      case 'duration':
+      case 'time':
+      case 'tps_reponse':
+        otime = new OTime(this.event[prop])
+        this.jqf(fieldSufid).html(prop == 'duration' ? this.event.hduree : otime.horloge)
+        this.jqf(fieldSufid).attr('value', (prop == 'duration' ? this.event.duree : this.event[prop]).round(2))
+        break
+      default:
+        // Si un champ existe avec cette propriété, on peut la mettre
+        if (this.jqField(fieldSufid).length){
+          this.jqField(fieldSufid).val(this.event[prop])
+        }
+    }
+
+
   }
+
   if(this.type === 'stt'){
     this.domField('sttID').disabled = true
   }
@@ -768,9 +774,13 @@ getFormValues(){
 //  Méthodes d'évènements
 
 onKeyDownOnTextFields(e){
-  if(e.metaKey && e.keyCode === KRETURN){
-    this.submit()
-    return stopEvent(e)
+  if(e.metaKey){
+    if(e.keyCode === KRETURN){
+      this.submit()
+      return stopEvent(e)
+    } else if (e.keyCode == KSPACE){
+      
+    }
   }
   return true
 }
