@@ -472,6 +472,13 @@ set data(d){
   }
 }
 
+/**
+  Dispatch les données +d+ dans l'instance
+  Cette méthode sert aussi bien pour l'édition de l'event, ou les 'prop'
+  ci-dessous correspondent à des champs d'édition (par exemple 'longtext1' pour
+  la vraie propriété 'content') qu'à dispatcher les données à la lecture du
+  fichier de l'analyse (ou donc les propriétés portent leur nom).
+**/
 dispatch(d){
   var fieldName, prop ;
   for(prop of this.constructor.ALL_PROPS){
@@ -487,8 +494,8 @@ dispatch(d){
       fieldName = prop[1]
       prop      = prop[0]
     }
-    if(undefined === d[fieldName]) continue
-    this[prop] = d[fieldName]
+    if(undefined === (d[fieldName] || d[prop])) continue
+    this[prop] = d[fieldName] /* depuis le formulaire */ || d[prop] /* depuis le fichier */
   }
 }
 

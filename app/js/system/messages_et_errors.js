@@ -49,6 +49,7 @@ const ERRORS = {
 , "fwindow-owner-has-build-function": "Le propriétaire d'une flying-window doit définir la méthode `build` qui doit construire le contenu de la fenêtre volante."
 , "--- TEXTES ---": ""
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
+, "--- DIVERS ---":""
 }
 const MESSAGES = {
   "--- UI ---":""

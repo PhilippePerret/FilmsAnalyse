@@ -47,7 +47,13 @@ title:{get(){return DFormater(this.data.title)}}
 ,
 libelle:{get(){return this.title}} // alias
 ,
-description:{get(){return DFormater(this.data.description)}}
+description:{get(){
+  if(undefined === this._description){
+    if(this.data.description) this._description = DFormater(this.data.description)
+    else this._description = null
+  }
+  return this._description
+}}
 ,
 documents:{
   get(){return this.data.documents || []}
@@ -63,6 +69,10 @@ times:{
   get(){return this.data.times || []}
 , set(v){this.data.times = v}
 }
+// Retourne la liste des events, sans les scènes
+, eventsByScenes:{
+    get(){return this.events.filter(ev => ev.type == 'scene' && ev.isRealScene())}
+  }
 ,
 /**
   Retourne la liste des scènes du brin.
@@ -95,6 +105,13 @@ scenes:{
     return this._scenes
   }
 }
-,
-stats:{get(){return this._stats||defP(this,'_stats',new FAStats(this))}}
+, stats:{get(){return this._stats||defP(this,'_stats',new FAStats(this))}}
+// Retourne le div de la minitimeline pour le brin
+, miniTimeline:{
+    get(){
+      console.log("-> FAEvent#miniTimeline")
+      return new MiniTimeline(this, {scenes: this.scenes, times: this.times, events: this.eventsByScenes})
+        .build({suff_id: this.id})
+    }
+  }
 })

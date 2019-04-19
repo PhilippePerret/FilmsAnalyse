@@ -80,13 +80,19 @@ linkedToEdit(str){
   return this.linked(str)//pour le moment
 }
 
-,
-asDiv(options){
+/**
+  Sortie pour le livre édité
+**/
+, asDiv(options){
   if(undefined === options) options = {}
   var divs = [
       DCreate('SPAN', {class: 'brin-title', inner: `Brin #${this.numero}. ${this.title}`})
-    , DCreate('SPAN', {class: 'brin-description small', inner: this.description})
+    , this.miniTimeline
   ]
+  if(this.description){
+    console.log("description", this.description, typeof(this.description))
+    divs.push(DCreate('SPAN', {class: 'brin-description small', inner: this.description}))
+  }
 
   let infosMasked = [
     DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()})

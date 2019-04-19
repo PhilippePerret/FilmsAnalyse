@@ -4,6 +4,7 @@
   [1], puis [2]
 
 * [BUGS]
+  - le décor ne se met plus dans le champ
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -24,8 +25,8 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - En enregistrement automatique, supprimer la petite fenêtre d'enregistrement
   - [1] Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
-    - supprimer la sous-catégorie "les temps de l'ironie dramatique" (qui contient "installation", etc.), car ça crée beaucoup de confusion.
   - construction du graphique de la dynamique narrative
     liste des OOC
 
@@ -44,7 +45,7 @@
   =======================
   + Indiquer que le 0 des temps est toujours donné au début de l'analyse
     + Il peut varier légèrement suivant le lecteur utilisé.
-  + Indiquer : les films étrangers — américains, coréens, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
+  + Indiquer : les films étrangers — américains, coréens, espagnol, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres de chapitres
@@ -54,6 +55,7 @@
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
   - Ajouter une mini-timeline aux brins, pour voir où se situent les scènes/events
+    La travailler avec les brins
   - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
     - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
       + conduit à la référence `12` (disons une scène dans le scénier final)

@@ -415,11 +415,11 @@ onChooseProcede(e){
 
 onChooseDecor(){
   var decor = this.menuDecors.val()
-  this.jqField('inputtext1').val(decor)
+  this.jqField('shorttext1').val(decor)
   this.peupleSousDecors(decor)
 }
 onChooseSousDecor(){
-  this.jqField('inputtext2').val(this.menuSousDecors.val())
+  this.jqField('shorttext2').val(this.menuSousDecors.val())
 }
 peupleDecors(){
   this.menuDecors.html(FADecor.optionsDecors.bind(FADecor))

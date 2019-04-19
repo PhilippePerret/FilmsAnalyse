@@ -143,6 +143,29 @@ div.pitch-data > span.right {
   width:30%;
 }
 
+
+/* --------------------------------------------------------------------- */
+
+div.minitimeline {
+  height:10px;
+  background-color:white;
+  border:1px solid black;
+  position:relative;
+}
+div.minitimeline span.mtl-seg {
+  position:absolute;
+  height:10px;
+}
+div.minitimeline span.mtl-seg.mtl-scene {
+  background-color:green;
+}
+div.minitimeline span.mtl-seg.mtl-time {
+  background-color:red;
+}
+div.minitimeline span.mtl-seg.mtl-event {
+  background-color:blue;
+}
+
 /* --------------------------------------------------------------------- */
 /* ===  COUVERTURE === */
 
