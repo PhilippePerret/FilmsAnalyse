@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-- Une touche, par exemple CMD ESPACE, pour redémarrer la vidéo depuis le formulaire
-
 ### Traiter :
 
 * [BUGS]
@@ -25,7 +23,6 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
-  - Positionner le formulaire d'édition des events plus loin. Dans l'idéal, il faudrait que ce soit au milieu de l'espace laissé entre la vidéo et le bord droit. On prend cette largeur, on prend la largeur de la boite du formulaire, on les soustrait, on coupe en deux le résultat, on l'ajouter à la largeur de la vidéo pour placer le left de la boite de formulaire.
   - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
     - Quand un décor contient '&', ne pas le mettre dans les menus
   - Dans les textes, traiter les *italiques*

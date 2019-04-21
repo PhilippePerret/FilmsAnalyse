@@ -791,13 +791,20 @@ onKeyDownOnTextFields(e){
 
 // ---------------------------------------------------------------------
 
+
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.videoLeft + 10, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
 }
-// Retourne le left de la vidéo (en fait, sa width) pour pouvoir placer, au
-// départ, le formulaire à côté d'elle.
-get videoLeft(){return this.a.videoController.video.width}
+// Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
+// par rapport à la vidéo.
+get left(){
+  if(undefined === this._left){
+    let vl = this.a.videoController.video.width
+    this._left = vl + Math.round(((ScreenWidth - vl) - 460) / 2)
+  }
+  return this._left
+}
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire
