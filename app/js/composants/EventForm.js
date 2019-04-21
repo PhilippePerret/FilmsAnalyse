@@ -774,13 +774,17 @@ getFormValues(){
 //  Méthodes d'évènements
 
 onKeyDownOnTextFields(e){
+  // console.log("-> EventForm#onKeyDownOnTextFields")
   if(e.metaKey){
     if(e.keyCode === KRETURN){
       this.submit()
       return stopEvent(e)
-    } else if (e.keyCode == KSPACE){
-      
     }
+    // else {
+    //   stopEvent(e)
+    //   console.log("e.keyCode, e.charCode, e.which, e.key", e.keyCode, e.charCode, e.which, e.key)
+    //   return false
+    // }
   }
   return true
 }

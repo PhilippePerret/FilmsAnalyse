@@ -132,31 +132,49 @@ stopAndRewind(){
 }
 
 /**
+  Méthode appelée par les boutons pour rembobiner ou avancer, quand
+  on tient dessus.
+  Elle doivent être utilisées avec les méthode `stop` correspondantes
+  pour stoper l'avance ou le recul.
+**/
+startRewind(sec){
+  this.timerRewind = setInterval(() => {this.rewind(sec)}, 100)
+}
+startForward(sec){
+  this.timerForward = setInterval(()=>{this.forward(sec)}, 100)
+}
+/**
  * Méthode pour rembobiner de +secs+ seconds (on continue de jouer si
  * on jouait, ou alors on remet en route)
  */
 rewind(secs){
   // console.log("-> rewind")
-  var method = ()=>{this.setTime(this.video.currentTime - secs)}
-  this.timerRewind = setInterval(method, 100)
-  // method = null
+  var newtime = this.video.currentTime - secs
+  if(newtime < 0){
+    newtime = 0
+    if(this.timerRewind) this.stopRewind()
+  }
+  this.setTime(newtime)
 }
 
 forward(secs){
   // console.log("-> forward")
-  var method = ()=>{this.setTime(this.video.currentTime + secs)}
-  this.timerForward = setInterval(method, 100)
-  // method = null
+  var newtime = this.video.currentTime + secs
+  if(newtime > this.video.duration){
+    if(this.timerForward) this.stopForward()
+    return
+  }
+  this.setTime(newtime)
 }
 stopRewind(){
   // console.log("-> stopRewind")
   clearInterval(this.timerRewind)
-  this.timerRewind = null
+  delete this.timerRewind
 }
 stopForward(){
   // console.log("-> stopForward")
   clearInterval(this.timerForward)
-  this.timerForward = null
+  delete this.timerForward
 }
 
 /**
