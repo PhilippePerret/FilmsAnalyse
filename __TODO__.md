@@ -1,10 +1,16 @@
 # SUR LE GRILL
 
 ### Traiter :
+- quand on choisit un décor et que le décor courant est défini et termine par '&', on ajoute le nouveau décor choisi
+  + idem pour le sous-décor
+  + bien documenter
 
 * [BUGS]
 
 * HANDTESTS
+  - Tester la création d'un décor avec '&' (ça doit faire deux décors)
+    + tester la création d'un sous-décor avec '&' (ça ne doit pas le marquer)
+    + tester deux décors en même temps pour voir si les sous-décors de deux décors se mettent dans le menu des sous-décors.
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
   - [Implémentation] Bien documenter l'utilisation des expressions régulières dans les étapes de tests

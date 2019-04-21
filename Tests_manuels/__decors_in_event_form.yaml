@@ -3,6 +3,26 @@
 # Les décors doivent toujours être mis par fréquence
 # d'utilisation.
 ---
+  - id: plusieurs_decors
+    libelle: Scène dans plusieurs décors
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène au début avec 'Maison' pour décor
+      - créer une scène au milieu avec 'Garage' pour décor
+      - créer une scène à un quart avec 'Maison & Garage' pour décor
+      - créer une scène à la fin
+      - check: le menu des décors ne doit pas contenir 'Maison & Garage'
+      - afficher les décors
+    checks:
+      - le décor 'Maison' et le décor 'Garage' doivent posséder deux scènes
+
+  - id: plusieurs_sous_decors
+    libelle: Scène dans plusieurs sous-décors
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+
   - id: classement_decors
     libelle: Les décors doivent se classer par importance
     synopsis:

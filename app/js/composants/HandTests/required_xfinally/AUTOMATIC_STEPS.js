@@ -117,7 +117,13 @@ const DATA_AUTOMATIC_STEPS = {
 , "enregistrer le document courant":[
     {NaT: true, exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
   ]
+, "afficher la liste des décors": "ouvrir la fenêtre des décors"
+, "afficher les décors": "ouvrir la fenêtre des décors"
+, "ouvrir la fenêtre des décors":[
+    {NaT: true, exec: "current_analyse.displayDecors()", expected: '---nothing---'}
+  ]
 , "afficher la liste des brins": "ouvrir la fenêtre des brins"
+, "afficher les brins": "ouvrir la fenêtre des brins"
 , "ouvrir la fenêtre des brins":[
     {NaT: true, exec: "current_analyse.displayBrins()", expected: '---nothing---'}
   ]

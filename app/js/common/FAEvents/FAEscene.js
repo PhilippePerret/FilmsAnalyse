@@ -63,14 +63,14 @@ static updateDureeScenes(){
 }
 
 static reset(){
-  this._by_time       = undefined
-  this._by_id         = undefined
-  this._by_numero     = undefined
-  this._sortedByTime  = undefined
-  this._sortedByDuree = undefined
-  this._count         = undefined
-  this._current       = undefined
-  this._scenes        = undefined
+  delete this._by_time
+  delete this._by_id
+  delete this._by_numero
+  delete this._sortedByTime
+  delete this._sortedByDuree
+  delete this._count
+  delete this._current
+  delete this._scenes
 }
 
 /**
@@ -204,7 +204,9 @@ static destroy(numero){
   false) à la fonction +fn+
 **/
 static forEachScene(fn){
+  console.log("-> forEachScene", this.scenes)
   for(var num in this.scenes){
+    console.log("    Traitement de scène ", num)
     if(false === fn(this.scenes[num])) break // pour pouvoir interrompre
   }
 }

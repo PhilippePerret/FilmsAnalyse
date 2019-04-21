@@ -56,59 +56,94 @@ static optionsDecors(){
 
     my._optionsDecors = ['<option value="">Choisir…</option>']
     for(var decor of sorteds){
-      my._optionsDecors.push(`<option value="${decor.name}">${decor.name}</option>`)
+      my._optionsDecors.push(`<option value="${decor.name}">${decor.name} (${decor.scenesCount})</option>`)
     }
     my._optionsDecors = my._optionsDecors.join('')
   }
   return this._optionsDecors
 }
 
-
-/**
-  Méthode appelée à la création ou la modification
-  d'une scène pour voir si le décor ou le sous-décor existent
-  déjà, si la scène appartient à l'un d'eux, etc., afin de
-  garder à jour les positions, etc.
-**/
-static checkDecorOfScene(scene){
-  var updateRequired = false
-  if(!scene.decor || scene.decor === ''){
-    return
-  } else if(undefined === this.data[scene.decor]){
-    // <= les décors ne connaissent pas ce décor
-    // => C'est un nouveau décor qu'il faut créer
-    //    Ça consiste à actualiser les données
-    updateRequired = true
-  } else {
-    // <= Ce décor existe
-    // => Il faut voir si la scène appartient déjà à ce
-    //    décor et l'ajouter le cas échéant
-    //    TODO : il faudrait aussi voir si la scène appartenanit
-    //    à un autre décor avant.
-    if(this.data[scene.decor].scenes.indexOf(scene.numero) < 0){
-      // <= Le décor ne possède pas encore cette scène
-      // => Il faut ajouter cette scène au décor
-      //    Ça consiste à actualiser les données
-      updateRequired = true
-    }
-    // Pour le sous-decor
-    if(scene.sous_decor && scene.sous_decor !== ''){
-      if(undefined === this.data[scene.decor].sousDecors[scene.sous_decor]){
-        // <= Le décor ne connait pas ce sous-décor
-        // => Il faut actualiser les données
-        updateRequired = true
-      } else if (this.data[scene.decor].sousDecors[scene.sous_decor].scenes.indexOf(scene.numero) < 0) {
-        // <= Le sous-décor ne possède pas cette scène
-        // => Il faut actualiser les données
-        updateRequired = true
-      }
-    }
-  }
-  updateRequired && this.resetAll()
-  // On actualise tout de suite les données, surtout pour voir dans le
-  // log
-  this.data
-}
+//
+// /**
+//   Méthode appelée à la création ou la modification
+//   d'une scène pour voir si le décor ou le sous-décor existent
+//   déjà, si la scène appartient à l'un d'eux, etc., afin de
+//   garder à jour les positions, etc.
+// **/
+// static checkDecorOfScene(scene){
+//   var updateRequired = false
+//   if (!scene.decor || scene.decor === '') return
+//
+//   console.log("TRAITEMENT DE SCENE", scene)
+//   if (scene.numero == 2){
+//     console.log("ETAT DES LIEUX")
+//     console.log("FADecor.data", this.data)
+//     console.log("FAEscene.scenes", FAEscene.scenes)
+//     console.log("-- retour sans rien faire --")
+//     return
+//   }
+//
+//   // Un décor peut être composé de deux décors différents, séparés par des '&'
+//   let decors, sdecors
+//
+//   if(scene.decor.match(/\&/)){
+//     // <= Esperluette trouvée
+//     // => plusieurs décors
+//     decors = scene.decor.split('&').map(dec => dec.trim()).filter(dec => dec != '')
+//   } else {
+//     decors = [scene.decor]
+//   }
+//
+//   // On répète pour tous les décors trouvés, souvent un seul
+//   for(var dec of decors){
+//
+//     if(undefined === this.data[dec]){
+//       // <= les décors ne connaissent pas ce décor
+//       // => C'est un nouveau décor qu'il faut créer
+//       //    Ça consiste à actualiser les données
+//       updateRequired = true
+//     } else {
+//       // <= Ce décor existe
+//       // => Il faut voir si la scène appartient déjà à ce
+//       //    décor et l'ajouter le cas échéant
+//       //    TODO : il faudrait aussi voir si la scène appartenanit
+//       //    à un autre décor avant.
+//       if(this.data[dec].scenes_numeros.indexOf(scene.numero) < 0){
+//         // <= Le décor ne possède pas encore cette scène
+//         // => Il faut ajouter cette scène au décor
+//         //    Ça consiste à actualiser les données
+//         updateRequired = true
+//       }
+//
+//       // Pour le sous-decor
+//       if(scene.sous_decor && scene.sous_decor !== '') {
+//         var sdec = scene.sous_decor
+//         if(sdec.match(/\&/)){
+//           sdecors = sdec.split('&').map(sd => sd.trim()).filter(sd => sd != '')
+//         } else {
+//           sdecors = [sdec]
+//         }
+//         // On répète pour chaque sous-décor du décor
+//         for(sdec of sdecors){
+//           if(undefined === this.data[dec].sousDecors[sdec]){
+//             // <= Le décor ne connait pas ce sous-décor
+//             // => Il faut actualiser les données
+//             updateRequired = true
+//           } else if (this.data[dec].sousDecors[sdec].scenes_numeros.indexOf(scene.numero) < 0) {
+//             // <= Le sous-décor ne possède pas cette scène
+//             // => Il faut actualiser les données
+//             updateRequired = true
+//           }
+//         }
+//       }
+//     }
+//   }
+//
+//   updateRequired && this.resetAll()
+//   // On actualise tout de suite les données, surtout pour voir dans le
+//   // log
+//   this.data
+// }
 
 /**
   Récupère la donnée des décors dans la liste des scènes, directement
@@ -119,23 +154,52 @@ static getDataDecors(){
   var dinst = {}  // table avec des instances
 
   FAEscene.forEachScene(function(scene){
-    // console.log("scene:",scene)
+    console.log("scene:",scene)
     if(scene.decor && scene.decor != ''){
-      if(undefined === dinst[scene.decor]){
-        dinst[scene.decor] = new FADecor(scene.decor)
+
+      var decors
+        , dec
+        , sdecors
+        , sdec
+        , nombre_decors
+        , nombre_sdecors
+
+      console.log(`Décor de la scène ${scene.numero}: "${scene.decor}"`)
+      if (scene.decor.match(/\&/)){
+        decors = scene.decor.split('&').map(d => d.trim()).filter(d => d != '')
+      } else {
+        decors = [scene.decor]
       }
-      dinst[scene.decor].addScene(scene.numero)
-      // Il faut que le décor existe pour que le sous-décor puisse
-      // exister, c'est pour ça qu'on le met là.
-      if(scene.sous_decor && scene.sous_decor != ''){
-        if(undefined === dinst[scene.decor].sousDecor(scene.sous_decor)){
-          dinst[scene.decor].addSousDecor(scene.sous_decor)
+      nombre_decors = decors.length
+
+      console.log("decors:", decors)
+
+      for(dec of decors){
+        if(undefined === dinst[dec]){
+          dinst[dec] = new FADecor(dec)
         }
-        dinst[scene.decor].sousDecor(scene.sous_decor).addScene(scene.numero)
+        dinst[dec].addScene(scene.numero, nombre_decors)
+        // Il faut que le décor existe pour que le sous-décor puisse
+        // exister, c'est pour ça qu'on le met là.
+        if(scene.sous_decor && scene.sous_decor != ''){
+          if(scene.sous_decor.match(/\&/)){
+            sdecors = scene.sous_decor.split('&').map(sd => sd.trim()).filter(sd => sd != '')
+          } else {
+            sdecors = [scene.sous_decor]
+          }
+          nombre_sdecors = sdecors.length
+
+          for(sdec of sdecors){
+            if(undefined === dinst[dec].sousDecor(sdec)){
+              dinst[dec].addSousDecor(sdec)
+            }
+            dinst[dec].sousDecor(sdec).addScene(scene.numero, nombre_sdecors)
+          }
+        }
       }
     }
   })
-  // console.log("Données décors :", dinst)
+  console.log("Données décors :", dinst)
   return dinst
 }
 
@@ -152,19 +216,23 @@ static forEachDecor(fn){
 //  INSTANCE FADecor
 
 constructor(name, data){
-  this.name       = name
-  this.data       = data
-  this.scenes     = []
-  this.sousDecors = {}
+  this.name           = name
+  this.data           = data
+  this.scenes         = []
+  this.scenes_numeros = []
+  this.sousDecors     = {}
 }
 
 /**
   Ajoute la scène de numéro +numero+
 
-  @param {Number} numero  Numéro de la scène
+  @param {Number}   numero  Numéro de la scène
+  @param {Boolean}  nbdecs  Nombre de décors que comprend la scène. En général
+                            un seul.
 **/
-addScene(numero){
-  this.scenes.push(numero)
+addScene(numero, nbdecs){
+  this.scenes.push([numero, nbdecs])
+  this.scenes_numeros.push(numero)
   FADecor.resetForSort() // pour recalculer le classement
 }
 /**
@@ -227,13 +295,14 @@ forEachSousDecor(fn){
   Boucle avec une fonction sur la liste des scènes du sous-décor
 **/
 forEachScene(fn){
-  for(var num of this.scenes){
-    if(false === fn(FAEscene.getByNumero(num))) break
+  for(var dscene of this.scenes){
+    console.log("dscene:", dscene)
+    if(false === fn(FAEscene.getByNumero(dscene[0]))) break
   }
 }
 
 get sousDecorsCount(){return Object.keys(this.sousDecors).length}
-get scenesCount(){ return this.scenes.length}
+get scenesCount(){ return this.scenes_numeros.length}
 }// /fin FAdecor
 
 
@@ -251,15 +320,19 @@ constructor(decor, name, data){
   this.decor  = decor
   this.name   = name
   this.data   = data // rien pour le moment
-  this.scenes = []
+  this.scenes         = []
+  this.scenes_numeros = []
 }
 /**
   Ajoute la scène de numéro +numero+
 
-  @param {Number} numero  Numéro de la scène
+  @param {Number}   numero  Numéro de la scène
+  @param {Boolean}  nbsdec  Nombre de sous-décors de la scène. En général
+                            un seul.
 **/
-addScene(numero){
-  this.scenes.push(numero)
+addScene(numero, nbsdec){
+  this.scenes.push([numero, nbsdec])
+  this.scenes_numeros.push(numero)
   this.decor.resetForSort()
 }
 
@@ -267,9 +340,9 @@ addScene(numero){
   Boucle avec une fonction sur la liste des scènes du sous-décor
 **/
 forEachScene(fn){
-  for(var num of this.scenes){
-    if(false === fn(FAEscene.getByNumero(num))) break
+  for(var dscene of this.scenes){
+    if(false === fn(FAEscene.getByNumero(dscene[0]))) break
   }
 }
-get scenesCount(){return this.scenes.length}
+get scenesCount(){return this.scenes_numeros.length}
 }

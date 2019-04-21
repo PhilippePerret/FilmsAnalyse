@@ -18,7 +18,7 @@ const KeyUpAndDown = {
   }
 
 , commonKeyDown(e){
-    console.log("-> KeyUpAndDown#commonKeyDown")
+    // console.log("-> KeyUpAndDown#commonKeyDown")
     if(e.metaKey){
       if(['j','k','l'].indexOf(e.key) > -1){
         let a   = current_analyse

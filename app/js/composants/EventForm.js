@@ -414,18 +414,33 @@ onChooseProcede(e){
 //  MÉTHODES POUR LES DÉCORS
 
 onChooseDecor(){
-  var decor = this.menuDecors.val()
-  this.jqField('shorttext1').val(decor)
-  this.peupleSousDecors(decor)
+  let decor   = this.menuDecors.val()
+    , txtfd1  = this.jqField('shorttext1')
+    , curdec  = txtfd1.val().trim()
+  var decors  = [decor]
+  if(curdec.substring(curdec.length - 1, curdec.length) == '&'){
+    decor = `${curdec} ${decor}`
+    decors.push(curdec.substring(0, curdec.length - 2).trim())
+  }
+  this.peupleSousDecors(decors)
+  txtfd1.val(decor)
 }
 onChooseSousDecor(){
-  this.jqField('shorttext2').val(this.menuSousDecors.val())
+  let sdecor  = this.menuSousDecors.val()
+    , txtfd2  = this.jqField('shorttext2')
+    , cursdec = txtfd2.val()
+  if(cursdec.substring(cursdec.length - 1, cursdec.length) == '&') sdecor = `${cursdec} ${sdecor}`
+  txtfd2.val(sdecor)
 }
 peupleDecors(){
   this.menuDecors.html(FADecor.optionsDecors.bind(FADecor))
 }
-peupleSousDecors(decor){
-  this.menuSousDecors.html(FADecor.data[decor].optionsSousDecors.bind(FADecor.data[decor]))
+peupleSousDecors(decors){
+  var opts = ''
+  for ( var decor of decors ){
+    opts += FADecor.data[decor].optionsSousDecors.bind(FADecor.data[decor])()
+  }
+  this.menuSousDecors.html(opts)
 }
 
 get menuDecors(){return this._menuDecors||defP(this,'_menuDecors', this.jqObj.find('select.decors'))}
