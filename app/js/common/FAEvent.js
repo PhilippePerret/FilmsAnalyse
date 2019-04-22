@@ -94,7 +94,8 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
-static get a(){return current_analyse}
+static get a(){return this._a || current_analyse}
+static set a(v){this._a = v}
 
 // ---------------------------------------------------------------------
 //  INSTANCE

@@ -1,52 +1,28 @@
 {
-  "date": 1555652933236,
+  "date": 1555920036232,
   "successCount": 2,
   "failureCount": 0,
-  "pendingCount": 8,
+  "pendingCount": 0,
   "tests": {
-    "./_test_test.yaml": {
-      "0": {
-        "0": 2
-      }
-    },
-    "./analyse.yaml": {
-      "open_from_scratch": {
-        "0": 2,
-        "1": 2
-      }
-    },
-    "./brins.yaml": {
-      "creation_brin": {
-        "0": 2,
-        "1": 2
-      },
-      "associations_event": {
-        "0": 2,
-        "1": 2
-      },
-      "associations_document": {
-        "0": 2
-      },
-      "associations_temps": {
-        "0": 2
-      },
-      "affichage_listing_detailled": {
-        "0": 2
-      },
-      "edition_associed": {
-        "0": 2
-      }
-    },
-    "./decors_in_event_form.yaml": {
+    "./__decors_in_event_form.yaml": {
       "0": {
         "0": 2,
         "1": 2,
         "2": 2,
         "3": 2,
-        "4": 1,
+        "4": 2,
         "5": 2,
-        "6": 2,
-        "7": 1
+        "6": 1,
+        "7": 2,
+        "8": 1
+      },
+      "1": {
+        "0": 2,
+        "1": 2
+      },
+      "2": {
+        "0": 2,
+        "1": 2
       }
     }
   }
