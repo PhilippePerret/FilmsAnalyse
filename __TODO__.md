@@ -1,7 +1,6 @@
 # SUR LE GRILL
 
 ### Traiter :
-  - Implémenter la touche CMD-T dans les champs de texte de l'eventForm pour insérer le temps
   - Comme pour les décors, quand on choisit un sous-décor et que le sous-décor courant est défini et termine par '&', on ajoute le nouveau sous-décor choisi
   + bien documenter
 

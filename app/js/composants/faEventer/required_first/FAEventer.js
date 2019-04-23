@@ -159,8 +159,12 @@ build(){
     </fieldset>
     <fieldset>
       <legend>Temps</legend>
-      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable">0:00:00.00</horloge> et
-      <horloge id="${this.domId}-to-time" class="small horloge horlogeable">0:00:00.00</horloge>
+      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable" value="0">0:00:00.00</horloge> et
+      <horloge id="${this.domId}-to-time" class="small horloge horlogeable" value="">...</horloge>
+    </fieldset>
+    <fieldset>
+      <legend>Texte à rechercher :</legend>
+      <input type="text" id="${this.domId}-search" style="width:98%;" />
     </fieldset>
 
   </div>
@@ -177,6 +181,14 @@ afterBuilding(){
   this.filter = {eventTypes: ['scene']}
   this.peuple()
   this.peupleTypesInFilter()
+  // On doit régler la fin du film
+  let o = $(`#${this.domId}-to-time`)
+  o.attr('value', this.a.duration)
+  o.html(new OTime(this.a.duration).horloge)
+
+  // On doit peupler avec les personnages du film (CB non cochées)
+  // TODO
+  //
   log.info(`<- <<FAEventer #${this.id}>>#afterBuilding()`)
 }
 
@@ -223,6 +235,7 @@ observe(){
   }
   this.horlogeFiltreFromTime = horloges[`${this.domId}-from-time`]
   this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
+  this.horlogeFiltreToTime.time = this.a.videoController.video.duration
   this.horlogeFiltreFromTime.dispatch(dataHorloge)
   this.horlogeFiltreToTime.dispatch(dataHorloge)
 

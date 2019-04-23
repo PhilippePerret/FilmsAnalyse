@@ -794,6 +794,9 @@ onKeyDownOnTextFields(e){
     if(e.keyCode === KRETURN){
       this.submit()
       return stopEvent(e)
+    } else if (e.key == 't') {
+      // On doit inscrire le temps courant dans le champ
+      $(e.target).insertAtCaret(this.a.locator.getROTime().horloge_simple)
     }
     // else {
     //   stopEvent(e)
