@@ -397,7 +397,7 @@ updateEvent(ev, options){
   // [1]
   if (ev.type === 'scene'){
     FAEscene.updateAll()
-    FADecor.checkDecorOfScene(ev)
+    FADecor.resetAll()
   }
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()

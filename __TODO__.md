@@ -1,11 +1,13 @@
 # SUR LE GRILL
 
 ### Traiter :
-- quand on choisit un décor et que le décor courant est défini et termine par '&', on ajoute le nouveau décor choisi
-  + idem pour le sous-décor
+  - Implémenter la touche CMD-T dans les champs de texte de l'eventForm pour insérer le temps
+  - Comme pour les décors, quand on choisit un sous-décor et que le sous-décor courant est défini et termine par '&', on ajoute le nouveau sous-décor choisi
   + bien documenter
 
 * [BUGS]
+  - Dans l'eventer, quand on revient dans le filtre, les deux temps se remettent à 0:00:00, semble-t-il.
+  - Quand on modifie une scène en l'éditant, quand elle se corrige dans le reader, seul le résumé est inscrit
 
 * HANDTESTS
   - Tester la création d'un décor avec '&' (ça doit faire deux décors)
@@ -21,14 +23,25 @@
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
 
+* Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
+  - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.
+  - faire le travail décrit ci-dessus. Une référence à une note produira un indice qui se rapportera à la note en bas de page.
+
+* Ajouter le nombre d'utilisation de chaque sous-décor
+
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
 
+
+* Développer un moteur de recherche permettant de retrouver très rapidement un élément grâce à du texte ou d'autres éléments. Par exmple pour retrouver très vite les scènes avec un personnage particulier
+C'est l'eventer qui doit permettre de faire ça.
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
+    - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
   - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
     - Quand un décor contient '&', ne pas le mettre dans les menus
   - Dans les textes, traiter les *italiques*
