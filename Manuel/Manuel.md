@@ -8,6 +8,7 @@
   * [Verrouillage de l'analyse](#verrouillage_analyse)
 * [Les Events](#les_events)
   * [Les events « Scènes »](#les_events_scenes)
+    * [Décors dans les events « Scènes »](#decors_in_scenes)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Déplacements par parties/zones](#move_by_parts_and_zones)
@@ -71,6 +72,22 @@ On pourrait dire que *tout est event* dans **Film Analyzer**. Un procédé est u
 Ils permettent de définir les scènes du film. Ce sont des *events* particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d'autres éléments.
 
 La scène, à la base, se définit par un *pitch* et un *résumé*. À la création de la scène, on remarque que le pitch, à mesure qu'on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l'affichage : si le résumé commence exactement comme le pitch, ce pitch n'est pas ajouté dans l'affichage complet des scènes. En revanche, il permet d'en faire un affichage réduit.
+
+#### Décors dans les events « Scènes » {#decors_in_scenes}
+
+On choisit le décor et le sous-décor de la scène à l'aide de deux menus qui se peuplent dynamiquement en fonction des lieux ajoutés. Un nouveau lieu principal est créé dès qu'un nouveau décor est entré dans le champ (attention, cette valeur est sensible à la casse, ce qui signifie que le décor « Maison » est totalement différent du décor « maison »). Idem pour les sous-décors.
+
+On peut indiquer **deux décors** ou plus pour une même scène en utilisant le signe esperluette (« & »). La procédure la plus simple est la suivante :
+
+* choisir le premier décor/sous-décor,
+* => il s'inscrit dans le champ
+* ajouter '&' à la fin du champ
+* choisir le second décor/sous-décor,
+* => il s'ajoute au premier décor/sous-décor
+* répéter l'opération avec tous les décors voulus.
+
+Noter que pour une scène qui contient plusieurs décors/sous-décors, chacun d'entre eux se partagera le temps en fonction du nombre total de décors/sous-décors. Par exemple, si la scène se passe dans deux décors différents, chacun d'eux « héritera » de la moitié du temps de la scène. Si trois sous-décors composent la scène, chaque sous-décor se partagera un tiers du temps de la scène. Etc.
+
 
 ---------------------------------------------------------------------
 
