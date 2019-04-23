@@ -70,9 +70,9 @@ static optionsDecors(){
 **/
 static getDataDecors(){
   var dinst = {}  // table avec des instances
-  console.log("-> getDataDecors (FAEscene.scenes = ", FAEscene.scenes)
+  // console.log("-> getDataDecors (FAEscene.scenes = ", FAEscene.scenes)
   FAEscene.forEachScene(function(scene){
-    console.log("scene:",scene)
+    // console.log("scene:",scene)
     if(scene.decor && scene.decor != ''){
 
       var decors
@@ -82,15 +82,13 @@ static getDataDecors(){
         , nombre_decors
         , nombre_sdecors
 
-      console.log(`Décor de la scène ${scene.numero}: "${scene.decor}"`)
+      // console.log(`Décor de la scène ${scene.numero}: "${scene.decor}"`)
       if (scene.decor.match(/\&/)){
         decors = scene.decor.split('&').map(d => d.trim()).filter(d => d != '')
       } else {
         decors = [scene.decor]
       }
       nombre_decors = decors.length
-
-      console.log("decors:", decors)
 
       for(dec of decors){
         if(undefined === dinst[dec]){
@@ -117,7 +115,7 @@ static getDataDecors(){
       }
     }
   })
-  console.log("Données décors :", dinst)
+  // console.log("Données décors :", dinst)
   return dinst
 }
 
@@ -214,7 +212,7 @@ forEachSousDecor(fn){
 **/
 forEachScene(fn){
   for(var dscene of this.scenes){
-    console.log("dscene:", dscene)
+    // console.log("dscene:", dscene)
     if(false === fn(FAEscene.getByNumero(dscene[0]))) break
   }
 }

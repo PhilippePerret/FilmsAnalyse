@@ -108,9 +108,9 @@ static set a(v){this._a = v}
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
-  this.id       = parseInt(this.id,10)
-
   this.dispatch(data)
+
+  this.id = parseInt(this.id,10)
 
   // Valeurs par défaut indispensables
   this.events     = this.events     || []
@@ -346,6 +346,7 @@ stopWatchingTime(){
   delete this.timerWatchingTime
 }
 watchTime(){
+  if(undefined === this.a.locator) this.a = current_analyse
   var rtime = this.a.locator.getRTime()
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){

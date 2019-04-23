@@ -9,4 +9,4 @@ cd '/Users/philippeperret/Programmation/Electron/FilmsAnalyse/Manuel'
 pandoc -s Manuel.md --css="manuel.css" --metadata pagetitle="Manuel" --from=markdown --output=Manuel.html;
 
 # Update du Manuel développement
-pandoc -s Manuel_developpement.md --css="manuel.css" --metadata pagetitle="Manuel développement" --from=markdown --output=Manuel_developpement.html;
+pandoc -s Manuel_developpeur.md --css="manuel.css" --metadata pagetitle="Manuel développeur" --from=markdown --output=Manuel_developpeur.html;
