@@ -190,7 +190,7 @@ optionsSousDecors(){
   if(undefined === this._optionsSousDecors){
     this._optionsSousDecors = ['<option value="">Choisir le sous-décor…</option>']
     for(var sdecor of this.sousDecorsSorted){
-      this._optionsSousDecors.push(`<option value="${sdecor.name}">${sdecor.name}</option>`)
+      this._optionsSousDecors.push(`<option value="${sdecor.name}">${sdecor.name} (${sdecor.scenesCount})</option>`)
     }
     this._optionsSousDecors = this._optionsSousDecors.join('')
   }
