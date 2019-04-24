@@ -583,11 +583,16 @@ get btnPlayETools(){
 * Méthodes d'évènements
 **/
 
+// Pour observer l'event dans son container.
 observe(container){
   var my = this
-  var o = this.jqReaderObj
+    , o = this.jqReaderObj
+
+  // On rend actif les boutons d'édition
   o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-  BtnPlay.setAndWatch(this.jqReaderObj, this.id)
+
+  // On rend actif les boutons play
+  BtnPlay.setAndWatch(this.jqReaderObj, this)
 
   /**
   * On rend l'event droppable pour qu'il puisse recevoir d'autres events

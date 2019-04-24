@@ -3,9 +3,13 @@
 ### Traiter :
 
 * [BUGS]
+  - Quand on change la version, il faut aussi :
+    + changer dans le titre de la fenêtre
+    + informer que le changement s'est bien effectué
   - Il faut traduire les pseudos pour les afficher dans l'eventer
-  - Rationnaliser les ids/pseudos pour les personnages.
   - Quand on modifie une scène en l'éditant, quand elle se corrige dans le reader, seul le résumé est inscrit
+  - Quand on change d'analyse, s'il y a un eventer, il faut le détruire
+    * peut-être faut-il les mémoriser dans la classe.
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.

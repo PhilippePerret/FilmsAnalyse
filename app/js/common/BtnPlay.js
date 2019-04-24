@@ -41,18 +41,23 @@ class BtnPlay {
    * [1]  La méthode est aussi appelée lorsque l'on crée un nouvel event,
    *      mais il n'a pas encore d'event réel. Donc, ev est indefined. On s'en
    *      retourne sans rien faire, dans ce cas là.
-   *      Ne pas mettre `!ev` car ev peut être égal à 0.
+   *      Ne pas mettre `!ev` car ev peut être égal à 0 quand c'est seulement
+          l'identifiant qui est envoyé.
    */
   static setAndWatch(container, ev){
     var btnPlay ;
     if (undefined === ev) return // [1]
-    if('function' !== typeof ev.id) ev = current_analyse.ids[ev]
+    if(undefined === typeof(ev.type)) ev = current_analyse.ids[ev]
     // On boucle sur chaque bouton trouvé qui n'a pas été préparé
     // On reconnait un bouton préparé au fait qu'il a une image (mais on
     // pourrait aussi le reconnaitre à sa classe `btnplay-<id event>`)
-    container.find('.btnplay').not(`.btnplay-${ev.id}`).each((i,o) => {
+    // OBSOLÈTE, car on se sert de cette méthode, par exemple, pour
+    // préparer les boutons des eventers. Donc, plutôt, on retire l'observer
+    // qui se trouve peut-être sur le bouton et on le replace.
+    container.find('.btnplay').each((i,o) => {
+      $(o).off('click')
       ev.btnPlay.set(o) // on le prépare
-      $(o).bind('click', ev.btnPlay.togglePlay.bind(ev.btnPlay))
+      $(o).on('click', ev.btnPlay.togglePlay.bind(ev.btnPlay))
     })
   }
 
