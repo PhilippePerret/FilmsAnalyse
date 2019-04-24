@@ -58,23 +58,33 @@ get filtereds(){
   // console.log("-> EventFilter#filtereds", this.filter)
   if(undefined === this._filtereds){
     this._filtereds = []
+
+    // Ce qu'il faut checker
+    var checkType   = my.eventTypes != null
+      , checkTimes  = my.fromTime!=null && my.toTime!=null
+      , checkPersos = my.withPersonnages != null
+      , checkText   = my.withText != null
+
     this.a.forEachEvent(function(ev){
       // console.log("Event : ",ev)
-      if(my.isFalse(my.hTypes[ev.type]))        return
+      if(checkType && my.isFalse(my.hTypes[ev.type]))        return
       // console.log("      : type OK")
-      if(my.isFalse(ev.time >= my.fromTime))    return
+      if(checkTimes && my.isFalse(ev.time >= my.fromTime))    return
       // console.log("      : time from OK")
-      if(my.isFalse(ev.time <= my.toTime))      return
+      if(checkTimes && my.isFalse(ev.time <= my.toTime))      return
       // console.log("      : time to OK")
-      if(my.isFalse(my.filtrePersonnages(ev)))  return
+      if(checkPersos && my.isFalse(my.filtrePersonnages(ev))) return
       // console.log("      : personnages OK")
-      if(my.isFalse(my.filtreText(ev)))         return
+      if(checkText && my.isFalse(my.filtreText(ev)))          return
       // console.log("      : texte OK")
       // console.log("   RETENU")
       my._filtereds.push(ev)
     })
   }
   my = null
+  if(this._filtereds.length === 0){
+    F.notify(T('no-event-with-filter'))
+  }
   return this._filtereds
 }
 
@@ -86,20 +96,20 @@ get filtereds(){
 get filtreText(){
   if (undefined === this._filtreText){
     let my = this
-    if(my.filter.with_text){
-      if(my.filter.with_text.regular){
+    if(my.withText){
+      if(my.withText.regular){
         // Une recherche par expression régulière
         this._filtreText = function(ev){
-          return !!(ev.titre + ' ' + ev.content).match(new RegExp(my.filter.with_text.search), my.filter.with_text.caseSensitive ? '' : 'i')
+          return !!(ev.titre + ' ' + ev.content).match(new RegExp(my.withText.search), my.withText.caseSensitive ? '' : 'i')
         }
       } else {
         // Une recherche explicite
 
-        let search = my.filter.with_text.search
-        if (!my.filter.with_text.caseSensitive) search = search.toLowerCase()
+        let search = my.withText.search
+        if (!my.withText.caseSensitive) search = search.toLowerCase()
         this._filtreText = function(ev){
           var inText = ' ' + ev.titre + ' ' + ev.content
-          if (!my.filter.with_text.caseSensitive) inText = inText.toLowerCase()
+          if (!my.withText.caseSensitive) inText = inText.toLowerCase()
           return inText.indexOf(search) > -1
         }
       }
@@ -114,26 +124,26 @@ get filtreText(){
 get filtrePersonnages(){
   let my = this
   if(undefined === this._filtrePersonnages){
-    if(my.filter.with_personnages){
+    if(my.withPersonnages){
       // Il faut faire la liste de tous les diminutifs des personnages
       // recherchés
       var dims = []
-      for(var pid of my.filter.with_personnages.list){
+      for(var pid of my.withPersonnages.list){
         dims.push(FAPersonnage.get(pid).dim)
       }
-      if(my.filter.with_personnages.all){
-        my.filter.with_personnages.regulars = []
+      if(my.withPersonnages.all){
+        my.withPersonnages.regulars = []
         for(var dim of dims){
-          my.filter.with_personnages.regulars.push(new RegExp(`@${dim}([^a-zA-Z0-9_]|$)`))
+          my.withPersonnages.regulars.push(new RegExp(`@${dim}([^a-zA-Z0-9_]|$)`))
         }
       } else {
         // Expression régulière quand 'all' (personnages) est faux et qu'on cherche
         // donc à ne trouver qu'au moins un personnage.
-        my.filter.with_personnages.regulars = [
+        my.withPersonnages.regulars = [
           new RegExp(`@(${dims.join('|')})([^a-zA-Z0-9_]|$)`)
         ]
       }
-      this._filtrePersonnages = function(ev){return ev.hasPersonnages(my.filter.with_personnages)}
+      this._filtrePersonnages = function(ev){return ev.hasPersonnages(my.withPersonnages)}
       // console.log("my.filter.with_personnages:", my.filter.with_personnages)
     } else {
       this._filtrePersonnages = function(ev){return true}
@@ -158,27 +168,11 @@ isFalse(condition){
 // ---------------------------------------------------------------------
 //  Les données du filtre
 
-get fromTime(){
-  if(undefined === this._fromTime){
-    if(undefined === this.filter.fromTime){
-      this._fromTime = -10000
-    } else {
-      this._fromTime = this.filter.fromTime
-    }
-  }
-  return this._fromTime
-}
-
-get toTime(){
-  if(undefined === this._toTime){
-    if(undefined === this.filter.toTime){
-      this._toTime = 1000000
-    } else {
-      this._toTime = this.filter.toTime
-    }
-  }
-  return this._toTime
-}
+get fromTime(){ return this.filter.fromTime }
+get toTime(){   return this.filter.toTime }
+get withPersonnages(){return this.filter.with_personnages}
+get withText(){return this.filter.with_text}
+get eventTypes(){return this.filter.eventTypes}
 
 // Pour inverser la condition générale
 get invert(){
@@ -200,10 +194,9 @@ get invert(){
 **/
 prepareFilter(){
   var my = this
-  if(undefined === my.filter.eventTypes) my.filter.eventTypes = []
-
+  if(my.eventTypes == null) return
   my.hTypes = {}
-  my.filter.eventTypes.forEach(function(el){my.hTypes[el] = true})
+  my.eventTypes.forEach(function(el){my.hTypes[el] = true})
   my = null
 }
 

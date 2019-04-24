@@ -4,8 +4,12 @@ section#section-eventers {
   left:60%;
   z-index:50;
 }
+section#section-eventers h3 {
+  margin:0;
+}
 section#section-eventers .eventer,
-section#section-eventers .eventer *
+section#section-eventers .eventer .pan-events *,
+section#section-eventers .eventer fieldset *
 {
   font-size:0.92em;
 }
@@ -37,6 +41,10 @@ section#section-eventers .eventer {
 /* Tab du filtre */
 .eventer .pan-filter {
   padding:1em;
+}
+
+.eventer .pan-filter .fs-filters label {
+  all:unset;
 }
 .eventer .pan-filter .span-cb {
   display:inline-block;

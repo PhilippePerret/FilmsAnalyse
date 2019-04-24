@@ -73,12 +73,17 @@ peuple(){
  * Appelée par le bouton pour appliquer le filtre choisi
  */
 applyFilter(){
+  let domId = this.domId
+  var checkType   = $(`input#${domId}-filter-type`)[0].checked
+  var checkText   = $(`input#${domId}-filter-text`)[0].checked
+  var checkPersos = $(`input#${domId}-filter-persos`)[0].checked
+  var checkTime   = $(`input#${domId}-filter-time`)[0].checked
   this.filter = {
-      eventTypes:       this.getChosenTypes()
-    , fromTime:         this.getFromTime()
-    , toTime:           this.getToTime()
-    , with_text:        this.getChosenText()
-    , with_personnages: this.getChosenPersonnages()
+      eventTypes:       checkType ? this.getChosenTypes() : null
+    , with_text:        checkText ? this.getChosenText() : null
+    , with_personnages: checkPersos ? this.getChosenPersonnages() : null
+    , fromTime:         checkTime ? this.getFromTime() : null
+    , toTime:           checkTime ? this.getToTime() : null
   }
   // console.log("Filtre : ", this.filter)
   this.peuple()
@@ -176,6 +181,10 @@ getChosenPersonnages(){
   }
 }
 
+static toggleFilterPart(domId, affix){
+  let ch = $(`input#${domId}-filter-${affix}`)[0].checked
+  $(`fieldset#${domId}-fs-${affix}`)[ch?'show':'hide']()
+}
 
 /**
  * Construction de l'eventeur
@@ -191,27 +200,38 @@ build(){
   </div>
   <div class="pan-events"></div>
   <div class="pan-filter" style="display:none;">
-    <h2>Filtre des events</h2>
-    <div class="small">Pour obtenir moins d'event affichés, utiliser ce filtre puis cliquer sur le bouton « Liste » ci-dessus.</div>
-    <fieldset>
+    <h3>Filtre des events</h3>
+    <fieldset id="${this.domId}-fs-filters" class="fs-filters">
+      <div class="small explication">Cliquer sur « Liste » ci-dessus après avoir réglé le filtre.</div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-type" onclick="FAEventer.toggleFilterPart('${this.domId}','type')"/>
+        <label for="${this.domId}-filter-type">Filtrage par le type d'event</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-text" onclick="FAEventer.toggleFilterPart('${this.domId}','text')"/>
+        <label for="${this.domId}-filter-text">Filtrage par le texte (contenu et titre)</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-persos" onclick="FAEventer.toggleFilterPart('${this.domId}','persos')"/>
+        <label for="${this.domId}-filter-persos">Filtrage par les personnages</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-time" onclick="FAEventer.toggleFilterPart('${this.domId}','time')"/>
+        <label for="${this.domId}-filter-time">Filtrage par les temps</label>
+      </div>
+
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-type" style="display:none">
       <legend>Types affichés</legend>
       <div class="type-list"></div>
     </fieldset>
-    <fieldset>
-      <legend>Temps</legend>
-      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable" value="0">0:00:00.00</horloge> et
-      <horloge id="${this.domId}-to-time" class="small horloge horlogeable" value="">...</horloge>
-    </fieldset>
-    <fieldset>
-      <legend>Personnages</legend>
-      <div class="small explication">Cocher les personnages qui doivent se trouver mentionnés ou être en lien avec les events recherchés.</div>
-      <div class="personnages-list"></div>
-      <div>
-        <input type="checkbox" id="${this.domId}-cb-all-chosen" />
-        <label for="${this.domId}-cb-all-chosen">Tous ceux choisis (sinon, au moins un)</label>
-      </div>
-    </fieldset>
-    <fieldset>
+
+    <fieldset class="normal" id="${this.domId}-fs-text" style="display:none">
       <legend>Texte à rechercher</legend>
       <input type="text" id="${this.domId}-text-search" style="width:98%;" />
       <div>
@@ -220,6 +240,22 @@ build(){
         <input type="checkbox" id="${this.domId}-text-search-sensitive" />
         <label for="${this.domId}-text-search-sensitive">Respecter la casse</label>
       </div>
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-persos" style="display:none">
+      <legend>Personnages</legend>
+      <div class="small explication">Cocher les personnages qui doivent se trouver mentionnés ou être en lien avec les events recherchés.</div>
+      <div class="personnages-list"></div>
+      <div>
+        <input type="checkbox" id="${this.domId}-cb-all-chosen" />
+        <label for="${this.domId}-cb-all-chosen">Tous ceux choisis (sinon, au moins un)</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-time" style="display:none">
+      <legend>Temps</legend>
+      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable" value="0">0:00:00.00</horloge> et
+      <horloge id="${this.domId}-to-time" class="small horloge horlogeable" value="">...</horloge>
     </fieldset>
 
   </div>

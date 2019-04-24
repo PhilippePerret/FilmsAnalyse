@@ -432,7 +432,6 @@ makeDesappear(){
                             dans l'event, si false, un seul personnage suffit
 **/
 hasPersonnages(filtre){
-  console.log("-> hasPersonnages")
   var pid, stxt
   if (undefined === filtre.regulars){
     for(pid of filtre.list){
@@ -449,24 +448,17 @@ hasPersonnages(filtre){
 
     if(filtre.all){
       // Si on arrive ici c'est que tous les personnages ont été trouvés
-      console.log("Fin, tous les personnages ont été trouvés")
       return true
     } else {
       // Si on arrive ici, c'est qu'aucun personnage n'a été trouvé
-      console.log("Fin, aucun personnage n'a été trouvé")
       return false
     }
   } else {
-    console.log("Avec des expressions régulières définies")
-    console.log("Test sur ", this.content, this.titre)
     for(var reg of filtre.regulars){
-      console.log(`reg sur event #${this.id} (${reg})`, !!this.content.match(reg) && !!this.titre.match(reg))
       if(!this.content.match(reg) && !this.titre.match(reg)) return false
     }
-    console.log("On retourne TRUE pour cet event")
     return true // dans tous les cas
   }
-  console.log("<- hasPersonnages")
 }
 
 // ---------------------------------------------------------------------

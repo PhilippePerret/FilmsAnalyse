@@ -40,6 +40,7 @@ const ERRORS = {
 , "idee-type-required":"Le type de l'idée est requis."
 , "idee-description-required":"La description de l'idée est requise (précise si possible)"
 , "idee-setup-required":"L'installation de l'idée est requise"
+, "no-event-with-filter":"Aucun event n'a été trouvé avec le filtre demandé."
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
