@@ -68,9 +68,7 @@ get filtereds(){
       // console.log("      : time to OK")
       if(my.isFalse(my.filtrePersonnages(ev)))  return
       // console.log("      : personnages OK")
-      if(my.filter.with_text){
-        console.log("Je dois chercher avec le texte")
-      }
+      if(my.isFalse(my.filtreText(ev)))         return
       // console.log("      : texte OK")
       // console.log("   RETENU")
       my._filtereds.push(ev)
@@ -78,6 +76,39 @@ get filtereds(){
   }
   my = null
   return this._filtereds
+}
+
+/**
+  @return {function}  Une fonction qui permet de filtrer les events par
+                      leur texte. Pour le moment, on le cherche seulement
+                      dans le `content` et le `titre`
+**/
+get filtreText(){
+  if (undefined === this._filtreText){
+    let my = this
+    if(my.filter.with_text){
+      if(my.filter.with_text.regular){
+        // Une recherche par expression régulière
+        this._filtreText = function(ev){
+          return !!(ev.titre + ' ' + ev.content).match(new RegExp(my.filter.with_text.search), my.filter.with_text.caseSensitive ? '' : 'i')
+        }
+      } else {
+        // Une recherche explicite
+
+        let search = my.filter.with_text.search
+        if (!my.filter.with_text.caseSensitive) search = search.toLowerCase()
+        this._filtreText = function(ev){
+          var inText = ' ' + ev.titre + ' ' + ev.content
+          if (!my.filter.with_text.caseSensitive) inText = inText.toLowerCase()
+          return inText.indexOf(search) > -1
+        }
+      }
+    } else {
+      // Sinon, on renvoie toujours true
+      this._filtreText = function(ev){return true}
+    }
+  }
+  return this._filtreText
 }
 
 get filtrePersonnages(){

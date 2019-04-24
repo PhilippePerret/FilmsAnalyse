@@ -154,8 +154,9 @@ getChosenTypes(){
 getChosenText(){
   let stxt  = this.jqObj.find(`#${this.domId}-text-search`).val().trim()
     , isReg = this.jqObj.find(`#${this.domId}-text-search-regular`)[0].checked
+    , caseS = this.jqObj.find(`#${this.domId}-text-search-sensitive`)[0].checked
   if(stxt === '') return
-  return {txt: stxt, regular: isReg}
+  return {search: stxt, regular: isReg, caseSensitive: caseS}
 }
 // Retourne la liste des personnages qu'il faut trouver dans l'event,
 // if any.
@@ -216,6 +217,8 @@ build(){
       <div>
         <input type="checkbox" id="${this.domId}-text-search-regular" />
         <label for="${this.domId}-text-search-regular">Expression régulière</label>
+        <input type="checkbox" id="${this.domId}-text-search-sensitive" />
+        <label for="${this.domId}-text-search-sensitive">Respecter la casse</label>
       </div>
     </fieldset>
 
