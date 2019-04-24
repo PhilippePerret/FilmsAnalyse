@@ -3,6 +3,8 @@
 ### Traiter :
 
 * [BUGS]
+  - Il faut traduire les pseudos pour les afficher dans l'eventer
+  - Rationnaliser les ids/pseudos pour les personnages.
   - Quand on modifie une scène en l'éditant, quand elle se corrige dans le reader, seul le résumé est inscrit
 
 * HANDTESTS

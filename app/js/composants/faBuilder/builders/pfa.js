@@ -380,7 +380,7 @@ Object.defineProperties(PFABuilder,{
     get(){return this._formater||defP(this,'_formater', new FATexte(''))}
   }
 , dureeFilm:{
-    get(){return this._dureeFilm||defP(this,'__dureeFilm', this.pfa.a.duration)}
+    get(){return this._dureeFilm||defP(this,'__dureeFilm', this.pfa.a.duree)}
   }
 , ieme24:{get(){return this.pfa.ieme24}}
 , ExplicationPFAGraphique:{get(){

@@ -42,7 +42,7 @@ EventForm.buildFormOfType = function(type){
     , DCreate('LABEL', {inner: 'Position'})
     , DCreate('HORLOGE', {class:'small', id:formId('time'), value:'', inner: '...'})
     , DCreate('LABEL', {inner: 'Durée'})
-    , DCreate('DUREE', {id: formId('duration'), class: 'small durationable'})
+    , DCreate('DUREE', {id: formId('duree'), class: 'small dureeable'})
     ]}))
 
   /*  Pour le type particulier de l'event */

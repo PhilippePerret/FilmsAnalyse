@@ -61,12 +61,18 @@ get filtereds(){
     this.a.forEachEvent(function(ev){
       // console.log("Event : ",ev)
       if(my.isFalse(my.hTypes[ev.type]))        return
+      // console.log("      : type OK")
       if(my.isFalse(ev.time >= my.fromTime))    return
+      // console.log("      : time from OK")
       if(my.isFalse(ev.time <= my.toTime))      return
+      // console.log("      : time to OK")
       if(my.isFalse(my.filtrePersonnages(ev)))  return
+      // console.log("      : personnages OK")
       if(my.filter.with_text){
         console.log("Je dois chercher avec le texte")
       }
+      // console.log("      : texte OK")
+      // console.log("   RETENU")
       my._filtereds.push(ev)
     })
   }
@@ -74,23 +80,30 @@ get filtereds(){
   return this._filtereds
 }
 
-filtrePersonnages(){
+get filtrePersonnages(){
   let my = this
   if(undefined === this._filtrePersonnages){
     if(my.filter.with_personnages){
+      // Il faut faire la liste de tous les diminutifs des personnages
+      // recherchés
+      var dims = []
+      for(var pid of my.filter.with_personnages.list){
+        dims.push(FAPersonnage.get(pid).dim)
+      }
       if(my.filter.with_personnages.all){
         my.filter.with_personnages.regulars = []
-        for(var pid of my.filter.with_personnages.list){
-          my.filter.with_personnages.regulars.push(new RegExp(`@${pid}[^a-zA-Z0-9_]`))
+        for(var dim of dims){
+          my.filter.with_personnages.regulars.push(new RegExp(`@${dim}([^a-zA-Z0-9_]|$)`))
         }
       } else {
         // Expression régulière quand 'all' (personnages) est faux et qu'on cherche
         // donc à ne trouver qu'au moins un personnage.
         my.filter.with_personnages.regulars = [
-          new RegExp(`@(${my.filter.with_personnages.list.join('|')})[^a-zA-Z0-9_]`)
+          new RegExp(`@(${dims.join('|')})([^a-zA-Z0-9_]|$)`)
         ]
       }
       this._filtrePersonnages = function(ev){return ev.hasPersonnages(my.filter.with_personnages)}
+      // console.log("my.filter.with_personnages:", my.filter.with_personnages)
     } else {
       this._filtrePersonnages = function(ev){return true}
     }

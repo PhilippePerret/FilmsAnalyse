@@ -131,7 +131,7 @@ Object.assign(HandTestStep.prototype,{
 , execInterpretableCommand(){
     // console.log("-> execInterpretableCommand")
 
-    let dureeFilm = current_analyse.duration
+    let dureeFilm = current_analyse.duree
     // console.log("dureeFilm:", dureeFilm)
 
     let data_reg = this.command.match(REG_INTERPRETABLE).groups

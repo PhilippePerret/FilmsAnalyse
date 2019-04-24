@@ -24,7 +24,7 @@ static createNew(){
   var newEventer = new FAEventer(current_analyse)
   newEventer.show()
   log.info(`<- FAEventers::createNew() (ID #${newEventer.id})`)
-  return newEventer
+  // return newEventer // pour les tests MAIS ÇA PLANTE L'APPLICATION
 }
 
 
@@ -49,6 +49,7 @@ beforeShow(){
   log.info(`<- <<FAEventer #${this.id}>>#beforeShow()`)
 }
 close(){this.fwindow.hide()}
+// close(){this.fwindow.remove()}
 
 /**
  * On peuple l'eventer en respectant le filtre choisi
@@ -72,18 +73,25 @@ peuple(){
  * Appelée par le bouton pour appliquer le filtre choisi
  */
 applyFilter(){
-  var fromTime = this.horlogeFiltreFromTime.time
-  var toTime   = this.horlogeFiltreToTime.time
-  if ( toTime <= this.horlogeFiltreFromTime.time ) toTime = null
   this.filter = {
       eventTypes:       this.getChosenTypes()
-    , fromTime:         fromTime
-    , toTime:           toTime
+    , fromTime:         this.getFromTime()
+    , toTime:           this.getToTime()
     , with_text:        this.getChosenText()
     , with_personnages: this.getChosenPersonnages()
   }
   // console.log("Filtre : ", this.filter)
   this.peuple()
+}
+
+
+getFromTime(){
+  return parseFloat($(`horloge#${this.domId}-from-time`).attr('value'))
+}
+getToTime(){
+  var toTime   = parseFloat($(`horloge#${this.domId}-to-time`).attr('value'))
+  if ( isNaN(toTime) || toTime <= this.getFromTime() ) toTime = this.a.duree
+  return toTime
 }
 
 /**
@@ -227,8 +235,8 @@ afterBuilding(){
   this.peupleTypesInFilter()
   // On doit régler la fin du film
   let o = $(`#${this.domId}-to-time`)
-  o.attr('value', this.a.duration)
-  o.html(new OTime(this.a.duration).horloge)
+  o.attr('value', this.a.duree)
+  o.html(new OTime(this.a.duree).horloge)
 
   // On doit peupler avec les personnages du film (CB non cochées)
   // TODO

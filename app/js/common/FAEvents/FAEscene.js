@@ -162,7 +162,7 @@ static doLists(){
       sc = _sortedByTime[isc]
       if(sc.numero > 1){
         prev_sc = _sortedByTime[isc - 1]
-        prev_sc.duration = sc.time - prev_sc.time // arrondi plus tard
+        prev_sc.duree = sc.time - prev_sc.time // arrondi plus tard
       }
     }
   }
@@ -260,7 +260,7 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
+  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
 }
 
 /**
@@ -310,8 +310,8 @@ get pitch(){return this.titre}
 get resume(){return this.content || '--non défini--'}
 get description(){
   console.error("DEPRECATED Il ne faut pas utiliser 'description', pour une scène, mais 'resume'")
-  return this.content || '--non défini--'} // TODO Remplacer par resume
-get duree(){return this.duration}
+  return this.content || '--non défini--'
+} // TODO Remplacer par resume
 
 // ---------------------------------------------------------------------
 //  MÉTHODES D'ÉTAT

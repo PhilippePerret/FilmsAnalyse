@@ -167,29 +167,29 @@ class DOMDuration extends DOMHorloge {
   // C'est lui qui est affiché lorsqu'on change la durée à l'aide de la souris
   get endTime(){ return this.startTime + this.time }
 
-  get duration(){
-    if(undefined === this._duration){
-      this._duration = parseFloat(this.domObj.getAttribute('value'))
+  get duree(){
+    if(undefined === this._duree){
+      this._duree = parseFloat(this.domObj.getAttribute('value'))
     }
-    return this._duration
+    return this._duree
   }
-  set duration(v){
-    // console.log("-> set duration", v)
+  set duree(v){
+    // console.log("-> set duree", v)
     v = v.round(2)
     this._endTime = this.startTime + v
     this.domObj.setAttribute('value', v)
-    this._duration = v
+    this._duree = v
   }
 
   // Surclasse la méthode principale
   set time(v){
     // console.log("-> set time (Durationable)", v, this.domObj)
     if(v <= 0 || undefined === v) return
-    this.duration = v
+    this.duree = v
   }
-  get time(){return this.duration}
+  get time(){return this.duree}
 
-  get otime(){return new OTime(this.duration)}
+  get otime(){return new OTime(this.duree)}
 
   get horloge(){return this.otime.horloge_as_duree}
 

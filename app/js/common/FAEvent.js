@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
 static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
 
 static get ALL_PROPS(){
@@ -154,7 +154,7 @@ get isADocument(){return false}
 
 // Pour la correspondance de nom, aussi
 get startAt(){return this.time}
-get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duration)}
+get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duree)}
 
 // On utilise un getter et un setter pour réinitialiser d'autres propriétés
 get time(){return this._time}
@@ -168,7 +168,7 @@ get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
 /**
  * Définition de la durée
  */
-set duration(v){
+set duree(v){
   if('string' === typeof(v)){
     // <= la valeur est un string
     // => on vient du formulaire, il faut traiter
@@ -177,13 +177,13 @@ set duration(v){
     v = v.seconds
   }
   v = v.round(2)
-  if (v != this._duration){
-    this._duration  = v
+  if (v != this._duree){
+    this._duree  = v
     this.modified   = true
     this.reset()
   }
 }
-get duration(){return this._duration || (this.type === 'scene' ? 60 : 10)}
+get duree(){return this._duree || (this.type === 'scene' ? 60 : 10)}
 
 // Alias
 get description(){return this.content}
@@ -282,7 +282,7 @@ onErrors(evt, errors){
   F.notify(errors.map(function(d){
     $(`${focusPrefix}${d.prop}`).addClass('error')
     return d.msg
-  }).join(RC), {error: true, duration: 'auto'})
+  }).join(RC), {error: true, duree: 'auto'})
   if($(focusFieldId).length) evt.firstErroredFieldId = focusFieldId
 }
 /**
@@ -355,7 +355,7 @@ watchTime(){
   }
 }
 get end(){
-  if(undefined === this._end) this._end = this.time + this.duration
+  if(undefined === this._end) this._end = this.time + this.duree
   return this._end
 }
 /**
@@ -432,11 +432,12 @@ makeDesappear(){
                             dans l'event, si false, un seul personnage suffit
 **/
 hasPersonnages(filtre){
+  console.log("-> hasPersonnages")
   var pid, stxt
   if (undefined === filtre.regulars){
     for(pid of filtre.list){
       stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
-      if(this.content.match(stxt) && false === filtre.all){
+      if(!!this.content.match(stxt) && false === filtre.all){
         return true
       } else if(true === filtre.all && !this.content.match(stxt)) {
         return false
@@ -448,17 +449,24 @@ hasPersonnages(filtre){
 
     if(filtre.all){
       // Si on arrive ici c'est que tous les personnages ont été trouvés
+      console.log("Fin, tous les personnages ont été trouvés")
       return true
     } else {
       // Si on arrive ici, c'est qu'aucun personnage n'a été trouvé
+      console.log("Fin, aucun personnage n'a été trouvé")
       return false
     }
   } else {
+    console.log("Avec des expressions régulières définies")
+    console.log("Test sur ", this.content, this.titre)
     for(var reg of filtre.regulars){
-      if(!this.content.match(reg)) return false
+      console.log(`reg sur event #${this.id} (${reg})`, !!this.content.match(reg) && !!this.titre.match(reg))
+      if(!this.content.match(reg) && !this.titre.match(reg)) return false
     }
+    console.log("On retourne TRUE pour cet event")
     return true // dans tous les cas
   }
+  console.log("<- hasPersonnages")
 }
 
 // ---------------------------------------------------------------------
@@ -544,7 +552,7 @@ dispatch(d){
   }
   // rectification de certaines données
   if (this.time)      this.time     = this.time.round(2)
-  if (this.duration)  this.duration = this.duration.round(2)
+  if (this.duree)  this.duree = this.duree.round(2)
 }
 
 togglePlay(){
@@ -556,7 +564,7 @@ togglePlay(){
     if(current_analyse.options.get('option_start_3secs_before_event')){t -= 3}
     this.locator.setRTime.bind(this.locator)(t)
     // On détermine la fin du jeu
-    this.locator.setEndTime(t + this.duration, this.togglePlay.bind(this))
+    this.locator.setEndTime(t + this.duree, this.togglePlay.bind(this))
   }
 
   this.playing = !this.playing

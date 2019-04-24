@@ -262,14 +262,14 @@ afterBuilding(){
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
   this.jqf('time').html(this.a.locator.getRTime())
-  this.jqf('duration').html(this.duration)
+  this.jqf('duree').html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
 
   // On règle les boutons Play (mais seulement si l'event est défini)
   this.isNew || BtnPlay.setAndWatch(jqo, eid)
 
-  // On rend les champs horlogeable et durationables
+  // On rend les champs horlogeable et dureeables
   let horloges = UI.setHorlogeable(jqo[0])
   // L'horloge de position de l'évènement
   this.horlogePosition = horloges[`event-${eid}-time`]
@@ -281,9 +281,9 @@ afterBuilding(){
 
   let hdurees = UI.setDurationable(jqo[0])
   // L'horloge de durée de l'évènement
-  this.horlogeDuration = hdurees[`event-${eid}-duration`]
+  this.horlogeDuration = hdurees[`event-${eid}-duree`]
   this.horlogeDuration.dispatch({
-      duration: this.duration || 10
+      duree: this.duree || 10
     , startTime: parseFloat(this.time)
     , synchroVideo: true
     , parentModifiable: this
@@ -687,12 +687,12 @@ setFormValues(){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
 
     switch(prop){
-      case 'duration':
+      case 'duree':
       case 'time':
       case 'tps_reponse':
         otime = new OTime(this.event[prop])
-        this.jqf(fieldSufid).html(prop == 'duration' ? this.event.hduree : otime.horloge)
-        this.jqf(fieldSufid).attr('value', (prop == 'duration' ? this.event.duree : this.event[prop]).round(2))
+        this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
+        this.jqf(fieldSufid).attr('value', (prop == 'duree' ? this.event.duree : this.event[prop]).round(2))
         break
       default:
         // Si un champ existe avec cette propriété, on peut la mettre
@@ -758,7 +758,7 @@ getFormValues(){
             return parseInt(val,10)
           // Tout ce qui doit être transformé en flottant
           case 'time':
-          case 'duration':
+          case 'duree':
             return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
@@ -770,7 +770,7 @@ getFormValues(){
       // console.log({id:id, prop:prop, val: val})
     })
     // Les temps
-    for(prop of ['time', 'duration']){
+    for(prop of ['time', 'duree']){
       all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
     }
 

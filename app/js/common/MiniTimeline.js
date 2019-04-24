@@ -35,7 +35,7 @@ build(options){
     options.unit = 'px'
   }
   let width   = options.width
-    , coefT2P = width / this.a.duration
+    , coefT2P = width / this.a.duree
 
   this.unit = options.unit
 
@@ -67,7 +67,7 @@ buildElementDiv(elm, type, coefT2P){
       l = (elm * coefT2P).round(1)
       break
     default:
-      w = (elm.duration * coefT2P).round(1)
+      w = (elm.duree * coefT2P).round(1)
       l = (elm.time * coefT2P).round(1)
   }
   if (u != '%' && w < 4) w = 4

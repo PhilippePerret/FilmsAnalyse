@@ -66,20 +66,20 @@ Object.defineProperties(FAnalyse.prototype,{
 // ---------------------------------------------------------------------
 //  Les données temporelles
 
-, duration:{
+, duree:{
     // avant de le calculer vraiment :
-    get(){ return this._duration || defP(this,'_duration', this.calcDuration()) }
-  , set(v){ this._duration = v ; this.modified = true }
+    get(){ return this._duree || defP(this,'_duree', this.calcDuration()) }
+  , set(v){ this._duree = v ; this.modified = true }
   }
 
 , filmStartTime:{
     get() {return this._filmStTi || defP(this,'_filmStTi', 0)}
-  , set(v){ this._filmStTi = v ; this.duration = undefined }
+  , set(v){ this._filmStTi = v ; this.duree = undefined }
   }
 
 , filmEndTime:{
     get(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
-  , set(v){ this._filmEndTime = v ; this.duration = undefined }
+  , set(v){ this._filmEndTime = v ; this.duree = undefined }
 }
 
 , filmEndGenericFin:{

@@ -134,7 +134,7 @@ class BtnPlay {
   //  Méthodes de DATA
 
   get startTime(){return this._startTime || defP(this,'_startTime',this.event.time)}
-  get endTime(){return this._endTime || defP(this,'_endTime',this.startTime+this.event.duration)}
+  get endTime(){return this._endTime || defP(this,'_endTime',this.startTime+this.event.duree)}
 
   // ---------------------------------------------------------------------
   //  Méthodes DOM
