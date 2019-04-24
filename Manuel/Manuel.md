@@ -130,6 +130,8 @@ Pour coller rapidement un temps courant dans un champ d'édition, il suffit de c
 
 Mais il y a même plus simple en glissant la vidéo (qui se transforme en horloge) sur le champ de saisie voulu. Cela place une balise `{{time: <le temps>}}` qui sera ensuite formatée convenablement suivant le support voulu.
 
+Ou, si l'on se trouve dans un champ d'édition du formulaire, il suffit de jouer la combinaison clavier `CMD T`.
+
 ### Réglage du temps de l'event {#set_event_time}
 
 #### Réglage du temps {#reglage_du_point_temporel}

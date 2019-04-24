@@ -27,8 +27,8 @@ class EventsFilter {
 //  INSTANCE
 
 constructor(owner, args){
-  this.owner = owner
-  this.args  = args
+  this.owner  = owner
+  this.args   = args
   this.filter = (args && args.filter) || {}
 
   this.prepareFilter()
@@ -53,19 +53,49 @@ get forEachFiltered(){ return this.forEachFilteredEvent.bind(this) }
   Retourne la liste des filtrés
 **/
 get filtereds(){
-  var my = this
+  let my = this
+    , fn_texte        // fonction pour chercher le texte
+  // console.log("-> EventFilter#filtereds", this.filter)
   if(undefined === this._filtereds){
     this._filtereds = []
     this.a.forEachEvent(function(ev){
       // console.log("Event : ",ev)
-      if(my.isFalse(my.hTypes[ev.type]))      return
-      if(my.isFalse(ev.time >= my.fromTime))  return
-      if(my.isFalse(ev.time <= my.toTime))    return
+      if(my.isFalse(my.hTypes[ev.type]))        return
+      if(my.isFalse(ev.time >= my.fromTime))    return
+      if(my.isFalse(ev.time <= my.toTime))      return
+      if(my.isFalse(my.filtrePersonnages(ev)))  return
+      if(my.filter.with_text){
+        console.log("Je dois chercher avec le texte")
+      }
       my._filtereds.push(ev)
     })
   }
   my = null
   return this._filtereds
+}
+
+filtrePersonnages(){
+  let my = this
+  if(undefined === this._filtrePersonnages){
+    if(my.filter.with_personnages){
+      if(my.filter.with_personnages.all){
+        my.filter.with_personnages.regulars = []
+        for(var pid of my.filter.with_personnages.list){
+          my.filter.with_personnages.regulars.push(new RegExp(`@${pid}[^a-zA-Z0-9_]`))
+        }
+      } else {
+        // Expression régulière quand 'all' (personnages) est faux et qu'on cherche
+        // donc à ne trouver qu'au moins un personnage.
+        my.filter.with_personnages.regulars = [
+          new RegExp(`@(${my.filter.with_personnages.list.join('|')})[^a-zA-Z0-9_]`)
+        ]
+      }
+      this._filtrePersonnages = function(ev){return ev.hasPersonnages(my.filter.with_personnages)}
+    } else {
+      this._filtrePersonnages = function(ev){return true}
+    }
+  }
+  return this._filtrePersonnages
 }
 
 /**

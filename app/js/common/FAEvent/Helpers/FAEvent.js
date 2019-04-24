@@ -199,11 +199,15 @@ linked(str){ return this.asLink(str) }
 
 /**
   Retourne le div des éléments associés qui ajoute des procédés,
-  des notes, des informations, etc.
+  des notes, des informations, des documents, etc.
 **/
 , divAssociates(opts){
     let str = ''
-    this.events.forEach( ev => str += ev.as('associate', FORMATED, opts) )
+    this.events.forEach( eid => str += FAEvent.get(eid).as('associate', FORMATED, opts) )
+    // this.events.forEach( function(ev){
+    //   console.log("ev divAssociates:", ev)
+    //   str += ev.as('associate', FORMATED, opts)
+    // })
     return str
   }
 

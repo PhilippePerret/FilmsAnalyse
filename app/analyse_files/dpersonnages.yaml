@@ -6,13 +6,15 @@
 # Propriétés : :pseudo, :prenom, :nom, :ages
 # Propriétés spéciales :
 #     :dim    Sert pour les diminutifs
+# 
 ---
 PSEUDO:
-  pseudo:
+  pseudo: # idem que PSEUDO. Sert d'ID
   prenom:
   nom:
   ages:
   dim:        # sert pour les diminutifs
+  description:
   dimensions: # Liste des dimensions du personnage
 
 PSEUDO2:
@@ -21,3 +23,5 @@ PSEUDO2:
   nom:
   ages:
   dim:        # sert pour les diminutifs
+  description:
+  dimensions: # Liste des dimensions du personnage

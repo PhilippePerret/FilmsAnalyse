@@ -37,8 +37,11 @@ section#section-eventers .eventer {
 .eventer .pan-filter {
   padding:1em;
 }
-.eventer .pan-filter .cb-type {
+.eventer .pan-filter .span-cb {
   display:inline-block;
   width:128px;
   /* border:1px dashed blue; */
+}
+.eventer .pan-filter .span-cb label {
+  all:unset;
 }

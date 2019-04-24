@@ -43,12 +43,15 @@ show(){
   this.fwindow.show()
   log.info(`<- <<FAEventer #${this.id}>>#show()`)
 }
+beforeShow(){
+  log.info(`-> <<FAEventer #${this.id}>>#beforeShow()`)
+  this.peuplePersonnagesInFilter()
+  log.info(`<- <<FAEventer #${this.id}>>#beforeShow()`)
+}
 close(){this.fwindow.hide()}
 
 /**
  * On peuple l'eventer en respectant le filtre choisi
- * TODO : à l'ouverture, il faudrait mettre le filtre de l'affichage
- * des scènes seulement.
  */
 peuple(){
   log.info(`-> <<FAEventer #${this.id}>>#peuple()`)
@@ -73,9 +76,11 @@ applyFilter(){
   var toTime   = this.horlogeFiltreToTime.time
   if ( toTime <= this.horlogeFiltreFromTime.time ) toTime = null
   this.filter = {
-      eventTypes: this.getChosenTypes()
-    , fromTime:   fromTime
-    , toTime:     toTime
+      eventTypes:       this.getChosenTypes()
+    , fromTime:         fromTime
+    , toTime:           toTime
+    , with_text:        this.getChosenText()
+    , with_personnages: this.getChosenPersonnages()
   }
   // console.log("Filtre : ", this.filter)
   this.peuple()
@@ -137,6 +142,32 @@ getChosenTypes(){
   return checkedList
 }
 
+// Retourne le texte qu'il faut chercher (if any)
+getChosenText(){
+  let stxt  = this.jqObj.find(`#${this.domId}-text-search`).val().trim()
+    , isReg = this.jqObj.find(`#${this.domId}-text-search-regular`)[0].checked
+  if(stxt === '') return
+  return {txt: stxt, regular: isReg}
+}
+// Retourne la liste des personnages qu'il faut trouver dans l'event,
+// if any.
+// @return {Object|Undefined} {list: <liste des pseudo>, all: true/false pour
+// savoir s'il faut que tous les personnages soient présents pour que l'event
+// soit considéré valide}
+getChosenPersonnages(){
+  var checkedList = []
+  var ocontainer = this.jqObj.find('.pan-filter div.personnages-list')
+  ocontainer.find('.cb-personnage > input').each(function(i, o){
+    if (o.checked) checkedList.push(o.getAttribute('data-id'))
+  })
+  if(checkedList.length === 0) return
+  return {
+    list: checkedList
+  , all: this.jqObj.find(`#${this.domId}-cb-all-chosen`)[0].checked
+  }
+}
+
+
 /**
  * Construction de l'eventeur
  */
@@ -163,8 +194,21 @@ build(){
       <horloge id="${this.domId}-to-time" class="small horloge horlogeable" value="">...</horloge>
     </fieldset>
     <fieldset>
-      <legend>Texte à rechercher :</legend>
-      <input type="text" id="${this.domId}-search" style="width:98%;" />
+      <legend>Personnages</legend>
+      <div class="small explication">Cocher les personnages qui doivent se trouver mentionnés ou être en lien avec les events recherchés.</div>
+      <div class="personnages-list"></div>
+      <div>
+        <input type="checkbox" id="${this.domId}-cb-all-chosen" />
+        <label for="${this.domId}-cb-all-chosen">Tous ceux choisis (sinon, au moins un)</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Texte à rechercher</legend>
+      <input type="text" id="${this.domId}-text-search" style="width:98%;" />
+      <div>
+        <input type="checkbox" id="${this.domId}-text-search-regular" />
+        <label for="${this.domId}-text-search-regular">Expression régulière</label>
+      </div>
     </fieldset>
 
   </div>
@@ -193,6 +237,22 @@ afterBuilding(){
 }
 
 
+peuplePersonnagesInFilter(){
+  log.info('-> peuplePersonnagesInFilter')
+  let my = this
+    , ocontainer = this.jqObj.find('.pan-filter div.personnages-list')
+  var domId, cb
+
+  FAPersonnage.forEachPersonnage(function(perso){
+    domId = `${my.domId}-cb-personnage-${perso.id}`
+    ocontainer.append(DCreate('SPAN',{class:'cb-personnage span-cb', append:[
+        DCreate('INPUT', {id:domId, type:'checkbox', attrs:{'data-id': perso.id}})
+      , DCreate('LABEL', {attrs:{for: domId}, inner: perso.pseudo})
+    ]}))
+  })
+  log.info('<- peuplePersonnagesInFilter')
+}
+
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
   // Note : on récupère tout simplement les types d'event du dossier FAEvents
@@ -214,12 +274,21 @@ peupleTypesInFilter(){
   log.info(`<- <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
 }
 
+/**
+  Construit la case à cocher, l'ajoute au container +ocontainer+ et
+  la retourne.
+  @param {jqSet} ocontainer   Container dans lequel il faut mettre la cb
+  @param {String} domId       ID de la case à cocher.
+  @param {String} libelle     Le libellé affiché
+  @param {String} type        Type de l'élément, par exemple 'scene' ou 'personnage'
+**/
 buildCbType(ocontainer, domid, libelle, type){
   var label = DCreate('LABEL', {attrs: {'for': domid}, inner: libelle})
   var cb = DCreate('INPUT', {id: domid, attrs:{type: 'checkbox', 'data-type': type}})
   cb.checked = true
-  var span  = DCreate('SPAN', {class: 'cb-type', append: [cb, label]})
+  var span  = DCreate('SPAN', {class: 'cb-type span-cb', append: [cb, label]})
   ocontainer.append(span)
+  return span
 }
 
 observe(){

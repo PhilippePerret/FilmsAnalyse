@@ -346,7 +346,7 @@ stopWatchingTime(){
   delete this.timerWatchingTime
 }
 watchTime(){
-  if(undefined === this.a.locator) this.a = current_analyse
+  if(undefined === this.a || undefined === this.a.locator) return
   var rtime = this.a.locator.getRTime()
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){
@@ -412,6 +412,53 @@ makeAppear(){
 }
 makeDesappear(){
   this.jqReaderObj.animate({opacity:0}, 600)
+}
+
+// ---------------------------------------------------------------------
+// Méthodes de recherche ou de filtre
+
+/**
+  Méthode qui retourne true si l'event contient les personnages
+
+  @param {Object} filtre
+                    :regulars Liste des expressions régulières à évaluer, si
+                              elles ont été préparées (comme pour le filtre
+                              par exemple). Dans ce cas, les deux autres props
+                              sont inutiles, puisque tous les cas sont considé-
+                              rés par ces expressions régulières (par exemple,
+                              il n'y en a qu'une seule pour le cas `all: false`)
+                    :list   Liste des identifiants
+                    :all    Si true, tous les personnages doivent se trouver
+                            dans l'event, si false, un seul personnage suffit
+**/
+hasPersonnages(filtre){
+  var pid, stxt
+  if (undefined === filtre.regulars){
+    for(pid of filtre.list){
+      stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
+      if(this.content.match(stxt) && false === filtre.all){
+        return true
+      } else if(true === filtre.all && !this.content.match(stxt)) {
+        return false
+      }
+    }
+
+    // Moins sémantique :
+    // return filtre.all
+
+    if(filtre.all){
+      // Si on arrive ici c'est que tous les personnages ont été trouvés
+      return true
+    } else {
+      // Si on arrive ici, c'est qu'aucun personnage n'a été trouvé
+      return false
+    }
+  } else {
+    for(var reg of filtre.regulars){
+      if(!this.content.match(reg)) return false
+    }
+    return true // dans tous les cas
+  }
 }
 
 // ---------------------------------------------------------------------

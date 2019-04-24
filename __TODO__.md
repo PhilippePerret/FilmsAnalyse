@@ -1,17 +1,11 @@
 # SUR LE GRILL
 
 ### Traiter :
-  - Comme pour les décors, quand on choisit un sous-décor et que le sous-décor courant est défini et termine par '&', on ajoute le nouveau sous-décor choisi
-  + bien documenter
 
 * [BUGS]
-  - Dans l'eventer, quand on revient dans le filtre, les deux temps se remettent à 0:00:00, semble-t-il.
   - Quand on modifie une scène en l'éditant, quand elle se corrige dans le reader, seul le résumé est inscrit
 
 * HANDTESTS
-  - Tester la création d'un décor avec '&' (ça doit faire deux décors)
-    + tester la création d'un sous-décor avec '&' (ça ne doit pas le marquer)
-    + tester deux décors en même temps pour voir si les sous-décors de deux décors se mettent dans le menu des sous-décors.
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
   - [Implémentation] Bien documenter l'utilisation des expressions régulières dans les étapes de tests
@@ -26,10 +20,7 @@
   - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.
   - faire le travail décrit ci-dessus. Une référence à une note produira un indice qui se rapportera à la note en bas de page.
 
-* Ajouter le nombre d'utilisation de chaque sous-décor
-
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
-
 
 * Développer un moteur de recherche permettant de retrouver très rapidement un élément grâce à du texte ou d'autres éléments. Par exmple pour retrouver très vite les scènes avec un personnage particulier
 C'est l'eventer qui doit permettre de faire ça.

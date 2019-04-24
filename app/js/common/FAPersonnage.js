@@ -9,6 +9,16 @@ class FAPersonnage {
 // ---------------------------------------------------------------------
 //  CLASS
 
+/**
+  Boucle la fonction +fn+ sur chaque personnage
+  Si la fonction retourne exactement false, on breake.
+**/
+static forEachPersonnage(fn){
+  for(var personnage of this.personnages){
+    if(false === fn(personnage)) break
+  }
+}
+
 static init(){
   if(this.exists()){
     try {
@@ -50,10 +60,12 @@ static get diminutifs(){
   return this._diminutifs
 }
 
-// Retourne le personnage de pseudo +pseudo+ (instance FAPersonnage)
-static get(pseudo){
-  return this.personnages[pseudo]
-}
+// // Retourne le personnage de pseudo +pseudo+ (instance FAPersonnage)
+// // NON, personnages est un array. Si on a besoin de cette méthode,
+// // utiliser un hash.
+// static get(pseudo){
+//   return this.personnages[pseudo]
+// }
 
 static get personnages(){
   if(undefined === this._personnages){
@@ -81,5 +93,8 @@ constructor(analyse, data){
 }
 
 get pseudo(){return this._pseudo}
+get id(){return this.pseudo}
 get dim(){return this._dim}
+get dimensions(){return this._dimensions}
+get description(){return this._description}
 }

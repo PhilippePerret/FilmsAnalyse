@@ -163,6 +163,7 @@ toggle(){
 show(){
   log.info(`-> FWindow.show() [built:${this.built}, visible:${this.visible}]`)
   if(!this.built) this.build().observe()
+  if ('function' === typeof this.owner.beforeShow) this.owner.beforeShow()
   this.jqObj.show()
   this.visible = true
   this.constructor.setCurrent(this)
