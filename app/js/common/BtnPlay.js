@@ -47,7 +47,7 @@ class BtnPlay {
   static setAndWatch(container, ev){
     var btnPlay ;
     if (undefined === ev) return // [1]
-    if(undefined === typeof(ev.type)) ev = current_analyse.ids[ev]
+    if('undefined' === typeof(ev.type)) ev = current_analyse.ids[ev]
     // On boucle sur chaque bouton trouvé qui n'a pas été préparé
     // On reconnait un bouton préparé au fait qu'il a une image (mais on
     // pourrait aussi le reconnaitre à sa classe `btnplay-<id event>`)

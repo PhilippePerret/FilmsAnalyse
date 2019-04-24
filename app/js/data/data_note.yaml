@@ -12,3 +12,5 @@ types:
     hname: Anecdote
   jeu:
     hname: Note sur le jeu d'acteur
+  stt:
+    hname: Note sur la construction

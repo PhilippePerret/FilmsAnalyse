@@ -10,3 +10,5 @@ types:
     hname: Simple remarque
   anecdote:
     hname: Anecdote
+  jeu:
+    hname: Note sur le jeu d'acteur
