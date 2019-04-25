@@ -2,6 +2,10 @@
 
 ### Traiter :
 
+* Pouvoir créer les events avec des raccourcis clavier
+  - revoir ceux définis et les faire par CMD-ALT-
+  - indiquer la lettre dans le nom, dans les boutons
+
 * [BUGS]
 
 * HANDTESTS
@@ -16,24 +20,19 @@
 
 
 * Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique, à partir du moment où il est défini dans les données)
-
-* Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
-  - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.
-  - faire le travail décrit ci-dessus. Une référence à une note produira un indice qui se rapportera à la note en bas de page.
+  - Peut-être un section avec des informations "technique" comme la durée "efficace" du film
+  - il faut penser de toute façon à indiquer où se place le zéro pour que les gens puissent suivre. Ici, par exemple, il apparait juste avec le titre
 
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
-
-* Développer un moteur de recherche permettant de retrouver très rapidement un élément grâce à du texte ou d'autres éléments. Par exmple pour retrouver très vite les scènes avec un personnage particulier
-C'est l'eventer qui doit permettre de faire ça.
+  - les procédés particuliers sans résolution doivent s'inscrire en bas à droite
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
-  - Dans la publication, il faut faire une différence entre les notes. Quand c'est l'affichage du texte principal, par exemple le scénier pour des scènes, il faut afficher les notes. En revanche, lorsqu'on affiche la scène dans les brins, il ne faut pas mettre les notes.
-  En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
   - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
+  - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
     - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
   - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
     - Quand un décor contient '&', ne pas le mettre dans les menus

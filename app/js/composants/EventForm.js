@@ -518,7 +518,7 @@ checkIfSynchronizable(e){
 observe(){
   var my = this
   this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-  this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
+  this.btnSubmit.on('click', my.submit.bind(my))
   this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
   // Toutes les modifications de texte doivent entrainer une activation du
   // bouton de sauvegarde
@@ -614,6 +614,10 @@ submit(){
     this.isNew    = false // il a été enregistré, maintenant
     this.modified = false
     this.endEdition()
+    // Pour être sûr qu'on traitera un event modifié par la suite, on
+    // détruit la fenêtre, quand c'est une création
+    this.fwindow.remove()
+    delete this._fwindow
   } else if(this.event.firstErroredFieldId) {
     // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
     $(this.event.firstErroredFieldId).focus().select()
@@ -700,8 +704,6 @@ setFormValues(){
           this.jqField(fieldSufid).val(this.event[prop])
         }
     }
-
-
   }
 
   if(this.type === 'stt'){
@@ -808,6 +810,10 @@ onKeyDownOnTextFields(e){
 }
 
 // ---------------------------------------------------------------------
+// Méthodes de DOM
+
+// Le bouton de soumission du formulaire
+get btnSubmit(){return this.jqObj.find('.btn-form-submit')}
 
 
 // La flying-window contenant le formulaire
