@@ -381,6 +381,7 @@ destroyEvent(event_id, form_instance){
  *      sera automatiquement appelée après la modification.
  */
 updateEvent(ev, options){
+  log.info("-> FAnalyse#updateEvent")
   var new_idx = undefined
   if (options && options.initTime != ev.time){
     var idx_init      = this.indexOfEvent(ev.id)
@@ -410,6 +411,8 @@ updateEvent(ev, options){
   FAStater.update()
   next_ev_old = null
   next_ev_new = null
+
+  log.info("<- FAnalyse#updateEvent")
 }
 
 getEventById(eid){

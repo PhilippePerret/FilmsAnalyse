@@ -7,6 +7,7 @@
   + documenter l'utilisation des notes
 
 * [BUGS]
+  * fermer bug #31, #28
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -19,7 +20,7 @@
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
 
-* Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique)
+* Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique, à partir du moment où il est défini dans les données)
 
 * Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
   - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.

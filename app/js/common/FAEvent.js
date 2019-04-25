@@ -364,15 +364,18 @@ get end(){
  * contenu, pour ne pas refaire les boutons, etc.).
  */
 updateInReader(new_idx){
+  log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
+  // Pour forcer la reconstruction
+  delete this._div
   // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
-  // à faire. Par prudence, on a quand réinitialisé le _div qui avait peut-
+  // à faire. Par prudence, on réinitialise quand même le _div qui avait peut-
   // être été défini lors d'un affichage précédent
-  if(undefined === this.jqReaderObj){
-    this._div = undefined
-    return
-  }
-  delete this._contenu
-  this.jqReaderObj.find('.content').replaceWith(this.contenu)
+  if(undefined === this.jqReaderObj) return
+
+  // On remplace l'objet reader par un nouvel updaté et on l'observe
+  this.jqReaderObj.replaceWith($(this.div))
+  delete this._jq_reader_obj
+  this.observe()
 
   if (undefined !== new_idx /* peut être 0 */) {
     // Si le temps de l'event a changé de façon conséquente, il faut
@@ -386,8 +389,8 @@ updateInReader(new_idx){
     var reader = DGet('reader')
     reader.insertBefore(this.domReaderObj, reader.childNodes[new_idx])
 
-    this.updateInUI()
   }
+  log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
 
   this.div.style.opacity = 1
 }

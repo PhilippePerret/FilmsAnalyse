@@ -42,7 +42,7 @@ let addEvent = function(nev){
     this.PFA.update() // seulement si déjà ouvert
   }
 
-  // On place tout de suite l'évènement sur le lecteur
+  // On place tout de suite l'évènement sur le reader
   nev.show()
   this.modified = true
   // On ajoute l'event à la liste des modifiés du moment
