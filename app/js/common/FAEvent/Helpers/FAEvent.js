@@ -127,16 +127,16 @@ asAssociate(opts){
  */
 asLink(alt_text){
   if(undefined === this._asLink){
-    this._asLink = `<a class="lkevent" onclick="showEvent(${this.id})">__TIT__</a>`
+    this._asLink = `<a class="lkevent" onclick="showEvent(${this.id})">[voir]</a>`
   }
-  return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
+  return `${(alt_text || this.title || this.content).trim()} ${this._asLink}`
 }
 ,
 asLinkToEdit(str){
   if(undefined === this._asLinkToEdit){
-    this._asLinkToEdit = `<a class="lkevent" onclick="EventForm.editEvent.bind(EventForm)(${this.id})">__TIT__</a>`
+    this._asLinkToEdit = `<a class="lkevent" onclick="EventForm.editEvent.bind(EventForm)(${this.id})">[edit]</a>`
   }
-  return this._asLinkToEdit.replace(/__TIT__/, (str || this.title || this.content).trim())
+  return `${(alt_text || this.title || this.content).trim()} ${this._asLinkToEdit}`
 }
 ,
 // Alias

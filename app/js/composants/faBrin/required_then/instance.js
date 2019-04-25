@@ -89,18 +89,23 @@ times:{
 scenes:{
   get(){
     if(undefined === this._scenes){
-      var arr = [], ev
+      // Note : on met d'abord les scènes dans une table avec en clé le
+      // numéro de la scène, pour ne pas les doubler ou avoir à vérifier
+      var sc, arr = {}, ev
       for(var time of this.times){
-        arr.push(FAEscene.at(time))
+        sc = FAEscene.at(time)
+        arr[sc.numero] = sc
       }
       for(var ev_id of this.events){
         ev = this.a.ids[ev_id]
-        if(ev) arr.push(ev.scene)
+        sc = ev.scene
+        if(ev) arr[sc.numero] = sc
         else {
           console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
         }
       }
-      this._scenes = arr
+      this._scenes = Object.values(arr)
+      arr = null
     }
     return this._scenes
   }

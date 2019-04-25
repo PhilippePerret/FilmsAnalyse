@@ -2,11 +2,7 @@
 
 ### Traiter :
 
-* NOTES
-
 * [BUGS]
-  + Voir l'enregistrement des events en double
-  + Voir l'affichage des brins et corriger les problèmes de durées
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.

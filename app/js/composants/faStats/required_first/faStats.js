@@ -9,7 +9,7 @@ class FAStats {
                             brin, un document, un event, etc.
 **/
 constructor(owner){
-  this.a = this.analyse = current_analyse
+  this.a = this.analyse = owner.analyse || current_analyse
   this.owner = owner
 }
 
