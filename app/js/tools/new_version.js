@@ -74,6 +74,8 @@ const FAVersion = {
 **/
 , changeVersion(version){
   this.a.version  = version
+  this.a.setTitle()
+  F.notify(`Nouvelle version appliquée (${version}).`)
 }
 /**
   Méthode qui demande la nouvelle version.

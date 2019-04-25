@@ -208,7 +208,7 @@ updateState(){
 
 init(){
   // On met le titre dans la fenêtre
-  window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
+  this.setTitle()
   // On règle le cadenas si elle est verrouillée
   this.setMarkModified()
   // Si l'analyse courante définit une vidéo, on la charge et on prépare
@@ -220,6 +220,10 @@ init(){
     F.error(T('video-path-required'))
     this.onVideoLoaded()
   }
+}
+
+setTitle(){
+  window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
 }
 
 // ---------------------------------------------------------------------

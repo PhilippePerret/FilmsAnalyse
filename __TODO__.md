@@ -7,7 +7,6 @@
   + documenter l'utilisation des notes
 
 * [BUGS]
-  * fermer bug #31, #28
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
