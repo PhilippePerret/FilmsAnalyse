@@ -3,11 +3,9 @@
 ### Traiter :
 
 * NOTES
-  + mettre en forme les notes (les event-note)
-  + documenter l'utilisation des notes
-  + Modifier la place du bouton (plus important)4ZI62Z5B
 
 * [BUGS]
+  + Voir l'affichage des brins et corriger les problèmes de durées
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -36,6 +34,8 @@ C'est l'eventer qui doit permettre de faire ça.
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - Dans la publication, il faut faire une différence entre les notes. Quand c'est l'affichage du texte principal, par exemple le scénier pour des scènes, il faut afficher les notes. En revanche, lorsqu'on affiche la scène dans les brins, il ne faut pas mettre les notes.
+  En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
   - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
     - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
   - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)

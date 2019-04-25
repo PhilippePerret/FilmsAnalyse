@@ -13,9 +13,9 @@ const EVENTS_DATA = {
 , stt:    {id: 'stt',     hname: 'Nœud structurel', btn_name: 'N.STT'}
 , dyna:   {id: 'dyna',    hname: 'Élément dynamique', btn_name: 'O.O.C.'}
 , proc:   {id: 'proc',    hname: 'Procédé', btn_name: 'Proc.'}
+, note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
 , idee:   {id: 'idee',    hname: 'Idée', btn_name: 'Idée'}
 , info:   {id: 'info',    hname: 'Info', btn_name: 'Info'}
-, note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
 , qrd:    {id: 'qrd',     hname: 'Question/Réponse Dramatique', btn_name: 'QRD'}
 , action: {id: 'action',  hname: 'Action', btn_name: 'Action'}
 , dialog: {id: 'dialog',  hname: 'Dialogue', btn_name: 'Dial.'}

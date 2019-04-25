@@ -56,7 +56,7 @@ as(format, flag, opts){
 
   if(flag & DUREE) str += ` (${this.hduree})`
 
-  if(flag & FORMATED) str = DFormater(str)
+  if(flag & FORMATED) str = DFormater(str, opts)
 
   if(flag & ESCAPED){
     // Note : il exclut editable et linked

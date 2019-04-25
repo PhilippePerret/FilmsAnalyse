@@ -28,6 +28,10 @@ class FATexte {
   *     CLASSE
   */
 
+static reset(){
+  delete this._lastIndiceNote
+}
+
 static forEachDim(method){
   if(this.table_dims === null) return
   for(var dim in this.table_dims){
@@ -127,6 +131,13 @@ static deBrin(str){
   return str
 }
 
+/**
+  Retourne un nouvel indice de note
+**/
+static newIndiceNote(){
+  if(undefined === this._lastIndiceNote) this._lastIndiceNote = 0
+  return ++ this._lastIndiceNote
+}
 
 /**
   Méthode qui signale -- une seule fois -- l'absence de la définition
@@ -212,9 +223,9 @@ constructor(str) {
 formate(str, options){
   if(undefined === str) str = this.raw_string
   else this.raw_string = str
-  str = this.deEventTags(str)
-  str = this.deSceneTags(str)
-  str = this.deTimeTags(str)
+  str = this.deEventTags(str, options)
+  str = this.deSceneTags(str, options)
+  str = this.deTimeTags(str, options)
   str = this.deDoc(str)
   str = this.deVar(str)
   str = this.deBrin(str)
@@ -270,80 +281,115 @@ setFormat(str, format){
     return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+) ?(\\|(?<alt_text>[^\\}]+))?\\}\\}`
   }
 
-  deEventTags(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    str = str.replace(FATexte.REGEXP_EVENT_TAG, function(){
-      var groups = arguments[arguments.length - 1]
-      return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
-    })
-    // console.log(founds)
-    return str
-  }
-  deSceneTags(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
-      var groups = arguments[arguments.length - 1]
-      return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
-    })
-    // console.log(founds)
-    return str
+/**
+  Méthode qui remplace les balises event "{{event: id}}" par un texte, un lien
+  ou autre ajout.
+
+  Traitement particulier des events de type 'note' qui sont ajoutés, pour
+  le moment, après le +str+ complet, avec des indices ajoutés
+**/
+deEventTags(str, options){
+  var groups, ev, indice_note
+
+  // Les options
+  if(undefined === options) options = {}
+
+  // Définition du string à corriger (+str+)
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+
+  // Pour mémoriser les notes à l'intérieur des textes
+  // Ce sera un array contenant les notes telles qu'il faut les écrire,
+  // dans un div de class 'notes'
+  var notes_list = []
+
+  str = str.replace(FATexte.REGEXP_EVENT_TAG, function(){
+    groups = arguments[arguments.length - 1]
+    ev = current_analyse.ids[groups.event_id]
+    if(ev.type === 'note'){
+      if(options.notes === false){
+        return ''
+      } else {
+        notes_list.push(ev.asNote())
+        return `<sup class="note-indice">[${ev.indice_note}]</sup>`
+      }
+    } else {
+      return ev.asLink(groups.alt_text)
+    }
+  })
+
+  if (notes_list.length > 0){
+    str += '<div class="notes">'
+    notes_list.map(nstr => str += nstr)
+    str += '</div>'
   }
 
-  deTimeTags(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
-      var groups = arguments[arguments.length - 1]
-      return `<span onclick="goToTime(${groups.time})">${new OTime(parseFloat(groups.time)).horloge_simple}</span>`
-    })
-    // console.log(str)
-    return str
-  }
-  /**
-   * Méthode qui va permettre de boucler sur les diminutifs
-   *
-   * Mais elle fait plus que ça, en travaillant avec un tableau d'expressions
-   * régulières déjà préparée, gardées par la classe.
-   */
-  forEachDim(method){return FATexte.forEachDim(method)}
+  return str
+}
+deSceneTags(str){
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+  str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
+    var groups = arguments[arguments.length - 1]
+    return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
+  })
+  // console.log(founds)
+  return str
+}
 
-  /**
-   * Remplace les diminutifs dans le texte +str+ par leur valeur réelle
-   * Si +str+ n'est pas fourni, on prend le texte brut de l'instance.
-   */
-  deDim(str){
-    if (undefined === str) str = this.raw_string
-    else this.raw_string = str
-    return FATexte.deDim(str)
-  }
-  /**
-  * Remplacement des balises dite double-crochets simples : {{variable}}
-  **/
-  deVar(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    return FATexte.deVar(str)
-  }
+deTimeTags(str){
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+  str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
+    var groups = arguments[arguments.length - 1]
+    return `<span onclick="goToTime(${groups.time})">${new OTime(parseFloat(groups.time)).horloge_simple}</span>`
+  })
+  // console.log(str)
+  return str
+}
+/**
+ * Méthode qui va permettre de boucler sur les diminutifs
+ *
+ * Mais elle fait plus que ça, en travaillant avec un tableau d'expressions
+ * régulières déjà préparée, gardées par la classe.
+ */
+forEachDim(method){return FATexte.forEachDim(method)}
 
-  /**
-    @param {String} str   Texte qui peut contenir des balises {{brin: ...}}
-    @return {String} Les balises brin remplacées
-  **/
-  deBrin(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    return FATexte.deBrin(str)
-  }
+/**
+ * Remplace les diminutifs dans le texte +str+ par leur valeur réelle
+ * Si +str+ n'est pas fourni, on prend le texte brut de l'instance.
+ */
+deDim(str){
+  if (undefined === str) str = this.raw_string
+  else this.raw_string = str
+  return FATexte.deDim(str)
+}
+/**
+* Remplacement des balises dite double-crochets simples : {{variable}}
+**/
+deVar(str){
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+  return FATexte.deVar(str)
+}
 
-  /**
-  * Remplacement des balises documents
-  **/
-  deDoc(str){
-    if(undefined === str) str = this.raw_string
-    else this.raw_string = str
-    return FATexte.deDoc(str)
-  }
+/**
+  @param {String} str   Texte qui peut contenir des balises {{brin: ...}}
+  @return {String} Les balises brin remplacées
+**/
+deBrin(str){
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+  return FATexte.deBrin(str)
+}
+
+/**
+* Remplacement des balises documents
+**/
+deDoc(str){
+  if(undefined === str) str = this.raw_string
+  else this.raw_string = str
+  return FATexte.deDoc(str)
+}
 
 }

@@ -131,7 +131,8 @@ divAssociateds(){
   for(id of this.events){
     if(ass = FABrin.a.ids[id]){
       divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
-        DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true})})
+        // DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true, notes:false})})
+        DCreate('LI', {class:'event-title', inner: ass.as('associate',FORMATED|LINKED,{no_warm:true, notes:false})})
       ]}))
     } else {
       console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)
