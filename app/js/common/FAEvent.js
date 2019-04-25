@@ -498,10 +498,12 @@ get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content
 get data(){
   var d = {}, prop
   for(prop of this.constructor.ALL_PROPS){
-    if('string' !== typeof(prop)){ // cf. ci-dessous dans `dispatch`
-      prop = prop[0]
-    }
+    // cf. ci-dessous dans `dispatch`
+    if('string' !== typeof(prop)) prop = prop[0]
+    // On n'enregistre pas les données non définies ou null
     if(null === this[prop] || undefined === this[prop]) continue
+    // On n'enregistre pas les listes vides
+    if(Array.isArray(this[prop]) && this[prop].length == 0) continue
     d[prop] = this[prop]
   }
   return d

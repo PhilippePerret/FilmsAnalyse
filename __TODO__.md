@@ -2,9 +2,10 @@
 
 ### Traiter :
 
-* Notes
+* NOTES
   + mettre en forme les notes (les event-note)
   + documenter l'utilisation des notes
+  + Modifier la place du bouton (plus important)4ZI62Z5B
 
 * [BUGS]
 
