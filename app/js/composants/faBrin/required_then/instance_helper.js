@@ -90,7 +90,6 @@ linkedToEdit(str){
     , this.miniTimeline
   ]
   if(this.description){
-    console.log("description", this.description, typeof(this.description))
     divs.push(DCreate('SPAN', {class: 'brin-description small', inner: this.description}))
   }
 

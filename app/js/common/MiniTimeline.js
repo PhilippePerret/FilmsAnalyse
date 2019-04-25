@@ -24,7 +24,7 @@ constructor(owner, elements){
     :suff_id    Identifiant du div principal ajouté à 'minitimeline-<suff_id>'
 **/
 build(options){
-  console.log("-> MiniTimeline#build()",options)
+  log.info("-> MiniTimeline#build()",options)
   // return DCreate('DIV',{inner:'rien pour le moment'})
 
   if(undefined === options) options = {}
@@ -49,6 +49,7 @@ build(options){
   if(this.times){
     divs.push(...this.buildElementListDivs(this.times, 'time', coefT2P))
   }
+  log.info("<- MiniTimeline#build()")
   return DCreate('DIV',{class:'minitimeline', id:`minitimeline-${options.suff_id}`, append: divs})
 }
 

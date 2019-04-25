@@ -109,7 +109,6 @@ scenes:{
 // Retourne le div de la minitimeline pour le brin
 , miniTimeline:{
     get(){
-      console.log("-> FAEvent#miniTimeline")
       return new MiniTimeline(this, {scenes: this.scenes, times: this.times, events: this.eventsByScenes})
         .build({suff_id: this.id})
     }

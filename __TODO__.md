@@ -2,14 +2,11 @@
 
 ### Traiter :
 
+* Notes
+  + mettre en forme les notes (les event-note)
+  + documenter l'utilisation des notes
+
 * [BUGS]
-  - Quand on change la version, il faut aussi :
-    + changer dans le titre de la fenêtre
-    + informer que le changement s'est bien effectué
-  - Il faut traduire les pseudos pour les afficher dans l'eventer
-  - Quand on modifie une scène en l'éditant, quand elle se corrige dans le reader, seul le résumé est inscrit
-  - Quand on change d'analyse, s'il y a un eventer, il faut le détruire
-    * peut-être faut-il les mémoriser dans la classe.
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -21,6 +18,8 @@
       marques de réussite ou d'échec (HandTests.markSuccess/markFailure)
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
+
+* Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique)
 
 * Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
   - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.

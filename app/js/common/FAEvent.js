@@ -4,8 +4,8 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
-static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins']}
+static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
   if(undefined === this._all_props){

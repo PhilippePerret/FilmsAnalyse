@@ -9,6 +9,17 @@ class FAEventer {
 // ---------------------------------------------------------------------
 //  CLASSE
 
+/**
+  Réinitialise tout (par exemple au chargement d'une nouvelle analyse)
+
+  On remet le last_id à 0
+  On efface tous les eventers qui peuvent exister
+**/
+static reset(){
+  this.last_id = 0
+  $('.eventer').remove()
+}
+
 static newId(){
   if(undefined === this.last_id) this.last_id = 0
   return ++ this.last_id
