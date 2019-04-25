@@ -5,6 +5,7 @@
 * NOTES
 
 * [BUGS]
+  + Voir l'enregistrement des events en double
   + Voir l'affichage des brins et corriger les problèmes de durées
 
 * HANDTESTS

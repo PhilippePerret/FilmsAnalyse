@@ -561,6 +561,7 @@ saveFile(fpath, prop){
   var iofile
   switch (path.basename(fpath)) {
     case 'events.json':
+      this.checkEventsList()
       iofile = this.iofileEvent
       break
     case 'data.json':
@@ -601,6 +602,41 @@ stopTimerSave(){
     clearTimeout(this.saveTimer)
     delete this.saveTimer
   }
+}
+
+/**
+  Méthode qui s'assure de ne pas enregistrer d'event en double comme c'est le
+  cas avec certains problèmes (non encore décelés)
+**/
+checkEventsList(){
+  log.info('-> FAnalyse#checkEventsList')
+  var arrFinal = []
+    , traitedIds = {} // pour consigner les ids déjà traités
+    , errors = []
+  for(var ev of this.events){
+    if(undefined === traitedIds[ev.id]){
+      // OK
+      arrFinal.push(ev)
+      traitedIds[ev.id] = true
+    } else {
+      // L'identifiant a déjà été traité
+      // TODO Il faudrait peut-être vérifier si les données sont plus à jour
+      // dans l'autre donnée. Mais pour ça, il faudrait absolument demander
+      // à l'user
+      errors.push(ev)
+    }
+  }
+  if(errors.length){
+    // <= Il y a eu des erreurs
+    // => On actualise la liste et on signale les erreurs
+    this.events = arrFinal
+    arrFinal = null
+    log.warn('   ERREUR DE DOUBLURE D’EVENTS (CORRIGÉE)', errors)
+    console.warn("Des erreurs de doublures d'event ont été corrigées dans la liste des events. Doublures:", errors)
+  } else {
+    log.info('   Pas d’erreurs de doublure d’events.')
+  }
+  log.info('<- FAnalyse#checkEventsList')
 }
 
 get iofileEvent() {return this._iofileEvent||defP(this,'_iofileEvent', new IOFile(this.eventsFilePath))}
