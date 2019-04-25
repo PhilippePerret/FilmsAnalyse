@@ -164,12 +164,12 @@ function DLibVal(obj, property, libelle, widths, options){
   }
   return obj[ghostProp]
 }
-function DFormater(str){
+function DFormater(str, opts){
   if(undefined === FATexte._dformater){
     let fatexte =  new FATexte('')
     FATexte._dformater = fatexte.formate.bind(fatexte)
   }
-  return FATexte._dformater(`${str}`)
+  return FATexte._dformater(`${str}`, opts)
 }
 
 /**

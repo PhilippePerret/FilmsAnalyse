@@ -27,10 +27,7 @@ let addEvent = function(nev){
   // les suivantes
   if(nev.type === 'scene'){
     FAEscene.updateAll()
-    // À la création d'une scène, il faut voir si c'est un
-    // nouveau décor et dans tous les cas, on doit l'ajouter
-    // à son décor
-    FADecor.checkDecorOfScene(nev)
+    FADecor.resetAll()
   }
   // Si le nouvel event est un noeud structurel, il faut l'enregistrer
   // dans les données du paradigme de Field
@@ -45,7 +42,7 @@ let addEvent = function(nev){
     this.PFA.update() // seulement si déjà ouvert
   }
 
-  // On place tout de suite l'évènement sur le lecteur
+  // On place tout de suite l'évènement sur le reader
   nev.show()
   this.modified = true
   // On ajoute l'event à la liste des modifiés du moment

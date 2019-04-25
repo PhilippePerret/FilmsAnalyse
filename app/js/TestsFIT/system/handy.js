@@ -29,11 +29,11 @@ Tests.testIfTrue = function(condition){
   if (evaluation){
     my.stopTimerWaitFor()
     return my.okWaitFor()
-  } else if (my.optionsWaitFor.duration > my.optionsWaitFor.timeout) {
+  } else if (my.optionsWaitFor.duree > my.optionsWaitFor.timeout) {
     my.stopTimerWaitFor()
     return my.koWaitFor('Attente déçue…')
   } else {
-    my.optionsWaitFor.duration += 100
+    my.optionsWaitFor.duree += 100
   }
 }
 Tests.stopTimerWaitFor = function(){
@@ -45,7 +45,7 @@ Tests.waitFor = function(condition, options){
   return new Promise((ok, ko) => {
     my.okWaitFor      = ok
     my.koWaitFor      = ko
-    options.duration  = 0
+    options.duree  = 0
     if (undefined === options.timeout) options.timeout = Tests.TIMEOUT
     my.optionsWaitFor = options
     if (my.testIfTrue.bind(my)(condition)) return true
@@ -56,6 +56,6 @@ Tests.waitFor = function(condition, options){
 }
 
 window.waitFor = function(condition, options){
-  if(undefined === options) options = {duration: 0}
+  if(undefined === options) options = {duree: 0}
   return Tests.waitFor(condition, options)
 }

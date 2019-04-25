@@ -60,7 +60,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
       , content:  "Contenu de la note"
       , note:     "La note subsidiaire de la note"
       , type:     'note'
-      , duration: null
+      , duree: null
     }
     let data_note = expected // pour plus bas
     assert_match(expected, e, {values_strict: true, success: 'Les données de l’event sont valides', failure: 'Les données de l’event sont invalides'})
@@ -100,7 +100,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
           )
           var firste = contenu[0]
           assert_isObject(firste, {success: "Le premier élément est bien une table"})
-          delete data_note.duration // car null donc pas enregistré
+          delete data_note.duree // car null donc pas enregistré
           assert_match(data_note, firste, {values_strict: true, success: "L'event sauvé contient les bonnes valeurs", failure:"L'event sauvé ne contient pas les bonnes valeurs…"})
 
 

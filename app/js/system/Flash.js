@@ -12,7 +12,7 @@ Alias : F
     Pour empêcher d'utiliser la méthode `show` au lieu de `message` ou
   `notice`
 ### 1.0.2
-  Notify peut recevoir duration:'auto' pour régler la longueur en fonction
+  Notify peut recevoir duree:'auto' pour régler la longueur en fonction
   du contenu.
 
  */
@@ -36,7 +36,7 @@ const Flash = {
     /**
      * Une notification, donc un message qui se ferme tout seul
      *
-     * +options+ peut définir :duration, la durée en secondes d'ouverture
+     * +options+ peut définir :duree, la durée en secondes d'ouverture
      * du message (5 secondes par défaut). La valeur par défaut est 'auto',
      * qui permet de calculer le temps d'affichage en fonction de la longueur
      *
@@ -44,11 +44,11 @@ const Flash = {
      */
   , notify: function(str, options){
       if(!options){options={}}
-      if(!options.duration){options.duration = 'auto'}
-      if(options.duration == 'auto'){options.duration = str.length * 0.08}
-      else { options.duration -= 0.5 } // laps ouverture/fermeture
+      if(!options.duree){options.duree = 'auto'}
+      if(options.duree == 'auto'){options.duree = str.length * 0.08}
+      else { options.duree -= 0.5 } // laps ouverture/fermeture
       this.display(str, (options.error?'jqWarning':'jqNotice'), {no_buttons: true});
-      this.timer = setTimeout($.proxy(Flash,'denotify'), options.duration*1000);
+      this.timer = setTimeout($.proxy(Flash,'denotify'), options.duree*1000);
       return !options.error
     }
   , denotify: function(){

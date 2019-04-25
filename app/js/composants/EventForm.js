@@ -262,14 +262,14 @@ afterBuilding(){
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
   this.jqf('time').html(this.a.locator.getRTime())
-  this.jqf('duration').html(this.duration)
+  this.jqf('duree').html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
 
   // On règle les boutons Play (mais seulement si l'event est défini)
   this.isNew || BtnPlay.setAndWatch(jqo, eid)
 
-  // On rend les champs horlogeable et durationables
+  // On rend les champs horlogeable et dureeables
   let horloges = UI.setHorlogeable(jqo[0])
   // L'horloge de position de l'évènement
   this.horlogePosition = horloges[`event-${eid}-time`]
@@ -281,9 +281,9 @@ afterBuilding(){
 
   let hdurees = UI.setDurationable(jqo[0])
   // L'horloge de durée de l'évènement
-  this.horlogeDuration = hdurees[`event-${eid}-duration`]
+  this.horlogeDuration = hdurees[`event-${eid}-duree`]
   this.horlogeDuration.dispatch({
-      duration: this.duration || 10
+      duree: this.duree || 10
     , startTime: parseFloat(this.time)
     , synchroVideo: true
     , parentModifiable: this
@@ -414,18 +414,33 @@ onChooseProcede(e){
 //  MÉTHODES POUR LES DÉCORS
 
 onChooseDecor(){
-  var decor = this.menuDecors.val()
-  this.jqField('inputtext1').val(decor)
-  this.peupleSousDecors(decor)
+  let decor   = this.menuDecors.val()
+    , txtfd1  = this.jqField('shorttext1')
+    , curdec  = txtfd1.val().trim()
+  var decors  = [decor]
+  if(curdec.substring(curdec.length - 1, curdec.length) == '&'){
+    decor = `${curdec} ${decor}`
+    decors.push(curdec.substring(0, curdec.length - 2).trim())
+  }
+  this.peupleSousDecors(decors)
+  txtfd1.val(decor)
 }
 onChooseSousDecor(){
-  this.jqField('inputtext2').val(this.menuSousDecors.val())
+  let sdecor  = this.menuSousDecors.val()
+    , txtfd2  = this.jqField('shorttext2')
+    , cursdec = txtfd2.val()
+  if(cursdec.substring(cursdec.length - 1, cursdec.length) == '&') sdecor = `${cursdec} ${sdecor}`
+  txtfd2.val(sdecor)
 }
 peupleDecors(){
   this.menuDecors.html(FADecor.optionsDecors.bind(FADecor))
 }
-peupleSousDecors(decor){
-  this.menuSousDecors.html(FADecor.data[decor].optionsSousDecors.bind(FADecor.data[decor]))
+peupleSousDecors(decors){
+  var opts = ''
+  for ( var decor of decors ){
+    opts += FADecor.data[decor].optionsSousDecors.bind(FADecor.data[decor])()
+  }
+  this.menuSousDecors.html(opts)
 }
 
 get menuDecors(){return this._menuDecors||defP(this,'_menuDecors', this.jqObj.find('select.decors'))}
@@ -655,34 +670,40 @@ setParent(helper){
  * champs.
  */
 setFormValues(){
-  var prop, sufProp, otime
-  // Les valeurs communes
-  for(prop of FAEvent.OWN_PROPS){
-    if(null === this.event[prop] || undefined === this.event[prop]) continue
-    if (this.jqField(prop).length){
-      this.jqField(prop).val(this.event[prop])
-    } else {
-      // console.log("Le champs pour la propriété n'existe pas :", prop)
-    }
-    // console.log(`J'ai mis le champ '${this.fieldID(prop)}' à "${this.event[prop]}"`)
-  }
-  // Réglage spécial des temps 'time', 'duration', 'tps_reponse'
-  for(prop of ['time', 'duration', 'tps_reponse']){
-    otime = new OTime(this.event[prop])
-    this.jqf(prop).html(prop == 'duration' ? this.event.hduree : otime.horloge)
-    this.jqf(prop).attr(('value', prop == 'duration' ? this.event.duree : this.event[prop]).round(2))
-  }
-  // Les valeurs propres au type d'event
-  for(prop of this.event.constructor.OWN_PROPS){
+  var prop, fieldSufid, otime
+
+  for(prop of this.event.constructor.ALL_PROPS){
+
+    // La propriété, dans ALL_PROPS, peut être définie soit par la propriété
+    // elle-même (donc un string), soit par un duet avec en première valeur
+    // le nom de la propriété, et en seconde valeur le nom du champ qui doit
+    // recevoir la valeur de cette propriété
     if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
-      sufProp = prop
+      fieldSufid = prop
     } else {
-      [prop, sufProp] = prop
+      [prop, fieldSufid] = prop
     }
+
     if(null === this.event[prop] || undefined === this.event[prop]) continue
-    this.jqField(sufProp).val(this.event[prop])
-    // console.log(`J'ai mis le champ '${this.fieldID(sufProp)}' à "${this.event[prop]}"`)
+
+    switch(prop){
+      case 'duree':
+      case 'time':
+      case 'tps_reponse':
+        otime = new OTime(this.event[prop])
+        this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
+        this.jqf(fieldSufid).attr('value', (prop == 'duree' ? this.event.duree : this.event[prop]).round(2))
+        break
+      default:
+        // Si un champ existe avec cette propriété, on peut la mettre
+        if (this.jqField(fieldSufid).length){
+          this.jqField(fieldSufid).val(this.event[prop])
+        }
+    }
+
+
   }
+
   if(this.type === 'stt'){
     this.domField('sttID').disabled = true
   }
@@ -737,7 +758,7 @@ getFormValues(){
             return parseInt(val,10)
           // Tout ce qui doit être transformé en flottant
           case 'time':
-          case 'duration':
+          case 'duree':
             return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
@@ -749,7 +770,7 @@ getFormValues(){
       // console.log({id:id, prop:prop, val: val})
     })
     // Les temps
-    for(prop of ['time', 'duration']){
+    for(prop of ['time', 'duree']){
       all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
     }
 
@@ -768,22 +789,40 @@ getFormValues(){
 //  Méthodes d'évènements
 
 onKeyDownOnTextFields(e){
-  if(e.metaKey && e.keyCode === KRETURN){
-    this.submit()
-    return stopEvent(e)
+  // console.log("-> EventForm#onKeyDownOnTextFields")
+  if(e.metaKey){
+    if(e.keyCode === KRETURN){
+      this.submit()
+      return stopEvent(e)
+    } else if (e.key == 't') {
+      // On doit inscrire le temps courant dans le champ
+      $(e.target).insertAtCaret(this.a.locator.getROTime().horloge_simple)
+    }
+    // else {
+    //   stopEvent(e)
+    //   console.log("e.keyCode, e.charCode, e.which, e.key", e.keyCode, e.charCode, e.which, e.key)
+    //   return false
+    // }
   }
   return true
 }
 
 // ---------------------------------------------------------------------
 
+
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.videoLeft + 10, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
 }
-// Retourne le left de la vidéo (en fait, sa width) pour pouvoir placer, au
-// départ, le formulaire à côté d'elle.
-get videoLeft(){return this.a.videoController.video.width}
+// Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
+// par rapport à la vidéo.
+get left(){
+  if(undefined === this._left){
+    let vl = this.a.videoController.video.width
+    this._left = vl + Math.round(((ScreenWidth - vl) - 460) / 2)
+  }
+  return this._left
+}
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire

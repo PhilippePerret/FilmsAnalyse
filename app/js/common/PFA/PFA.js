@@ -145,7 +145,7 @@ Object.defineProperties(PFA,{
   // opérations.
   ieme24:{
     get(){
-      return this._ieme24 || defP(this,'_ieme24', this.a.duration / 24)
+      return this._ieme24 || defP(this,'_ieme24', this.a.duree / 24)
     }
   }
 , a:{

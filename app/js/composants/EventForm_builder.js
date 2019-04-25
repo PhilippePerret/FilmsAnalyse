@@ -42,7 +42,7 @@ EventForm.buildFormOfType = function(type){
     , DCreate('LABEL', {inner: 'Position'})
     , DCreate('HORLOGE', {class:'small', id:formId('time'), value:'', inner: '...'})
     , DCreate('LABEL', {inner: 'Durée'})
-    , DCreate('DUREE', {id: formId('duration'), class: 'small durationable'})
+    , DCreate('DUREE', {id: formId('duree'), class: 'small dureeable'})
     ]}))
 
   /*  Pour le type particulier de l'event */
@@ -148,7 +148,6 @@ EventForm.buildFormOfType = function(type){
       case 'brin'   :return 'Résumé'
       case 'info'   :return 'Information'
       case 'dialog' :return 'Commentaire'
-      case 'note'   :return 'Contenu de la note'
       default: return 'Description'
     }
   })(type)
@@ -200,12 +199,6 @@ EventForm.buildFormOfType = function(type){
       , DCreate('TEXTAREA', {id: formId('longtext4'), attrs:{rows:'4'}})
       ]}))
   }
-
-  /*  Note subsidiaire terminale  */
-  dom.push(DCreate('DIV', {class:'div-form', append:[
-      DCreate('LABEL', {inner: 'Note subsidiaire'})
-    , DCreate('TEXTAREA', {id:formId('note'), attrs:{rows:'3'}})
-    ]}))
 
   /*  Buttons de pas de page */
   dom.push(DCreate('DIV', {class:'event-form-buttons no-user-selection', append:[

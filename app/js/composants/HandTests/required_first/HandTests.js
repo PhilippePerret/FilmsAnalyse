@@ -149,7 +149,7 @@ const HandTests = {
     , DCreate('BUTTON', {id: 'btn-next-file', inner: 'Next File'})
     , DCreate('BUTTON', {id: 'btn-next-test', inner: 'Next Test'})
     , DCreate('BUTTON', {id: 'btn-next-step', inner: 'Next Step'})
-    , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:100px;'})
+    , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:50px;'})
     , DCreate('BUTTON', {id: 'btn-step-success', inner: 'OK'})
     , DCreate('BUTTON', {id: 'btn-step-failure', inner: 'ERROR'})
     ]})

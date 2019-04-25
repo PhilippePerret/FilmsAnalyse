@@ -4,8 +4,8 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duration', 'parent', ['content', 'longtext1'], 'note', 'events', 'documents', 'times', 'brins']}
-static get TEXT_PROPERTIES(){return ['titre', 'content', 'note']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins']}
+static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
   if(undefined === this._all_props){
@@ -94,7 +94,8 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
-static get a(){return current_analyse}
+static get a(){return this._a || current_analyse}
+static set a(v){this._a = v}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -107,9 +108,9 @@ static get a(){return current_analyse}
 constructor(analyse, data){
   this.analyse  = this.a = analyse
 
-  this.id       = parseInt(this.id,10)
-
   this.dispatch(data)
+
+  this.id = parseInt(this.id,10)
 
   // Valeurs par défaut indispensables
   this.events     = this.events     || []
@@ -153,7 +154,7 @@ get isADocument(){return false}
 
 // Pour la correspondance de nom, aussi
 get startAt(){return this.time}
-get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duration)}
+get endAt(){return this._endAt || defP(this,'_endAt',this.time + this.duree)}
 
 // On utilise un getter et un setter pour réinitialiser d'autres propriétés
 get time(){return this._time}
@@ -167,7 +168,7 @@ get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
 /**
  * Définition de la durée
  */
-set duration(v){
+set duree(v){
   if('string' === typeof(v)){
     // <= la valeur est un string
     // => on vient du formulaire, il faut traiter
@@ -176,13 +177,13 @@ set duration(v){
     v = v.seconds
   }
   v = v.round(2)
-  if (v != this._duration){
-    this._duration  = v
+  if (v != this._duree){
+    this._duree  = v
     this.modified   = true
     this.reset()
   }
 }
-get duration(){return this._duration || (this.type === 'scene' ? 60 : 10)}
+get duree(){return this._duree || (this.type === 'scene' ? 60 : 10)}
 
 // Alias
 get description(){return this.content}
@@ -281,7 +282,7 @@ onErrors(evt, errors){
   F.notify(errors.map(function(d){
     $(`${focusPrefix}${d.prop}`).addClass('error')
     return d.msg
-  }).join(RC), {error: true, duration: 'auto'})
+  }).join(RC), {error: true, duree: 'auto'})
   if($(focusFieldId).length) evt.firstErroredFieldId = focusFieldId
 }
 /**
@@ -345,6 +346,7 @@ stopWatchingTime(){
   delete this.timerWatchingTime
 }
 watchTime(){
+  if(undefined === this.a || undefined === this.a.locator) return
   var rtime = this.a.locator.getRTime()
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){
@@ -353,7 +355,7 @@ watchTime(){
   }
 }
 get end(){
-  if(undefined === this._end) this._end = this.time + this.duration
+  if(undefined === this._end) this._end = this.time + this.duree
   return this._end
 }
 /**
@@ -362,15 +364,18 @@ get end(){
  * contenu, pour ne pas refaire les boutons, etc.).
  */
 updateInReader(new_idx){
+  log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
+  // Pour forcer la reconstruction
+  delete this._div
   // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
-  // à faire. Par prudence, on a quand réinitialisé le _div qui avait peut-
+  // à faire. Par prudence, on réinitialise quand même le _div qui avait peut-
   // être été défini lors d'un affichage précédent
-  if(undefined === this.jqReaderObj){
-    this._div = undefined
-    return
-  }
-  delete this._contenu
-  this.jqReaderObj.find('.content').replaceWith(this.contenu)
+  if(undefined === this.jqReaderObj) return
+
+  // On remplace l'objet reader par un nouvel updaté et on l'observe
+  this.jqReaderObj.replaceWith($(this.div))
+  delete this._jq_reader_obj
+  this.observe()
 
   if (undefined !== new_idx /* peut être 0 */) {
     // Si le temps de l'event a changé de façon conséquente, il faut
@@ -384,8 +389,8 @@ updateInReader(new_idx){
     var reader = DGet('reader')
     reader.insertBefore(this.domReaderObj, reader.childNodes[new_idx])
 
-    this.updateInUI()
   }
+  log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
 
   this.div.style.opacity = 1
 }
@@ -410,6 +415,53 @@ makeAppear(){
 }
 makeDesappear(){
   this.jqReaderObj.animate({opacity:0}, 600)
+}
+
+// ---------------------------------------------------------------------
+// Méthodes de recherche ou de filtre
+
+/**
+  Méthode qui retourne true si l'event contient les personnages
+
+  @param {Object} filtre
+                    :regulars Liste des expressions régulières à évaluer, si
+                              elles ont été préparées (comme pour le filtre
+                              par exemple). Dans ce cas, les deux autres props
+                              sont inutiles, puisque tous les cas sont considé-
+                              rés par ces expressions régulières (par exemple,
+                              il n'y en a qu'une seule pour le cas `all: false`)
+                    :list   Liste des identifiants
+                    :all    Si true, tous les personnages doivent se trouver
+                            dans l'event, si false, un seul personnage suffit
+**/
+hasPersonnages(filtre){
+  var pid, stxt
+  if (undefined === filtre.regulars){
+    for(pid of filtre.list){
+      stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
+      if(!!this.content.match(stxt) && false === filtre.all){
+        return true
+      } else if(true === filtre.all && !this.content.match(stxt)) {
+        return false
+      }
+    }
+
+    // Moins sémantique :
+    // return filtre.all
+
+    if(filtre.all){
+      // Si on arrive ici c'est que tous les personnages ont été trouvés
+      return true
+    } else {
+      // Si on arrive ici, c'est qu'aucun personnage n'a été trouvé
+      return false
+    }
+  } else {
+    for(var reg of filtre.regulars){
+      if(!this.content.match(reg) && !this.titre.match(reg)) return false
+    }
+    return true // dans tous les cas
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -444,16 +496,14 @@ get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content
  * Les données qui seront enregistrées
  */
 get data(){
-  var d = {}
-  for(var prop of FAEvent.OWN_PROPS){
+  var d = {}, prop
+  for(prop of this.constructor.ALL_PROPS){
+    // cf. ci-dessous dans `dispatch`
+    if('string' !== typeof(prop)) prop = prop[0]
+    // On n'enregistre pas les données non définies ou null
     if(null === this[prop] || undefined === this[prop]) continue
-    d[prop] = this[prop]
-  }
-  for(var prop of this.constructor.OWN_PROPS){
-    if('string' !== typeof(prop)){ // cf. ci-dessous dans `dispatch`
-      prop = prop[0]
-    }
-    if(null === this[prop] || undefined === this[prop]) continue
+    // On n'enregistre pas les listes vides
+    if(Array.isArray(this[prop]) && this[prop].length == 0) continue
     d[prop] = this[prop]
   }
   return d
@@ -472,6 +522,13 @@ set data(d){
   }
 }
 
+/**
+  Dispatch les données +d+ dans l'instance
+  Cette méthode sert aussi bien pour l'édition de l'event, ou les 'prop'
+  ci-dessous correspondent à des champs d'édition (par exemple 'longtext1' pour
+  la vraie propriété 'content') qu'à dispatcher les données à la lecture du
+  fichier de l'analyse (ou donc les propriétés portent leur nom).
+**/
 dispatch(d){
   var fieldName, prop ;
   for(prop of this.constructor.ALL_PROPS){
@@ -487,9 +544,12 @@ dispatch(d){
       fieldName = prop[1]
       prop      = prop[0]
     }
-    if(undefined === d[fieldName]) continue
-    this[prop] = d[fieldName]
+    if(undefined === (d[fieldName] || d[prop])) continue
+    this[prop] = d[fieldName] /* depuis le formulaire */ || d[prop] /* depuis le fichier */
   }
+  // rectification de certaines données
+  if (this.time)      this.time     = this.time.round(2)
+  if (this.duree)  this.duree = this.duree.round(2)
 }
 
 togglePlay(){
@@ -501,7 +561,7 @@ togglePlay(){
     if(current_analyse.options.get('option_start_3secs_before_event')){t -= 3}
     this.locator.setRTime.bind(this.locator)(t)
     // On détermine la fin du jeu
-    this.locator.setEndTime(t + this.duration, this.togglePlay.bind(this))
+    this.locator.setEndTime(t + this.duree, this.togglePlay.bind(this))
   }
 
   this.playing = !this.playing
@@ -528,11 +588,16 @@ get btnPlayETools(){
 * Méthodes d'évènements
 **/
 
+// Pour observer l'event dans son container.
 observe(container){
   var my = this
-  var o = this.jqReaderObj
+    , o = this.jqReaderObj
+
+  // On rend actif les boutons d'édition
   o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
-  BtnPlay.setAndWatch(this.jqReaderObj, this.id)
+
+  // On rend actif les boutons play
+  BtnPlay.setAndWatch(this.jqReaderObj, this)
 
   /**
   * On rend l'event droppable pour qu'il puisse recevoir d'autres events

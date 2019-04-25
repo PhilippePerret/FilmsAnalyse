@@ -114,6 +114,10 @@ setSize(e, v, save){
 setSpeed(speed){
   this.video.defaultPlaybackRate = speed
   this.video.playbackRate = speed
+  log.info(`Video speed: ${speed}`)
+}
+getSpeed(){
+  return this.video.playbackRate
 }
 
 
@@ -252,9 +256,9 @@ observe(){
     var val = valsRewForw.shift()
       , btnRewind   = this.section.find(`.btn-rewind-${i}`)[0]
       , btnForward  = this.section.find(`.btn-forward-${i}`)[0]
-    listenMDown(btnRewind,  my.locator, 'rewind', val)
+    listenMDown(btnRewind,  my.locator, 'startRewind', val)
     listenMUp(btnRewind,    my.locator, 'stopRewind')
-    listenMDown(btnForward, my.locator, 'forward', val)
+    listenMDown(btnForward, my.locator, 'startForward', val)
     listenMUp(btnForward,   my.locator, 'stopForward')
   }
 

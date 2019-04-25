@@ -17,7 +17,7 @@ class SttNode {
   static calcZone(sttnode){
     var czone = sttnode.cZone
     // Durée et divisions, pour calculer les zones des Nœuds
-    var duree = this._duree || this.initDuree('duree', current_analyse.duration)
+    var duree = this._duree || this.initDuree('duree', current_analyse.duree)
     var moiti = this._moiti || this.initDuree('moiti', duree/2)
     var quart = this._quart || this.initDuree('quart', duree/4)
     var tresQ = this._tresQ || this.initDuree('tresQ', 3*duree/4)

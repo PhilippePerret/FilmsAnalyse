@@ -171,7 +171,7 @@ const FAStater = {
     2. qu'il faut une scène par minute
 **/
 , calcPourcentageEvents(){
-    this.scenesCountExpected = Math.round(this.a.duration / 60)
+    this.scenesCountExpected = Math.round(this.a.duree / 60)
     this.scenesCountActual   = FAEscene.count
 
     // console.log("Nombre de scènes attendues et réelles :", this.scenesCountExpected, this.scenesCountActual)
@@ -346,6 +346,6 @@ Object.defineProperties(FAStater,{
     get(){return this._ecountreq||defP(this,'_ecountreq', Math.round(this.ExpectedEventsByMinute * (this.dureeFilm / 60)))}
   }
 , dureeFilm:{
-    get(){return this._dureeFilm||defP(this,'_dureeFilm', this.a.duration)}
+    get(){return this._dureeFilm||defP(this,'_dureeFilm', this.a.duree)}
   }
 })

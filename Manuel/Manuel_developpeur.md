@@ -37,6 +37,7 @@
   * [Implémentation des hand-tests](#developping_hand_tests)
     * [Implémentation des checks](#implementer_checks)
     * [Définir les *éléments numérisables* de l'application](#define_numerisable_elements)
+    * [Commandes interprétables](#interpretable_commands)
     * [Définir les checks dynamiques](#define_dynamique_checks)
 
 
@@ -675,13 +676,14 @@ Les opérations automatiques sont définies dans le fichier `./app/js/composants
 
 Les étapes de check ont trois formats possibles :
 
-* les étapes manuelles, qui seront affichées telles quelles au cours du tests,
-* des étapes automatiques normales, définies dans le fichier `AUTOMATIC_STEPS.js` — par exemple `4 documents` —,
-* des étapes automatiques à interpréter, à évaluer, avec du code dynamique. Par exemple `{{event:12}} de type {{type:note}}`.
+* les étapes manuelles, qui seront affichées telles quelles au cours du tests et que le testeur doit accomplir manuellement,
+* des checks automatiques normaux, définis dans le fichier `AUTOMATIC_STEPS.js` — par exemple `4 documents` —,
+* des étapes (commandes ou checks) automatiques à interpréter, à évaluer, avec du code dynamique. Par exemple `{{event:12}} de type {{type:note}}` ou `créer une scène au début`.
 
 Pour les deuxièmes, on trouve par exemple des choses comme `aucun event` qui vérifie qu'il n'y ait aucun event dans l'analyse courante, ou encore `aucun document`, `aucun brin`. On trouve aussi, pour les deuxièmes, des checks dynamiques qui peuvent préciser le nombre de choses attendues. Par exemple : `4 events`, `1 document`, `3 brins`. Ces éléments sont appelés les *éléments numérisables* de l'application.
 
-Pour composer les troisièmes, cf. [Définir les checks dynamiques](#define_dynamique_checks).
+Pour composer les troisièmes, cf. [Définir les checks dynamiques](#define_dynamique_checks) et [Commandes interprétables](#interpretable_commands).
+
 
 #### Définir les *éléments numérisables* de l'application {#define_numerisable_elements}
 
@@ -691,6 +693,84 @@ Pour utiliser les *éléments numérisables* dans les checks de tests, il y a de
 * définir la façon de les dénombrer.
 
 On les définit dans la constante `HandTests.AppElements` (dans le fichier `HandTests/require_finally/elements.js`). C'est une table qui contient aussi les méthodes `countMethod` et `getMethod` qui permettent respectivement de récupérer le nombre d'éléments et l'élément par son ID dans l'application.
+
+
+#### Commandes interprétables {#interpretable_commands}
+
+Les commandes interprétables permettent d'exécuter une action de façon automatique, pour rendre les tests plus rapide, en arrivant très rapidement à un état précis.
+
+Leur format est toujours le suivant :
+
+```
+  - <action> (un|une) <objet> <lieu> avec <{paramètres}>
+
+```
+
+Par exemple :
+
+```
+  - créer une scène au début avec {décor:"Maison"}
+
+```
+
+Noter que si on veut mettre une espace dans les paramètres, il faut mettre toute la commande entre guillemets :
+
+```
+  - "créer une scène au début avec {décor: 'Maison'}"
+
+```
+
+Les `action`s possibles sont :
+
+```
+  créer       Pour créer l'objet
+  afficher    Pour afficher l'objet ou le listing de l'objet
+  détruire    Pour détruire l'objet
+  modifier    Pour modifier une objet
+```
+
+Les `objet`s possibles sont tous les events possibles, les brins ou les documents. Liste **non exhaustive** :
+
+```
+  scène
+  noeud         Pour un noeud PFA
+  note
+  info
+  procédé
+  idée
+  objectif
+  obstacle
+  moyen
+  conflit
+  personnage
+  brin
+  document
+
+```
+
+Les `lieu`x possibles sont :
+
+```
+  au début      Se place à 0:00:00
+  au quart
+  au tiers
+  au milieu   
+  au deux tiers
+  au trois quart
+  à la fin        => Une minute avant la fin
+  à h:mm:ss     Avec ce format exact, même pour 12 secondes
+```
+
+Les `paramètre`s sont tout simplement une table javascript à évaluer. Elle peut contenir des valeurs scalaire ou des fonctions. Par exemple :
+
+```
+
+  {decor: 'Maison', duree: FAEscene.get(12).duree}
+
+```
+
+Toutes les valeurs obligatoires non définies dans cette commande interprétable seront données par défaut.
+
 
 #### Définir les checks dynamiques {#define_dynamique_checks}
 

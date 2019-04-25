@@ -26,7 +26,7 @@ run(){
       case null:
         // On attend que le testeur définisse manuellement le résultat
     }
-    console.log("[CHECK] Retour de execTheCheck():", res)
+    // console.log("[CHECK] Retour de execTheCheck():", res)
   } else if(this.isAutomaticStep()){
     log.info('   -- TEST AUTOMATIQUE --')
     // Note : on doit passer par les méthodes de HandTests pour pouvoir
@@ -48,7 +48,7 @@ run(){
       default:
         throw("Le retour de execAndTest n'est pas valide (0, 1, 2 ou null attendu)")
     }
-    console.log("[AUTOMATIC STEP] Retour de execAndTest():", res)
+    // console.log("[AUTOMATIC STEP] Retour de execAndTest():", res)
   } else if (HandTests.mode_last) {
     log.info('   -- mode_last --')
     // Si on est en mode "last", c'est-à-dire qu'on cherche le dernier

@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = function(ev){
-// ffmpeg -ss <horloge départ> -t <duration> -i <video path> -r <ratio> <image name.ext>
+// ffmpeg -ss <horloge départ> -t <duree> -i <video path> -r <ratio> <image name.ext>
   // var imgName = `scene-${current_analyse.currentScene || 1}-%01d.jpeg`
   var sceneNumber = current_analyse.currentScene ? current_analyse.currentScene.number : 1
   var imgName = `scene-${sceneNumber}.jpeg`

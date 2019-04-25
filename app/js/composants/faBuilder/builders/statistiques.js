@@ -111,7 +111,7 @@ Nombre personnages   ${FAPersonnage.count}
 **/
 Object.assign(FAEscene,{
   get dureeMoyenne(){
-    return `${new OTime(FAEscene.a.duration / FAEscene.count).duree_sec} secs`
+    return `${new OTime(FAEscene.a.duree / FAEscene.count).duree_sec} secs`
   }
 , get plusLongue(){
     this._longest_scene || this.searchLongestShortest()
@@ -226,7 +226,7 @@ FAPersonnage.prototype.calcPresence = function(){
 **/
 FAPersonnage.prototype.formatePresence = function(){
   let otime = new OTime(this.presence)
-  return `${otime.hduree} (${asPourcentage(this.a.duration, this.presence)})`
+  return `${otime.hduree} (${asPourcentage(this.a.duree, this.presence)})`
 }
 
 
@@ -239,7 +239,7 @@ FADecor.prototype.asStats = function(){
     DCreate('DIV', {class: 'libval w60-20-20', append:[
         DCreate('SPAN', {inner: this.name})
       , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
-      , DCreate('SPAN', {inner: this.hduration, class: 'center'})
+      , DCreate('SPAN', {inner: this.hduree, class: 'center'})
       ]})
   , DCreate('DIV', {append: divsSousDecors})
   ]})
@@ -250,7 +250,7 @@ FASousDecor.prototype.asStats = function(){
     DCreate('SPAN', {inner: ' '})
   , DCreate('SPAN', {inner: this.name})
   , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
-  , DCreate('SPAN', {inner: this.hduration, class: 'center'})
+  , DCreate('SPAN', {inner: this.hduree, class: 'center'})
   ]})
 }
 
@@ -258,28 +258,28 @@ function dureeAndPctForScenesNumeros(numeros){
   var d = 0
   numeros.forEach(num => d += FAEscene.getByNumero(num).duree)
   d = new OTime(d)
-  return [d, asPourcentage(current_analyse.duration, d.seconds)]
+  return [d, asPourcentage(current_analyse.duree, d.seconds)]
 }
 
 Object.defineProperties(FADecor.prototype,{
-  hduration:{
+  hduree:{
     get(){
-      if (undefined === this._hduration){
+      if (undefined === this._hduree){
         let [otime, pourcentage] = dureeAndPctForScenesNumeros(this.scenes)
-        this._hduration = `${otime.hduree} (${pourcentage})`
+        this._hduree = `${otime.hduree} (${pourcentage})`
       }
-      return this._hduration
+      return this._hduree
     }
   }
 })
 Object.defineProperties(FASousDecor.prototype,{
-  hduration:{
+  hduree:{
     get(){
-      if (undefined === this._hduration){
+      if (undefined === this._hduree){
         let [otime, pourcentage] = dureeAndPctForScenesNumeros(this.scenes)
-        this._hduration = `${otime.hduree} (${pourcentage})`
+        this._hduree = `${otime.hduree} (${pourcentage})`
       }
-      return this._hduration
+      return this._hduree
     }
   }
 })

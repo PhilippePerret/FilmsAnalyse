@@ -147,8 +147,8 @@ const UI = {
 , goToFilmStart(){this.runIfAnalyse('goToFilmStart')}
 , goToNextStopPoint(){this.runIfAnalyse('goToNextStopPoint')}
 
-, rewind(pas){this.runIfAnalyse('rewind', pas)}
-, forward(pas){this.runIfAnalyse('forward', pas)}
+, rewind(pas){this.runIfAnalyse('startRewind', pas)}
+, forward(pas){this.runIfAnalyse('startForward', pas)}
 , stopRewind(pas){this.runIfAnalyse('stopRewind', pas)}
 , stopForward(pas){this.runIfAnalyse('stopForward', pas)}
 

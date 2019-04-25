@@ -8,6 +8,8 @@
   * [Verrouillage de l'analyse](#verrouillage_analyse)
 * [Les Events](#les_events)
   * [Les events « Scènes »](#les_events_scenes)
+    * [Décors dans les events « Scènes »](#decors_in_scenes)
+  * [Les events « Notes »](#les_events_notes)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Déplacements par parties/zones](#move_by_parts_and_zones)
@@ -72,6 +74,33 @@ Ils permettent de définir les scènes du film. Ce sont des *events* particulier
 
 La scène, à la base, se définit par un *pitch* et un *résumé*. À la création de la scène, on remarque que le pitch, à mesure qu'on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l'affichage : si le résumé commence exactement comme le pitch, ce pitch n'est pas ajouté dans l'affichage complet des scènes. En revanche, il permet d'en faire un affichage réduit.
 
+#### Décors dans les events « Scènes » {#decors_in_scenes}
+
+On choisit le décor et le sous-décor de la scène à l'aide de deux menus qui se peuplent dynamiquement en fonction des lieux ajoutés. Un nouveau lieu principal est créé dès qu'un nouveau décor est entré dans le champ (attention, cette valeur est sensible à la casse, ce qui signifie que le décor « Maison » est totalement différent du décor « maison »). Idem pour les sous-décors.
+
+On peut indiquer **deux décors** ou plus pour une même scène en utilisant le signe esperluette (« & »). La procédure la plus simple est la suivante :
+
+* choisir le premier décor/sous-décor,
+* => il s'inscrit dans le champ
+* ajouter '&' à la fin du champ
+* choisir le second décor/sous-décor,
+* => il s'ajoute au premier décor/sous-décor
+* répéter l'opération avec tous les décors voulus.
+
+Noter que pour une scène qui contient plusieurs décors/sous-décors, chacun d'entre eux se partagera le temps en fonction du nombre total de décors/sous-décors. Par exemple, si la scène se passe dans deux décors différents, chacun d'eux « héritera » de la moitié du temps de la scène. Si trois sous-décors composent la scène, chaque sous-décor se partagera un tiers du temps de la scène. Etc.
+
+### Les events « Notes » {#les_events_notes}
+
+Les events de type « notes » sont des events particuliers puisqu'ils s'affichent comme des notes dans un texte, c'est-à-dire avec un indice en exposant après un mot, qui renvoie à une définition ou une explication plus bas — normalement en pied de page.
+
+On utilise cependant ces notes de la même manière que pour les autres types d'event :
+
+* on crée la note au temps voulu,
+* on place le curseur dans le texte de l'autre event que la note doit affecter,
+* on glisse la note — par exemple depuis le reader — sur le champ de texte.
+
+Une marque `{{event:XXX}}` est alors insérée à l'endroit du curseur, qui sera remplacé lors de la compilation par l'indice de la note en exposant, et la note — ou *les* notes seront inscrites sont le texte concerné.
+
 ---------------------------------------------------------------------
 
 ## Gestion des temps {#gestion_des_temps}
@@ -112,6 +141,8 @@ Ce bouton permet de passer en revue les trois derniers points d'arrêt de la vid
 Pour coller rapidement un temps courant dans un champ d'édition, il suffit de cliquer sur le bouton « Temps courant » qui affiche le résultat et le colle dans le presse-papier.
 
 Mais il y a même plus simple en glissant la vidéo (qui se transforme en horloge) sur le champ de saisie voulu. Cela place une balise `{{time: <le temps>}}` qui sera ensuite formatée convenablement suivant le support voulu.
+
+Ou, si l'on se trouve dans un champ d'édition du formulaire, il suffit de jouer la combinaison clavier `CMD T`.
 
 ### Réglage du temps de l'event {#set_event_time}
 

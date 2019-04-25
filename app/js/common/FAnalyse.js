@@ -208,7 +208,7 @@ updateState(){
 
 init(){
   // On met le titre dans la fenêtre
-  window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
+  this.setTitle()
   // On règle le cadenas si elle est verrouillée
   this.setMarkModified()
   // Si l'analyse courante définit une vidéo, on la charge et on prépare
@@ -220,6 +220,10 @@ init(){
     F.error(T('video-path-required'))
     this.onVideoLoaded()
   }
+}
+
+setTitle(){
+  window.document.title = `Analyse du film « ${this.title} (${this.version}) »`
 }
 
 // ---------------------------------------------------------------------
@@ -381,6 +385,7 @@ destroyEvent(event_id, form_instance){
  *      sera automatiquement appelée après la modification.
  */
 updateEvent(ev, options){
+  log.info("-> FAnalyse#updateEvent")
   var new_idx = undefined
   if (options && options.initTime != ev.time){
     var idx_init      = this.indexOfEvent(ev.id)
@@ -397,7 +402,7 @@ updateEvent(ev, options){
   // [1]
   if (ev.type === 'scene'){
     FAEscene.updateAll()
-    FADecor.checkDecorOfScene(ev)
+    FADecor.resetAll()
   }
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
@@ -410,6 +415,8 @@ updateEvent(ev, options){
   FAStater.update()
   next_ev_old = null
   next_ev_new = null
+
+  log.info("<- FAnalyse#updateEvent")
 }
 
 getEventById(eid){

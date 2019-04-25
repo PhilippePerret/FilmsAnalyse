@@ -1,9 +1,11 @@
 # SUR LE GRILL
 
 ### Traiter :
-  [1], puis [2]
+
+* NOTES
 
 * [BUGS]
+  + Voir l'affichage des brins et corriger les problèmes de durées
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -16,18 +18,34 @@
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
 
+* Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique, à partir du moment où il est défini dans les données)
+
+* Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
+  - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.
+  - faire le travail décrit ci-dessus. Une référence à une note produira un indice qui se rapportera à la note en bas de page.
+
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
 
+* Développer un moteur de recherche permettant de retrouver très rapidement un élément grâce à du texte ou d'autres éléments. Par exmple pour retrouver très vite les scènes avec un personnage particulier
+C'est l'eventer qui doit permettre de faire ça.
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - Dans la publication, il faut faire une différence entre les notes. Quand c'est l'affichage du texte principal, par exemple le scénier pour des scènes, il faut afficher les notes. En revanche, lorsqu'on affiche la scène dans les brins, il ne faut pas mettre les notes.
+  En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
+  - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
+    - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
+  - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
+    - Quand un décor contient '&', ne pas le mettre dans les menus
+  - Dans les textes, traiter les *italiques*
+  - En enregistrement automatique, supprimer la petite fenêtre d'enregistrement
   - [1] Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
-    - supprimer la sous-catégorie "les temps de l'ironie dramatique" (qui contient "installation", etc.), car ça crée beaucoup de confusion.
   - construction du graphique de la dynamique narrative
     liste des OOC
+  - Pour les décors, il faudra compter le temps général du décor principal, et le temps des sous-décors
 
 * [ESSAIS]
   - Poursuivre les essais de javascript dans les ebooks en utilisant un lien vers un autre endroit du livre. Si ça ne fonctionne pas, développer les liens hypertextuels normaux.
@@ -44,7 +62,7 @@
   =======================
   + Indiquer que le 0 des temps est toujours donné au début de l'analyse
     + Il peut varier légèrement suivant le lecteur utilisé.
-  + Indiquer : les films étrangers — américains, coréens, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
+  + Indiquer : les films étrangers — américains, coréens, espagnol, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres de chapitres
@@ -54,6 +72,7 @@
   - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
   - Ajouter une mini-timeline aux brins, pour voir où se situent les scènes/events
+    La travailler avec les brins
   - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
     - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
       + conduit à la référence `12` (disons une scène dans le scénier final)

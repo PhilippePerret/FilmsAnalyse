@@ -1,6 +1,6 @@
 'use strict'
 
-const DUREE_FILM = current_analyse.duration
+const DUREE_FILM = current_analyse.duree
 
 
 const PFABuilder = {

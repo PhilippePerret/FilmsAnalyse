@@ -14,6 +14,7 @@ const KENTREE = 13 // keyCode
 const KRETURN = 13 // keyCode
 const KERASE        = 8   // keyCode
 const KESCAPE       = 27  // touche escape
+const KSPACE        = 10
 
 const K_S           = 83  //
 const K_OCROCHET    = 53  // MAIS AVEC altKey

@@ -23,11 +23,11 @@ tempsPresence(){
 }
 
 pourcentagePresence(){
-  return asPourcentage(this.a.duration, this.otimePresence.seconds)
+  return asPourcentage(this.a.duree, this.otimePresence.seconds)
 }
 
 get otimePresence(){
-  return new OTime(this.owner.duration || this.owner.duree || this.calcDuree())
+  return new OTime(this.owner.duree || this.owner.duree || this.calcDuree())
 }
 
 /**

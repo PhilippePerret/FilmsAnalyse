@@ -9,6 +9,17 @@ class FAEventer {
 // ---------------------------------------------------------------------
 //  CLASSE
 
+/**
+  Réinitialise tout (par exemple au chargement d'une nouvelle analyse)
+
+  On remet le last_id à 0
+  On efface tous les eventers qui peuvent exister
+**/
+static reset(){
+  this.last_id = 0
+  $('.eventer').remove()
+}
+
 static newId(){
   if(undefined === this.last_id) this.last_id = 0
   return ++ this.last_id
@@ -24,7 +35,7 @@ static createNew(){
   var newEventer = new FAEventer(current_analyse)
   newEventer.show()
   log.info(`<- FAEventers::createNew() (ID #${newEventer.id})`)
-  return newEventer
+  // return newEventer // pour les tests MAIS ÇA PLANTE L'APPLICATION
 }
 
 
@@ -43,12 +54,16 @@ show(){
   this.fwindow.show()
   log.info(`<- <<FAEventer #${this.id}>>#show()`)
 }
+beforeShow(){
+  log.info(`-> <<FAEventer #${this.id}>>#beforeShow()`)
+  this.peuplePersonnagesInFilter()
+  log.info(`<- <<FAEventer #${this.id}>>#beforeShow()`)
+}
 close(){this.fwindow.hide()}
+// close(){this.fwindow.remove()}
 
 /**
  * On peuple l'eventer en respectant le filtre choisi
- * TODO : à l'ouverture, il faudrait mettre le filtre de l'affichage
- * des scènes seulement.
  */
 peuple(){
   log.info(`-> <<FAEventer #${this.id}>>#peuple()`)
@@ -69,16 +84,30 @@ peuple(){
  * Appelée par le bouton pour appliquer le filtre choisi
  */
 applyFilter(){
-  var fromTime = this.horlogeFiltreFromTime.time
-  var toTime   = this.horlogeFiltreToTime.time
-  if ( toTime <= this.horlogeFiltreFromTime.time ) toTime = null
+  let domId = this.domId
+  var checkType   = $(`input#${domId}-filter-type`)[0].checked
+  var checkText   = $(`input#${domId}-filter-text`)[0].checked
+  var checkPersos = $(`input#${domId}-filter-persos`)[0].checked
+  var checkTime   = $(`input#${domId}-filter-time`)[0].checked
   this.filter = {
-      eventTypes: this.getChosenTypes()
-    , fromTime:   fromTime
-    , toTime:     toTime
+      eventTypes:       checkType ? this.getChosenTypes() : null
+    , with_text:        checkText ? this.getChosenText() : null
+    , with_personnages: checkPersos ? this.getChosenPersonnages() : null
+    , fromTime:         checkTime ? this.getFromTime() : null
+    , toTime:           checkTime ? this.getToTime() : null
   }
   // console.log("Filtre : ", this.filter)
   this.peuple()
+}
+
+
+getFromTime(){
+  return parseFloat($(`horloge#${this.domId}-from-time`).attr('value'))
+}
+getToTime(){
+  var toTime   = parseFloat($(`horloge#${this.domId}-to-time`).attr('value'))
+  if ( isNaN(toTime) || toTime <= this.getFromTime() ) toTime = this.a.duree
+  return toTime
 }
 
 /**
@@ -137,6 +166,37 @@ getChosenTypes(){
   return checkedList
 }
 
+// Retourne le texte qu'il faut chercher (if any)
+getChosenText(){
+  let stxt  = this.jqObj.find(`#${this.domId}-text-search`).val().trim()
+    , isReg = this.jqObj.find(`#${this.domId}-text-search-regular`)[0].checked
+    , caseS = this.jqObj.find(`#${this.domId}-text-search-sensitive`)[0].checked
+  if(stxt === '') return
+  return {search: stxt, regular: isReg, caseSensitive: caseS}
+}
+// Retourne la liste des personnages qu'il faut trouver dans l'event,
+// if any.
+// @return {Object|Undefined} {list: <liste des pseudo>, all: true/false pour
+// savoir s'il faut que tous les personnages soient présents pour que l'event
+// soit considéré valide}
+getChosenPersonnages(){
+  var checkedList = []
+  var ocontainer = this.jqObj.find('.pan-filter div.personnages-list')
+  ocontainer.find('.cb-personnage > input').each(function(i, o){
+    if (o.checked) checkedList.push(o.getAttribute('data-id'))
+  })
+  if(checkedList.length === 0) return
+  return {
+    list: checkedList
+  , all: this.jqObj.find(`#${this.domId}-cb-all-chosen`)[0].checked
+  }
+}
+
+static toggleFilterPart(domId, affix){
+  let ch = $(`input#${domId}-filter-${affix}`)[0].checked
+  $(`fieldset#${domId}-fs-${affix}`)[ch?'show':'hide']()
+}
+
 /**
  * Construction de l'eventeur
  */
@@ -151,16 +211,62 @@ build(){
   </div>
   <div class="pan-events"></div>
   <div class="pan-filter" style="display:none;">
-    <h2>Filtre des events</h2>
-    <div class="small">Pour obtenir moins d'event affichés, utiliser ce filtre puis cliquer sur le bouton « Liste » ci-dessus.</div>
-    <fieldset>
+    <h3>Filtre des events</h3>
+    <fieldset id="${this.domId}-fs-filters" class="fs-filters">
+      <div class="small explication">Cliquer sur « Liste » ci-dessus après avoir réglé le filtre.</div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-type" onclick="FAEventer.toggleFilterPart('${this.domId}','type')"/>
+        <label for="${this.domId}-filter-type">Filtrage par le type d'event</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-text" onclick="FAEventer.toggleFilterPart('${this.domId}','text')"/>
+        <label for="${this.domId}-filter-text">Filtrage par le texte (contenu et titre)</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-persos" onclick="FAEventer.toggleFilterPart('${this.domId}','persos')"/>
+        <label for="${this.domId}-filter-persos">Filtrage par les personnages</label>
+      </div>
+
+      <div>
+        <input type="checkbox" id="${this.domId}-filter-time" onclick="FAEventer.toggleFilterPart('${this.domId}','time')"/>
+        <label for="${this.domId}-filter-time">Filtrage par les temps</label>
+      </div>
+
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-type" style="display:none">
       <legend>Types affichés</legend>
       <div class="type-list"></div>
     </fieldset>
-    <fieldset>
+
+    <fieldset class="normal" id="${this.domId}-fs-text" style="display:none">
+      <legend>Texte à rechercher</legend>
+      <input type="text" id="${this.domId}-text-search" style="width:98%;" />
+      <div>
+        <input type="checkbox" id="${this.domId}-text-search-regular" />
+        <label for="${this.domId}-text-search-regular">Expression régulière</label>
+        <input type="checkbox" id="${this.domId}-text-search-sensitive" />
+        <label for="${this.domId}-text-search-sensitive">Respecter la casse</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-persos" style="display:none">
+      <legend>Personnages</legend>
+      <div class="small explication">Cocher les personnages qui doivent se trouver mentionnés ou être en lien avec les events recherchés.</div>
+      <div class="personnages-list"></div>
+      <div>
+        <input type="checkbox" id="${this.domId}-cb-all-chosen" />
+        <label for="${this.domId}-cb-all-chosen">Tous ceux choisis (sinon, au moins un)</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="${this.domId}-fs-time" style="display:none">
       <legend>Temps</legend>
-      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable">0:00:00.00</horloge> et
-      <horloge id="${this.domId}-to-time" class="small horloge horlogeable">0:00:00.00</horloge>
+      Events entre <horloge id="${this.domId}-from-time" class="small horloge horlogeable" value="0">0:00:00.00</horloge> et
+      <horloge id="${this.domId}-to-time" class="small horloge horlogeable" value="">...</horloge>
     </fieldset>
 
   </div>
@@ -177,9 +283,33 @@ afterBuilding(){
   this.filter = {eventTypes: ['scene']}
   this.peuple()
   this.peupleTypesInFilter()
+  // On doit régler la fin du film
+  let o = $(`#${this.domId}-to-time`)
+  o.attr('value', this.a.duree)
+  o.html(new OTime(this.a.duree).horloge)
+
+  // On doit peupler avec les personnages du film (CB non cochées)
+  // TODO
+  //
   log.info(`<- <<FAEventer #${this.id}>>#afterBuilding()`)
 }
 
+
+peuplePersonnagesInFilter(){
+  log.info('-> peuplePersonnagesInFilter')
+  let my = this
+    , ocontainer = this.jqObj.find('.pan-filter div.personnages-list')
+  var domId, cb
+
+  FAPersonnage.forEachPersonnage(function(perso){
+    domId = `${my.domId}-cb-personnage-${perso.id}`
+    ocontainer.append(DCreate('SPAN',{class:'cb-personnage span-cb', append:[
+        DCreate('INPUT', {id:domId, type:'checkbox', attrs:{'data-id': perso.id}})
+      , DCreate('LABEL', {attrs:{for: domId}, inner: perso.pseudo})
+    ]}))
+  })
+  log.info('<- peuplePersonnagesInFilter')
+}
 
 // Pour mettre les types avec des cases à cocher dans le panneau du filtre
 peupleTypesInFilter(){
@@ -202,12 +332,21 @@ peupleTypesInFilter(){
   log.info(`<- <<FAEventer #${this.id}>>#peupleTypesInFilter()`)
 }
 
+/**
+  Construit la case à cocher, l'ajoute au container +ocontainer+ et
+  la retourne.
+  @param {jqSet} ocontainer   Container dans lequel il faut mettre la cb
+  @param {String} domId       ID de la case à cocher.
+  @param {String} libelle     Le libellé affiché
+  @param {String} type        Type de l'élément, par exemple 'scene' ou 'personnage'
+**/
 buildCbType(ocontainer, domid, libelle, type){
   var label = DCreate('LABEL', {attrs: {'for': domid}, inner: libelle})
   var cb = DCreate('INPUT', {id: domid, attrs:{type: 'checkbox', 'data-type': type}})
   cb.checked = true
-  var span  = DCreate('SPAN', {class: 'cb-type', append: [cb, label]})
+  var span  = DCreate('SPAN', {class: 'cb-type span-cb', append: [cb, label]})
   ocontainer.append(span)
+  return span
 }
 
 observe(){
@@ -223,6 +362,7 @@ observe(){
   }
   this.horlogeFiltreFromTime = horloges[`${this.domId}-from-time`]
   this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
+  this.horlogeFiltreToTime.time = this.a.videoController.video.duration
   this.horlogeFiltreFromTime.dispatch(dataHorloge)
   this.horlogeFiltreToTime.dispatch(dataHorloge)
 

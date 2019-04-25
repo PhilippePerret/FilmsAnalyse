@@ -25,7 +25,7 @@ t.case("node permet de récupérer un noeud structurel valide", () => {
   current_analyse.filmStartTime = 0
   current_analyse.filmEndTime   = DUREE
 
-  assert_equal(DUREE, current_analyse.duration, {success: false, failure:`La durée du film devrait être 5400, elle vaut ${current_analyse.duration}`})
+  assert_equal(DUREE, current_analyse.duree, {success: false, failure:`La durée du film devrait être 5400, elle vaut ${current_analyse.duree}`})
   // === Test ===
   var expo  = current_analyse.PFA.node('EXPO')
   var dev1  = current_analyse.PFA.node('DEV1')

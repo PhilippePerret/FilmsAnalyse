@@ -15,7 +15,7 @@ static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tP
  */
 static init(analyse){
   if(undefined === analyse) analyse = current_analyse
-  this.analyse = this._a = analyse
+  this.analyse = this.a = analyse
   this.reset()
 }
 
@@ -26,51 +26,20 @@ static init(analyse){
 **/
 static updateAll(){
   // console.log("-> FAEscene::updateAll")
-  var my = this
-  my.reset()
-  my.updateNumerosScenes()
-  my.updateDureeScenes()
+  this.reset()
+  // this.updateNumerosScenes() // sera automatiquement affecté en updatant les listes
+  // this.updateDureeScenes() // sera automatiquement redéfini en updatant les listes
   this.a.modified = true
 }
 
-/**
-  Actualisation du numéro de scène de toutes les scènes
-**/
-static updateNumerosScenes(){
-  var num = 0, oldNum
-  this.forEachSortedScene(function(scene){
-    oldNum = parseInt(scene.numero,10)
-    scene.numero = ++ num
-    scene.updateNumero()
-    if (oldNum != num) scene.modified = true
-  })
-}
-
-/**
-  Actualisation de la durée des scènes (si l'option
-  le demande)
-**/
-static updateDureeScenes(){
-  if(!this.a.options.get('option_duree_scene_auto')) return
-  let my = this
-  var prev_scene
-  my.forEachSortedScene(function(scene){
-    if(scene.numero > 1){
-      prev_scene = my.getByNumero(scene.numero - 1)
-      prev_scene.duration = scene.time - prev_scene.time // arrondi plus tard
-    }
-  })
-}
-
 static reset(){
-  this._by_time       = undefined
-  this._by_id         = undefined
-  this._by_numero     = undefined
-  this._sortedByTime  = undefined
-  this._sortedByDuree = undefined
-  this._count         = undefined
-  this._current       = undefined
-  this._scenes        = undefined
+  delete this._by_time
+  delete this._by_id
+  delete this._by_numero
+  delete this._sortedByTime
+  delete this._sortedByDuree
+  delete this._count
+  delete this._current
 }
 
 /**
@@ -168,13 +137,36 @@ static doLists(){
   fe.forEachFiltered(function(ev){
     if(ev.isGenerique) return
     _by_id[ev.id] = ev
-    _by_numero[ev.numero] = ev
     _by_time[ev.time] = ev
   })
 
   _sortedByTime = Object.assign([], Object.values(_by_id))
   _sortedByTime.sort(function(a, b){return a.time - b.time})
   // console.log("_sortedByTime", _sortedByTime)
+
+  // On peut affecter les numéros de scènes et définir la liste
+  // par numéro
+  var num = 0, oldNum
+  for(var sc of _sortedByTime){
+    oldNum = parseInt(sc.numero,10)
+    sc.numero = ++ num
+    _by_numero[sc.numero] = sc
+    sc.updateNumero()
+    if (oldNum != num) sc.modified = true
+  }
+
+  // Avant de classer par durée, il faut corriger les durées
+  if(this.a.options.get('option_duree_scene_auto')){
+    var sc, prev_sc
+    for(var isc in _sortedByTime){
+      sc = _sortedByTime[isc]
+      if(sc.numero > 1){
+        prev_sc = _sortedByTime[isc - 1]
+        prev_sc.duree = sc.time - prev_sc.time // arrondi plus tard
+      }
+    }
+  }
+
 
   _sortedByDuree = Object.assign([], Object.values(_by_id))
   _sortedByDuree.sort(function(a, b){return b.duree - a.duree})
@@ -186,7 +178,9 @@ static doLists(){
   this._sortedByDuree = _sortedByDuree
 
   _by_id = _by_numero = _by_time = _sortedByTime = null
-  return {id: this._by_id, numero: this._by_numero, time: this._by_time, sorted: this._sortedByTime, sorted_duree: this._sortedByDuree}
+  let res = {id: this._by_id, numero: this._by_numero, time: this._by_time, sorted: this._sortedByTime, sorted_duree: this._sortedByDuree}
+  // console.log("LISTES:", res)
+  return res
 }
 
 /**
@@ -266,7 +260,7 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duration)}
+  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
 }
 
 /**
@@ -279,9 +273,6 @@ static get firstScene(){
 static get lastScene(){
   return this.sortedByTime[this.count-1]
 }
-
-static get a(){return this._a || current_analyse}
-
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier
@@ -316,11 +307,11 @@ get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hdu
 //  MÉTHODES DE DONNÉES
 
 get pitch(){return this.titre}
-get resume(){return this.content}
+get resume(){return this.content || '--non défini--'}
 get description(){
   console.error("DEPRECATED Il ne faut pas utiliser 'description', pour une scène, mais 'resume'")
-  return this.content} // TODO Remplacer par resume
-get duree(){return this.duration}
+  return this.content || '--non défini--'
+} // TODO Remplacer par resume
 
 // ---------------------------------------------------------------------
 //  MÉTHODES D'ÉTAT
@@ -333,7 +324,7 @@ get isValid(){
 
   this.numero  || errors.push({msg:"Le numéro de la scène devrait être défini.", prop: 'numero'})
   this.titre   || errors.push({msg:"Le pitch doit être défini.", prop:'titre'})
-  this.content || errors.push({msg:"Le résumé de la scène est indispensable.", prop:'content'})
+  this.content || errors.push({msg:"Le résumé de la scène est indispensable.", prop:'longtext1'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

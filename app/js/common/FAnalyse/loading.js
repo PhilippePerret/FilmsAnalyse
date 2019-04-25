@@ -43,6 +43,8 @@ FAnalyse.resetAll = function(){
     FAEscene.reset()
     FABrin.reset()
     FAPersonnage.reset()
+    FAEventer.reset()
+    FATexte.reset()
 
     delete current_analyse.videoController
     delete current_analyse.locator

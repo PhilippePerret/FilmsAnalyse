@@ -10,7 +10,7 @@ class OTime {
    * Le temps est donné soit :
    *  - en nombre de secondes (Number) (ou string, attention)
    *  - en horloge (String)
-   *  - en data (Object) avec :seconds, :duration
+   *  - en data (Object) avec :seconds, :duree
    *
    */
   constructor(v){
@@ -54,8 +54,8 @@ asAssociate(options){
   return `<a class="lktime" onclick="showTime(${this.seconds})">${this.horloge_simple}</a>`
 }
 
-set duration(v) { this.duration = v }
-get duration()  { return this.duration || 1 }
+set duree(v) { this.duree = v }
+get duree()  { return this.duree || 1 }
 
 get secondsInt() {
   return Math.round(this.seconds)

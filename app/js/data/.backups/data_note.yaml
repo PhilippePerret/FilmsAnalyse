@@ -14,5 +14,3 @@ types:
     hname: Note sur le jeu d'acteur
   stt:
     hname: Note sur la construction
-  effet_image:
-    hname: Note sur un effet d'image
