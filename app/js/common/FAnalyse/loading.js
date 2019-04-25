@@ -118,6 +118,7 @@ load(){
     if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
     if(NONE === typeof FAStater)    return this.loadStater(this.onReady.bind(this))
     if(NONE === typeof FAStats)     return this.loadStats(this.onReady.bind(this))
+    if(NONE === typeof FAEventer)   return this.loadEventer(this.onReady.bind(this))
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new FAReader(this)
@@ -206,13 +207,14 @@ loadReader(fn_callback){
 loadProcede(fn_callback){
   return System.loadComponant('faProcede', fn_callback)
 }
-,
-loadBrin(fn_callback){
-  return System.loadComponant('faBrin', fn_callback)
+, loadBrin(fn_callback){
+    return System.loadComponant('faBrin', fn_callback)
 }
-,
-loadDecor(fn_callback){
-  return System.loadComponant('faDecor', fn_callback)
+, loadDecor(fn_callback){
+    return System.loadComponant('faDecor', fn_callback)
+}
+, loadEventer(fn_callback){
+    return System.loadComponant('faEventer', fn_callback)
 }
 
 })

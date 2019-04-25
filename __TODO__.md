@@ -2,12 +2,10 @@
 
 ### Traiter :
 
-* Pouvoir créer les events avec des raccourcis clavier
-  - revoir ceux définis et les faire par CMD-ALT-
-  - indiquer la lettre dans le nom, dans les boutons
-
 * [BUGS]
+  cf. les bugs sur ghi
 
+  
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')

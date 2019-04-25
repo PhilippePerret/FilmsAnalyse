@@ -126,21 +126,23 @@ EventForm.buildFormOfType = function(type){
   label = (typ => {
     switch (typ) {
       case 'scene': return 'Sous-décor'
-      case 'qrd': return 'Réponse'
+      case 'qrd':   return 'Réponse'
       default: return
     }
   })(type)
 
   if(undefined!==label){
-    dom.push(DCreate('DIV', {class:'div-form', append:[
-        DCreate('LABEL',{inner:label})
-      , DCreate('SELECT', {class:'sous_decors', style:`display:${type==='scene'}?'block':'none';`})
-      , DCreate('INPUT', {type:'TEXT', id:formId('shorttext2')})
-      , DCreate('DIV', {class:'right', style:`display:${type==='qrd'?'block':'none'}`, append:[
-          DCreate('LABEL', {inner:'Temps'})
-        , DCreate('INPUT', {type:'TEXT', class:'horloge', id:formId('tps_reponse')})
-        ]})
-      ]}))
+    var ds = [DCreate('LABEL',{inner:label})]
+    if(type === 'scene') ds.push(DCreate('SELECT', {class:'sous_decors'}))
+    ds.push(DCreate('INPUT', {type:'TEXT', id:formId('shorttext2')}))
+    if(type === 'qrd'){
+      ds.push(DCreate('DIV', {class:'right', append:[
+                DCreate('LABEL', {inner:'Temps'})
+              , DCreate('INPUT', {type:'TEXT', class:'horloge', id:formId('tps_reponse')})
+              ]})
+      )
+    }
+    dom.push(DCreate('DIV', {class:'div-form', append:ds}))
   }
 
   label = (typ => {

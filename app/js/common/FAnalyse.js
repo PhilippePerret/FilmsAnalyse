@@ -305,9 +305,6 @@ openDocInWriter(dtype){
  * des events.
  */
 createNewEventer(){
-  if( NONE === typeof FAEventer){
-    return System.loadComponant('faEventer', this.createNewEventer.bind(this))
-  }
   return FAEventer.createNew() // on le retourne pour les tests
 }
 
@@ -623,7 +620,7 @@ checkEventsList(){
       // TODO Il faudrait peut-être vérifier si les données sont plus à jour
       // dans l'autre donnée. Mais pour ça, il faudrait absolument demander
       // à l'user
-      errors.push(ev)
+      errors.push(ev.data)
     }
   }
   if(errors.length){
@@ -631,8 +628,7 @@ checkEventsList(){
     // => On actualise la liste et on signale les erreurs
     this.events = arrFinal
     arrFinal = null
-    log.warn('   ERREUR DE DOUBLURE D’EVENTS (CORRIGÉE)', errors)
-    console.warn("Des erreurs de doublures d'event ont été corrigées dans la liste des events. Doublures:", errors)
+    log.warn(`   ERREUR DE DOUBLURE D’EVENTS CORRIGÉE (${errors.length})`, errors)
   } else {
     log.info('   Pas d’erreurs de doublure d’events.')
   }

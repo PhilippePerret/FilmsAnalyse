@@ -243,7 +243,7 @@ Object.defineProperties(FAEvent.prototype,{
 
         this._div = DCreate('DIV',{
           id: this.domId
-        , class: `event ${this.type} EVT${this.id}`
+        , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
         , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
         , append: [etools, cont]

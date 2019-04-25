@@ -7,6 +7,7 @@
   * [Protocole d'analyse](#analyse_protocole)
   * [Verrouillage de l'analyse](#verrouillage_analyse)
 * [Les Events](#les_events)
+  * [Création des « Events »](#create_events)
   * [Les events « Scènes »](#les_events_scenes)
     * [Décors dans les events « Scènes »](#decors_in_scenes)
   * [Les events « Notes »](#les_events_notes)
@@ -67,6 +68,12 @@ Cela empêche tout modification des données, à commencer par les *events* et l
 Dans **Film Analyzer**, l'*Event* est l'élément de base, l'*atome* de l'analyse. Il signifie « évènement » en français, mais on préfère la version courte anglaise.
 
 On pourrait dire que *tout est event* dans **Film Analyzer**. Un procédé est un event, une scène est un event, une note est un event, etc.
+
+### Création des « Events » {#create_events}
+
+Pour créer les *events*, on peut utiliser les boutons qui se trouvent en bas à gauche de la fenêtre, ou les menus dans « Event > Nouveau > … » ou les raccourcis clavier à base de `ALT-CMD` (on trouve dans les menus les lettres qui correspondent à chaque event, mais de façon générale, c'est la première lettre).
+
+Une fois une de ces procédures adoptées, le formulaire de l'event s'ouvre et il suffit de le remplir.
 
 ### Les events « Scènes » {#les_events_scenes}
 

@@ -691,12 +691,24 @@ setFormValues(){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
 
     switch(prop){
+      case 'tps_reponse':
+        // Note : contrairement à 'duree' et 'time', qui sont des 'horlogeables'
+        // tps_reponse est un simple input-text pour entrer une horloge.
+        otime = new OTime(this.event[prop])
+        this.jqf(fieldSufid).val(otime.horloge_simple)
+        break
       case 'duree':
       case 'time':
-      case 'tps_reponse':
-        otime = new OTime(this.event[prop])
-        this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
-        this.jqf(fieldSufid).attr('value', (prop == 'duree' ? this.event.duree : this.event[prop]).round(2))
+        try {
+          otime = new OTime(this.event[prop])
+          this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
+          this.jqf(fieldSufid).attr('value', this.event[prop].round(2))
+        } catch (e) {
+          log.error(`[setFormValues] Problème en essayant de régler une valeur dans le formulaire de l'event`, {
+            prop: prop, otime: otime, fieldSufid:fieldSufid, error: e,
+            'this.event[prop]':this.event[prop], 'typeof(this.event[prop])': typeof(this.event[prop])
+          })
+        }
         break
       default:
         // Si un champ existe avec cette propriété, on peut la mettre
@@ -758,12 +770,14 @@ getFormValues(){
           case 'id':
           case 'parent':
             return parseInt(val,10)
-          // Tout ce qui doit être transformé en flottant
-          case 'time':
-          case 'duree':
-            return parseFloat(val).round(2)
+          // // Tout ce qui doit être transformé en flottant
+          // case 'time':
+          // case 'duree':
+          //   return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
+          case 'tps_reponse':
+            return new OTime(val).seconds
           default:
             return val
         }
@@ -773,7 +787,12 @@ getFormValues(){
     })
     // Les temps
     for(prop of ['time', 'duree']){
-      all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
+      var o = $(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`)
+      // Si ce champ existe, on prend la valeur, qui se trouve dans l'attribut
+      // HTML `value`
+      // Noter que tps_reponse n'est pas concerné car ce n'est pas une horloge
+      // horlogeable mais un simple champ de saisie textuel.
+      if(o.length) all_data[prop] = parseFloat(o.attr('value'))
     }
 
     // console.log("all_data:", all_data)

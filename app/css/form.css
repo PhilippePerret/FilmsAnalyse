@@ -50,6 +50,11 @@ form.form-edit-event .div-form input[type="text"]
   width:98.6%;
   resize:none;
 }
+
+form.form-edit-event .div-form input[type="text"].horloge {
+  font-size:10.9pt;
+}
+
 form.form-edit-event label {
   font-size:0.85em;
   color:#555555;
