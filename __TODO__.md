@@ -2,6 +2,8 @@
 
 ### Traiter :
 
+- l'affichage correct dans le reader quand il n'y a pas de titre
+
 * [BUGS]
   cf. les bugs sur ghi
 

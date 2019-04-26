@@ -78,7 +78,8 @@ as(format, flag, opts){
 // Version courte commune
 asShort(opts){
   let str = ''
-  str += `« ${this.titre} » — ${this.content}`
+  if(this.titre) str += `<span class="titre">${this.titre}</span> — `
+  str += this.content
   if(!opts || !opts.no_warm) str += this.warnCommonMethod
   return str
 }
