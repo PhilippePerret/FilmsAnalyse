@@ -78,7 +78,8 @@ as(format, flag, opts){
 // Version courte commune
 asShort(opts){
   let str = ''
-  str += `« ${this.titre} » — ${this.content}`
+  if(this.titre) str += `<span class="titre">${this.titre}</span> — `
+  str += this.content
   if(!opts || !opts.no_warm) str += this.warnCommonMethod
   return str
 }
@@ -127,16 +128,16 @@ asAssociate(opts){
  */
 asLink(alt_text){
   if(undefined === this._asLink){
-    this._asLink = `<a class="lkevent" onclick="showEvent(${this.id})">__TIT__</a>`
+    this._asLink = `<a class="lkevent" onclick="showEvent(${this.id})">[voir]</a>`
   }
-  return this._asLink.replace(/__TIT__/, (alt_text || this.title || this.content).trim())
+  return `${(alt_text || this.title || this.content).trim()} ${this._asLink}`
 }
 ,
 asLinkToEdit(str){
   if(undefined === this._asLinkToEdit){
-    this._asLinkToEdit = `<a class="lkevent" onclick="EventForm.editEvent.bind(EventForm)(${this.id})">__TIT__</a>`
+    this._asLinkToEdit = `<a class="lkevent" onclick="EventForm.editEvent.bind(EventForm)(${this.id})">[edit]</a>`
   }
-  return this._asLinkToEdit.replace(/__TIT__/, (str || this.title || this.content).trim())
+  return `${(alt_text || this.title || this.content).trim()} ${this._asLinkToEdit}`
 }
 ,
 // Alias
@@ -243,7 +244,7 @@ Object.defineProperties(FAEvent.prototype,{
 
         this._div = DCreate('DIV',{
           id: this.domId
-        , class: `event ${this.type} EVT${this.id}`
+        , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
         , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
         , append: [etools, cont]

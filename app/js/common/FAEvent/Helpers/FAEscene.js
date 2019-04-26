@@ -54,11 +54,17 @@ asFull(opts){
 **/
 asBook(opts){
   var str =  this.f_scene_heading(opts).outerHTML
+    , scene_content = ''
+  str += '<div class="scene-content">'
   if(this.pitch){
     let re = new RegExp(`^${RegExp.escape(this.pitch)}`)
-    if (!(this.content||'--non défini--').match(re)) str += `${this.f_pitch.outerHTML} — `
+    if (!(this.content||'--non défini--').match(re)) scene_content += `${this.f_pitch.outerHTML} — `
   }
-  str += this.content || '--non défini--'
+  scene_content += this.content || '--non défini--'
+  // Note : on corrige le contenu ici pour que les notes, s'il y en a, soit
+  // contenues dans le div 'scene-content'
+  str += DFormater(scene_content)
+  str += '</div>' // fin scene-content
   return str
 }
 
@@ -102,9 +108,9 @@ f_scene_heading(opts){
  */
 asLink(alt_text){
   if(undefined === this._asLink){
-    this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">__TIT__</a>`
+    this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">[voir]</a>`
   }
-  return this._asLink.replace(/__TIT__/, (alt_text || this.asPitch()))
+  return `${alt_text || this.asPitch()} ${this._asLink}`
 }
 })
 

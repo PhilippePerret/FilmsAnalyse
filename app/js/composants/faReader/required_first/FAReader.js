@@ -118,12 +118,20 @@ forEachEvent(fn){
   for(;i<nb_nodes;++i){
     no = eNodes[i]
     ev = this.a.ids[parseInt(no.getAttribute('data-id'),10)]
-    if(false === fn(ev)) break
+    if(undefined === ev){
+      console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute('data-id'))
+    } else {
+      if(false === fn(ev)) break
+    }
   }
 }
 
 get eventNodes(){
-  return this.container.querySelectorAll('.event')
+  // return $('#reader > div.event')
+  // ERREUR CI-DESSOUS CAR D'AUTRES ÉLÉMENTS, DANS LES ÉLÉMENTS, PORTENT
+  // LA CLASSE .event. DANS L'IDÉAL, IL FAUT QUE LES ÉLÉMENTS DE PREMIER
+  // NIVEAU PORTENT UNE CLASSE VRAIMENT UNIQUE (p.e. reader-event)
+  return this.container.querySelectorAll('.reader-event')
 }
 /**
  * Méthode qui permet d'afficher tous les events d'un coup

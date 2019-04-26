@@ -91,6 +91,7 @@ get isValid(){
   this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'longtext1'})
   if(this.reponse){
     this.tps_reponse || errors.push({msg: "Le temps de la réponse est requis.", prop: 'tps_reponse'})
+    'number' === typeof(this.tps_reponse) || errors.push({msg: "Le temps de réponse devrait être un nombre", prop: 'tps_reponse'})
   }
 
   if(errors.length){super.onErrors(this, errors)}
@@ -124,10 +125,5 @@ get sceneR(){
   return this._sceneR
 }
 
-get div(){
-  var n = super.div
-
-  return n
-}
 }
 FAEqrd.dispatchData()

@@ -2,10 +2,10 @@
 
 ### Traiter :
 
-* NOTES
 
 * [BUGS]
-  + Voir l'affichage des brins et corriger les problèmes de durées
+  cf. les bugs sur ghi
+
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
@@ -19,30 +19,20 @@
 
 
 * Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique, à partir du moment où il est défini dans les données)
-
-* Peut-être généraliser l'utilisation des notes comme dans la scène 110 de HER : on met une marque `[1]` dans le texte, qui renvoie à une marque `[1] explication de la note` dans les notes. Mais peut-être faudrait-il pouvoir faire ça avec des events de type note. Voir à supprimer carrément le champ 'note' des events pour le remplacer par ce genre de chose.
-  - avant de remplacer le champ note, récupérer celles qui peuvent déjà exister.
-  - faire le travail décrit ci-dessus. Une référence à une note produira un indice qui se rapportera à la note en bas de page.
+  - Peut-être un section avec des informations "technique" comme la durée "efficace" du film
+  - il faut penser de toute façon à indiquer où se place le zéro pour que les gens puissent suivre. Ici, par exemple, il apparait juste avec le titre
 
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
-
-* Développer un moteur de recherche permettant de retrouver très rapidement un élément grâce à du texte ou d'autres éléments. Par exmple pour retrouver très vite les scènes avec un personnage particulier
-C'est l'eventer qui doit permettre de faire ça.
+  - les procédés particuliers sans résolution doivent s'inscrire en bas à droite
 
 * Développer l'objet `FAStats` utilisé pour la première fois pour les brins (FABrin#stats)
   - mais aussi : `scenesCount`
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
-  - Dans la publication, il faut faire une différence entre les notes. Quand c'est l'affichage du texte principal, par exemple le scénier pour des scènes, il faut afficher les notes. En revanche, lorsqu'on affiche la scène dans les brins, il ne faut pas mettre les notes.
-  En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
-  - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
+  - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
     - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
-  - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
-    - Quand un décor contient '&', ne pas le mettre dans les menus
   - Dans les textes, traiter les *italiques*
-  - En enregistrement automatique, supprimer la petite fenêtre d'enregistrement
-  - [1] Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
   - construction du graphique de la dynamique narrative
     liste des OOC
   - Pour les décors, il faudra compter le temps général du décor principal, et le temps des sous-décors
@@ -117,6 +107,7 @@ C'est l'eventer qui doit permettre de faire ça.
 * Pouvoir avoir plusieurs writers pour éditer plusieurs documents en même temps
 
 * Script d'assemblage : pouvoir insérer une image avec `IMAGE <image path>`
+  - Corriger dans FAEvent
   -> documenter
   - Sinon, dans un document, l'insérer en markdown normal : `![alt iamge](path/to/image.format)`
 
@@ -125,7 +116,7 @@ C'est l'eventer qui doit permettre de faire ça.
 * Développer l'affichage de l'état de l'analyse (la version détaillée).
   - voir aussi la note sur le fait que chaque élément puisse produire sa propre analyse de son état.
 
-* Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type).
+* Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type). Ou les deux.
 
 * Mettre en place un système de Tips qui s'afficheront au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
   -> Objet **Tips**
@@ -133,7 +124,7 @@ C'est l'eventer qui doit permettre de faire ça.
 
 * On doit pouvoir changer la taille horizontale/verticale des flying-windows (deux pictos, peut-être ajoutés dans le 'header' du code construit dans le owner, qui permettent de le faire ? ou alors une bordure plus grande ?)
 
-* Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
+* Implémenter la redéfinition des temps des events lorsqu'un temps de début de film est redéfini.
 
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 

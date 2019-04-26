@@ -20,29 +20,11 @@ static init(){
 static get a(){return current_analyse}
 
 static reset(){
+  $('form.form-edit-event').remove()
   delete this.currentForm
   delete this.lastId
-  delete this._eventForms
   this.videoWasPlaying = false
-  $('form.form-edit-event').remove()
 }
-
-/**
-  Pour faire tourner une méthode sur tous les formulaires
-  créés.
-**/
-static forEachForm(fn){
-  for(var form_id in this.eventForms){
-    if(false === fn(this.eventForms[form_id])) break
-  }
-}
-
-// Les formulaires déjà initiés (et donc cachés dans le DOM)
-static get eventForms(){
-  if(undefined===this._eventForms){this._eventForms = {}}
-  return this._eventForms
-}
-// static set eventForms(v){this._eventForms = v}
 
 static get videoController(){ return this.a.videoController }
 
@@ -53,9 +35,8 @@ static onClickNewEvent(ev, eventType){
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
   if (eventType == 'scene' && this.notConfirmNewScene() ) return false
-  var eForm = new EventForm(eventType)
-  this.eventForms[eForm.id] = eForm
-  eForm.toggleForm()
+  this.currentForm = new EventForm(eventType)
+  this.currentForm.toggleForm()
 }
 
 /**
@@ -102,17 +83,19 @@ static filmHasSceneNearCurrentPos(){
   // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
 }
 
+/**
+  Méthode appelée pour éditer un event
+  Note : on ne conserve plus le formulaire une fois fermé.
+**/
 static editEvent(ev){
   if('number' === typeof ev) ev = this.a.ids[ev]
   var eForm
   this.playing && this.a.locator.togglePlay()
-  if(undefined === this.eventForms[ev.id]){
-    this.eventForms[ev.id] = new EventForm(ev)
-  }
-  this.eventForms[ev.id].toggleForm()
+  this.currentForm = new EventForm(ev)
+  this.currentForm.toggleForm()
 }
 
-// Pour obtenir un nouvel identifiant
+// Pour obtenir un nouvel identifiant pour un nouvel event
 static newId(){
   if (undefined === this.lastId){ this.lastId = -1 }
   return ++ this.lastId
@@ -376,7 +359,7 @@ implementeMenuSousCategorieProcedes(cate_id){
 }
 implementeMenuProcedes(cate_id, scate_id, value){
   this.implementeMenuForProcedes(
-    FAProcede.menuProcedes(cate_id, scate_id,this.id),
+    FAProcede.menuProcedes(cate_id, scate_id, this.id),
     'onChooseProcede', value || ''
   )
 }
@@ -387,8 +370,10 @@ onChooseSousCategorieProcedes(e){
   let scate_id = $(e.target).val()
     , cate_id  = $(e.target).attr('data-cate-id')
   if(scate_id == '..'){
+    // Revenir à la liste des catégories
     this.implementeMenuCategorieProcedes()
   } else {
+    // Afficher la liste des procédés
     this.implementeMenuProcedes(cate_id, scate_id, this.id)
   }
 }
@@ -518,7 +503,7 @@ checkIfSynchronizable(e){
 observe(){
   var my = this
   this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-  this.jqObj.find('.btn-form-submit').on('click', my.submit.bind(my))
+  this.btnSubmit.on('click', my.submit.bind(my))
   this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
   // Toutes les modifications de texte doivent entrainer une activation du
   // bouton de sauvegarde
@@ -614,6 +599,10 @@ submit(){
     this.isNew    = false // il a été enregistré, maintenant
     this.modified = false
     this.endEdition()
+    // Pour être sûr qu'on traitera un event modifié par la suite, on
+    // détruit la fenêtre, quand c'est une création
+    this.fwindow.remove()
+    delete this._fwindow
   } else if(this.event.firstErroredFieldId) {
     // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
     $(this.event.firstErroredFieldId).focus().select()
@@ -627,8 +616,8 @@ submit(){
  */
 destroy(){
   if(!confirm(T('confirm-destroy-event'))) return
-  this.jqObj.remove()
   this.a.destroyEvent(this.id, this)
+  this.endEdition()
 }
 /**
  * En cas d'annulation de l'édition
@@ -639,8 +628,9 @@ cancel(){
 }
 
 endEdition(){
-  this.fwindow.hide()
+  this.fwindow.remove()
   this.videoWasPlaying && this.a.locator.togglePlay()
+  delete EventForm.currentForm
 }
 
 // ---------------------------------------------------------------------
@@ -687,12 +677,24 @@ setFormValues(){
     if(null === this.event[prop] || undefined === this.event[prop]) continue
 
     switch(prop){
+      case 'tps_reponse':
+        // Note : contrairement à 'duree' et 'time', qui sont des 'horlogeables'
+        // tps_reponse est un simple input-text pour entrer une horloge.
+        otime = new OTime(this.event[prop])
+        this.jqf(fieldSufid).val(otime.horloge_simple)
+        break
       case 'duree':
       case 'time':
-      case 'tps_reponse':
-        otime = new OTime(this.event[prop])
-        this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
-        this.jqf(fieldSufid).attr('value', (prop == 'duree' ? this.event.duree : this.event[prop]).round(2))
+        try {
+          otime = new OTime(this.event[prop])
+          this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
+          this.jqf(fieldSufid).attr('value', this.event[prop].round(2))
+        } catch (e) {
+          log.error(`[setFormValues] Problème en essayant de régler une valeur dans le formulaire de l'event`, {
+            prop: prop, otime: otime, fieldSufid:fieldSufid, error: e,
+            'this.event[prop]':this.event[prop], 'typeof(this.event[prop])': typeof(this.event[prop])
+          })
+        }
         break
       default:
         // Si un champ existe avec cette propriété, on peut la mettre
@@ -700,29 +702,19 @@ setFormValues(){
           this.jqField(fieldSufid).val(this.event[prop])
         }
     }
-
-
   }
 
-  if(this.type === 'stt'){
-    this.domField('sttID').disabled = true
-  }
-}
+  if(this.type === 'stt') this.domField('sttID').disabled = true
 
-setNumeroScene(){
-  // On ne numérote pas une scène "générique"
-  if(this.event && this.event.isGenerique) return
-  var numero
-  if (this.isNew || !this.event.numero) {
-    // <= C'est une scène et son numéro n'est pas défini
-    // => Il faut définir le numéro de la scène en fonction de son temps
-    numero = 1 + this.a.getSceneNumeroAt(this.time)
-  } else {
-    numero = this.event.numero
+  if(this.type === 'proc'){
+    // Opérations à faire sur les valeurs du formulaire lorsqu'on édite
+    // un procédé
+
+    // Il faut remettre le menu des types
+    console.log("this.event.procType:", this.event.procType)
+    this.implementeMenuProcedes(...FAProcede.getTruplet(this.event.procType))
+
   }
-  this.jqField('numero').val(numero)
-  // console.log("type/numero", this.type, numero)
-  numero = null
 }
 
 /**
@@ -756,12 +748,14 @@ getFormValues(){
           case 'id':
           case 'parent':
             return parseInt(val,10)
-          // Tout ce qui doit être transformé en flottant
-          case 'time':
-          case 'duree':
-            return parseFloat(val).round(2)
+          // // Tout ce qui doit être transformé en flottant
+          // case 'time':
+          // case 'duree':
+          //   return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
+          case 'tps_reponse':
+            return new OTime(val).seconds
           default:
             return val
         }
@@ -771,7 +765,12 @@ getFormValues(){
     })
     // Les temps
     for(prop of ['time', 'duree']){
-      all_data[prop] = parseFloat($(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`).attr('value'))
+      var o = $(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`)
+      // Si ce champ existe, on prend la valeur, qui se trouve dans l'attribut
+      // HTML `value`
+      // Noter que tps_reponse n'est pas concerné car ce n'est pas une horloge
+      // horlogeable mais un simple champ de saisie textuel.
+      if(o.length) all_data[prop] = parseFloat(o.attr('value'))
     }
 
     // console.log("all_data:", all_data)
@@ -785,6 +784,23 @@ getFormValues(){
 }
 //getFormValues
 
+
+setNumeroScene(){
+  // On ne numérote pas une scène "générique"
+  if(this.event && this.event.isGenerique) return
+  var numero
+  if (this.isNew || !this.event.numero) {
+    // <= C'est une scène et son numéro n'est pas défini
+    // => Il faut définir le numéro de la scène en fonction de son temps
+    numero = 1 + this.a.getSceneNumeroAt(this.time)
+  } else {
+    numero = this.event.numero
+  }
+  this.jqField('numero').val(numero)
+  // console.log("type/numero", this.type, numero)
+  numero = null
+}
+
 // ---------------------------------------------------------------------
 //  Méthodes d'évènements
 
@@ -796,7 +812,8 @@ onKeyDownOnTextFields(e){
       return stopEvent(e)
     } else if (e.key == 't') {
       // On doit inscrire le temps courant dans le champ
-      $(e.target).insertAtCaret(this.a.locator.getROTime().horloge_simple)
+      var otime = this.a.locator.getROTime()
+      $(e.target).insertAtCaret(`{{time:${otime.seconds}|${otime.horloge_simple}}}`)
     }
     // else {
     //   stopEvent(e)
@@ -808,6 +825,10 @@ onKeyDownOnTextFields(e){
 }
 
 // ---------------------------------------------------------------------
+// Méthodes de DOM
+
+// Le bouton de soumission du formulaire
+get btnSubmit(){return this.jqObj.find('.btn-form-submit')}
 
 
 // La flying-window contenant le formulaire

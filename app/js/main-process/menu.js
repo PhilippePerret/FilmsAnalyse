@@ -437,18 +437,17 @@ const DATA_MENUS = [
       , {
             label: 'Nouveau…'
           , submenu: [
-                {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
-              , {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent('scene')}}
-              , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
-              , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('act')}}
+                {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent('scene')}}
+              , {label: 'Nœud STT', accelerator: 'CmdOrCtrl+Alt+T', click: ()=>{createEvent('stt')}}
+              , {label: 'Objectif-Obstacle-Conflit', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent('dyna')}}
               , {label: 'Procédé', accelerator: 'CmdOrCtrl+Alt+P', click: ()=>{createEvent('proc')}}
               , {label: 'Note', accelerator: 'CmdOrCtrl+Alt+N', click: ()=>{createEvent('note')}}
-              , {label: 'P/P', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent('pp')}}
-              , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent('qdr')}}
-              , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent('info')}}
-              , {type: 'separator'}
-              , {label: 'Diminutif', click: ()=>{createEvent('dim')}}
-              , {label: 'Brin', click: ()=>{createEvent('brin')}}
+              , {label: 'Idée', accelerator: 'CmdOrCtrl+Alt+I', click: ()=>{createEvent('idee')}}
+              , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent('info')}}
+              , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent('qrd')}}
+              , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('action')}}
+              , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
+              , {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
             ]
         }
     ]

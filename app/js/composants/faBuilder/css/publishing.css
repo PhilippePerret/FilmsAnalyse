@@ -63,6 +63,16 @@ pre, pre * {
   padding-left: 4em;
 }
 
+/*
+  Les liens pour voir les scènes (et autres events à ajouter ici), s'ils suivent
+  un div (donc display:block) doivent se mettre à droite. Donc on les transforme
+  en display:block avec alignement à droite.
+ */
+div + a.lkscene {
+  display:block;
+  text-align:right;
+}
+
 /* Styles pour les notes (indicées) */
 
 /* L'indice dans le texte, renvoyant à la note — renvoi */
@@ -240,10 +250,10 @@ section#scenier div.scene-heading span.scene-time {
   font-weight:normal;
   font-size:0.85rem;
 }
-section#scenier div.scene-pitch {
+section#scenier div.scene-content {
   margin-left:var(--number-width);
-  font-style:italic;
 }
+
 
 /* --------------------------------------------------------------------- */
 /* === PARADIGME DE FIELD === */

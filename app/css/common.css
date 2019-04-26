@@ -28,12 +28,6 @@ label {
   font-style:italic;
 }
 
-/* Ça a fonctionné une fois, mais plus après… Je l'impose en dur
-button.main-button {
-  -webkit-appearance: none;
-}
- */
-
 span.horloge, input.horloge {
   font-family: Courier !important;
   background-color: black;

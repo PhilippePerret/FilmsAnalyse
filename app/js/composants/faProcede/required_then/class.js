@@ -23,44 +23,35 @@ Object.assign(FAProcede,{
   @return {FAProcede} Le procédé d'identifiant +proc_id+
 **/
 get(proc_id){
-  if(undefined === this.allProcs) this.getAllProcsTruplets()
   if(undefined === this.procedes) this.procedes = {}
-  if(undefined === this.procedes[proc_id] && this.allProcsTruplets[proc_id]){
-    this.procedes[proc_id] = new FAProcede(...this.allProcsTruplets[proc_id])
+  if(undefined === this.procedes[proc_id] && this.procsTruplets[proc_id]){
+    this.procedes[proc_id] = new FAProcede(...this.procsTruplets[proc_id])
   }
   return this.procedes[proc_id]
 }
-,
-// Lire la note [1] ci-dessus
-// Attention : cette méthode ne crée pas d'instances FAProcede, elle ne
-// fait que construire la table allProcsTruplets contenant l'id de la
-// catégorie, l'id de la sous-catégorie et l'id du procédé.
-getAllProcsTruplets(){
-  var d = {}
-  for (var cate_id in this.data){
-    for ( var scate_id in this.data[cate_id].items ){
-      for ( var proc_id in this.data[cate_id].items[scate_id].items ){
-        d[proc_id] = [cate_id, scate_id, proc_id]
-      }
-    }
-  }
-  this.allProcsTruplets = d
-  d = null
-}
-,
-init(){
-  this.iofile.load({after:this.afterLoading.bind(this)})
-  this.inited = true
-}
-,
 
-reset(){
-  delete this.data
-  delete this._menuCategories
-  delete this._menusSousCategories
-  delete this._menusProcedesSCat
-  return this // chainage
-}
+/**
+  Retourne le truplet du procédé d'identifiant +proc_id+
+
+  @return {Array} [categorie, sous-categorie, procédé-id]
+**/
+, getTruplet(proc_id){
+    return this.procsTruplets[proc_id]
+  }
+
+, init(){
+    this.iofile.load({after:this.afterLoading.bind(this)})
+    this.inited = true
+  }
+
+, reset(){
+    delete this.data
+    delete this._menuCategories
+    delete this._menusSousCategories
+    delete this._menusProcedesSCat
+    delete this._procsTruplets
+    return this // chainage
+  }
 ,
 
 /**
@@ -85,11 +76,8 @@ afterUpdateData(data){
   log.info('-> FAProcede::afterUpdateData')
   this.reset()
   this.data = data
-  // Il faut procéder en checkant tous les formulaires ouverts,
-  // pour qu'ils puissent placer leur observer de menu
-  for(var ev_id in EventForm.eventForms){
-    EventForm.eventForms[ev_id].updateMenusProcedes()
-  }
+  // Actualiser la liste dans le formulaire courant s'il existe
+  EventForm.currentForm && EventForm.currentForm.updateMenusProcedes()
   log.info('<- FAProcede::afterUpdateData')
 }
 ,
@@ -110,15 +98,32 @@ showDescriptionOf(event_id){
 
   F.notice(`${msg}`)
 }
-,
+// Lire la note [1] ci-dessus
+// Attention : cette méthode ne crée pas d'instances FAProcede, elle ne
+// fait que construire la table procsTruplets contenant l'id de la
+// catégorie, l'id de la sous-catégorie et l'id du procédé.
+, getAllProcsTruplets(){
+    var d = {}
+    for (var cate_id in this.data){
+      for ( var scate_id in this.data[cate_id].items ){
+        for ( var proc_id in this.data[cate_id].items[scate_id].items ){
+          d[proc_id] = [cate_id, scate_id, proc_id]
+        }
+      }
+    }
+    return d
+  }
 
-get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
-,
+})
 
-// path au fichier contenant toutes les données des procédés
-get path(){
-  if(undefined === this._path) this._path = path.join(APPFOLDER,'app','js','data','data_proc.yaml')
-  return this._path
-}
-
+Object.defineProperties(FAProcede,{
+  procsTruplets:{
+    get(){return this._procsTruplets||defP(this,'_procsTruplets', this.getAllProcsTruplets())}
+  }
+, iofile:{
+    get(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
+  }
+, path:{
+    get(){return this._path||defP(this,'_path',path.join(APPFOLDER,'app','js','data','data_proc.yaml'))}
+  }
 })
