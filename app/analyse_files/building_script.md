@@ -1,9 +1,8 @@
 # Script de construction de l'analyse finale
 # Consulter le manuel pour l'utilisation
 # BUILD Test mef
-BUILD Fiche identité
+BUILD Infos film  # informations techniques (film + vidéo)
 FILE Introduction
-BUILD Infos film
 FILE Synopsis
 BUILD Fondamentales
 BUILD PFA

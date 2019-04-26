@@ -291,6 +291,7 @@ const DATA_MENUS = [
           , {
                 label: "Informations sur le film"
               , id: 'display-infos-film'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+I'
               , enabled: false
               , click: () => {execJsOnCurrent('displayInfosFilm')}
             }
