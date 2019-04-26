@@ -80,6 +80,13 @@ static deDim(str){
   return str
 }
 
+// Stylisation du texte
+static deStyle(str){
+  str = str.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
+  str = str.replace(/\*([^\*]+)\*/g, '<em>$1</em>')
+  return str
+}
+
 static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
 
 static deVar(str){
@@ -230,6 +237,7 @@ formate(str, options){
   str = this.deVar(str)
   str = this.deBrin(str)
   str = this.deDim(str)
+  str = this.deStyle(str)
 
   // Si une option de format a été définie
   if(options && options.format) str = this.setFormat(str, options.format)
@@ -358,40 +366,32 @@ deTimeTags(str){
 forEachDim(method){return FATexte.forEachDim(method)}
 
 /**
- * Remplace les diminutifs dans le texte +str+ par leur valeur réelle
- * Si +str+ n'est pas fourni, on prend le texte brut de l'instance.
- */
-deDim(str){
-  if (undefined === str) str = this.raw_string
-  else this.raw_string = str
-  return FATexte.deDim(str)
-}
-/**
-* Remplacement des balises dite double-crochets simples : {{variable}}
-**/
-deVar(str){
-  if(undefined === str) str = this.raw_string
-  else this.raw_string = str
-  return FATexte.deVar(str)
-}
-
-/**
+  Méthode générique permettant de transformer le texte +str+ en appelant
+  la méthode de classe +method+
   @param {String} str   Texte qui peut contenir des balises {{brin: ...}}
   @return {String} Les balises brin remplacées
 **/
-deBrin(str){
-  if(undefined === str) str = this.raw_string
+execDe(str, method){
+  if (undefined === str) str = this.raw_string
   else this.raw_string = str
-  return FATexte.deBrin(str)
+  return FATexte[method](str)
 }
+
+/**
+ * Remplace les diminutifs dans le texte +str+ par leur valeur réelle
+ * Si +str+ n'est pas fourni, on prend le texte brut de l'instance.
+ */
+deDim(str){ return this.execDe(str, 'deDim') }
+// Remplacement des signes *...* pour italiques et autres
+deStyle(str){ return this.execDe(str, 'deStyle') }
+// Remplacement des balises dite double-crochets simples : {{variable}}
+deVar(str){ return this.execDe(str, 'deVar') }
+// Remplacement des balises brins
+deBrin(str){return this.execDe(str, 'deBrin') }
 
 /**
 * Remplacement des balises documents
 **/
-deDoc(str){
-  if(undefined === str) str = this.raw_string
-  else this.raw_string = str
-  return FATexte.deDoc(str)
-}
+deDoc(str){return this.execDe(str, 'deDoc') }
 
 }

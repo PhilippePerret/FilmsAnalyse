@@ -6,9 +6,6 @@
 * [BUGS]
   cf. les bugs sur ghi
 
-- Information sur le film
-  - mettre la classe 'main-button' au bouton OK
-
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
@@ -20,16 +17,6 @@
   - Poursuivre le traitement des vérifications (check) automatiques avec les `{{sujet:sujet_id}}`.
 
 
-* Voir comment indiquer le zéro de façon littéraire dans le livre (de façon automatique, à partir du moment où il est défini dans les données)
-  - Peut-être un section avec des informations "technique" comme la durée "efficace" du film
-    - Indications :
-        0:00:00 de l'analyse : juste avant l'apparition du titre
-        Toute première image :
-          - description: @T apparait en gros plan, face caméra
-          - temps par rapport au zéro de l'analyse
-        Fin du film (avant générique) : <temps>
-  - il faut penser de toute façon à indiquer où se place le zéro pour que les gens puissent suivre. Ici, par exemple, il apparait juste avec le titre
-
 * Mettre en place aussi des checks pour les procédés pour qu'il y ait tout, au final : installation (toujours obligatoire) et résolution (payoff) (peut-être les afficher comme les QRD, en bas à droite)
   - les procédés particuliers sans résolution doivent s'inscrire en bas à droite
 
@@ -39,7 +26,6 @@
 
 * [AMÉLIORATIONS]
   - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
-    - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
   - Dans les textes, traiter les *italiques*
   - construction du graphique de la dynamique narrative
     liste des OOC
