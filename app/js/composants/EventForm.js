@@ -20,29 +20,11 @@ static init(){
 static get a(){return current_analyse}
 
 static reset(){
+  $('form.form-edit-event').remove()
   delete this.currentForm
   delete this.lastId
-  delete this._eventForms
   this.videoWasPlaying = false
-  $('form.form-edit-event').remove()
 }
-
-/**
-  Pour faire tourner une méthode sur tous les formulaires
-  créés.
-**/
-static forEachForm(fn){
-  for(var form_id in this.eventForms){
-    if(false === fn(this.eventForms[form_id])) break
-  }
-}
-
-// Les formulaires déjà initiés (et donc cachés dans le DOM)
-static get eventForms(){
-  if(undefined===this._eventForms){this._eventForms = {}}
-  return this._eventForms
-}
-// static set eventForms(v){this._eventForms = v}
 
 static get videoController(){ return this.a.videoController }
 
@@ -53,9 +35,8 @@ static onClickNewEvent(ev, eventType){
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
   if (eventType == 'scene' && this.notConfirmNewScene() ) return false
-  var eForm = new EventForm(eventType)
-  this.eventForms[eForm.id] = eForm
-  eForm.toggleForm()
+  this.currentForm = new EventForm(eventType)
+  this.currentForm.toggleForm()
 }
 
 /**
@@ -102,17 +83,19 @@ static filmHasSceneNearCurrentPos(){
   // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
 }
 
+/**
+  Méthode appelée pour éditer un event
+  Note : on ne conserve plus le formulaire une fois fermé.
+**/
 static editEvent(ev){
   if('number' === typeof ev) ev = this.a.ids[ev]
   var eForm
   this.playing && this.a.locator.togglePlay()
-  if(undefined === this.eventForms[ev.id]){
-    this.eventForms[ev.id] = new EventForm(ev)
-  }
-  this.eventForms[ev.id].toggleForm()
+  this.currentForm = new EventForm(ev)
+  this.currentForm.toggleForm()
 }
 
-// Pour obtenir un nouvel identifiant
+// Pour obtenir un nouvel identifiant pour un nouvel event
 static newId(){
   if (undefined === this.lastId){ this.lastId = -1 }
   return ++ this.lastId
@@ -376,7 +359,7 @@ implementeMenuSousCategorieProcedes(cate_id){
 }
 implementeMenuProcedes(cate_id, scate_id, value){
   this.implementeMenuForProcedes(
-    FAProcede.menuProcedes(cate_id, scate_id,this.id),
+    FAProcede.menuProcedes(cate_id, scate_id, this.id),
     'onChooseProcede', value || ''
   )
 }
@@ -387,8 +370,10 @@ onChooseSousCategorieProcedes(e){
   let scate_id = $(e.target).val()
     , cate_id  = $(e.target).attr('data-cate-id')
   if(scate_id == '..'){
+    // Revenir à la liste des catégories
     this.implementeMenuCategorieProcedes()
   } else {
+    // Afficher la liste des procédés
     this.implementeMenuProcedes(cate_id, scate_id, this.id)
   }
 }
@@ -631,8 +616,8 @@ submit(){
  */
 destroy(){
   if(!confirm(T('confirm-destroy-event'))) return
-  this.jqObj.remove()
   this.a.destroyEvent(this.id, this)
+  this.endEdition()
 }
 /**
  * En cas d'annulation de l'édition
@@ -643,8 +628,9 @@ cancel(){
 }
 
 endEdition(){
-  this.fwindow.hide()
+  this.fwindow.remove()
   this.videoWasPlaying && this.a.locator.togglePlay()
+  delete EventForm.currentForm
 }
 
 // ---------------------------------------------------------------------
@@ -718,25 +704,17 @@ setFormValues(){
     }
   }
 
-  if(this.type === 'stt'){
-    this.domField('sttID').disabled = true
-  }
-}
+  if(this.type === 'stt') this.domField('sttID').disabled = true
 
-setNumeroScene(){
-  // On ne numérote pas une scène "générique"
-  if(this.event && this.event.isGenerique) return
-  var numero
-  if (this.isNew || !this.event.numero) {
-    // <= C'est une scène et son numéro n'est pas défini
-    // => Il faut définir le numéro de la scène en fonction de son temps
-    numero = 1 + this.a.getSceneNumeroAt(this.time)
-  } else {
-    numero = this.event.numero
+  if(this.type === 'proc'){
+    // Opérations à faire sur les valeurs du formulaire lorsqu'on édite
+    // un procédé
+
+    // Il faut remettre le menu des types
+    console.log("this.event.procType:", this.event.procType)
+    this.implementeMenuProcedes(...FAProcede.getTruplet(this.event.procType))
+
   }
-  this.jqField('numero').val(numero)
-  // console.log("type/numero", this.type, numero)
-  numero = null
 }
 
 /**
@@ -805,6 +783,23 @@ getFormValues(){
 
 }
 //getFormValues
+
+
+setNumeroScene(){
+  // On ne numérote pas une scène "générique"
+  if(this.event && this.event.isGenerique) return
+  var numero
+  if (this.isNew || !this.event.numero) {
+    // <= C'est une scène et son numéro n'est pas défini
+    // => Il faut définir le numéro de la scène en fonction de son temps
+    numero = 1 + this.a.getSceneNumeroAt(this.time)
+  } else {
+    numero = this.event.numero
+  }
+  this.jqField('numero').val(numero)
+  // console.log("type/numero", this.type, numero)
+  numero = null
+}
 
 // ---------------------------------------------------------------------
 //  Méthodes d'évènements

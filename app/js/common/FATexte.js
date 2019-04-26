@@ -343,7 +343,6 @@ deTimeTags(str){
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
     groups = arguments[arguments.length - 1]
-    console.log("groups:",groups)
     txt = groups.text || new OTime(parseFloat(groups.time)).horloge_simple
     return `<span onclick="goToTime(${groups.time})">${txt}</span>`
   })

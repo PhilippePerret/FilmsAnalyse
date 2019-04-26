@@ -265,13 +265,6 @@ afterSavingPerType(){
     case 'dpersonnages':  return FAPersonnage.reset().init()
     case 'dbrins':        return FABrin.reset().init()
     case 'customdoc':     return this.addToMenuIfNew()
-    default:
-      if(this.isAbsoluteData){
-        // Quand c'est un document de données absolues qui a été
-        // modifié, il faut actualiser les menus type
-        var typ = this.type.split('_')[1]
-        EventForm.forEachForm(form => form.updateTypes(null, typ))
-      }
   }
 }
 
