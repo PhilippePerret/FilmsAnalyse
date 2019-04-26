@@ -106,17 +106,21 @@ function DGet(DOMId){
 }
 
 /**
-* Faciliteur pour créer un élément DOM (qui est retourné)
-*
-* +params+
-*     id      Identifiant à donner à l'élément
-*     class   La class CSS à appliquer
-*     style   L'attribut style
-*     inner   L'innerHTML, en dur
-*     append  Le ou les éléments DOM à ajouter
-*     value   La valeur, pour des OPTIONs par exemple
-*     attrs   Les attributs à définir (hash: attr: valeur, attr: valeur, ...)
-*
+  Faciliteur pour créer un élément DOM (qui est retourné)
+
+  @param {String} typeElement     Le tag, en fait
+  @param {Object} params          Définition de la balise. Avec :
+
+      id      Identifiant à donner à l'élément
+      class   La class CSS à appliquer
+      style   L'attribut style
+      inner   L'innerHTML, en dur
+      append  Le ou les éléments DOM à ajouter
+      value   La valeur, pour des OPTIONs par exemple
+      attrs   Les attributs à définir (hash: attr: valeur, attr: valeur, ...)
+              Si une valeur est strictement égale à NULL, l'attribut n'est pas
+              inscrit (utile par exemple pour les checked)
+
 **/
 function DCreate(typeElement, params){
   // console.log("DCreate params:", params)
@@ -140,6 +144,7 @@ function DCreate(typeElement, params){
   }
   if(params.attrs){
     for(var attr in params.attrs){
+      if(params.attrs[attr] === null) continue
       e.setAttribute(attr, params.attrs[attr])
     }
   }

@@ -2,7 +2,6 @@
 
 ### Traiter :
 
-- l'affichage correct dans le reader quand il n'y a pas de titre
 
 * [BUGS]
   cf. les bugs sur ghi
@@ -31,15 +30,9 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
-  - La durée d'un procédé doit pouvoir se calculer automatiquement à partir du temps de résolution donné (dans le champ)
-  - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
   - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
     - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
-  - Dans les décors des scènes, pouvoir séparer deux décors par un "&". C'est dans l'analyse qu'on en prend compte, en ajoutant le temps de la scène aux deux décors (ou alors la moitié du temps de la scène)
-    - Quand un décor contient '&', ne pas le mettre dans les menus
   - Dans les textes, traiter les *italiques*
-  - En enregistrement automatique, supprimer la petite fenêtre d'enregistrement
-  - [1] Pour les procédés, ajouter quand même trois champs pour "installation", "exploitations" et "résolution" en indiquant qu'il faut utiliser les temps pour savoir où tout ça se situe
   - construction du graphique de la dynamique narrative
     liste des OOC
   - Pour les décors, il faudra compter le temps général du décor principal, et le temps des sous-décors
@@ -114,6 +107,7 @@
 * Pouvoir avoir plusieurs writers pour éditer plusieurs documents en même temps
 
 * Script d'assemblage : pouvoir insérer une image avec `IMAGE <image path>`
+  - Corriger dans FAEvent
   -> documenter
   - Sinon, dans un document, l'insérer en markdown normal : `![alt iamge](path/to/image.format)`
 
@@ -122,7 +116,7 @@
 * Développer l'affichage de l'état de l'analyse (la version détaillée).
   - voir aussi la note sur le fait que chaque élément puisse produire sa propre analyse de son état.
 
-* Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type).
+* Pouvoir indiquer qu'un event est "printable", c'est-à-dire qu'il sera affiché dans l'analyse finale. Ou alors, définir **OÙ** il sera printable (par exemple en lien avec un autre event) et où il ne le sera pas (par exemple dans le listing général des events de même type). Ou les deux.
 
 * Mettre en place un système de Tips qui s'afficheront au moins une fois pour rappeler les bons trucs (pouvoir l'activer et le désactiver)
   -> Objet **Tips**
@@ -130,7 +124,7 @@
 
 * On doit pouvoir changer la taille horizontale/verticale des flying-windows (deux pictos, peut-être ajoutés dans le 'header' du code construit dans le owner, qui permettent de le faire ? ou alors une bordure plus grande ?)
 
-* Lorsqu'on (re)définit le début du film avec des events déjà définis, on doit demander si on doit changer les temps. Penser que c'est peut-être une redéfinition et qu'un temps a déjà été pris en compte. Il faut donc, pour chaque évènement, ajouter ce temps pour obtenir le temps initial puis retirer le nouveau temps.
+* Implémenter la redéfinition des temps des events lorsqu'un temps de début de film est redéfini.
 
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
 
