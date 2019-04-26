@@ -111,11 +111,11 @@ div.libval {
 div.libval > span {
   display:inline-block;
 }
-div.libval > label:nth-child(1),
-div.libval > span:nth-child(1),
+div.libval > *:nth-child(1),
 div.libval > span:nth-child(2)
 {
   vertical-align:top;
+  display:inline-block;
   /* border:1px dashed green; */
 }
 div.libval.normal > label,
@@ -135,23 +135,23 @@ div.libval.first-small > label {width: 10%; margin-right:8px;}
 div.libval.first-small > span  {width: 85%;}
 
 /* La largeur est divisée en 10 sections de 10% */
-div.libval.w10-90 > span:nth-child(1) {width:8%;}
+div.libval.w10-90 > *:nth-child(1) {width:8%;}
 div.libval.w10-90 > span:nth-child(2) {width:88%}
 
-div.libval.w40-60 > span:nth-child(1) {width:38%;}
+div.libval.w40-60 > *:nth-child(1) {width:38%;}
 div.libval.w40-60 > span:nth-child(2) {width:58%;}
 
-div.libval.w50-50 > span:nth-child(1) {width:48%;}
+div.libval.w50-50 > *:nth-child(1) {width:48%;}
 div.libval.w50-50 > span:nth-child(2) {width:48%;}
 
-div.libval.w60-40 > span:nth-child(1) {width:58%;}
+div.libval.w60-40 > *:nth-child(1) {width:58%;}
 div.libval.w60-40 > span:nth-child(2) {width:38%;}
 
-div.libval.w60-20-20 > span:nth-child(1) {width:58%;}
+div.libval.w60-20-20 > *:nth-child(1) {width:58%;}
 div.libval.w60-20-20 > span:nth-child(2) {width:18%;}
 div.libval.w60-20-20 > span:nth-child(3) {width:18%;}
 
-div.libval.w10-50-20-20 > span:nth-child(1) {width:8%;}
+div.libval.w10-50-20-20 > *:nth-child(1) {width:8%;}
 div.libval.w10-50-20-20 > span:nth-child(2) {width:50%;}
 div.libval.w10-50-20-20 > span:nth-child(3) {width:18%;}
 div.libval.w10-50-20-20 > span:nth-child(4) {width:18%;}

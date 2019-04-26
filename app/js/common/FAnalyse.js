@@ -269,7 +269,8 @@ displayPFA(){
   this.PFA.toggle()
 }
 displayInfosFilm(){
-  require('./js/tools/building/infos_film.js').bind(this)()
+  const FAInfosFilm = require('./js/tools/building/infos_film.js')
+  new FAInfosFilm(this).display()
 }
 displayDecors(){
   require('./js/tools/building/decors.js').bind(this)()
