@@ -275,7 +275,7 @@ setFormat(str, format){
     return this._regexp_scene_tag
   }
   static get REGEXP_TIME_TAG(){
-    return this._regexp_time_tag || defP(this,'_regexp_time_tag', new RegExp('\{\{time: ?(?<time>[0-9\.]+)\}\}', 'gi'))
+    return this._regexp_time_tag || defP(this,'_regexp_time_tag', new RegExp('\{\{time: ?(?<time>[0-9\.]+)(\\|(?<text>[^}]+))?\}\}', 'gi'))
   }
   static defineRegExpTag(tag_type){
     return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+) ?(\\|(?<alt_text>[^\\}]+))?\\}\\}`
@@ -338,11 +338,14 @@ deSceneTags(str){
 }
 
 deTimeTags(str){
+  var groups, txt
   if(undefined === str) str = this.raw_string
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
-    var groups = arguments[arguments.length - 1]
-    return `<span onclick="goToTime(${groups.time})">${new OTime(parseFloat(groups.time)).horloge_simple}</span>`
+    groups = arguments[arguments.length - 1]
+    console.log("groups:",groups)
+    txt = groups.text || new OTime(parseFloat(groups.time)).horloge_simple
+    return `<span onclick="goToTime(${groups.time})">${txt}</span>`
   })
   // console.log(str)
   return str

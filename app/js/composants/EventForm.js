@@ -817,7 +817,8 @@ onKeyDownOnTextFields(e){
       return stopEvent(e)
     } else if (e.key == 't') {
       // On doit inscrire le temps courant dans le champ
-      $(e.target).insertAtCaret(this.a.locator.getROTime().horloge_simple)
+      var otime = this.a.locator.getROTime()
+      $(e.target).insertAtCaret(`{{time:${otime.seconds}|${otime.horloge_simple}}}`)
     }
     // else {
     //   stopEvent(e)

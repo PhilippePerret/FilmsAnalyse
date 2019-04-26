@@ -5,7 +5,7 @@
 * [BUGS]
   cf. les bugs sur ghi
 
-  
+
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.
     - traitement des expressions régulières ('{{event:0}} de type {{type:note}}')
@@ -29,6 +29,7 @@
   -> L'utiliser pour tous les objets qui peuvent l'utiliser
 
 * [AMÉLIORATIONS]
+  - La durée d'un procédé doit pouvoir se calculer automatiquement à partir du temps de résolution donné (dans le champ)
   - Une fois qu'on a créé un event et qu'on l'a enregistré, il faut changer le nom du bouton pour qu'il apparaisse comme modiifé la proche fois qu'on l'ouvre.
   - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
     - Ou alors, le mieux, c'est peut-être détruire entièrement la fenêtre, car il y aurait aussi des valeurs comme `is_new` à modifier, pour empêcher les erreurs.
