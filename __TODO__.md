@@ -26,7 +26,6 @@
 
 * [AMÉLIORATIONS]
   - En fait, il faut jouer sur les `asTruc` pour faire des formatages différents, et jouer sur les `options` pour demander l'affichage ou non des notes. Pour les notes, il faut envoyer un `option.notes: false` pour qu'elles ne soient pas affichées (déjà implémenté)
-  - Dans les textes, traiter les *italiques*
   - construction du graphique de la dynamique narrative
     liste des OOC
   - Pour les décors, il faudra compter le temps général du décor principal, et le temps des sous-décors

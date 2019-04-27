@@ -39,7 +39,7 @@
     * [Définir les *éléments numérisables* de l'application](#define_numerisable_elements)
     * [Commandes interprétables](#interpretable_commands)
     * [Définir les checks dynamiques](#define_dynamique_checks)
-
+    * [Toutes les commandes de test](#all_commands_of_the_tests)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -713,6 +713,23 @@ Par exemple :
 
 ```
 
+ou
+
+```
+
+  - <action> <ordre> <objet>
+
+```
+
+Par exemple :
+
+```
+
+  - éditer le deuxième event
+
+```
+
+
 Noter que si on veut mettre une espace dans les paramètres, il faut mettre toute la commande entre guillemets :
 
 ```
@@ -723,10 +740,14 @@ Noter que si on veut mettre une espace dans les paramètres, il faut mettre tout
 Les `action`s possibles sont :
 
 ```
-  créer       Pour créer l'objet
-  afficher    Pour afficher l'objet ou le listing de l'objet
-  détruire    Pour détruire l'objet
-  modifier    Pour modifier une objet
+  Formule  Formule
+    1         2
+    oui       non     créer       Pour créer l'objet
+    oui       oui     afficher    Pour afficher l'objet ou le listing de l'objet
+    oui       oui     détruire    Pour détruire l'objet
+    oui       non     modifier    Pour modifier un objet
+    non       oui     éditer      Pour mettre l'objet en édition
+
 ```
 
 Les `objet`s possibles sont tous les events possibles, les brins ou les documents. Liste **non exhaustive** :
@@ -777,3 +798,50 @@ Toutes les valeurs obligatoires non définies dans cette commande interprétable
 Ce code de vérification est un langage qui ressemble à ça : `L'{{event:0}} possède un {{type:note}}`. Ici, on vérifie que l'event qui a pour identifiant `0` possède bien un `type` (donc une propriété de nom `type`) qui vaut `note`.
 
 Cette partie est encore à l'état expérimental.
+
+#### Toutes les commandes de test {#all_commands_of_the_tests}
+
+Trouver ici un aperçu de toutes les commandes automatiques et semi-automatiques
+
+```
+  - ouvrir l'app                  # Lance Film Analyzor
+  - /ouvrir l'analyse 'NOM_DOSSIER'/
+  - verrouiller l'analyse
+  - déverrouiller l'analyse
+  - enregistrer l'analyse
+
+  - /se rendre à 50:12/           # où '50:12' peut être remplacé par n'importe
+                                  # quelle horloge valide pour le film.
+
+  - enregistrer le document courant
+
+  - afficher la liste des décors
+
+  - afficher la liste des brins
+  - ouvrir le document dbrins       # i.e. document des données des brins
+
+  - éditer le premier event         # où 'premier' peut être deuxième, troisième
+                                    # etc.
+                                    # où 'event' peut être remplacé par n'importe
+                                    # quel objet numérisable de l'application.
+
+  - créer une scène au début avec {pitch:'Pitch de la scène'}
+                                    # où 'scène' peut être remplacé par n'importe
+                                    # quel objet de l'application
+                                    # où 'au début' peut être remplacé par
+                                    # 'au milieu', 'au trois quart', etc.
+                                    # où {pitch: ...} peut être remplacé par tout
+                                    # paramètres à donné à l'objet.
+
+```
+
+Tests
+
+```
+checks:
+  - aucun event       Produit une failure s'il y a des events
+  - aucun document    Produit une failure s'il y a des documents
+  - aucun personnage  Produit une failure s'il y a des personnages
+  - aucun brin        Produit une failure s'il y a des brins
+
+```
