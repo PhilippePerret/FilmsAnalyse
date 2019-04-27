@@ -11,6 +11,12 @@ class FADocument {
 // ---------------------------------------------------------------------
 //  CLASSE
 
+static reset(){
+  delete this.documents
+  delete this.lastID
+  delete this.count
+}
+
 /**
 * Cette méthode est appelée lorsque l'on clique sur le bouton "+" pour
 * créer un nouveau document.

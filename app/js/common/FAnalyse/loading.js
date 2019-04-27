@@ -43,6 +43,7 @@ FAnalyse.resetAll = function(){
     FAEscene.reset()
     FABrin.reset()
     FAPersonnage.reset()
+    FADocument.reset()
     FAEventer.reset()
     FATexte.reset()
 
