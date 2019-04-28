@@ -43,19 +43,12 @@
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
-  + Indiquer que le 0 des temps est toujours donné au début de l'analyse
-    + Il peut varier légèrement suivant le lecteur utilisé.
   + Indiquer : les films étrangers — américains, coréens, espagnol, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres de chapitres
     - Mettre des sections, comme section#scenier, section#fondamentales, etc. mais "sortir" les titres, sinon ils n'apparaitraient pas dans la toc.
-  - information du film (-> titre "Fiche d'identité du film"). Toujours dans le script d'assemblage
-    Note : quelle est la différence avec les "infos du film" ?
-  - note : il faut toujours qu'un fichier texte commence par son titre. Ça permet de le "nommer" quand on en parle dans les comptes-rendus.
   - Utiliser la méthode FADocument::findAssociations pour récupérer les associations avec des documents et les traiter dans l'affichage.
-  - Ajouter une mini-timeline aux brins, pour voir où se situent les scènes/events
-    La travailler avec les brins
   - Réfléchir aux liens (qui pour le moment fonctionnent avec des méthodes javascript `show<Thing>`). Il faudrait, dans l'idéal, pouvoir conduire quelque part et revenir. Si l'on part du principe qu'un objet ne peut pas être trop lié, on peut avoir `[1]` qui conduit à la référence `[1]` et la référence `[1]` qui ramène au lien. Dans l'idéal, un bouton 'revenir', programmé par javascript, permettrait de revenir :
     - quand on clique sur `[12]`, ça appelle une méthode javascript qui :
       + conduit à la référence `12` (disons une scène dans le scénier final)

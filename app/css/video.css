@@ -16,6 +16,10 @@ section.section-video {
 
 }
 
+section.section-video video {
+  border:1px solid #555555;
+}
+
 /* L'entête, avec l'horloge et les marques */
 section.section-video div.video-header {
   display:grid;

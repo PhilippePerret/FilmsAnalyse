@@ -65,8 +65,7 @@ init(){
 
   // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
   // met la taille médium.
-  this.ksize = this.a.options.get('video_size')||'medium'
-  this.setSize(null, this.ksize)
+  this.setSize(null, this.a.options.videoSize)
 
   this.observe()
 

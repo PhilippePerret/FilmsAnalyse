@@ -16,6 +16,8 @@
 const { app } = require('electron')
 const path    = require('path')
 const ipc     = require('electron').ipcMain
+const log     = require('electron-log')
+log.transports.console.level = 'warn'
 
 const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
@@ -651,9 +653,10 @@ module.exports = ObjMenus
 
 
 ipc.on('set-option', (ev, data) => {
-  // console.log("-> on set-option", data)
+  log.info("-> on set-option", data)
   var m = ObjMenus.getMenu(data.menu_id)
   m[data.property] = data.value
+  log.info("<- on set-option", data)
 })
 
 ipc.on('display-analyse', ev => {
