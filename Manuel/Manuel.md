@@ -3,6 +3,7 @@
 
 * [Présentation générale](#presentation_generale)
 * [Videos](#concernant_la_video)
+  * [Taille de la vidéo](#video_size)
 * [L'analyse de film](#lanalyse)
   * [Protocole d'analyse](#analyse_protocole)
   * [Verrouillage de l'analyse](#verrouillage_analyse)
@@ -21,6 +22,7 @@
     * [Réglage de la durée](#reglage_de_la_duree)
     * [Réglage de la durée des scènes](#reglage_de_la_duree_des_scenes)
 * [L'Interface](#linterface)
+  * [Fonction « One-Key-Pressed »](#one_key_pressed_feature)
   * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
   * [Se déplacer rapidement à une scène particulière](#move_to_a_scene)
@@ -43,6 +45,17 @@ Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'ef
 Les vidéos utilisées peuvent être au format `mp4`, `ogg` et `webm`.
 
 Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d'au moins une minute.
+
+### Taille de la vidéo {#video_size}
+
+On peut régler la taille de la vidéo à l'aide des sous-menus du menu « Vidéo > Taille > ». On trouve dans cette partie des réglages standard, « Petite », « Normale » ou « Large », ou un réglage personnalisé fin.
+
+Pour régler la vidéo très facilement à la taille voulue, on peut utiliser aussi [la fonctionnalité « One-Key-Pressed »](#one_key_pressed_feature) (« Une touche pressée ») :
+
+* maintenir la touche « v » appuyée
+* jouer sur les flèches HAUT et BAS pour augmenter ou réduire respectivement la taille.
+
+Noter que cette taille sera enregistrée avec l'analyse et qu'elle sera donc appliquée chaque fois que l'analyse sera chargée. Cela signifie aussi que chaque analyse peut posséder sa propre taille de vidéo.
 
 ---------------------------------------------------------------------
 
@@ -184,6 +197,12 @@ Si l'option « Calcul automatique de la durée des scènes » est coché dans 
 ---------------------------------------------------------------------
 
 ## Interface {#linterface}
+
+### Fonction « One-Key-Pressed » {#one_key_pressed_feature}
+
+La fonctionnalité « One Key Pressed » (littéralement « Une touche pressée ») permet de régler un grand nombre de choses en maintenant une touche pressée.
+
+Note : pour le moment (04/2019), cette fonctionnalité n'est utilisée que pour modifier la taille de la vidéo à l'aide de "v" appuyée et les touches flèche haut/bas.
 
 ### Indication des parties et zones courantes {#indication_parties_zones_courantes}
 

@@ -10,7 +10,8 @@ $(document).ready(() => {
   ScreenWidth   = d.width
   ScreenHeight  = d.height
 
-  window.onkeydown = KeyUpAndDown.commonKeyDown
+  window.onkeydown  = KeyUpAndDown.commonKeyDown
+  window.onkeyup    = KeyUpAndDown.commonKeyUp
 
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT

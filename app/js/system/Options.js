@@ -40,13 +40,33 @@ get(opid, defValue){
 }
 
 // Définir la valeur d'une option
-set(opid, value){
+set(opid, value, dont_save){
   this.data[opid] = value
   this.onSetByApp(opid, value)
-  this.save() // je préfère sauver tout de suite
+  if(dont_save !== true) this.save() // je préfère sauver tout de suite
   // this.modified = true
 }
 
+/**
+  Méthode appelée par les menus quand on change la valeur d'une option
+**/
+change(opid, value, dont_save){
+  // Quelques traitement particuliers
+  switch (opid) {
+    case 'video_size':
+      if(value === '+'){
+        value = this.a.videoController.getSize() + 50
+      } else if (value === '-'){
+        value = this.a.videoController.getSize() - 50
+      } else {
+        // Sinon c'est une valeur normale, comme 'large' ou 'medium'
+      }
+      break
+    default:
+
+  }
+  this.set(opid, value, !!dont_save)
+}
 /**
  * En fonction de l'application, les choses à faire quand on change une
  * option.
@@ -55,7 +75,7 @@ onSetByApp(opid, value){
   // console.log("Options#onSetByApp", opid, value)
   switch (opid) {
     case 'video_size':
-      this.a.videoController.setSize(null, value)
+      this.a.videoController.setSize(value)
       break
     case 'video_speed':
       this.a.videoController.setSpeed(value)
@@ -101,7 +121,8 @@ setInMenus(){
   ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: this.lockStopPoints})
   ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: this.start3SecondsBefore})
   // Options propres à l'analyse courante
-  ipc.send('set-option', {menu_id: `size-video-${this.videoSize}`, property: 'checked', value: true})
+  let midSize = VideoController.VIDEO_SIZES[this.videoSize] ? this.videoSize : 'custom'
+  ipc.send('set-option', {menu_id: `size-video-${midSize}`, property: 'checked', value: true})
   ipc.send('set-option', {menu_id: `video-speed-rx${this.videoSpeed}`, property:'checked', value:true})
   ipc.send('set-option', {menu_id: 'option-locked', property: 'checked', value: this.appLocked})
   log.info('<- Options#setInMenus')

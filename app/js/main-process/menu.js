@@ -385,6 +385,16 @@ const DATA_MENUS = [
                     {label: 'Petite',   id: 'size-video-small', type:'radio', click:()=>{setVideoSize('small')}}
                   , {label: 'Moyenne',  id: 'size-video-medium', type:'radio', click:()=>{setVideoSize('medium')}}
                   , {label: 'Large',    id: 'size-video-large', type:'radio', click:()=>{setVideoSize('large')}}
+                  , {label: 'Personnalisée',    id: 'size-video-custom', type:'radio'}
+                  , {type:'separator'}
+                  , {label: 'Augmenter',  id: 'size-video-aug', click:()=>{
+                      setVideoSize('+')
+                      ObjMenus.getMenu('size-video-custom').checked = true
+                    }}
+                  , {label: 'Diminuer',   id: 'size-video-dim', click:()=>{
+                      setVideoSize('-')
+                      ObjMenus.getMenu('size-video-custom').checked = true
+                    }}
                 ]
             }
           , {
@@ -608,7 +618,7 @@ if (process.platform === 'darwin') {
 }
 
 function setVideoSize(size){
-  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.set('video_size','${size}')`)
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.options.change('video_size','${size}')`)
 }
 function setVideoSpeed(speed){
   mainW.webContents.send('set-video-speed', {speed: speed})

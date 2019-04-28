@@ -13,7 +13,7 @@ section#section-videos {
 
 /* Une section complète de vidéo */
 section.section-video {
-
+  min-width:600px;
 }
 
 section.section-video video {
