@@ -1,12 +1,13 @@
 'use strict'
 
 const WHAT_REG = " (?<what>event|scène|noeud|note|info|procédé|idée|objectif|obstacle|conflit|moyen|personnage|brin|document)"
+const WHERE_REG = "(?<where>un peu plus loin|plus loin|au début|au milieu|au quart|au tiers|à la fin|au trois quart|à [0-9]:[0-9][0-9]:[0-9][0-9])"
 // Pour pouvoir interpréter une ligne interprétable
 var regstr = '^'
 regstr += "(?<action>créer|afficher|détruire|modifier)"
 regstr += "( une?)?"
 regstr += WHAT_REG
-regstr += "( (?<where>au début|au milieu|au quart|au tiers|à la fin|au trois quart|à [0-9]:[0-9][0-9]:[0-9][0-9]))?"
+regstr += `( ${WHERE_REG})?`
 regstr += "( avec)?"
 regstr += " (?<args>\{(.*?)\})"
 regstr += '$'
@@ -19,6 +20,34 @@ regstr += WHAT_REG
 regstr += '$'
 const REG_INTERPRETABLE2 = new RegExp(regstr, 'i')
 
+Object.assign(HandTestStep, {
+
+  // ---------------------------------------------------------------------
+  //  Méthodes de classe de HandTestStep
+  // ---------------------------------------------------------------------
+/**
+  Reçoit une expression comme "au début", "au milieu", "plus loin" et
+  retourne le temps correspondant par rapport à l'analyse courante.
+**/
+  WhereExpToTime(where){
+    // console.log("where dans WhereExpToTime:", where)
+    let dureeFilm = this.a.duree
+    switch(where){
+      case 'au début' :         return 0
+      case 'au quart' :         return (dureeFilm / 4).round(2)
+      case 'au tiers' :         return (dureeFilm / 3).round(2)
+      case 'au milieu':         return (dureeFilm/2).round(2)
+      case 'au deux tiers':     return (2*(dureeFilm/3)).round(2)
+      case 'au trois quart':    return (3*(dureeFilm/4)).round(2)
+      case 'à la fin':          return dureeFilm - 60
+      case 'plus loin':         return this.a.locator.getRTime() + (dureeFilm/25)
+      case 'un peu plus loin':  return this.a.locator.getRTime() + (dureeFilm/100)
+      default: // Une valeur comme "à <horloge>"
+        return new OTime(where.substring(2,where.length).trim()).seconds
+    }
+  }
+
+})
 Object.defineProperties(HandTestStep, {
   WHICH_STR_TO_NB:{
     get(){
@@ -30,6 +59,13 @@ Object.defineProperties(HandTestStep, {
       }
       return this._WHICH_STR_TO_NB
     }
+  }
+, a:{get(){return current_analyse}}
+})
+
+Object.defineProperties(HandTestStep.prototype,{
+  a:{
+    get(){return current_analyse}
   }
 })
 Object.assign(HandTestStep.prototype,{
@@ -116,10 +152,12 @@ Object.assign(HandTestStep.prototype,{
           if(res.groups){
             for(var prop in res.groups){
               re = new RegExp(`__${prop}__`,'g')
-              pas.exec = pas.exec.replace(re, res.groups[prop])
+              pas.exec_real = pas.exec.replace(re, res.groups[prop])
             }
+          } else {
+            pas.exec_real = `${pas.exec}`
           }
-          switch (eval(pas.exec)) {
+          switch (eval(pas.exec_real)) {
             case true:  return pas.NaT ? 2 : 1
             case false: return 0
             case null:  return null // traitement asynchrone
@@ -152,7 +190,7 @@ Object.assign(HandTestStep.prototype,{
 , execInterpretableCommand(){
     // console.log("-> execInterpretableCommand")
     let data_reg
-      , dureeFilm = current_analyse.duree
+      , dureeFilm = this.a.duree
     // console.log("dureeFilm:", dureeFilm)
 
     if(this.command.match(REG_INTERPRETABLE)){
@@ -195,23 +233,8 @@ Object.assign(HandTestStep.prototype,{
     // console.log("args:", args)
 
     // Lieu où il faut créer l'élément
-    let at
     if(data_reg.where){
-      switch(data_reg.where){
-        case 'au début' : at = 0; break
-        case 'au quart' : at = (dureeFilm / 4).round(2); break
-        case 'au tiers' : at = (dureeFilm / 3).round(2); break
-        case 'au milieu': at = (dureeFilm/2).round(2); break
-        case 'au deux tiers': at = (2*(dureeFilm/3)).round(2); break
-        case 'au trois quart': at = (3*(dureeFilm/4)).round(2); break
-        case 'à la fin': at = dureeFilm - 60; break
-        default:
-          // Une valeur comme "à <horloge>"
-          var w = data_reg.where
-          w = w.substring(2,w.length).trim()
-          at = new OTime(w).seconds
-      }
-      args.time = at
+      args.time = HandTestStep.WhereExpToTime(data_reg.where)
     }
 
     // Quel élément en particulier ?
@@ -240,11 +263,13 @@ Object.assign(HandTestStep.prototype,{
         throw(`Je ne sais pas traiter l'action "${data_reg.action}" avec HTInterpretor.`)
     }
   }
+
 })
 
 const HTInterpretor = {
   create:{
-    scène: function(args){
+    a: current_analyse
+  , scène: function(args){
       // Args doit contenir toutes les valeurs requises de la scène
       if(undefined === args.id)       args.id       = EventForm.newId()
       if(undefined === args.numero)   args.numero   = 1000 // sera recalculé
@@ -261,13 +286,21 @@ const HTInterpretor = {
     }
   }
 , edit:{
-    event: function(args){
+    a:current_analyse
+  , event: function(args){
+      if(args.which === -1 && !args.objet){
+        var keys = Object.keys(this.a.ids)
+        args.objet = FAEvent.get(keys[keys.length - 1])
+      }
       console.log("Event à éditer :", args)
       EventForm.editEvent(args.objet)
-      return 2
+      return null
     }
   }
 }
+Object.defineProperties(HTInterpretor,{
+  a:{get(){return current_analyse}}
+})
 
 const DATA_AUTOMATIC_STEPS = {
   "aucun event": [
@@ -291,6 +324,7 @@ const DATA_AUTOMATIC_STEPS = {
 , "se rendre à (?<horloge>[0-9\:\.]+)":[
     {NaT: true, regular: true, exec: 'current_analyse.locator.setRTime(new OTime("__horloge__").seconds)', expected:'---nothing---'}
   ]
+  // Voir le "se rendre ${WHERE_REG}" plus bas
 , "enregistrer l'analyse":[
     {NaT: true, exec: "current_analyse.save()", expected: '---nothing---'}
   ]
@@ -326,7 +360,6 @@ const DATA_AUTOMATIC_STEPS = {
 , "la liste des documents doit être vide":[
   {exec: 'FADocument.count()', expected: 0, error: 'Il ne devrait pas y avoir de documents. Il y en a %{res}'}
 ]
-
 // ---------------------------------------------------------------------
 //  ALIAS
 // Dans l'ordre alphabétique
@@ -335,3 +368,9 @@ const DATA_AUTOMATIC_STEPS = {
 , "lancer l'application":"ouvrir l'app"
 , "ouvrir l'application": "ouvrir l'app"
 }
+
+// Les expressions dynamiques qui ne peuvent pas être rentrées au-dessus
+DATA_AUTOMATIC_STEPS[`se rendre ${WHERE_REG}`] = [
+  // {NaT: true, regular: true, exec: 'HandTests.goTo("__where__")', expected:'---nothing---'}
+  {NaT: true, regular: true, exec: 'HandTests.goTo.bind(HandTests)("__where__")', expected:'---nothing---'}
+]

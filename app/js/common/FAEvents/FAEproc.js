@@ -25,6 +25,9 @@ static get dataType(){
 constructor(analyse, data){
   super(analyse, data)
   this.type         = 'proc'
+  // Après la création de l'instance, on vérifie toujours pour savoir s'il
+  // faut l'inscrire dans la "warning-section" des procédés sans résolution
+  this.checkResolution()
 }
 
 get htype(){ return 'Procédé' }
@@ -41,9 +44,21 @@ get isValid(){
   return errors.length == 0
 }
 
-get div(){
-  var n = super.div
-  return n
+
+/**
+  Méthode qui vérifie que le procédé possède bien une résolution et,
+  le cas échéant, l'inscrit dans la "warning-section"
+**/
+checkResolution(){
+  if(undefined != this.payoff && this.payoff.length) return
+  this.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
 }
+
+/**
+  La section qui affiche les procédés qui ont besoin de résolution
+  lorsqu'elle n'est pas définie.
+**/
+get warningSection(){return $('#section-qrd-pp')}
+
 }
 FAEproc.dispatchData()

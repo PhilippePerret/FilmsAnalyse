@@ -49,7 +49,7 @@ as(format, flag, opts){
     str = str.replace(/[\n\r]/,' --- ')
   } else if ( flag & EDITABLE ){
     // Note : il exclut LINKED
-    str = this.linkedToEdit(str)
+    str = this.editLink(str).outerHTML // TODO CORRIGER TOUTE CETTE MÉTHODE COMME FAEvent
     // console.log("str:", str)
   } else if(flag & LINKED){
     str = this.linked(str)

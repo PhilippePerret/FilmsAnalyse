@@ -49,7 +49,7 @@ as(format, flag, opts){
     str = str.replace(/[\n\r]/,' --- ')
   } else if ( flag & EDITABLE ){
     // Note : il exclut LINKED
-    str = this.linkedToEdit(str)
+    str = this.editLink(str).outerHTML // TODO CORRIGER TOUTE CETTE MÉTHODE COMME FAEvent
     // console.log("str:", str)
   } else if(flag & LINKED){
     str = this.linked(str)
@@ -72,12 +72,12 @@ asAssociate(opts){
   return this.asShort(opts)
 }
 ,
-linked(str){
-  return `<a onclick="showBrin('${this.id}')">${str}</a>`
+editLink(str){
+  return DCreate('A', {class:'lkevent', inner:str, attrs:{onclick:`showBrin('${this.id}')`}})
 }
 ,
 linkedToEdit(str){
-  return this.linked(str)//pour le moment
+  return this.editLink(str)//pour le moment
 }
 
 /**

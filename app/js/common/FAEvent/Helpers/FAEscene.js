@@ -41,7 +41,6 @@ asFull(opts){
   let str = ''
   opts.noTime = true
   str += this.asBook(opts)
-  str += this.divNote(opts)
   str += this.divAssociates(opts)
   return str
 }

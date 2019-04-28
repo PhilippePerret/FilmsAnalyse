@@ -796,6 +796,10 @@ Les `lieu`x possibles sont :
   au trois quart
   à la fin        => Une minute avant la fin
   à h:mm:ss     Avec ce format exact, même pour 12 secondes
+  un peu plus loin    # Se place un peu plus loin, environ 1 mn pour un film
+                      # de 2 heures
+  plus loin           # Se place à 4/5 minutes pour un film de 2 heures
+
 ```
 
 Les `paramètre`s sont tout simplement une table javascript à évaluer. Elle peut contenir des valeurs scalaire ou des fonctions. Par exemple :
@@ -828,6 +832,7 @@ Trouver ici un aperçu de toutes les commandes automatiques et semi-automatiques
 
   - /se rendre à 50:12/           # où '50:12' peut être remplacé par n'importe
                                   # quelle horloge valide pour le film.
+  - /se rendre au début/          # Une des expressions de temps
 
   - enregistrer le document courant
 

@@ -2,9 +2,25 @@
 
 ### Traiter :
 
+REPRENDRE TOUTES LES MÉTHODES EN RELATION AVEC 'AS' POUR
+- qu'elles renvoient des LISTES de DOM ELEMENTS (et non plus des strings)
+- pour qu'elles corrigent toujours avec DFormater les textes (ou alors faire une correction finale sur le `str` formé, je ne sais pas encore)
+- pour qu'elles simplifient l'affichage et utilise unique les styles (dans events.css) pour ajouter des guillemets, des ":", etc.
+Revoir le fonctionnement de la méthode 'as' pour
+  1. éviter les répétitions
+  2. ne pas avoir trop de div qui font passer les éléments à la ligne
+      Par exemple, le label de référence (spanRef) ou le lien d'édition
+  - Il faut un div construit en fin de méthode `as` et seulement là. Tous les autres éléments doivent être des span, même l'intitulé de scène.
+  - Ensuite, au lieu d'avoir des strings, on utilise des éléments DOM
+- Utiliser les mêmes fonctions pour la publication et jouer seulement sur les styles (dans `publishing.css`) pour changer l'apparence.
+
+
+- Pouvoir indiquer explicitement qu'un procédé n'a pas de résolution (case à cocher qui désactivera le check de la résolution `checkResolution`)
+- Checker la résolution quand on modifie le procédé (pour le moment, ça n'est traité à la création et à l'instanciation)
+
 
 * [BUGS]
-  cf. les bugs sur ghi
+  cf. les listes sur ghi
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.

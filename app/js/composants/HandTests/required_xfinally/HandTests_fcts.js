@@ -5,7 +5,19 @@
   automatiques. Voir par exemple `ouvrir l'analyse [etc.]`
 **/
 Object.assign(HandTests,{
-  loadAnalyseAndWait(relpath){
+/**
+  Méthode qui permet de se rendre à un endroit précis de la vidéo
+  Pour le moment, elle n'est utilisée que par l'expression /se rendre .../
+  @param {String} where   Une expression comme 'au milieu', 'plus loin', etc.
+**/
+  goTo(where){
+    // console.log("where=",where)
+    let at = HandTestStep.WhereExpToTime(where)
+    // console.log("at de where = ", where, at)
+    this.a.locator.setRTime(at)
+    return true
+  }
+, loadAnalyseAndWait(relpath){
     let fpath = path.join(APPFOLDER,'analyses','tests','MANUELS',relpath)
     if(fs.existsSync(fpath)){
       try {
@@ -24,5 +36,11 @@ Object.assign(HandTests,{
     log.info('-> HandTests::HandTests')
     this.markNormalStep()
     log.info('<- HandTests::HandTests')
+  }
+})
+
+Object.defineProperties(HandTests,{
+  a:{
+    get(){return current_analyse}
   }
 })

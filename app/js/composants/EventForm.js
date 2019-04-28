@@ -158,6 +158,8 @@ constructor(foo){
       if('function'===typeof(foo.showDiffere)){ this._event = foo }
       else { this._event = this.a.getEventById(ev.id) }
       break
+    case 'undefined':
+      throw('L’objet à éditer est indéfini.')
     default:
       throw("Il faut penser à traiter les autres cas")
   }
@@ -711,7 +713,6 @@ setFormValues(){
     // un procédé
 
     // Il faut remettre le menu des types
-    console.log("this.event.procType:", this.event.procType)
     this.implementeMenuProcedes(...FAProcede.getTruplet(this.event.procType))
 
   }

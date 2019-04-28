@@ -33,7 +33,6 @@ static init(){
   })
 }
 static reset(){
-  this.section.html('')
   delete this._qrds
   delete this._sorted
   return this // chainage

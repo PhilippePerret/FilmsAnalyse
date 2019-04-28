@@ -84,3 +84,67 @@
   top:2px;
   left:2px;
 }
+
+/* --------------------------------------------------------------------- */
+/*
+  Pour essayer de mettre en forme les events sans utiliser de caractères
+  en dehors de leur définition
+  Si ces styles fonctionnent bien, il faut les reprendre dans publishing.js
+ */
+:root{
+  --label-font-size:0.88em;
+  --label-style:italic;
+  --label-color:#999999;
+  --label-margin-left:8px;
+}
+
+/* Pour marquer la référence de l'élément */
+span.ref {
+  font-size:0.88em;
+  opacity:0.5;
+  margin-right:4px;
+}
+span.ref:after{content:' : '}
+
+span.titre {font-weight:bold;}
+span.titre:before{content:"« "}
+span.titre:after{content:" » "}
+
+span.content{font-style:italic;}
+span.content:before{
+  content:'• description : ';
+  font-size:var(--label-font-size);
+  font-style:var(--label-style);
+  color:var(--label-color);
+  margin-left:var(--label-margin-left);
+}
+
+span.setup{}
+span.setup:before{
+  content:'• installation : ';
+  font-size:var(--label-font-size);
+  font-style:var(--label-style);
+  color:var(--label-color);
+  margin-left:var(--label-margin-left);
+}
+span.exploit{}
+span.exploit:before{
+  content:'• exploitation: ';
+  font-size:var(--label-font-size);
+  font-style:var(--label-style);
+  color:var(--label-color);
+  margin-left:var(--label-margin-left);
+}
+
+/* Les procédés */
+div.proc {
+
+}
+
+a.lkevent {
+  margin-left:12px;
+  background-color:#44CC44;
+  color:white;
+  padding:0 3px;
+  cursor:pointer;
+}
