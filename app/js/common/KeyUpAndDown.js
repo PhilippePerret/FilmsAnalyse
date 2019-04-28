@@ -1,6 +1,8 @@
 'use strict'
 /**
-* Extension de FAWriter pour gérer l'entrée dans le champ textarea du texte
+  Extension pour gérer les touches
+
+  Sert aussi au FAWriter
 **/
 
 const KeyUpAndDown = {
@@ -8,6 +10,7 @@ const KeyUpAndDown = {
 , type: 'Object'
 
 , init(){
+    this.a = current_analyse
     this.inTextField.stopTab        = this.inTextField.stopTab.bind(this)
     this.inTextField.replaceTab     = this.inTextField.replaceTab.bind(this)
     this.inTextField.replaceSnippet = this.inTextField.replaceSnippet.bind(this)
@@ -17,6 +20,17 @@ const KeyUpAndDown = {
     this.inTextField.insertChevrons = this.doInsertChevrons.bind(this)
   }
 
+, commonKeyUp(e){
+    if(e.key === this.keyPressed){
+      // console.log("J'ai retiré la touche", e.key)
+      delete this.keyPressed
+      // S'il y a une fonction à appeler quand on relève la
+      // touche, on l'appelle.
+      if('function' === typeof(this.methodOnKeyPressedUp)){
+        this.methodOnKeyPressedUp()
+      }
+    }
+  }
 , commonKeyDown(e){
     // console.log("-> KeyUpAndDown#commonKeyDown")
     if(e.metaKey){
@@ -39,6 +53,25 @@ const KeyUpAndDown = {
           return stopEvent(e)
         }
       }
+    }
+    else if (this.keyPressed){
+      switch (this.keyPressed) {
+        case 'v':
+          // Pour changer la taille de la vidéo, on maintient la touche 'v'
+          // appuyé et on joue les flèches
+          if(e.keyCode === ARROW_UP || e.keyCode === ARROW_DOWN){
+            current_analyse.options.change('video_size', e.keyCode === ARROW_UP ? '+' : '-', /*don't save = */ true)
+            // La méthode qu'il faudra appeler lorsqu'on relèvera la touche
+            this.methodOnKeyPressedUp = current_analyse.options.save.bind(current_analyse.options)
+            return stopEvent(e)
+          }
+          break;
+        default:
+
+      }
+    }
+    else {
+      this.keyPressed = e.key
     }
   }
 , inTextField:{

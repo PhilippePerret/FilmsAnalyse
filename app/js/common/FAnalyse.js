@@ -312,20 +312,8 @@ createNewEventer(){
 // ---------------------------------------------------------------------
 // MÉTHODES OPTIONS
 
-get options(){ return Options }
+get options(){ return this._options || defP(this,'_options', new Options(this))}
 
-/**
-  Réglage des options dans les menus (en asynchrone)
- */
-setOptionsInMenus(){
-  // Options générales
-  ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: !!this.options.get('option_start_when_time_choosed')})
-  ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: !!this.options.get('option_lock_stop_points')})
-  ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: !!this.options.get('option_start_3secs_before_event')})
-  // Options propres à l'analyse courante
-  ipc.send('set-option', {menu_id: `size-video-${this.options.get('video_size', 'medium')}`, property: 'checked', value: true})
-  ipc.send('set-option', {menu_id: 'option-locked', property: 'checked', value: !!this.locked})
-}
 // Méthode à lancer après le chargement des données ou après la
 // sauvegarde
 // Pour le moment, ne sert que pour les tests.

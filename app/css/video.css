@@ -13,7 +13,11 @@ section#section-videos {
 
 /* Une section complète de vidéo */
 section.section-video {
+  min-width:600px;
+}
 
+section.section-video video {
+  border:1px solid #555555;
 }
 
 /* L'entête, avec l'horloge et les marques */

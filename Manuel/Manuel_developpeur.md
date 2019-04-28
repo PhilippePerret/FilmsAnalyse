@@ -2,6 +2,8 @@
 # Manuel de développement
 
 * [Point d'entrée](#point_dentree)
+* [Principes généraux](#principes_generaux)
+  * [Fonctionnalité « One Key Pressed »](#one_key_pressed_feature)
 * [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
   * [Chargement de dossiers JS au lancement de l'application](#load_folders_at_launching)
@@ -39,7 +41,7 @@
     * [Définir les *éléments numérisables* de l'application](#define_numerisable_elements)
     * [Commandes interprétables](#interpretable_commands)
     * [Définir les checks dynamiques](#define_dynamique_checks)
-
+    * [Toutes les commandes de test](#all_commands_of_the_tests)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -54,6 +56,20 @@ Le point d'entrée de l'analyser (`analyser.html`) se fait par `./app/js/lecteur
 On fabrique une instance `FAnalyse`, qui est l'analyse courante. Normalement, pour le moment, c'est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.
 
 Cette instance `FAnalyse` construit un « controleur vidéo » (instance `VideoController`) et un « lecteur d'analyse » (instance `FAReader`)
+
+---------------------------------------------------------------------
+
+## Principes généraux {#principes_generaux}
+
+### Fonctionnalité « One Key Pressed » {#one_key_pressed_feature}
+
+Permet de régler des choses en tenant une touche appuyée. Par exemple, quand on tient la touche « v » appuyée, on peut régler des choses concernant la vidéo. Avec les flèches haut/bas, on peut régler sa taille.
+
+Cette fonctionnalité est principalement définies dans le fichier `app/js/common/KeyUpAndDown.js`, dans l'objet `KeyUpAndDown`. La touche pressée est captée dans `onKeyDown` et mise dans la propriété `keyPressed` de l'objet. Si on la relève tout de suite, `keyPressed` est effacée dans `onKeyUp`. Si, en revanche, d'autres touches sont pressées avant que la touche ne soit relevée, on peut offrir des traitements.
+
+On peut définir dans la propriété `methodOnKeyPressedUp` de l'objet `KeyUpAndDown` la méthode qui doit être appelée quand on relève la touche. Cela permet de ne pas multiplier un traitement coûteux à répétition. Par exemple, sans cette méthode, avec la touche « v » appuyée, on changerait la taille de la vidéo **et on l'enregistrerait dans le fichier `options.json`** chaque fois que la touche flèche haut ou bas serait appuyée. Puisque c'est une touche « à répétition » (i.e. qu'on peut maintenir pour répéter la touche), l'enregistrement serait appelé de façon intensive. Au lieu de ça, la taille de la vidéo n'est enregistrée que lorsqu'on relève la touche (cf. dans la fichier `KeyUpAndDown.js` le détail de cette implémentation).
+
+---------------------------------------------------------------------
 
 ## Essais/travail du code {#travail_code_sandbox_run}
 
@@ -713,6 +729,23 @@ Par exemple :
 
 ```
 
+ou
+
+```
+
+  - <action> <ordre> <objet>
+
+```
+
+Par exemple :
+
+```
+
+  - éditer le deuxième event
+
+```
+
+
 Noter que si on veut mettre une espace dans les paramètres, il faut mettre toute la commande entre guillemets :
 
 ```
@@ -723,10 +756,14 @@ Noter que si on veut mettre une espace dans les paramètres, il faut mettre tout
 Les `action`s possibles sont :
 
 ```
-  créer       Pour créer l'objet
-  afficher    Pour afficher l'objet ou le listing de l'objet
-  détruire    Pour détruire l'objet
-  modifier    Pour modifier une objet
+  Formule  Formule
+    1         2
+    oui       non     créer       Pour créer l'objet
+    oui       oui     afficher    Pour afficher l'objet ou le listing de l'objet
+    oui       oui     détruire    Pour détruire l'objet
+    oui       non     modifier    Pour modifier un objet
+    non       oui     éditer      Pour mettre l'objet en édition
+
 ```
 
 Les `objet`s possibles sont tous les events possibles, les brins ou les documents. Liste **non exhaustive** :
@@ -777,3 +814,50 @@ Toutes les valeurs obligatoires non définies dans cette commande interprétable
 Ce code de vérification est un langage qui ressemble à ça : `L'{{event:0}} possède un {{type:note}}`. Ici, on vérifie que l'event qui a pour identifiant `0` possède bien un `type` (donc une propriété de nom `type`) qui vaut `note`.
 
 Cette partie est encore à l'état expérimental.
+
+#### Toutes les commandes de test {#all_commands_of_the_tests}
+
+Trouver ici un aperçu de toutes les commandes automatiques et semi-automatiques
+
+```
+  - ouvrir l'app                  # Lance Film Analyzor
+  - /ouvrir l'analyse 'NOM_DOSSIER'/
+  - verrouiller l'analyse
+  - déverrouiller l'analyse
+  - enregistrer l'analyse
+
+  - /se rendre à 50:12/           # où '50:12' peut être remplacé par n'importe
+                                  # quelle horloge valide pour le film.
+
+  - enregistrer le document courant
+
+  - afficher la liste des décors
+
+  - afficher la liste des brins
+  - ouvrir le document dbrins       # i.e. document des données des brins
+
+  - éditer le premier event         # où 'premier' peut être deuxième, troisième
+                                    # etc.
+                                    # où 'event' peut être remplacé par n'importe
+                                    # quel objet numérisable de l'application.
+
+  - créer une scène au début avec {pitch:'Pitch de la scène'}
+                                    # où 'scène' peut être remplacé par n'importe
+                                    # quel objet de l'application
+                                    # où 'au début' peut être remplacé par
+                                    # 'au milieu', 'au trois quart', etc.
+                                    # où {pitch: ...} peut être remplacé par tout
+                                    # paramètres à donné à l'objet.
+
+```
+
+Tests
+
+```
+checks:
+  - aucun event       Produit une failure s'il y a des events
+  - aucun document    Produit une failure s'il y a des documents
+  - aucun personnage  Produit une failure s'il y a des personnages
+  - aucun brin        Produit une failure s'il y a des brins
+
+```

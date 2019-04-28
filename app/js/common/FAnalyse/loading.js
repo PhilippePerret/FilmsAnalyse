@@ -43,6 +43,7 @@ FAnalyse.resetAll = function(){
     FAEscene.reset()
     FABrin.reset()
     FAPersonnage.reset()
+    FADocument.reset()
     FAEventer.reset()
     FATexte.reset()
 
@@ -132,7 +133,7 @@ load(){
     FAEscene.init()
     FAEqrd.reset().init()
     FAPersonnage.reset().init()
-    this.setOptionsInMenus()
+    this.options.setInMenus()
     this.videoController.init()
     this.runTimerSave()
     // Si une méthode après le chargement est requise, on

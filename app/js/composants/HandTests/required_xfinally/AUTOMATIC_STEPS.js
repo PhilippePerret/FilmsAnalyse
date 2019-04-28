@@ -1,16 +1,37 @@
 'use strict'
 
+const WHAT_REG = " (?<what>event|scène|noeud|note|info|procédé|idée|objectif|obstacle|conflit|moyen|personnage|brin|document)"
 // Pour pouvoir interpréter une ligne interprétable
 var regstr = '^'
 regstr += "(?<action>créer|afficher|détruire|modifier)"
 regstr += "( une?)?"
-regstr += " (?<what>scène|noeud|note|info|procédé|idée|objectif|obstacle|conflit|moyen|personnage|brin|document)"
+regstr += WHAT_REG
 regstr += "( (?<where>au début|au milieu|au quart|au tiers|à la fin|au trois quart|à [0-9]:[0-9][0-9]:[0-9][0-9]))?"
 regstr += "( avec)?"
 regstr += " (?<args>\{(.*?)\})"
 regstr += '$'
 const REG_INTERPRETABLE = new RegExp(regstr, 'i')
 
+regstr = '^'
+regstr += "(?<action>afficher|détruire|éditer)"
+regstr += " (le|la) (?<which>premier|première|dernier|dernière|avant-dernier|avant-dernière|deuxième|troisième|quatrième|cinquième|sixième|septième|huitième|dixième|onzième|douzième)"
+regstr += WHAT_REG
+regstr += '$'
+const REG_INTERPRETABLE2 = new RegExp(regstr, 'i')
+
+Object.defineProperties(HandTestStep, {
+  WHICH_STR_TO_NB:{
+    get(){
+      if(undefined === this._WHICH_STR_TO_NB){
+        this._WHICH_STR_TO_NB = {
+          'premier':0, 'première':0, 'deuxième':1, 'troisième':2, 'quatrième':3, 'cinquième':4, 'sixième':5, 'septième':6, 'huitième':7, 'dixième':9, 'onzième':10, 'douzième':12
+          , 'dernier':-1, 'dernière':-1
+        }
+      }
+      return this._WHICH_STR_TO_NB
+    }
+  }
+})
 Object.assign(HandTestStep.prototype,{
   /**
     Regarde si l'étape donnée est une étape automatique et renvoie true
@@ -62,7 +83,7 @@ Object.assign(HandTestStep.prototype,{
 
 , isInterpretableCommand(){
     if(undefined === this._isInterpretable){
-      this._isInterpretable = !!this.command.match(REG_INTERPRETABLE)
+      this._isInterpretable = !!this.command.match(REG_INTERPRETABLE) || !!this.command.match(REG_INTERPRETABLE2)
     }
     return this._isInterpretable
   }
@@ -130,11 +151,16 @@ Object.assign(HandTestStep.prototype,{
 **/
 , execInterpretableCommand(){
     // console.log("-> execInterpretableCommand")
-
-    let dureeFilm = current_analyse.duree
+    let data_reg
+      , dureeFilm = current_analyse.duree
     // console.log("dureeFilm:", dureeFilm)
 
-    let data_reg = this.command.match(REG_INTERPRETABLE).groups
+    if(this.command.match(REG_INTERPRETABLE)){
+      data_reg = this.command.match(REG_INTERPRETABLE).groups
+    } else {
+      data_reg = this.command.match(REG_INTERPRETABLE2).groups
+    }
+    // console.log("data_reg",data_reg)
 
     // Les actions possibles
     switch(data_reg.action.toLowerCase()){
@@ -146,21 +172,25 @@ Object.assign(HandTestStep.prototype,{
         break
       case 'modifier':
         break
+      case 'éditer': // formule 2
+        break
     }
 
     switch(data_reg.what){
       case 'scène':
         break
+      case 'event':
+        break
       default:
         throw(`Je ne sais pas encore interpréter les commandes avec l'objet ${data_reg.what}, malheureusement.`)
     }
 
-    // Paramètres
-    let args
+    // Pour mettre les arguments interprétés qui seront envoyés à la
+    // méthode qui traitera l'opération automatique.
+    let args = {}
+
     if (data_reg.args){
       eval(`args = ${data_reg.args}`)
-    } else {
-      args = {}
     }
     // console.log("args:", args)
 
@@ -184,14 +214,35 @@ Object.assign(HandTestStep.prototype,{
       args.time = at
     }
 
+    // Quel élément en particulier ?
+    // Dans la deuxième formule, il peut être défini par "le premier",
+    // "le dernier", etc.
+    if(data_reg.which){
+      args.which = HandTestStep.WHICH_STR_TO_NB[data_reg.which]
+      if(undefined === args.which)throw("Impossible de trouver le which de :", which)
+      // On récupère l'objet en fonction de what et du which
+      switch (data_reg.what) {
+        case 'event':
+          args.objet = current_analyse.events[args.which]
+          break
+        default:
+          throw("Impossible pour le moment de récupérer l'objet ", data_reg.what)
+      }
+    }
+
     // console.log("args à la fin:", args)
 
     // On appelle la fonction ad hoc et on retourne son résultat
-    return HTCreator.create[data_reg.what](args)
+    switch (data_reg.action) {
+      case 'créer':   return HTInterpretor.create[data_reg.what](args)
+      case 'éditer':  return HTInterpretor.edit[data_reg.what](args)
+      default:
+        throw(`Je ne sais pas traiter l'action "${data_reg.action}" avec HTInterpretor.`)
+    }
   }
 })
 
-const HTCreator = {
+const HTInterpretor = {
   create:{
     scène: function(args){
       // Args doit contenir toutes les valeurs requises de la scène
@@ -206,6 +257,13 @@ const HTCreator = {
       current_analyse.addEvent(nev)
       nev.onCreate()
       FAEscene.reset()
+      return 2 // pour attendre la suite
+    }
+  }
+, edit:{
+    event: function(args){
+      console.log("Event à éditer :", args)
+      EventForm.editEvent(args.objet)
       return 2
     }
   }
@@ -230,8 +288,14 @@ const DATA_AUTOMATIC_STEPS = {
 , "ouvrir l'analyse '(?<relpath>[\/a-zA-Z0-9_\-]+)'":[
     {NaT: true, regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
   ]
+, "se rendre à (?<horloge>[0-9\:\.]+)":[
+    {NaT: true, regular: true, exec: 'current_analyse.locator.setRTime(new OTime("__horloge__").seconds)', expected:'---nothing---'}
+  ]
 , "enregistrer l'analyse":[
     {NaT: true, exec: "current_analyse.save()", expected: '---nothing---'}
+  ]
+, "verrouiller l'analyse":[
+    {NaT: true, exec: "if(current_analyse.locked === false){current_analyse.locked=true};current_analyse.locked", expected: true}
   ]
 , "déverrouiller l'analyse":[
     {NaT: true, exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
