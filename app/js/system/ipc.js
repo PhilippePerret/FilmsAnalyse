@@ -19,7 +19,7 @@ ipc.on('current-image-for-current-scene', (ev) => {
 })
 
 ipc.on('set-video-speed', (e, data) => {
-  current_analyse.videoController.setSpeed(data.speed)
+  current_analyse.videoController.setSpeed(data.speed, /* save = */ true )
 })
 
 ipc.on('uncaugth-exception', data => {

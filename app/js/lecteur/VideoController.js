@@ -64,8 +64,9 @@ init(){
   this.setDimensions()
 
   // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
-  // met la taille médium.
+  // met la taille médium. Idem pour la vitesse de lecture de la vidéo.
   this.setSize(null, this.a.options.videoSize)
+  this.setSpeed(this.a.options.videoSpeed)
 
   this.observe()
 
@@ -103,19 +104,25 @@ setDimensions(){
 setSize(e, v, save){
   if(undefined===v) v = this.menuVideoSize.value
   this.video.width = VideoController.VIDEO_SIZES[v]
-  this.mainHorloge.className = `horloge ${v}`
-  if (save === true) this.a.videoSize = v
+  // this.mainHorloge.className = `horloge ${v}` // normalement on ne  change plus
+  if (save === true) this.a.options.videoSize = v
 }
 
 /**
 * Pour définir la vitesse de la vidéo
 **/
-setSpeed(speed){
+setSpeed(speed, save){
+  log.info('-> videoController#setSpeed', speed)
   this.video.defaultPlaybackRate = speed
   this.video.playbackRate = speed
-  log.info(`Video speed: ${speed}`)
+  log.info(`  = Video speed: ${speed}`)
+  if(save === true) this.a.options.videoSpeed = speed
+  log.info('<- videoController#setSpeed')
 }
+
+// Retourne la vitesse actuelle de la vidéo
 getSpeed(){
+  log.info('<-> videoController#getSpeed')
   return this.video.playbackRate
 }
 

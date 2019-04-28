@@ -75,7 +75,11 @@ const ObjMenus = {
   , getMenuData: null
   , getMenu(id) {
       var d = this.getMenuData[id]
-      if(undefined == typeof(d)) throw(`Menu <${id}> is not defined…`)
+      if('undefined' == typeof(d)){
+        log.error(`Menu <${id}> is not defined…`)
+        throw("Menu introuvable",id)
+        return null
+      }
       var m = this.mainMenuBar.items[d[0]].submenu.items[d[1]] ;
       // console.log("m:", m)
       // Si hiérarchie plus profonde
@@ -386,16 +390,16 @@ const DATA_MENUS = [
           , {
                 label: 'Vitesse de lecture'
               , submenu: [
-                    {label: 'Image/image', id: 'video-speed-rx009', type:'radio', click:()=>{setVideoSpeed(0.07)}}
-                  , {label: 'Ralenti / 8', id: 'video-speed-rx010', type:'radio', click:()=>{setVideoSpeed(0.12)}}
-                  , {label: 'Ralenti / 4', id: 'video-speed-rx025', type:'radio', click:()=>{setVideoSpeed(0.25)}}
-                  , {label: 'Ralenti / 2', id: 'video-speed-rx05', type:'radio', click:()=>{setVideoSpeed(0.5)}}
-                  , {label: 'Normale', id: 'video-speed-x1', type:'radio', click:()=>{setVideoSpeed(1)}, selected: true}
-                  , {label: 'x 2', id: 'video-speed-x2', type:'radio', click:()=>{setVideoSpeed(2)}}
-                  , {label: 'x 4', id: 'video-speed-x4', type:'radio', click:()=>{setVideoSpeed(4)}}
-                  , {label: 'x 8', id: 'video-speed-x8', type:'radio', click:()=>{setVideoSpeed(8)}}
-                  , {label: 'x 12', id: 'video-speed-x12', type:'radio', click:()=>{setVideoSpeed(12)}}
-                  , {label: 'x 16', id: 'video-speed-x16', type:'radio', click:()=>{setVideoSpeed(16)}}
+                    {label: 'Image/image', id: 'video-speed-rx0.07', type:'radio', click:()=>{setVideoSpeed(0.07)}}
+                  , {label: 'Ralenti / 8', id: 'video-speed-rx0.12', type:'radio', click:()=>{setVideoSpeed(0.12)}}
+                  , {label: 'Ralenti / 4', id: 'video-speed-rx0.25', type:'radio', click:()=>{setVideoSpeed(0.25)}}
+                  , {label: 'Ralenti / 2', id: 'video-speed-rx0.5', type:'radio', click:()=>{setVideoSpeed(0.5)}}
+                  , {label: 'Normale', id: 'video-speed-rx1', type:'radio', click:()=>{setVideoSpeed(1)}, selected: true}
+                  , {label: 'x 2', id: 'video-speed-rx2', type:'radio', click:()=>{setVideoSpeed(2)}}
+                  , {label: 'x 4', id: 'video-speed-rx4', type:'radio', click:()=>{setVideoSpeed(4)}}
+                  , {label: 'x 8', id: 'video-speed-rx8', type:'radio', click:()=>{setVideoSpeed(8)}}
+                  , {label: 'x 12', id: 'video-speed-rx12', type:'radio', click:()=>{setVideoSpeed(12)}}
+                  , {label: 'x 16', id: 'video-speed-rx16', type:'radio', click:()=>{setVideoSpeed(16)}}
                 ]
             }
           , {type: 'separator'}
@@ -653,10 +657,10 @@ module.exports = ObjMenus
 
 
 ipc.on('set-option', (ev, data) => {
-  log.info("-> on set-option", data)
+  // log.info("-> on set-option", data) // bizarrement, s'écrit en console
   var m = ObjMenus.getMenu(data.menu_id)
   m[data.property] = data.value
-  log.info("<- on set-option", data)
+  // log.info("<- on set-option", data)
 })
 
 ipc.on('display-analyse', ev => {
