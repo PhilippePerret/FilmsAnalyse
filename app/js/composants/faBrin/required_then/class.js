@@ -107,14 +107,22 @@ afterSaving(){
   log.info('<- FABrin::afterSaving')
 }
 
-,
+/**
+  Pour éditer le brin d'identifiant +bid+
+
+  Pour le moment, on ouvre simplement le document qui contient la définition
+  des brins, mais pour l'avenir, on pourra imaginer que ce soit un formulaire
+  qui permette de le faire en toute souplesse.
+**/
+, edit(bid){ this.openDocData()}
+
 /**
   Demande l'ouverture du document des données
   (appelée par le bouton dédié)
 **/
-openDocData(){
-  FAWriter.openDoc('dbrins')
-}
+, openDocData(){
+    FAWriter.openDoc('dbrins')
+  }
 
 /**
   Méthode qui définit les données à enregistrer (et les envoie directement

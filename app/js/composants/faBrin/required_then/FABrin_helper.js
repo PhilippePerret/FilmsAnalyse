@@ -10,75 +10,82 @@ Object.assign(FABrin.prototype,{
 **/
 as(format, flag, opts){
   if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut (NON !)
-  // Pour le moment, on corrige par défaut
-  flag = flag | FORMATED
 
-  // console.log("-> as(format, flag)", format, flag)
+  var divs = [], str
 
-  var str
+  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `${this.htype} #${this.id}`}))
+
   switch (format) {
     case 'short':
-      str = this.asShort(opts)
+      divs.push(...this.asShort(opts))
       break
     case 'book':
       // Sortie pour le livre
-      str = this.asBook(opts)
+      divs.push(...this.asBook(opts))
       break
     case 'full':
       // Affiche complet, avec toutes les informations
-      str = this.asFull(opts)
+      divs.push(...this.asFull(opts))
       break
     case 'associate':
-      str = this.asAssociate(opts)
+      divs.push(this.asAssociate(opts))
       break
     default:
-      str = this.title
+      throw(`Format inconnu : "${format}"`)
   }
 
-  if(flag & LABELLED) str = `<label>${this.htype} #${this.id} : </label> ${str}`
 
-  if(flag & DUREE) str += ` (${this.hduree})`
-
-  if(flag & FORMATED) str = DFormater(str)
+  if(flag & DUREE) divs.push(DCreate('SPAN', {class:'duree', inner: ` (${this.hduree})`}))
+  if(flag & EDITABLE) divs.push(this.editLink(opts))
+  else if (flag & LINKED) divs.push(this.lienVoir(opts))
 
   if(flag & ESCAPED){
     // Note : il exclut editable et linked
     str = str.replace(/<(.*?)>/g, '')
     str = str.replace(/\"/g, '\\\"')
     str = str.replace(/[\n\r]/,' --- ')
-  } else if ( flag & EDITABLE ){
-    // Note : il exclut LINKED
-    str = this.editLink(str).outerHTML // TODO CORRIGER TOUTE CETTE MÉTHODE COMME FAEvent
-    // console.log("str:", str)
-  } else if(flag & LINKED){
+  }
+  else if(flag & LINKED){
     str = this.linked(str)
   }
   return str
 }
-,
-asShort(opts){
-  return `&lt;&lt;Brin: ${this.title}&gt;&gt;`
+
+, asShort(opts){
+    return [
+      DCreate('SPAN', {class:'short brin-short', append:[
+        DCreate('LABEL',{inner: 'Brin'})
+      , DCreate('SPAN', {class:'brin-numero', inner: this.numero})
+      , DCreate('SPAN', {inner: DFormater(this.title)})
+      ]})
+    ]
+  }
+
+, asBook(opts){
+  return this.asShort(opts) // pour le moment
 }
-,
-asBook(opts){
-}
-,
-asFull(opts){
-  return `${this.libelle} -- ${this.description}`
-}
-,
-asAssociate(opts){
-  return this.asShort(opts)
-}
-,
-editLink(str){
-  return DCreate('A', {class:'lkevent', inner:str, attrs:{onclick:`showBrin('${this.id}')`}})
-}
-,
-linkedToEdit(str){
-  return this.editLink(str)//pour le moment
-}
+
+, asFull(opts){
+    var divs = []
+    divs.push(DCreate('SPAN', {class:'libelle brin-libelle', inner: DFormater(this.libelle)}))
+    if(this.description){
+      divs.push(DCreate('SPAN', {class:'description brin-description', inner: DFormater(this.description)}))
+    }
+    return divs
+  }
+
+, asAssociate(opts){
+    return this.asShort(opts)[0]
+  }
+
+, editLink(opts){
+    return DCreate('A', {class:'lkedit', inner: '[edit]', attrs:{onclick:`FABrin.edit('${this.id}')`}})
+  }
+
+, lienVoir(opts){
+    return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick: `showBrin('${this.id}')`}})
+  }
+
 
 /**
   Sortie pour le livre édité
@@ -106,7 +113,14 @@ linkedToEdit(str){
   if(options.forBook === true){
     divs.push(DCreate('DIV', {class:'brin-infos-masked', append: infosMasked}))
   } else {
-    divs.push(DCreate('DIV', {class: 'brin-associateds small', inner: `Associés : ${this.associateds()}`}))
+
+    // S'il y a des associés
+    let divsAss = this.associateds()
+    if(divsAss){
+      divsAss.unshift(DCreate('LABEL', {inner: 'Associés :'}))
+      divs.push(DCreate('DIV', {class: 'brin-associateds small', append:divsAss}))
+    }
+
     divs.push(DCreate('BUTTON', {type:'button', class: 'toggle-next'}))
     divs.push(DCreate('DIV', {class:'brin-infos-masked', style:'display:none;', append: infosMasked}))
   }
@@ -132,7 +146,7 @@ divAssociateds(){
     if(ass = FABrin.a.ids[id]){
       divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
         // DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true, notes:false})})
-        DCreate('LI', {class:'event-title', inner: ass.as('associate',FORMATED|LINKED,{no_warm:true, notes:false})})
+        DCreate('LI', {class:'event-title', inner: ass.as('associate',LINKED,{no_warm:true, notes:false})})
       ]}))
     } else {
       console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)
@@ -150,21 +164,24 @@ divAssociateds(){
 /**
   Retourne la liste des éléments associés, en mode court (il suffit de glisser la souris sur l'ID pour le lire)
 **/
-associateds(){
+associateds(opts){
   var ass = [], id
   for(id of this.documents){
-    ass.push(`<span title="Document « ${FADocument.get(id).title} »">Doc: ${id}</span>`)
+    ass.push(FADocument.get(id).asAssociate(opts))
   }
   for(id of this.events){
-    ass.push(`<span title="${FABrin.a.ids[id].as('short',FORMATED|ESCAPED,{no_warm:true})}">Ev#${id}</span>`)
+    ass.push(DCreate('SPAN',{inner:`Ev#${id}`, attrs:{title:FABrin.a.ids[id].as('short',ESCAPED,{no_warm:true})}}))
   }
   for(id of this.times){
-    ass.push(`<span>temps: ${new OTime(id).horloge_simple}</span>`)
+    ass.push(DCreate('SPAN', {append:[
+        DCreate('LABEL', {inner: 'temps :'})
+      , DCreate('SPAN',  {inner: new OTime(id).horloge_simple})
+      ]}))
   }
   if (ass.length){
-    return ass.join(', ')
+    return ass
   } else {
-    return '- aucun -'
+    return null
   }
 }
 })

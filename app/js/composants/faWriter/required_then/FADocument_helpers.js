@@ -64,9 +64,7 @@ as(format, flag, opts){
 , asFull(opts){
     return this.asBook() // pour le moment
   }
-, asAssociate(opts){
-    return `« ${this.title} » -- ${this.firstContent.substring(0,100).replace(/\n/g,' -- ').replace(/<(.*?)>/g,'')} […]`
-  }
+// asAssociate est défini ailleurs
 , linkedToEdit(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
 , linked(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
 

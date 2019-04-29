@@ -22,8 +22,9 @@ as(format, flag, opts){
   // Pour le moment, on lie par défaut (NON !)
 
   // Pour le moment, on corrige par défaut
-  flag = flag | FORMATED
-  // console.log("-> as(format, flag)", format, flag)
+  // Non, tout est corrigé au fur et à mesure, donc on n'a plus besoin de
+  // faire ça
+  // flag = flag | FORMATED
 
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
@@ -50,7 +51,7 @@ as(format, flag, opts){
       domEls.push(...this.asFull(opts))
       break
     case 'associate':
-      domEls.push(...this.asAssociate(opts, flag))
+      domEls.push(this.asAssociate(opts, flag))
       break
     default:
       domEls.push(DCreate('SPAN',{class:'titre',inner: this.title}))
@@ -65,16 +66,16 @@ as(format, flag, opts){
 
   // --- LE DIV FINAL ---
   // Avec tous ses éléments ajoutés en fonction des choix
-  console.log("domEls:",domEls)
+  // console.log("domEls:",domEls)
   let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
-    , str = divAs.outerHTML
 
-  // TODO : IL FAUT FAIRE ÇA DANS CHAQUE ÉLÉMENT ET SUPPRIMER CETTE LIGNE
-  // SUPPRIMER MÊME LE DRAPEAU FORMATED
-  if(flag & FORMATED) str = DFormater(str, opts)
+  // --- LE STRING FINAL ---
+  // La version string résultant du travail d'assemblage
+  let str = divAs.outerHTML
 
   if(flag & ESCAPED){
-    // Note : il exclut editable et linked
+    // Version escapée de l'élément, une version qui sert pour les attributs
+    // title ou alt dans les balises HTML.
     str = str.replace(/<(.*?)>/g, '')
     str = str.replace(/\"/g, '\\\"')
     str = str.replace(/[\n\r]/,' --- ')
@@ -129,7 +130,7 @@ asFull(opts){
   divs.push(...this.asShort(opts))
   if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
   let divAssos = this.divAssociates(opts)
-  console.log("divAssos:", divAssos)
+  // console.log("divAssos:", divAssos)
   divAssos && divs.push(...divAssos)
   return divs
 }
@@ -138,11 +139,12 @@ asFull(opts){
 // qu'associé dans un autre event
 asAssociate(opts){
   var divs = []
-  divs.push(DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:[
-      DCreate('LABEL', {class:'type', inner:`${this.htype} : `})
-    , DCreate('SPAN', {class:'content', inner: DFormater(this.content)})
-    ]}))
-  return divs
+  divs.push(DCreate('LABEL', {class:'type', inner:`${this.htype} : `}))
+  if(this.titre){
+    divs.push(DCreate('SPAN', {class:'titre', inner: DFormater(this.titre)}))
+  }
+  divs.push(DCreate('SPAN', {class:'content', inner: DFormater(this.content)}))
+  return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
 
 /**
@@ -181,7 +183,7 @@ asAssociate(opts){
         if(undefined === ev){
           log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
         } else {
-          divsAss.push(...ev.asAssociate(options))
+          divsAss.push(ev.asAssociate(options))
         }
       })
       console.log("[FAEvent#divAssociates] divsAss:", divsAss)
