@@ -51,7 +51,7 @@ class OTime {
 
 */
 asAssociate(options){
-  return `<a class="lktime" onclick="showTime(${this.seconds})">${this.horloge_simple}</a>`
+  return [DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}})]
 }
 
 set duree(v) { this.duree = v }

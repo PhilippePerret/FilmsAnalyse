@@ -13,6 +13,8 @@ Revoir le fonctionnement de la méthode 'as' pour
   - Il faut un div construit en fin de méthode `as` et seulement là. Tous les autres éléments doivent être des span, même l'intitulé de scène.
   - Ensuite, au lieu d'avoir des strings, on utilise des éléments DOM
 - Utiliser les mêmes fonctions pour la publication et jouer seulement sur les styles (dans `publishing.css`) pour changer l'apparence.
+- Reprendre les helpers des brins (fonction `as`) pour fonctionner comme les FAEvent avec des objets dom plutôt qu'avec des strings
+- Idem pour les documents
 
 
 - Pouvoir indiquer explicitement qu'un procédé n'a pas de résolution (case à cocher qui désactivera le check de la résolution `checkResolution`)

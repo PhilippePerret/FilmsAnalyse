@@ -14,16 +14,21 @@ Object.assign(FAEqrd.prototype,{
   Appeler `this.as('short', flag)`
 **/
 asShort(options){
-  var str = ''
-  let rep
+  var divs = []
+  divs.push(DCreate('SPAN', {class:'question', append:[
+        DCreate('LABEL', {inner: 'Question'})
+      , DCreate('SPAN', {class: 'value', inner: DFormater(this.question)})
+    ]}))
   if(this.reponse){
-    rep = `<label>Réponse : </label>${this.reponse}`
+    divs.push(DCreate('SPAN', {class:'reponse', append:[
+        DCreate('LABEL', {inner: 'Réponse'})
+      , DCreate('SPAN', {class: 'value', inner: DFormater(this.reponse)})
+      ]}))
   } else {
-    rep = '<span class="warning">RÉPONSE REQUISE</span>'
+    divs.push(DCreate('SPAN', {class:'reponse warning', inner: 'RÉPONSE REQUISE'}))
   }
-  str += `<div>QRD #${this.id} : ${this.question} — ${rep}</div>`
 
-  return str
+  return divs
 }
 
 ,

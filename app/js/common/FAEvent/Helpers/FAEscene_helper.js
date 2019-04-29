@@ -8,6 +8,9 @@ Object.assign(FAEscene.prototype,{
 /**
   La version la plus courte de la scène, pour la marque de scène
   au-dessus de la vidéo, pour le moment, et pour les liens
+
+  Noter que pour le moment, ça retourne un {String}, contrairement à la
+  nouvelle façon de procéder.
 **/
 asPitch(opts){
   if(undefined === this._aspitch){
@@ -24,26 +27,29 @@ asPitch(opts){
 **/
 asShort(opts){
   // console.log("-> FAEscene#asShort")
-  let str = ''
-  if (this.resume.match(new RegExp(`^${RegExp.escape(this.pitch)}`))){
-    return this.resume
-  } else {
-    return `sc. ${this.numero}. ${this.pitch} — ${this.resume}`
+  let divs = []
+  divs.push(DCreate('SPAN', {class: 'scene-num', inner: `sc. ${this.numero}`}))
+  // Si le résumé contient le pitch, on n'a pas besoin de le marquer
+  if (!this.resume.match(new RegExp(`${RegExp.escape(this.pitch)}`))){
+    divs.push(DCreate('SPAN', {class: 'scene-pitch', inner: DFormater(this.pitch)}))
   }
+  divs.push(DCreate('SPAN', {class:'scene-resume', inner: DFormater(this.resume)}))
+  return divs
 }
 
-,
 /**
   Sortie complète de l'event, par exemple pour le reader
 **/
-asFull(opts){
-  if(undefined === opts) opts = {}
-  let str = ''
-  opts.noTime = true
-  str += this.asBook(opts)
-  str += this.divAssociates(opts)
-  return str
-}
+, asFull(opts){
+    if(undefined === opts) opts = {}
+    opts.noTime = true
+    let divs = []
+    divs.push(...this.asBook(opts))
+    let divAssos = this.divAssociates(opts)
+    console.log("[FAScene#asFull] divAssos:", divAssos)
+    divAssos && divs.push(...divAssos)
+    return divs
+  }
 
 ,
 /**
@@ -52,19 +58,16 @@ asFull(opts){
   s'agit du scénier (`inScenier`)
 **/
 asBook(opts){
-  var str =  this.f_scene_heading(opts).outerHTML
-    , scene_content = ''
-  str += '<div class="scene-content">'
+  var divs = []
+  var scene_content = []
+  divs.push(this.f_scene_heading(opts))
   if(this.pitch){
-    let re = new RegExp(`^${RegExp.escape(this.pitch)}`)
-    if (!(this.content||'--non défini--').match(re)) scene_content += `${this.f_pitch.outerHTML} — `
+    let re = new RegExp(`${RegExp.escape(this.pitch)}`)
+    if (!(this.resume||'--non défini--').match(re)) scene_content.push(this.f_pitch)
   }
-  scene_content += this.content || '--non défini--'
-  // Note : on corrige le contenu ici pour que les notes, s'il y en a, soit
-  // contenues dans le div 'scene-content'
-  str += DFormater(scene_content)
-  str += '</div>' // fin scene-content
-  return str
+  scene_content.push(DCreate('SPAN',{class:'resume', inner: DFormater(this.resume)}))
+  divs.push(DCreate('SPAN',{class:'scene-content', append: scene_content}))
+  return divs
 }
 
 ,
@@ -95,39 +98,31 @@ f_scene_heading(opts){
     headingElements.push(DCreate('SPAN', {class:'scene-time', inner: ` (${new OTime(this.time).horloge_simple})`}))
   }
   // On peut assembler l'entête
-  return DCreate('DIV', {class: 'scene-heading', append: headingElements})
+  return DCreate('SPAN', {class: 'scene-heading', append: headingElements})
 }
-,
-/**
- * Retourne le lien vers l'event
- * Pour remplacer par exemple une balise `event: <id>`
- *
- * Note : si ce texte est modifié, il faut aussi corriger les tests à :
- * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
- */
-asLink(alt_text){
-  if(undefined === this._asLink){
-    this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">[voir]</a>`
-  }
-  return `${alt_text || this.asPitch()} ${this._asLink}`
-}
+
+// /**
+//  * Retourne le lien vers l'event
+//  * Pour remplacer par exemple une balise `event: <id>`
+//  *
+//  * Note : si ce texte est modifié, il faut aussi corriger les tests à :
+//  * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
+//  */
+// , asLink(alt_text){
+//     if(undefined === this._asLink){
+//       this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">[voir]</a>`
+//     }
+//     return `${alt_text || this.asPitch()} ${this._asLink}`
+//   }
 })
 
 Object.defineProperties(FAEscene.prototype,{
   f_pitch:{
     get(){
       if(undefined === this._f_pitch){
-        this._f_pitch = DCreate('span', {class:'scene-pitch', inner: this.pitch})
+        this._f_pitch = DCreate('SPAN', {class:'scene-pitch', inner: DFormater(this.pitch)})
       }
       return this._f_pitch
-    }
-  }
-, numeroFormated:{
-    get(){
-      if(undefined===this._numeroFormated){
-        this._numeroFormated = `<span class="numero-scene" data-id="${this.id}">${this.numero}</span>`
-      }
-      return this._numeroFormated
     }
   }
 })

@@ -31,11 +31,14 @@
   border:1px dashed green;
 }
 
-.event div.scene-heading{
+.event .scene-heading{
   display:block;
   font-weight: bold;
   margin-top: 1em;
   text-decoration: underline;
+}
+.scene-content { /* sous l'intitulé */
+  display:block;
 }
 .event span.scene-resume {
   display:block;
@@ -109,6 +112,12 @@ span.ref:after{content:' : '}
 span.titre {font-weight:bold;}
 span.titre:before{content:"« "}
 span.titre:after{content:" » "}
+
+span.quotes {font-weight:bold;}
+span.quotes:before{content:"« "}
+span.quotes:after{content:" » "}
+span.quotes+span.titre:before{all:unset;}
+span.quotes+span.titre:after{all:unset;}
 
 span.content{font-style:italic;}
 span.content:before{

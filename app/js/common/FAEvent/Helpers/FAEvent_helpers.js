@@ -63,7 +63,10 @@ as(format, flag, opts){
   if(flag & EDITABLE) domEls.push(this.editLink(opts))
   else if (flag & LINKED) domEls.push(this.showLink(opts))
 
-  let divAs = DCreate('DIV', {class:this.type, append:domEls})
+  // --- LE DIV FINAL ---
+  // Avec tous ses éléments ajoutés en fonction des choix
+  console.log("domEls:",domEls)
+  let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
     , str = divAs.outerHTML
 
   // TODO : IL FAUT FAIRE ÇA DANS CHAQUE ÉLÉMENT ET SUPPRIMER CETTE LIGNE
@@ -120,15 +123,15 @@ asBook(opts){
 // C'est la version qui est ajoutée au `div` contenant les
 // boutons d'édition, etc.
 asFull(opts){
-  if(undefined === opts) opts = {}
   var divs = []
+  if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
   if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
-  divs.push(this.divAssociates('events'))
-  divs.push(this.divAssociates('documents'))
-  divs.push(this.divAssociates('times'))
-  return DCreate('SPAN', {class:`${this.type} EVT${this.id}`, append: divs})
+  let divAssos = this.divAssociates(opts)
+  console.log("divAssos:", divAssos)
+  divAssos && divs.push(...divAssos)
+  return divs
 }
 ,
 // Version associée, quand l'event est présenté en tant
@@ -166,7 +169,7 @@ asAssociate(opts){
         break
       default:
         log.warn("Mauvais argument pour divAssociates: ", type)
-        return ''
+        return // indefined
     }
     var divs = []
       , divsAss = []
@@ -178,25 +181,15 @@ asAssociate(opts){
         if(undefined === ev){
           log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
         } else {
-          divsAss.push(ev.asAssociate(options))
+          divsAss.push(...ev.asAssociate(options))
         }
       })
+      console.log("[FAEvent#divAssociates] divsAss:", divsAss)
       divs.push(DCreate('DIV', {append:divsAss, class:`associates ${type}`}))
     }
-    return str
+    console.log("divs associateds:", divs)
+    if(divs.length) return divs
   }
-
-
-/**
-  Retourne le div des éléments associés qui ajoute des procédés,
-  des notes, des informations, des documents, etc.
-**/
-, divAssociates(opts){
-    var divs = []
-    this.events.forEach( eid => divs.push(...FAEvent.get(eid).as('associate', opts)))
-    return divs
-  }
-
 
 })
 
