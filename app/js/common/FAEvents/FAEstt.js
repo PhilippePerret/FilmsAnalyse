@@ -6,7 +6,7 @@ class FAEstt extends FAEvent {
 //  CLASSE
 
 // Propriétés propres
-static get OWN_PROPS(){return [['sttID', 'sttType']]}
+static get OWN_PROPS(){return [ ['sttID', 'sttType'] ]}
 
 // Pour dispatcher les données propre au type
 // Note : la méthode est appelée en fin de fichier

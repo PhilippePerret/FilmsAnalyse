@@ -46,7 +46,7 @@ asShort(opts){
     let divs = []
     divs.push(...this.asBook(opts))
     let divAssos = this.divAssociates(opts)
-    console.log("[FAScene#asFull] divAssos:", divAssos)
+    // console.log("[FAScene#asFull] divAssos:", divAssos)
     divAssos && divs.push(...divAssos)
     return divs
   }

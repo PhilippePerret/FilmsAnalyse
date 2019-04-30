@@ -186,10 +186,10 @@ asAssociate(opts){
           divsAss.push(ev.asAssociate(options))
         }
       })
-      console.log("[FAEvent#divAssociates] divsAss:", divsAss)
+      // console.log("[FAEvent#divAssociates] divsAss:", divsAss)
       divs.push(DCreate('DIV', {append:divsAss, class:`associates ${type}`}))
     }
-    console.log("divs associateds:", divs)
+    // console.log("divs associateds:", divs)
     if(divs.length) return divs
   }
 

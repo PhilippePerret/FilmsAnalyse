@@ -523,11 +523,19 @@ observe(){
   this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
   this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
 
+  // Le petit picto pour associer tout de suite l'event édité ou créé
+  // à un autre event ou document ou autre.
+  my.jqObj.find('.event-btn-drop').draggable({
+      revert:true
+    , zindex:5000
+  })
+
   let dataDrop = Object.assign({}, DATA_DROPPABLE, {
     drop: (e, ui) => {
-      var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
-      if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
-        $(e.target).insertAtCaret(balise)
+      let obj = this.event || {type:(this.type=='scene'?'scene':'event'), id: this.id}
+      var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
+      if(balise){
+        if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1) $(e.target).insertAtCaret(balise)
       } else if(e.target.className.indexOf('event-parent') > -1){
         this.setParent(ui.helper)
       }
@@ -625,7 +633,6 @@ destroy(){
  * En cas d'annulation de l'édition
  */
 cancel(){
-  // console.log("Je renonce à l'édition de l'event")
   this.endEdition()
 }
 
@@ -706,7 +713,7 @@ setFormValues(){
     }
   }
 
-  if(this.type === 'stt') this.domField('sttID').disabled = true
+  if(this.type === 'stt') this.domField('sttType').disabled = true
 
   if(this.type === 'proc'){
     // Opérations à faire sur les valeurs du formulaire lorsqu'on édite
