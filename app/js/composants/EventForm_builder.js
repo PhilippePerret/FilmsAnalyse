@@ -191,7 +191,7 @@ EventForm.buildFormOfType = function(type){
   label = (typ => {
     switch(typ){
       case 'idee': return 'Fonctions <span class="small">(une par ligne)</span>'
-      case 'proc': return 'Résolution <span class="small">(time: description)</span>'
+      case 'proc': return 'Résolution <span class="small">({{time:...}} description — ou raison de non résolution)</span>'
       default:     return
     }
   })(type)

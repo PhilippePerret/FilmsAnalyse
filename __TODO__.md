@@ -4,8 +4,8 @@
 
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 
-- Pouvoir indiquer explicitement qu'un procédé n'a pas de résolution (case à cocher qui désactivera le check de la résolution `checkResolution`)
 - Checker la résolution quand on modifie le procédé (pour le moment, ça n'est traité à la création et à l'instanciation)
+  - Si la résolution ne commence pas par une balise de temps, il faut considérer que c'est l'explication de la non résolution.
 
 
 * [BUGS]
