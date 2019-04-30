@@ -449,9 +449,11 @@ indexOfEvent(event_id){
   c'est-à-dire de permettre ou non ses modifications.
 **/
 toggleLock(){
+  if(this.saveTimer) this.stopTimerSave()
   this.locked = !!!this.locked
   this.saveData(true /* pour forcer le verrou, seulement pour enregistrer cette valeur */)
   this.setMarkModified()
+  if(false === this.locked) this.runTimerSave()
 }
 
 /**
@@ -486,8 +488,8 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
-  this.stopTimerSave() // ne fera rien si rien à faire
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  this.stopTimerSave() // ne fera rien si rien à faire
   this.modified && this.save()
   this.runTimerSave() // ne fera rien si analyse.locked
 }
