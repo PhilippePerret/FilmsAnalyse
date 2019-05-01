@@ -593,6 +593,20 @@ stopTimerSave(){
 }
 
 /**
+  Check de la validité de toutes les données
+  La méthode checke particulièrement :
+    - les associations
+    - les numéros de scènes
+**/
+checkDataValidity(){
+  if('undefined' === typeof(AnalyseChecker)){
+    require('./js/tools/analyse_checker').bind(this)()
+  } else {
+    // Quand on le charge toujours dans la page pour l'implémenter
+    AnalyseChecker.checkAll(this)
+  }
+}
+/**
   Méthode qui s'assure de ne pas enregistrer d'event en double comme c'est le
   cas avec certains problèmes (non encore décelés)
 **/

@@ -97,8 +97,10 @@ asShort(opts){
   Retourne le DOMElement du span indiquant la référence à l'élément
   C'est le span utilisé quand le drapeau contient LABELLED
 **/
-, spanRef(){
-  return DCreate('SPAN', {class:'ref', inner: `${this.tinyName} #${this.id}`})
+, spanRef(opts){
+  let span = DCreate('SPAN', {class:'ref', inner: `${this.tinyName} #${this.id}`})
+  if(opts && opts.as === 'string') return span.outerHTML
+  else return span
 }
 
 /**

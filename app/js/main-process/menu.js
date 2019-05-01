@@ -26,7 +26,7 @@ const CURRENT_THING_MENUS = [
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
-  'goto-last-scene', 'display-decors'
+  'goto-last-scene', 'display-decors', 'check-data-validity'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -561,6 +561,13 @@ const DATA_MENUS = [
           , enabled: true // TODO: plus tard, seulement en développement
           , id: 'goto-last-test-manuel'
           , click: () => {execJS('App.runFromLastHandTest()')}
+        }
+      , {type: 'separator'}
+      , {
+            label: 'Checker la validité des données'
+          , id: 'check-data-validity'
+          , enabled:false
+          , click: () => {execJsOnCurrent('checkDataValidity')}
         }
       , {type: 'separator'}
       , {

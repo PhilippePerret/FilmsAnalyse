@@ -2,8 +2,11 @@
 
 ### Traiter :
 
-* Fixeur d'analyse
-  - Lorsqu'un event est introuvable, possibilité de le créer plutôt que de supprimer l'assocatiion
+- Voir pourquoi les scènes de HER ne s'affichent pas toutes quand on utilise le bouton "scène suivante"
+
+
+* CHECK ANALYSE
+  - Poursuivre le check (app/js/tools/analyse_checker.js)
 
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 

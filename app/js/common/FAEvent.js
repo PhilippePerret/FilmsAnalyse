@@ -39,8 +39,9 @@ static count(){
   defP(this,'_TEXT_PROPERTIES',FAEvent.tProps(this.OWN_TEXT_PROPS))
 **/
 static tProps(own_text_properties){
-  var arr = Object.assign([], FAEvent.TEXT_PROPERTIES)
-  Object.assign(arr, own_text_properties)
+  var arr = []
+  arr.push(...FAEvent.TEXT_PROPERTIES)
+  arr.push(...own_text_properties)
   return arr
 }
 
