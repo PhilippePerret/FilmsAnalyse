@@ -19,14 +19,10 @@ asShort(options){
         DCreate('LABEL', {inner: 'Question'})
       , DCreate('SPAN', {class: 'value', inner: DFormater(this.question)})
     ]}))
-  if(this.reponse){
-    divs.push(DCreate('SPAN', {class:'reponse', append:[
-        DCreate('LABEL', {inner: 'Réponse'})
-      , DCreate('SPAN', {class: 'value', inner: DFormater(this.reponse)})
-      ]}))
-  } else {
-    divs.push(DCreate('SPAN', {class:'reponse warning', inner: 'RÉPONSE REQUISE'}))
-  }
+  divs.push(DCreate('SPAN', {class:'reponse', append:[
+      DCreate('LABEL', {inner: 'Réponse'})
+    , DCreate('SPAN', {class: 'value', inner: this.f_reponse})
+    ]}))
 
   return divs
 }
@@ -39,14 +35,14 @@ asFull(options){
   return [
     DCreate('DIV', {append: [
         DCreate('LABEL', {inner: 'QUESTION : '})
-      , DCreate('SPAN', {inner: this.question})
+      , DCreate('SPAN', {inner: DFormater(this.question)})
       ]})
   , DCreate('DIV', {append:[
         DCreate('LABEL', {inner: 'RÉPONSE : '})
       , DCreate('SPAN', {inner: this.f_reponse})
       ]})
   , DCreate('DIV', {append:[
-        DCreate('DIV', {class:'small', inner: this.description})
+        DCreate('DIV', {class:'small', inner: DFormater(this.description)})
       ]})
   ]
 }
@@ -58,7 +54,7 @@ Object.defineProperties(FAEqrd.prototype,{
   f_reponse:{
     get(){
       if(this.reponse && this.reponse.length){
-        return `${this.reponse} (${new OTime(this.tps_reponse).horloge_simple})`
+        return `${DFormater(this.reponse)} (${new OTime(this.tps_reponse).horloge_simple})`
       } else {
         return '<span class="warning">REQUISE</span>'
       }

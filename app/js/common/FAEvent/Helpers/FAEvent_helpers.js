@@ -98,7 +98,7 @@ asShort(opts){
   C'est le span utilisé quand le drapeau contient LABELLED
 **/
 , spanRef(){
-  return DCreate('SPAN', {class:'ref', inner: `${this.htype} #${this.id}`})
+  return DCreate('SPAN', {class:'ref', inner: `${this.tinyName} #${this.id}`})
 }
 
 /**

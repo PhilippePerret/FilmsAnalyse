@@ -9,15 +9,6 @@ static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 static get dataType(){
-  return {
-      hname: 'Question/réponse dramatique'
-    , short_hname: 'Q/R Drama'
-    , tiny_hname: 'QRD'
-    , type: 'qrd'
-  }
-}
-
-static get dataType(){
   if(undefined === this._dataType){
     this._dataType = {
       type: 'qrd'
@@ -48,16 +39,16 @@ static get dataType(){
 }
 
 /**
-  Initialise les QRDs, notamment en affichant celles qui n'ont pas
-  de réponse dans le bloc (section) prévu pour
+  Initialise les QRDs
 **/
 static init(){
-  this.forEachQRD(qrd => {
-    if(qrd.reponse && qrd.reponse.length) return
-    // Sinon, on doit l'écrire dans la section
-    this.section.append(qrd.as('short', EDITABLE))
-  })
+
 }
+
+/**
+  Réinitialisation, par exemple quand on crée une nouvelle analyse ou
+  lorsqu'on en charge une autre.
+**/
 static reset(){
   delete this._qrds
   delete this._sorted
