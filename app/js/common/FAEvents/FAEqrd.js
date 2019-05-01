@@ -8,17 +8,43 @@ static get OWN_PROPS(){return [['question', 'shorttext1'], ['reponse', 'shorttex
 static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
   return {
-      hname: 'Question/rép. dramatique'
+      hname: 'Question/réponse dramatique'
     , short_hname: 'Q/R Drama'
+    , tiny_hname: 'QRD'
     , type: 'qrd'
   }
+}
+
+static get dataType(){
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'qrd'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini: {sing: 'la', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Question/réponse dramatique', plur: 'Questions/réponses dramatiques'}
+        , min: {sing: 'question/réponse dramatique', plur: 'questions/réponses dramatiques'}
+        , maj: {sing: 'QUESTION/RÉPONSE DRAMATIQUE', plur: 'QUESTIONS/RÉPONSES DRAMATIQUES'}
+        }
+      , short:{
+          cap: {sing: 'Q/R Dramatique', plur: 'Q/R Dramatiques'}
+        , min: {sing: 'q/r dramatique', plur: 'q/r dramatiques'}
+        , maj: {sing: 'Q/R DRAMATIQUE', plur: 'Q/R DRAMATIQUES'}
+        }
+      , tiny: {
+          cap: {sing: 'QRD', plur: 'QRDs'}
+        , min: {sing: 'qrd', plur: 'qrds'}
+        }
+      }
+    }
+  }
+  return this._dataType
 }
 
 /**
@@ -77,10 +103,10 @@ static defineLists(){
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type         = 'qrd'
+  // Après la création de la qrd, on vérifie toujours pour savoir s'il
+  // faut l'inscrire dans la "warning-section" des procédés sans résolution
+  this.checkResolution()
 }
-
-get htype(){ return 'Question/réponse dramatique' }
 
 get isValid(){
   var errors = []
@@ -95,6 +121,15 @@ get isValid(){
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0
+}
+
+/**
+  Méthode qui vérifie que la qrd possède bien une réponse et,
+  le cas échéant, l'inscrit dans la "warning-section"
+**/
+checkResolution(){
+  if(undefined != this.reponse && this.reponse.length) return
+  UI.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
 }
 
 /**
@@ -118,6 +153,7 @@ get sceneQ(){
   if(undefined === this._sceneQ) this._sceneQ = FAEscene.at(this.time)
   return this._sceneQ
 }
+
 get sceneR(){
   if(!this.tps_reponse) return
   if(undefined === this._sceneR) this._sceneR = FAEscene.at(new OTime(this.tps_reponse).seconds)
@@ -125,4 +161,3 @@ get sceneR(){
 }
 
 }
-FAEqrd.dispatchData()

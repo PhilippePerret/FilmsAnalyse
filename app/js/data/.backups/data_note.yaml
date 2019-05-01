@@ -2,6 +2,8 @@
 types:
   n/d:
     hname: Non défini
+  musique:
+    hname: Sur la musique
   importante:
     hname: Note importante
   note:

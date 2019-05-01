@@ -8,29 +8,45 @@ static get OWN_PROPS(){return ['procType', ['setup', 'longtext2'], ['exploit','l
 static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
-  return {
-      hname:        'Procédé'
-    , short_hname:  'Procédé'
-    , type:         'proc'
+  if(undefined === this._dataType){
+    this._dataType ={
+      type: 'proc'
+    , genre: 'M'
+    , article:{
+        indefini: {sing: 'un', plur: 'des'}
+      , defini: {sing: 'le', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Procédé', plur: 'Procédés'}
+        , min: {sing: 'procédé', plur: 'procédés'}
+        , maj: {sing: 'PROCÉDÉ', plur: 'PROCÉDÉS'}
+        }
+      , short:{
+          cap: {sing: 'Procédé', plur: 'Procédés'}
+        , min: {sing: 'procédé', plur: 'procédés'}
+        , maj: {sing: 'PROCÉDÉ', plur: 'PROCÉDÉS'}
+        }
+      , tiny: {
+          cap: {sing: 'Proc', plur: 'Procs'}
+        , min: {sing: 'proc', plur: 'procs'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
+
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type         = 'proc'
   // Après la création de l'instance, on vérifie toujours pour savoir s'il
   // faut l'inscrire dans la "warning-section" des procédés sans résolution
   this.checkResolution()
 }
-
-get htype(){ return 'Procédé' }
 
 get isValid(){
   var errors = []
@@ -51,14 +67,7 @@ get isValid(){
 **/
 checkResolution(){
   if(undefined != this.payoff && this.payoff.length) return
-  this.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
+  UI.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
 }
 
-/**
-  La section qui affiche les procédés qui ont besoin de résolution
-  lorsqu'elle n'est pas définie.
-**/
-get warningSection(){return $('#section-qrd-pp')}
-
 }
-FAEproc.dispatchData()

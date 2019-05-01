@@ -120,6 +120,13 @@ constructor(analyse, data){
 
 }
 
+// Les données récupérées du static.dataType de chaque type d'event
+get type(){return this.dataType.type}
+set type(v){}// juste parce qu'elle est appelée au chargement
+get hname(){return this.dataType.name.plain.cap.sing}
+get tinyName(){return this.dataType.name.tiny.cap.sing}
+get dataType(){return this.constructor.dataType}
+
 // Dès qu'on marque l'event modifié, ça marque l'analyse modifiée
 // On utilise aussi les sauvegardes de protection en mémorisant l'identiant
 // de cet event qu'il faudra sauvegarder

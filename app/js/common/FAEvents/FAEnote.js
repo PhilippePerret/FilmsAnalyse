@@ -7,27 +7,43 @@ class FAEnote extends FAEvent {
 // Propriétés propres aux notes
 static get OWN_PROPS(){return ['noteType']}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
-  return {
-      hname: 'Note'
-    , short_hname: 'Note'
-    , type: 'note'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'note'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini:   {sing: 'la', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Note', plur: 'Notes'}
+        , min: {sing: 'note', plur: 'notes'}
+        , maj: {sing: 'NOTE', plur: 'NOTES'}
+        }
+      , short:{
+          cap: {sing: 'Note', plur: 'Notes'}
+        , min: {sing: 'note', plur: 'notes'}
+        , maj: {sing: 'NOTE', plur: 'NOTES'}
+        }
+      , tiny: {
+          cap: {sing: 'Note', plur: 'Notes'}
+        , min: {sing: 'note', plur: 'notes'}
+        , maj: {sing: 'NOTE', plur: 'NOTES'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
+
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type     = 'note'
 }
-
-get htype(){ return 'Note' }
 
 get isValid(){
   var errors = []
@@ -40,4 +56,3 @@ get isValid(){
 }
 
 }
-FAEnote.dispatchData()

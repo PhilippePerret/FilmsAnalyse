@@ -1,33 +1,47 @@
 'use strict'
 
 class FAEaction extends FAEvent {
-  // ---------------------------------------------------------------------
-  //  CLASSE
+// ---------------------------------------------------------------------
+//  CLASSE
 
-  // Propriétés propres
-  static get OWN_PROPS(){ return ['actionType'] }
+// Propriétés propres
+static get OWN_PROPS(){ return ['actionType'] }
 
-  // Pour dispatcher les données propre au type
-  // Note : la méthode est appelée en fin de fichier
-  static dispatchData(){
-    for(var prop in this.dataType) this[prop] = this.dataType[prop]
-  }
-  static get dataType(){
-    return {
-        hname: 'Action'
-      , short_hname: 'Action'
-      , type: 'action'
+static get dataType(){
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'action'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini: {sing: 'l’', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Action', plur: 'Actions'}
+        , min: {sing: 'action', plur: 'actions'}
+        , maj: {sing: 'ACTION', plur: 'ACTIONS'}
+        }
+      , short:{
+          cap: {sing: 'Action', plur: 'Actions'}
+        , min: {sing: 'action', plur: 'actions'}
+        , maj: {sing: 'ACTION', plur: 'ACTIONS'}
+        }
+      , tiny: {
+          cap: {sing: 'Act.', plur: 'Acts.'}
+        , min: {sing: 'act.', plur: 'acts.'}
+        }
+      }
     }
   }
-  // ---------------------------------------------------------------------
-  //  INSTANCE
-  constructor(analyse, data){
-    super(analyse, data)
-    this.type         = 'action'
-    // this.actionType   = data.actionType
-  }
+  return this._dataType
+}
 
-get htype(){ return 'Action' }
+// ---------------------------------------------------------------------
+//  INSTANCE
+constructor(analyse, data){
+  super(analyse, data)
+}
 
 get isValid(){
   var errors = []
@@ -39,11 +53,4 @@ get isValid(){
   return errors.length == 0
 }
 
-get div(){
-  var n = super.div
-  return n
 }
-
-}
-
-FAEaction.dispatchData()

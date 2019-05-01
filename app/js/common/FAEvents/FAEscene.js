@@ -274,17 +274,35 @@ static get lastScene(){
   return this.sortedByTime[this.count-1]
 }
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
-  return {
-      hname: 'Scène'
-    , short_hname: 'Scène'
-    , type: 'scene'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'scene'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini:   {sing: 'la', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Scène', plur: 'Scènes'}
+        , min: {sing: 'scène', plur: 'scènes'}
+        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
+        }
+      , short:{
+          cap: {sing: 'Scène', plur: 'Scènes'}
+        , min: {sing: 'scène', plur: 'scènes'}
+        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
+        }
+      , tiny: {
+          cap: {sing: 'Sc.', plur: 'Sc.'}
+        , min: {sing: 'sc.', plur: 'sc.'}
+        , maj: {sing: 'SC.', plur: 'SC.'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
 
 // ---------------------------------------------------------------------
@@ -292,13 +310,10 @@ static get dataType(){
 
 constructor(analyse, data){
   super(analyse, data)
-  this.type       = 'scene'
 }
 
 // ---------------------------------------------------------------------
 //  HELPERS
-
-get htype(){ return 'Scène' }
 
 get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hduree)}
 
@@ -377,5 +392,3 @@ get isRealScene(){return this.sceneType !== 'generic'}
 get isGenerique(){return this.sceneType === 'generic'}
 
 } // Fin de FAEscene
-
-FAEscene.dispatchData()

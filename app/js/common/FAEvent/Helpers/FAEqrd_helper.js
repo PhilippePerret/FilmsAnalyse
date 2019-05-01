@@ -36,7 +36,7 @@ asShort(options){
   Version complète de la QRD
 **/
 asFull(options){
-  return DCreate('DIV', {append:[
+  return [
     DCreate('DIV', {append: [
         DCreate('LABEL', {inner: 'QUESTION : '})
       , DCreate('SPAN', {inner: this.question})
@@ -48,7 +48,7 @@ asFull(options){
   , DCreate('DIV', {append:[
         DCreate('DIV', {class:'small', inner: this.description})
       ]})
-  ]}).outerHTML
+  ]
 }
 })
 

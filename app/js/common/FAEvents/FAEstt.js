@@ -8,11 +8,7 @@ class FAEstt extends FAEvent {
 // Propriétés propres
 static get OWN_PROPS(){return [ ['sttID', 'sttType'] ]}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
+
 static get dataType(){
   return {
       hname: 'Nœud structurel'
@@ -20,16 +16,45 @@ static get dataType(){
     , type: 'stt'
   }
 }
+
+
+static get dataType(){
+  if(undefined === this._dataType){
+    this._dataType ={
+      type: 'stt'
+    , genre: 'M'
+    , article:{
+        indefini: {sing: 'un', plur: 'des'}
+      , defini: {sing: 'le', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Nœud structurel', plur: 'Nœud structurels'}
+        , min: {sing: 'nœud structurel', plur: 'nœud structurels'}
+        , maj: {sing: 'NŒUD STRUCTUREL', plur: 'NŒUDS STRUCTURELS'}
+        }
+      , short:{
+          cap: {sing: 'Nœud Stt', plur: 'Nœuds Stt'}
+        , min: {sing: 'Nœud Stt', plur: 'Nœuds Stt'}
+        , maj: {sing: 'Nœud STT', plur: 'Nœuds STT'}
+        }
+      , tiny: {
+          cap: {sing: 'N.Stt', plur: 'N.Stt'}
+        , min: {sing: 'n.stt', plur: 'n.stt'}
+        , maj: {sing: 'N.STT', plur: 'N.STT'}
+        }
+      }
+    }
+  }
+  return this._dataType
+}
+
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type   = 'stt'
-  // Mettre ici les données propres
-  // this.sttID  = data.sttID // p.e. 'incDec' ou 'DEV1', une clé dans PFA.DATA_STT_NODES
 }
-
-get htype(){ return 'Nœud structurel' }
 
 get isValid(){
   var errors = []
@@ -74,4 +99,3 @@ onCreate(){
   this.sttNode.event = this
 }
 }
-FAEstt.dispatchData()
