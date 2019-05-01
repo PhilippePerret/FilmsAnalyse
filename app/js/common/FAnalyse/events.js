@@ -112,11 +112,12 @@ getBaliseAssociation(obj, domEl, e){
     case 'event':
       // Pour un event, il faut toujours que l'ID soit défini
       if (undefined === domEl_id) throw("Il faut toujours définir l'ID de l'event, dans l'attribut data-id.")
-      if (obj && false === obj.addEvent(domEl_id)){
+      let domEl_e = FAEvent.get(domEl_id)
+      if (obj && 'function'==typeof(obj.addEvent) && false === obj.addEvent(domEl_id)){
         return null
       }
-      var isScene = domEl_type === 'scene'
-      balise = `{{${isScene?'scene':'event'}:${domEl_id}}}`
+      let titAlt = domEl_e.isScene ? `|Scène ${domEl_e.numero}` : ''
+      balise = `{{event:${domEl_id}${titAlt}}}`
       break
     case 'time':
       balise = `{{time:${domEl.attr('data-time')}}}`

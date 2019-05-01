@@ -41,7 +41,7 @@ EventForm.buildFormOfType = function(type){
     // Le petit bouton droppable pour associer l'event nouveau ou modifié
       DCreate('SPAN', {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:{
         title: 'Pour glisser et déposer l’event et l’associer'
-      , 'data-type': (type=='scene'?'scene':'event'), 'data-id':'__EID__'
+      , 'data-type':'event', 'data-id':'__EID__'
       }})
     , DCreate('BUTTON', {class:'btnplay right', size: 30})
     , DCreate('LABEL', {inner: 'Position'})

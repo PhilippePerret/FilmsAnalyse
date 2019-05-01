@@ -330,6 +330,9 @@ get description(){
 
 // ---------------------------------------------------------------------
 //  MÉTHODES D'ÉTAT
+
+get isScene(){return true} // surclasse la méthode de FAEvent
+
 /**
  * Méthode qui retourne true si l'évènement est valide (en fonction de son
  * type) et false dans le cas contraire.

@@ -151,6 +151,7 @@ reset(){
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return true}
 get isADocument(){return false}
+get isScene(){return false} // surclassé par FAEscene
 
 // ---------------------------------------------------------------------
 //  Méthodes d'helper

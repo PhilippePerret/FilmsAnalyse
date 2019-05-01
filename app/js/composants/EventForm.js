@@ -532,7 +532,7 @@ observe(){
 
   let dataDrop = Object.assign({}, DATA_DROPPABLE, {
     drop: (e, ui) => {
-      let obj = this.event || {type:(this.type=='scene'?'scene':'event'), id: this.id}
+      let obj = this.event || {type:'event', id: this.id}
       var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
       if(balise){
         if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1) $(e.target).insertAtCaret(balise)
