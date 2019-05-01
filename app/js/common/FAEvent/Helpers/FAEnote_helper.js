@@ -23,7 +23,11 @@ asNote(options){
       DCreate('SPAN',{class:'note-indice',inner:`[${this.indice_note}]`})
     , DCreate('SPAN',{class:'', inner: DFormater(this.content)})
     ]}))
-  return divs
+  if (options && options.as === 'string'){
+    return divs[0].outerHTML
+  } else {
+    return divs
+  }
 }
 
 })
