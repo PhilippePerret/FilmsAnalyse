@@ -98,8 +98,10 @@ scenes:{
       }
       for(var ev_id of this.events){
         ev = this.a.ids[ev_id]
-        sc = ev.scene
-        if(ev) arr[sc.numero] = sc
+        if(ev){
+          sc = ev.scene
+          arr[sc.numero] = sc
+        }
         else {
           console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
         }

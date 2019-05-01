@@ -163,14 +163,26 @@ divAssociateds(){
 ,
 /**
   Retourne la liste des éléments associés, en mode court (il suffit de glisser la souris sur l'ID pour le lire)
+
+  TODO: Peut-être que cette méthode devrait être plus universelle, notamment
+  pour traiter les nouveaux events non encore enregistrés.
 **/
 associateds(opts){
-  var ass = [], id
+  var ass = [], id, ev
   for(id of this.documents){
     ass.push(FADocument.get(id).asAssociate(opts))
   }
   for(id of this.events){
-    ass.push(DCreate('SPAN',{inner:`Ev#${id}`, attrs:{title:FABrin.a.ids[id].as('short',ESCAPED,{no_warm:true})}}))
+    ev = FABrin.a.ids[id]
+    // Lorsque l'on glisse un nouvel event depuis son formulaire de création jusque sur
+    // la fenêtre des brins, cet event n'existe pas encore. Dans ce cas, on met juste la
+    // marque 'NEW EVENT #XXX'
+    // Noter qu'on pourrait très bien récupérer ses valeurs dans le formulaire, mais bon…
+    if(ev){
+      ass.push(DCreate('SPAN',{inner:`Ev#${id}`, attrs:{title:ev.as('short',ESCAPED,{no_warm:true})}}))
+    } else {
+      ass.push(DCreate('SPAN',{inner: `NEW EVENT #${id}`}))
+    }
   }
   for(id of this.times){
     ass.push(DCreate('SPAN', {append:[

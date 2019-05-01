@@ -2,6 +2,9 @@
 
 ### Traiter :
 
+* Fixeur d'analyse
+  - Lorsqu'un event est introuvable, possibilité de le créer plutôt que de supprimer l'assocatiion
+
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 
 - Checker la résolution quand on modifie le procédé (pour le moment, ça n'est traité à la création et à l'instanciation)
