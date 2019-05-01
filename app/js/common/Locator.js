@@ -204,7 +204,7 @@ stopForward(){
           défini du film.
  */
 setTime(time, dontPlay){
-  // console.log("-> setTime", time)
+  log.info('-> Locator#setTime(time=, dontPlay=)', time, dontPlay)
 
   // Initialisation de tous les temps. Cf. [1]
   this.resetAllTimes()
@@ -232,6 +232,12 @@ setTime(time, dontPlay){
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     }
+    if(this.currentScene){
+      log.info(`   À la fin de setTime, scène courante numéro est ${this.currentScene.numero} (${FAEscene.current.numero})`)
+    } else {
+      log.info(`   Pas de scène courante à la fin de Locator#setTime`)
+    }
+    log.info('<- Locator#setTime')
   }
 
   // Si la vidéo ne joue pas, on force l'actualisation de tous
@@ -306,7 +312,6 @@ resetAllTimes(){
   delete this.timeNextScene
 }
 
-// ---------------------------------------------------------------------
 
 /**
  * Méthode permettant de rejoindre le début du film
@@ -319,10 +324,30 @@ goToFilmStart(){
   }
 }
 
+// ---------------------------------------------------------------------
+//  MÉTHODES SUR LES SCÈNES
+
+get currentScene(){ return FAEscene.current}
+set currentScene(v){
+  log.info(`Current scène de Locator mise à ${v} (${v.numero})`)
+  FAEscene.current = v
+}
+
+// Retourne la scène précédente de la scène courante
+get prevScene(){
+  if (!this.currentScene || this.currentScene.numero == 1) return
+  else return FAEscene.getByNumero(this.currentScene.numero - 1)
+}
+get nextScene(){
+  // console.log("-> nextScene")
+  if(!this.currentScene) return FAEscene.getByNumero(1)
+  else return FAEscene.getByNumero(this.currentScene.numero + 1)
+}
+
 goToPrevScene(){
   let method = () => {
-    if (this.a.prevScene){
-      this.setRTime(this.a.prevScene.time)
+    if (this.prevScene){
+      this.setRTime(this.prevScene.time)
     } else if (FAEscene.current ){
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
     } else {
@@ -336,19 +361,22 @@ stopGoToPrevScene(){
   clearTimeout(this.timerPrevScene)
   delete this.timerPrevScene
 }
+
 goToNextScene(){
-  // console.log("-> goToNextScene")
+  log.info("-> Locator#goToNextScene", (undefined === FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
   let method = () => {
-    if (this.a.nextScene){
-      this.setRTime(this.a.nextScene.time)
+    if (this.nextScene){
+      this.setRTime(this.nextScene.time)
+      log.info(`   Après setRTime, numéro scène courant = ${this.currentScene.numero}, numéro scène suivante = ${this.nextScene.numero}`)
     } else if (FAEscene.current) {
-      F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
+      F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
     } else {
-      F.notify(`Pas de scène suivante.`)
+      F.notify(`   Pas de scène suivante.`)
     }
   }
   this.timerNextScene = setTimeout(method, 500)
   method()
+  log.info('<- Locator#goToNextScene')
 }
 stopGoToNextScene(){
   clearTimeout(this.timerNextScene)
@@ -568,14 +596,16 @@ actualizeMarkersStt(curt){
 
  */
 actualizeCurrentScene(curt){
-  // console.log("-> actualizeCurrentScene")
+  // log.info("-> actualizeCurrentScene(curt=)", curt)
+  log.info(`-> actualizeCurrentScene(curt=${curt})`)
   if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
-  // console.log("resat:", resat)
   if(resat){
+    log.info(`   Donnée de scène courante et suivante : {current: <<Scène ${resat.current.id} numéro=${resat.current.numero}>>, next: <<Scène ${resat.next.id} numéro=${resat.next.numero}>>, next_time: ${resat.next_time}}`)
     FAEscene.current = resat.current
     this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
   }
+  log.info("<- actualizeCurrentScene")
 }
 
 // ---------------------------------------------------------------------

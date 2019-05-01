@@ -3,6 +3,10 @@
  * Class OTime
  * -----------
  * Permet de gérer les temps
+
+ Permet également de traiter un temps soit comme temps "réel" du film,
+ c'est-à-dire pas comme le temps de la vidéo ou justement le temps de la vidéo
+ grâce aux deux méthodes .RTime et .VTime
  */
 
 class OTime {
@@ -29,6 +33,10 @@ class OTime {
         console.log("Le traitement par objet n'est pas encore implémenté")
     }
   }
+
+  get RTime(){ return this.seconds - current_analyse.filmStartTime}
+  get VTime(){ return this.seconds}
+
 
   set horloge(v)  { this._horloge = v }
   get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
@@ -108,4 +116,6 @@ updateSeconds(s){
   this.seconds = s
   this.horloge = this.s2h(s)
 }
+
+
 }

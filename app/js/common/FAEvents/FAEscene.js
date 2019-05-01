@@ -49,15 +49,8 @@ static reset(){
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
-  // console.log("Scène courante mise à ", s)
-  // try {
-  //   pourvoirdou
-  // } catch (e) {
-  //   console.error('Pour voir qui appelle')
-  //   console.error(e)
-  // }
+  log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
-  this.a._currentScene = s
   this.a.videoController.markCurrentScene.html(s ? s.asPitch() : '...')
 }
 static getCurrent(){
@@ -99,6 +92,7 @@ static getById(event_id){return this.byId[event_id]}
 static getByTime(time)  {return this.byTime[time]}
 
 static getByNumero(num){
+  console.log('[FAEscene] Je dois retourner la scène numéro', num)
   return this.byNumero[num]
 }
 
@@ -231,7 +225,10 @@ static at(time){
   Note : la scène suivante sert par exemple à connaitre le temps du
   prochain changement de scène.
 
-  @param   {Float}  time  Le temps considéré
+  @param   {Float}  time  Le temps considéré, c'est un temps "réel", pas le
+                          temps exact de la vidéo.
+                          RECTIF : si, je crois que c'est un temps réel qui est
+                          envoyé
   @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
                     Noter que `next_time` est toujours défini, même lorsqu'au-
                     cune scène n'a été trouvée après. C'est alors le temps de
@@ -239,7 +236,8 @@ static at(time){
                     jusqu'à la fin.
 **/
 static atAndNext(time){
-  time = time.round(2)
+  log.info('-> FAEscene#atAndNext(time=)', time)
+  time = (time - current_analyse.filmStartTime).round(2)
   // console.log("[atAndNext] time:", time)
   if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
     // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
@@ -253,9 +251,11 @@ static atAndNext(time){
     , last_scene
 
   this.forEachSortedScene(function(scene){
+    log.info(`   Comparaison de scene.time (${scene.time}) > ${time} ? (si oui, c'est la scène qu'on cherche)`)
     if(scene.time > time) {
       founded     = last_scene
       next_scene  = scene
+      log.info(`   Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
       return false // pour interrompre
     }
     last_scene = scene

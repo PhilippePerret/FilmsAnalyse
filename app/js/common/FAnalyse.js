@@ -119,21 +119,6 @@ constructor(pathFolder){
   this.events   = []
 }
 
-
-get currentScene(){ return FAEscene.current}
-set currentScene(v){ FAEscene.current = v }
-
-// Retourne la scène précédente de la scène courante
-get prevScene(){
-  if (!this.currentScene || this.currentScene.numero == 1) return
-  else return FAEscene.getByNumero(this.currentScene.numero - 1)
-}
-get nextScene(){
-  // console.log("-> nextScene")
-  if(!this.currentScene) return FAEscene.getByNumero(1)
-  else return FAEscene.getByNumero(this.currentScene.numero + 1)
-}
-
 /**
   Méthode appelée depuis le menu 'Outils' pour rejoindre la dernière
   scène définie, (quand on est en mode collecte)

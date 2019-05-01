@@ -306,8 +306,8 @@ observe(){
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
   this.markCurrentScene.on('click', () => {
-    if (current_analyse.currentScene){
-      EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+    if (this.locator.currentScene){
+      EventForm.editEvent.bind(EventForm)(this.locator.currentScene)
     }
   })
 
