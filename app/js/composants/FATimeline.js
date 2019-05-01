@@ -45,12 +45,14 @@ init(options){
 /**
 * Positionne le cursor principal au temps voulu
 **/
-positionneAt(rtime){
-  this.mainCursor.css('left', `${(rtime * this.coefT2P)+4}px`)
+positionneAt(time){
+  time instanceof(OTime) || raise(T('otime-arg-required'))
+  this.mainCursor.css('left', `${(time.RTime * this.coefT2P)+4}px`)
 }
 // Position le cursor fantôme
-positionneShadowAt(rtime){
-  this.shadowCursor.css('left', `${(rtime * this.coefT2P)+4}px`)
+positionneShadowAt(time){
+  time instanceof(OTime) || raise(T('otime-arg-required'))
+  this.shadowCursor.css('left', `${(time.RTime * this.coefT2P)+4}px`)
 }
 /**
 * Quand on arrive sur le slider
@@ -71,22 +73,22 @@ onMouseOutSlider(e){
 
 onMoveOnSlider(e){
   this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
-  this.positionneShadowAt(this.otime.seconds)
+  this.positionneShadowAt(this.otime)
   this.horloge.css('visibility', 'visible')
   this.horloge.html(this.otime.horloge)
   stopEvent(e)
 }
 
 onClickOnSlider(e){
-  this.locator.setRTime(this.otime.seconds)
-  this.positionneAt(this.otime.seconds)
+  this.locator.setTime(this.otime)
+  this.positionneAt(this.otime)
   if(this.locator.playing) this.locator.togglePlay()
 }
 
 // C'est le double-clic qui démarre la vidéo
 onDoubleClickOnSlider(e){
   this.locator.togglePlay()
-  this.positionneAt(this.otime.seconds)
+  this.positionneAt(this.otime)
 }
 
 /**

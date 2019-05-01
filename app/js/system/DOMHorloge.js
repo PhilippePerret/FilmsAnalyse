@@ -69,7 +69,7 @@ class DOMHorloge {
   reset(){
     this.time = this.initTime
     this.showTime()
-    if(this.synchroVideo) current_analyse.locator.setRTime(this.time)
+    if(this.synchroVideo) current_analyse.locator.setTime(this.otime)
     this.modified = false
     return this // chainage
   }
@@ -131,7 +131,7 @@ class DOMHorloge {
   }
   // Surclassé pour la class DOMDuration
   synchronizeVideo(){
-    current_analyse.locator.setRTime(this.time)
+    current_analyse.locator.setTime(this.otime)
   }
   onEndMoving(ev){
     // console.log(ev)
@@ -195,7 +195,11 @@ class DOMDuration extends DOMHorloge {
 
   // Surclassé pour la class DOMDuration
   synchronizeVideo(){
-    current_analyse.locator.setRTime(this.endTime)
+    current_analyse.locator.setTime(this.oEndTime())
   }
-
+  oEndTime(){
+    if(undefined === this._oendtime) this._oendtime = new OTime(this.endTime)
+    this._oendtime.RTime = this.endTime
+    return this._oendtime
+  }
 }

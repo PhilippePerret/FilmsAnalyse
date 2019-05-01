@@ -322,7 +322,7 @@ const DATA_AUTOMATIC_STEPS = {
     {NaT: true, regular: true, exec: 'HandTests.loadAnalyseAndWait("__relpath__")', expected:'---nothing---'}
   ]
 , "se rendre à (?<horloge>[0-9\:\.]+)":[
-    {NaT: true, regular: true, exec: 'current_analyse.locator.setRTime(new OTime("__horloge__").seconds)', expected:'---nothing---'}
+    {NaT: true, regular: true, exec: 'current_analyse.locator.setTime(new OTime("__horloge__"))', expected:'---nothing---'}
   ]
   // Voir le "se rendre ${WHERE_REG}" plus bas
 , "enregistrer l'analyse":[

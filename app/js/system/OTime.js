@@ -34,8 +34,13 @@ class OTime {
     }
   }
 
-  get RTime(){ return this.seconds - current_analyse.filmStartTime}
-  get VTime(){ return this.seconds}
+  valueOf(){return this.seconds}
+  toString(){return this._toString || defP(this,'_toString', `<<OTime VTime=${this.VTime} RTime=${this.RTime}>>`)}
+
+  get RTime(){ return this.seconds}
+  set RTime(s){ this.updateSeconds(s.round(2))}
+  get VTime(){ return this.seconds + current_analyse.filmStartTime}
+  set VTime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
 
 
   set horloge(v)  { this._horloge = v }
@@ -113,6 +118,7 @@ s2h(s, format){
  * pour ne pas créer intensivement des instances à chaque millisecondes
  */
 updateSeconds(s){
+  delete this._toString
   this.seconds = s
   this.horloge = this.s2h(s)
 }

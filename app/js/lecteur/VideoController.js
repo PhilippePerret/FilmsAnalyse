@@ -162,7 +162,7 @@ load(vpath){
   .on('loadeddata', () => {
     UI.showVideoController()
     var lastCurTime = this.analyse.lastCurrentTime
-    lastCurTime && this.analyse.locator.setRTime(lastCurTime, true)
+    lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
     this.a.onVideoLoaded.bind(this.a)()
   })
   .on('ended', () => {
@@ -224,7 +224,7 @@ onClickMarkStt(mainSub, absRel, e){
     other_node = pfa.node(node.next || node.first)
   }
   // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
-  this.a.locator.setRTime(other_node[`startAt${absRel}`])
+  this.a.locator.setTime(new OTime(other_node[`startAt${absRel}`]))
 
   pfa = null
 }

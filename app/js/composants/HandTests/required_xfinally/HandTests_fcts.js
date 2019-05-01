@@ -14,7 +14,7 @@ Object.assign(HandTests,{
     // console.log("where=",where)
     let at = HandTestStep.WhereExpToTime(where)
     // console.log("at de where = ", where, at)
-    this.a.locator.setRTime(at)
+    this.a.locator.setTime(new OTime(at))
     return true
   }
 , loadAnalyseAndWait(relpath){

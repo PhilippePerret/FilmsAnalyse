@@ -124,7 +124,7 @@ constructor(pathFolder){
   scène définie, (quand on est en mode collecte)
 **/
 goToLastScene(){
-  this.locator.setRTime(FAEscene.lastScene.time)
+  this.locator.setTime(FAEscene.lastScene.time)
 }
 
 get PFA(){

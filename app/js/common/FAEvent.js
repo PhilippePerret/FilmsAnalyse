@@ -568,9 +568,9 @@ togglePlay(){
     // On met en route
     var t = this.time
     if(current_analyse.options.get('option_start_3secs_before_event')){t -= 3}
-    this.locator.setRTime.bind(this.locator)(t)
+    this.locator.setTime.bind(this.locator)(new OTime(t))
     // On détermine la fin du jeu
-    this.locator.setEndTime(t + this.duree, this.togglePlay.bind(this))
+    this.locator.setEndTime(new OTime(t + this.duree), this.togglePlay.bind(this))
   }
 
   this.playing = !this.playing

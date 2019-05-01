@@ -2,8 +2,23 @@
 
 ### Traiter :
 
-- Voir pourquoi les scènes de HER ne s'affichent pas toutes quand on utilise le bouton "scène suivante"
+- Poursuivre la refactorisation complète des temps, en utilisant OTime pour
+  tous les gérer afin de toujours savoir si on utilise VTime (temps de la vidéo)
+  ou RTime (temps "réel")
+  - lastCurrentTime doit être un OTime
+  - Remplacer 'getOTime()' et 'getROTime()' (méthodes) par 'this.a.locator.currentTime' (prop)
+  - Remplacer 'getRTime(t)' par quelque chose qui retourne le temps réel de t,
+    c'est-à-dire en retirant la valeur de `startFilmTime`
+    - idem pour `getRTimeRound(t)` mais en arrondissant :
+      `return t.round(2)`
+  - Supprimer `getTimeRound()` (remplacer par `locator.getTime()` qui arrondi)
+  - Pour les horloges de OTime, utiliser toujours RTime, ou alors faire une
+    méthode spéciale pour avoir l'horloge du temps réel, qui n'est pas l'horloge
+    normale.
+  - Vérifier que les trois temps soient bien enregistrés (startFilmTime, endFilmTime et
+    endGenericFilmTime — ou similaire)
 
+- Voir si ça corrige le problème des scènes dans HER.
 
 * CHECK ANALYSE
   - Poursuivre le check (app/js/tools/analyse_checker.js)

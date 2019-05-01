@@ -32,7 +32,7 @@ init(){
 get oMainHorloge(){return this._oMainHorloge||defP(this,'_oMainHorloge', this.videoController.mainHorloge)}
 set oMainHorloge(v){
   v.dispatch({
-      time: this.getRTime()
+      time: this.getRTime() // {OTime}
     , synchroVideo: true
     , unmodifiable: true // pour ne pas la marquer modifiée
   })
@@ -67,7 +67,7 @@ togglePlay(ev){
     this.resetAllTimes()
     // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
     // stop.
-    var curT = this.getTime()
+    var curT = this.getTime() // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = this.video.play()
     if (videoPromise !== undefined) {
@@ -111,12 +111,12 @@ stop(){
  * film)
  */
 stopAndRewind(){
-  var curTime = this.getTime()
+  var curTime = this.getTime() // {OTime}
 
   // Si le film jouait, on doit l'arrêter
   if(this.playing) this.togglePlay()
 
-  if(curTime > this.lastStartTime){
+  if(curTime > this.lastStartTime){ // instances {OTime}
     // <= Le temps courant est supérieur au dernier temps de départ
     // => on revient au dernier temps de départ
     this.setTime(this.lastStartTime)
@@ -154,7 +154,9 @@ rewind(secs){
     newtime = 0
     if(this.timerRewind) this.stopRewind()
   }
-  this.setTime(newtime)
+  let ontime = new OTime(0)
+  ontime.VTime = newtime
+  this.setTime(ontime)
 }
 
 forward(secs){
@@ -164,7 +166,9 @@ forward(secs){
     if(this.timerForward) this.stopForward()
     return
   }
-  this.setTime(newtime)
+  let ontime = new OTime(0)
+  ontime.VTime = newtime
+  this.setTime(ontime)
 }
 stopRewind(){
   // console.log("-> stopRewind")
@@ -199,24 +203,22 @@ stopForward(){
   de la prochaine scène ou du temps d'arrêt (cf. `resetAllTimes`).
 
   +time+  @Number Nombre de secondes depuis le début de la vidéo
-          Note : appeler la méthode `setRTime` pour envoyer un
+          Note : appeler la méthode `setTime` pour envoyer un
           temps dit "réel", c'est-à-dire par rapport au début
           défini du film.
+  @param {OTime} time Instance de temps qui permet, grâce à sa propriété VTime
+                      de régler la vidéo.
+  @param {Boolean} dontPlay   Si true, on ne met pas la vidéo en route.
  */
 setTime(time, dontPlay){
-  log.info('-> Locator#setTime(time=, dontPlay=)', time, dontPlay)
+  log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), dontPlay)
+  time instanceof(OTime) || raise(T('otime-arg-required'))
 
   // Initialisation de tous les temps. Cf. [1]
   this.resetAllTimes()
 
-  // On ne peut envoyer qu'un nombre, voyons.
-  if(isNaN(time)){
-    console.error(`${time} n'est pas un temps. Je ne bouge pas la vidéo.`)
-    return
-  }
-
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
-  this.video.currentTime = time
+  this.video.currentTime = time.VTime
 
   // Réglage de l'horloge principale.
   this.oMainHorloge.time = time
@@ -277,25 +279,16 @@ stopWatchTimerEvent(){
 restartWatchTimerEvent(){
   this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.startWatchingTime()})
 }
-/**
- * Rejoint le temps "réel" +time+, c'est-à-dire en tenant compte du début
- * défini pour le film
- */
-setRTime(time, dontPlay, evt){
-  if(this.hasStartTime) time += this.startTime
-  this.setTime(time, dontPlay)
-}
 
 /**
  * On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
  */
 setEndTime(time, fnOnEndTime){
-  if(isNaN(time)){
-    console.error(`${time} n'est pas un temps. Je ne définis pas la fin de la vidéo.`)
+  if(!(time instanceof(OTime))){
+    console.error(`${time} n'est pas une instance OTime. Je ne définis pas la fin de la vidéo.`)
     return
   }
-  if(this.hasStartTime) time += this.startTime
-  this.wantedEndTime = parseFloat(time)
+  this.wantedEndTime = time
   this.wantedEndTimeCallback = fnOnEndTime
 }
 
@@ -347,7 +340,7 @@ get nextScene(){
 goToPrevScene(){
   let method = () => {
     if (this.prevScene){
-      this.setRTime(this.prevScene.time)
+      this.setTime(this.prevScene.time)
     } else if (FAEscene.current ){
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
     } else {
@@ -366,8 +359,8 @@ goToNextScene(){
   log.info("-> Locator#goToNextScene", (undefined === FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
   let method = () => {
     if (this.nextScene){
-      this.setRTime(this.nextScene.time)
-      log.info(`   Après setRTime, numéro scène courant = ${this.currentScene.numero}, numéro scène suivante = ${this.nextScene.numero}`)
+      this.setTime(this.nextScene.time)
+      log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}, numéro scène suivante = ${this.nextScene.numero}`)
     } else if (FAEscene.current) {
       F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
     } else {
@@ -410,52 +403,17 @@ addStopPoint(time){
 // ---------------------------------------------------------------------
 // Méthodes de données
 
-get startTime(){
-  return this.a.filmStartTime // toujours défini
-}
+get startTime(){return this._startTime||defP(this,'_startTime', new OTime(0))}
 get currentTime(){
-  return this.video.currentTime
+  if(undefined === this._currentTime) this._currentTime = new OTime(0)
+  this._currentTime.VTime = this.video.currentTime
+  return this._currentTime
 }
-get currentRTime(){return this.getRTime()}
 
 /**
 * Alias de this.currentTime pour retourner le temps vidéo courant
 **/
 getTime(){ return this.currentTime }
-getTimeRound(){ return Math.round(this.getTime() * 100) / 100 }
-
-/**
- * Méthode qui récupère le temps courant du film et retourne une instance
- * OTime
- *
- */
-getOTime(){
-  return new OTime(this.currentTime)
-}
-// Retourne une instance OTime du temps réel (actualisé chaque fois)
-getROTime(){
-  if(undefined === this._getROTime){
-    this._getROTime = new OTime(this.getRTime())
-  } else {
-    this._getROTime.updateSeconds(this.getRTime())
-  }
-  return this._getROTime
-}
-/**
- * (Number) Retourne le temps rectifié. Il peut être négatif.
- *
- * Si +t+ est fourni, on renvoie le temps réel de ce temps, sinon on
- * prend le temps courant
- */
-getRTime(t){
-  if(undefined === t){ t = this.currentTime }
-  if(this.hasStartTime){ t -= this.startTime }
-  return t
-}
-// Version arrondi à seulement 2 décimales
-getRTimeRound(t){
-  return Math.round(this.getRTime(t) * 100) / 100
-}
 
 // ---------------------------------------------------------------------
 //  Méthode de formatage
@@ -505,24 +463,24 @@ desactivateHorloge(){
   indicateur de structure.
 **/
 actualizeALL(){
-  var curt = this.currentRTime
+  var curt = this.currentTime
   this.actualizeHorloge(curt)
   this.videoController.positionIndicator.positionneAt(curt)
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
-  this.actualizeCurrentScene(this.video.currentTime)
+  this.actualizeCurrentScene(curt)
   curt = null
 }
 
 actualizeHorloge(curt){
-  if(undefined === curt) curt = this.currentRTime
+  if(undefined === curt) curt = this.currentTime
   this.horloge.innerHTML = this.getRealTime(curt)
-  this.realHorloge.innerHTML = this.getRealTime(this.video.currentTime)
+  this.realHorloge.innerHTML = this.getRealTime(curt)
   this.oMainHorloge.time = curt
 }
 
 actualizeReader(curt){
-  if(undefined === curt) curt = this.currentRTime
+  if(undefined === curt) curt = this.currentTime
   // Afficher les events autour du temps courant
   this.showEventsAt(curt)
   // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
@@ -548,7 +506,7 @@ actualizeReader(curt){
 actualizeMarkersStt(curt){
   // console.log("-> actualizeMarkersStt", curt)
   var vid = this.videoController
-  if(undefined === curt) curt = this.currentRTime
+  if(undefined === curt) curt = this.currentTime
   if(undefined === this.a.PFA.TimesTables) this.a.PFA.setTimesTables()
   if(undefined === this.nextTimes) {
     this.nextTimes = {'Main-Abs': null, 'Main-Rel': null, 'Sub-Abs':null, 'Sub-Rel': null}
@@ -685,16 +643,13 @@ addEvent(ev){
 // Méthodes DOM
 
 /**
- * Méthode appelée pour se rendre au temps voulu.
- * Le temps peut être défini comme on veut, en seconds, en horloge, etc.,
- * et il tient compte d'un début défini (puisqu'il utilise la méthode
- * `getRTime`).
+  Méthode appelée pour se rendre au temps voulu.
+
  */
 goToTime(ev){
-  var t = new OTime(VideoController.current.section.find('.requested_time').val()).seconds
-  if(this.hasStartTime){ t += this.startTime }
-  this.setTime(t)
-  // En pause, il faut forcer l'affichage du temps
+  this.setTime(new OTime(VideoController.current.section.find('.requested_time').val()))
+  // En pause, il faut forcer l'affichage du temps, ça ne se fait pas
+  // tout seul.
   if(this.video.paused) this.actualizeALL()
 }
 
