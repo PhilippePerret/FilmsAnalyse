@@ -559,7 +559,7 @@ saveFile(fpath, prop){
       throw("Il faut donner le nom du fichier", fpath)
   }
   iofile.code = this[prop]
-  iofile.save({after: this.setSaved.bind(this, fpath)})
+  iofile.save({ after: this.setSaved.bind(this, fpath), no_waiting_msg: true })
   return iofile.saved
 }
 

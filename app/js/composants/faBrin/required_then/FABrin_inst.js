@@ -99,7 +99,7 @@ scenes:{
       for(var ev_id of this.events){
         ev = this.a.ids[ev_id]
         if(ev){
-          sc = ev.scene
+          qsc = ev.scene
           arr[sc.numero] = sc
         }
         else {
