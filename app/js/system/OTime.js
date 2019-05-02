@@ -18,6 +18,7 @@ class OTime {
    *
    */
   constructor(v){
+    this.type = 'time'
     switch (typeof(v)) {
       case 'number':
         this.seconds = v
@@ -43,7 +44,7 @@ class OTime {
   }
 
   valueOf(){return this.seconds}
-  toString(){return this._toString || defP(this,'_toString', `<<OTime vtime=${this.vtime} rtime=${this.rtime}>>`)}
+  toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
 
   // @return TRUE si le temps est entre les seconds +av+ et +ap+
   between(av,ap){
@@ -70,13 +71,22 @@ class OTime {
 
 /**
   Méthode qui permet de traiter les temps comme des events dans
-  les associations.
+  les associations. Pour afficher le temps courant et aussi pouvoir
+  le dissocier de son élément propriétaire
 
   @param {Object} options  Des options (inutilisé ici pour le moment)
 
 */
 asAssociate(options){
-  return DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}})
+  if(undefined === options) options = {}
+  var dvs = []
+  dvs.push(DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
+  if(options.owner){
+    // Si les options définissent un owner, on ajoute un lien pour pouvoir
+    // dissocier le temps de son possesseur
+    dvs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'time', id:${this.seconds}}, owner:{type:'${options.owner.type}', id:${options.owner.id}}})`}}))
+  }
+  return DCreate('SPAN', {class:'lktime', append: dvs})
 }
 
 set duree(v) { this.duree = v }

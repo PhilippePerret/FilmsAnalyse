@@ -95,6 +95,56 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
+/**
+  Méthode qui permet de dissocier des éléments (pour le moment, des events)
+  @param {Object} datadis   Données pour effectuer la dissociation. Doit
+                            contenir : :owner_type, le type du propriétaire,
+                            par exemple 'event' ou 'doc', :owner_id, l'id du
+                            propriétaire, :type, le type de l'élément à disso-
+                            cier, par exemple 'time'
+                            :time ou :id suivant qu'il s'agit d'un temps ou
+                            d'un autre élément
+**/
+static dissocier(datadis){
+  datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
+  datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
+  let owner = ((typ, id) => {
+    switch (typ) {
+      case 'event':     return FAEvent.get(id)
+      case 'document':  return FADocument.get(id)
+      case 'brin':      return FABrin.get(id)
+      default:
+        throw(`Le type de possesseur "${typ}" n'est pas encore traité pour la dissociation`)
+    }
+  })(datadis.owner.type, datadis.owner.id)
+
+  let owned = ((typ, id) => {
+    switch (typ) {
+      case 'time':      return new OTime(id)
+      case 'event':     return FAEvent.get(id)
+      case 'document':  return FADocument.get(id)
+      case 'brin':      return FABrin.get(id)
+      default:
+      throw(`Le type de possédé "${typ}" n'est pas encore traité pour la dissociation`)
+    }
+  })(datadis.owned.type, datadis.owned.id)
+
+  owner !== undefined || raise("Le possesseur est introuvable…")
+  owned !== undefined || raise("L'élément possédé est introuvable…")
+
+  // Demande de confirmation
+  let msg = `Dois-je vraiment dissocier : ${owned} de : ${owner} ?`
+  if(!confirm(msg)) return false
+
+  // Dissociation confirmée, on peut procéder
+  if('function' === typeof(owner.dissocier)){
+    owner.dissocier(owned)
+  } else {
+    throw(`Il faut implémenter la méthode "dissocier" pour ${owner}`)
+  }
+
+}
+
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
@@ -117,6 +167,7 @@ constructor(analyse, data){
   this.id = parseInt(this.id,10)
 
   // Valeurs par défaut indispensables
+  // Les associations possibles
   this.events     = this.events     || []
   this.documents  = this.documents  || []
   this.times      = this.times      || []
@@ -211,6 +262,10 @@ setParent(event_id){
   this.parent = event_id
   this.modified = true
 }
+unsetParent(){
+  delete this.parent
+  this.modified = true
+}
 
 addDocument(doc_id){
   if(this.documents.indexOf(doc_id) < 0){
@@ -220,6 +275,11 @@ addDocument(doc_id){
   return true // car on peut, par exemple, vouloir mettre plusieurs balises
               // dans le texte
 }
+supDocument(asso_id){
+  var off = this.documents.indexOf(asso_id)
+  if(off > -1) this.documents.splice(off, 1)
+}
+
 addEvent(event_id){
   if(this.id == event_id){
     return F.error(T('same-event-no-association'))
@@ -229,6 +289,10 @@ addEvent(event_id){
   }
   return true // même remarque que ci-dessus
 }
+supEvent(asso_id){
+  var off = this.events.indexOf(asso_id)
+  if(off > -1) this.events.splice(off, 1)
+}
 
 addTime(otime){
   if(this.times.indexOf(otime.seconds) < 0){
@@ -236,12 +300,42 @@ addTime(otime){
     this.modified = true
   }
 }
+supTime(otime){
+  var off = this.times.indexOf(otime.seconds)
+  if(off > -1) this.times.splice(off, 1)
+}
 
 addBrin(brin_id){
   if(!this.brins || this.brins.indexOf(brin_id) < 0){
     this.brins.push(brin_id)
     this.modified = true
   }
+}
+supBrin(asso_id){
+  var off = this.brins.indexOf(asso_id)
+  if(off > -1) this.brins.splice(off, 1)
+}
+
+/**
+  Méthode pour dissocier l'élément +asso+ de l'event courant
+**/
+dissocier(asso){
+  switch (asso.type) {
+    case 'document':
+      this.supDocument(asso.id)
+      break;
+    case 'brin':
+      this.supBrin(asso.id)
+      break
+    case 'time':
+      this.supTime(asso)
+      break
+    default:
+      // Un event
+      this.supEvent(asso.id)
+  }
+  this.modified = true
+  this.updateInReader()
 }
 
 /**

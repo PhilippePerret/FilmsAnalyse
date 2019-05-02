@@ -4,6 +4,17 @@
 
 **/
 Object.assign(FAEvent.prototype,{
+
+/**
+  Méthode pour
+**/
+toString(){
+  if(undefined === this._tostring){
+    // this._tostring = `<<EVENT type=${this.type} id=${this.id}>>`
+    this._tostring = `l'Event ${this.type} #${this.id}`
+  }
+  return this._tostring
+}
 /**
   Renvoie toutes les présentations possible de la scène
 
@@ -20,7 +31,7 @@ Object.assign(FAEvent.prototype,{
                                       livre. Affecte les liens, pour le moment.
                           :altText    Texte alternatif pour le spanRef.
 **/
-as(format, flag, opts){
+, as(format, flag, opts){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
@@ -187,6 +198,7 @@ asAssociate(opts){
         if(undefined === ev){
           log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
         } else {
+          options.owner = {type:'event', id: my.id}
           divsAss.push(ev.asAssociate(options))
         }
       })

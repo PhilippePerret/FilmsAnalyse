@@ -194,10 +194,20 @@ a.lkevent {
   cursor:pointer;
 }
 
+/* --------------------------------------------------------------------- */
 /* --- AFFICHAGE DES ASSOCIÉS --- */
 
 .event div.associates,
 .event div.associates *
 {
   font-size:11.4pt;
+}
+
+span.lktime, a.lktime {
+  margin-right:4px;
+}
+
+/* Lien pour dissocier deux éléments */
+a.lkdiss {
+  font-size:0.8em;
 }
