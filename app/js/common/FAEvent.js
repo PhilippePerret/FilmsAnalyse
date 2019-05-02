@@ -98,6 +98,9 @@ static get folderModifieds(){
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
+static get type(){return this._type||defP(this,'_type', this.dataType.type)}
+static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -125,6 +128,7 @@ constructor(analyse, data){
 get type(){return this.dataType.type}
 set type(v){}// juste parce qu'elle est appelée au chargement
 get hname(){return this.dataType.name.plain.cap.sing}
+get shortName(){return this.dataType.name.short.cap.sing}
 get tinyName(){return this.dataType.name.tiny.cap.sing}
 get dataType(){return this.constructor.dataType}
 

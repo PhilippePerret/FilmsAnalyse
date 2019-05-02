@@ -344,8 +344,8 @@ get nextScene(){
 goToPrevScene(){
   let method = () => {
     if (this.prevScene){
-      this.setTime(this.prevScene.time)
-    } else if (FAEscene.current ){
+      this.setTime(this.prevScene.otime)
+    } else if (FAEscene.current){
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
     } else {
       F.notify('Pas de scène courante.')
@@ -360,7 +360,7 @@ stopGoToPrevScene(){
 }
 
 goToNextScene(){
-  log.info("-> Locator#goToNextScene", (undefined === FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
+  log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
   let method = () => {
     if (this.nextScene){
       this.setTime(this.nextScene.otime)
