@@ -321,8 +321,9 @@ deEventTags(str, options){
         notes_list.push(ev.asNote({as: 'string'}))
         return `<sup class="note-indice">[${ev.indice_note}]</sup>`
       }
-    } else {
-      return ev.as('ref', {altText: groups.alt_text, forBook: false /* TODO : pouvoir le régler */ })
+    }
+    else {
+      return ev.as('ref', LABELLED|EDITABLE, {altText: groups.alt_text, forBook: false /* TODO : pouvoir le régler */ })
     }
   })
 

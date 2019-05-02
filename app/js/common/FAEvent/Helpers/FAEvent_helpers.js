@@ -42,7 +42,7 @@ toString(){
 
   switch (format) {
     case 'ref':
-      domEls.push(opts.forBook?this.showLink():this.editLink())
+      domEls.push(this.asRef(opts))
       break
     case 'short':
       domEls.push(...this.asShort(opts))
@@ -95,15 +95,25 @@ toString(){
 
   return str
 }
-,
+
+// Comme une simple référence (ne pas confondre avec le label qui indique
+// le type de l'event et son ID)
+// Cette méthode devrait être propre aux events spéciaux, comme les QRDs par
+// exemple
+, asRef(opts){
+    var str = DFormater(this.f_titre || this.titre || this.pitch || this.content)
+    if(str.length > 100) str = `${str.substring(0,99)}…` // des balises peuvent être coupées…
+    return DCreate('SPAN', {class:'ref', inner: str})
+  }
+
 // Version courte commune
-asShort(opts){
-  let divs = []
-  if(this.titre) divs.push(DCreate('SPAN',{class:'titre',inner: DFormater(this.titre)}))
-  divs.push(DCreate('SPAN',{class:'content', inner: DFormater(this.content)}))
-  if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
-  return divs
-}
+, asShort(opts){
+    let divs = []
+    if(this.titre) divs.push(DCreate('SPAN',{class:'titre',inner: DFormater(this.titre)}))
+    divs.push(DCreate('SPAN',{class:'content', inner: DFormater(this.content)}))
+    if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
+    return divs
+  }
 
 /**
   Retourne le DOMElement du span indiquant la référence à l'élément
@@ -156,7 +166,7 @@ asAssociate(opts){
   var divs = []
   divs.push(this.spanRef(opts /* si texte alternatif */))
   if(this.titre){
-    divs.push(DCreate('SPAN', {class:'titre', inner: DFormater(this.titre)}))
+    divs.push(DCreate('SPAN', {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
   }
   divs.push(DCreate('SPAN', {class:'content', inner: DFormater(this.content)}))
   return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})

@@ -2,17 +2,11 @@
 
 ### Traiter :
 
-- Poursuivre la refactorisation complète des temps, en utilisant OTime pour
-  tous les gérer afin de toujours savoir si on utilise vtime (temps de la vidéo)
-  ou RTime (temps "réel")
-  - On doit pouvoir remplacer tous les `(Locator#)getTime()` par `currentTime`
   - Vérifier que les trois temps soient bien enregistrés (startFilmTime, endFilmTime et
     endGenericFilmTime — ou similaire)
 
-- Voir si ça corrige le problème des scènes dans HER.
-
 * CHECK ANALYSE
-  - Poursuivre le check (app/js/tools/analyse_checker.js)
+  - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
 
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 

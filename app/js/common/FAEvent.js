@@ -196,6 +196,7 @@ set modified(v){
 }
 
 reset(){
+  delete this._f_titre
   delete this._asLink
   delete this._endAt
   delete this._otime

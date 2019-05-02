@@ -41,6 +41,9 @@
   border:1px dashed green;
 }
 
+/* --------------------------------------------------------------------- */
+/* --- SCÈNES --- */
+
 .event .scene-heading{
   display:block;
   font-weight: bold;
@@ -99,6 +102,7 @@ div.notes span.note-indice {
 .event  .e-tools:hover {
   opacity:1;
 }
+
 .event .content {
   clear:both;
 }
@@ -142,7 +146,7 @@ span.ref {
   opacity:0.5;
   margin-right:4px;
 }
-span.ref:after{content:' : '}
+/* span.ref:after{content:' : '} */
 
 span.titre {font-weight:bold;}
 span.titre:before{content:"« "}
@@ -154,31 +158,58 @@ span.quotes:after{content:" » "}
 span.quotes+span.titre:before{all:unset;}
 span.quotes+span.titre:after{all:unset;}
 
-span.content{font-style:italic;}
-span.content:before{
-  content:'• description : ';
+span.question,
+span.question,
+span.reponse,
+span.content,
+span.setup,
+span.exploit,
+span.payoff
+{
+  margin-right:var(--label-margin-left);
+}
+
+span.question:before,
+span.question:after,
+span.reponse:before,
+span.content:before,
+span.setup:before,
+span.exploit:before,
+span.payoff:before
+{
   font-size:var(--label-font-size);
   font-style:var(--label-style);
   color:var(--label-color);
-  margin-left:var(--label-margin-left);
+  /* margin-left:var(--label-margin-left); */
+}
+span.question:before {
+  content: '• Question : « ';
+}
+span.question:after {
+  content:' »';
+}
+span.reponse:before {
+  content: '• Réponse : ';
+}
+
+span.content{font-style:italic;}
+span.content:before{
+  content:'• description : ';
 }
 
 span.setup{}
 span.setup:before{
   content:'• installation : ';
-  font-size:var(--label-font-size);
-  font-style:var(--label-style);
-  color:var(--label-color);
-  margin-left:var(--label-margin-left);
 }
 span.exploit{}
 span.exploit:before{
-  content:'• exploitation: ';
-  font-size:var(--label-font-size);
-  font-style:var(--label-style);
-  color:var(--label-color);
-  margin-left:var(--label-margin-left);
+  content:'• exploitation : ';
 }
+span.payoff{}
+span.payoff:before{
+  content:'• résolution : ';
+}
+
 
 /* Les procédés */
 div.proc {
@@ -186,12 +217,13 @@ div.proc {
 }
 
 a.lkevent {
-  margin-left:12px;
-  background-color:#44CC44;
+  /* margin-left:4px; */
+  background-color:#44CC44!important;
   color:white;
   padding:0 3px;
   font-size:11px;
   cursor:pointer;
+  vertical-align:top;
 }
 
 /* --------------------------------------------------------------------- */
@@ -206,6 +238,7 @@ a.lkevent {
 span.lktime, a.lktime {
   margin-right:4px;
   cursor:pointer;
+  vertical-align:top;
 }
 
 /* Lien pour dissocier deux éléments */
