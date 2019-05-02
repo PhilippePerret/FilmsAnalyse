@@ -288,7 +288,7 @@ observe(){
     revert: true
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
-      let otime = this.locator.getROTime()
+      let otime = this.locator.currentTime
       return DCreate('DIV', {
         inner: otime.horloge
       , class: 'dropped-time'
@@ -377,7 +377,7 @@ buildControllerBox(){
 
   let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
       DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps'})
-    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '0,0,0.0'})
+    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){

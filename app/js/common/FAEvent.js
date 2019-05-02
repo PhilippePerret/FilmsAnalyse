@@ -267,55 +267,25 @@ unsetParent(){
   this.modified = true
 }
 
-addDocument(doc_id){
-  if(this.documents.indexOf(doc_id) < 0){
-    this.documents.push(doc_id)
-    this.modified = true
-  }
-  return true // car on peut, par exemple, vouloir mettre plusieurs balises
-              // dans le texte
+associer(asso){
+  let res = ( (typ, id) => {
+    switch (typ) {
+      case 'brin':
+        return this.addBrin(asso.id)
+      case 'event':
+        return this.addEvent(asso.id)
+      case 'document':
+        return this.addDocument(asso.id)
+      case 'time':
+        return this.addTime(asso.id)
+      default:
+        throw(T('unknown-associated-type', {type: asso.type}))
+    }
+  })(asso.type, asso.id)
+  this.modified = true
+  this.updateInReader()
+  return res
 }
-supDocument(asso_id){
-  var off = this.documents.indexOf(asso_id)
-  if(off > -1) this.documents.splice(off, 1)
-}
-
-addEvent(event_id){
-  if(this.id == event_id){
-    return F.error(T('same-event-no-association'))
-  } else if (this.events.indexOf(event_id) < 0) {
-    this.events.push(event_id)
-    this.modified = true
-  }
-  return true // même remarque que ci-dessus
-}
-supEvent(asso_id){
-  var off = this.events.indexOf(asso_id)
-  if(off > -1) this.events.splice(off, 1)
-}
-
-addTime(otime){
-  if(this.times.indexOf(otime.seconds) < 0){
-    this.times.push(otime.seconds)
-    this.modified = true
-  }
-}
-supTime(otime){
-  var off = this.times.indexOf(otime.seconds)
-  if(off > -1) this.times.splice(off, 1)
-}
-
-addBrin(brin_id){
-  if(!this.brins || this.brins.indexOf(brin_id) < 0){
-    this.brins.push(brin_id)
-    this.modified = true
-  }
-}
-supBrin(asso_id){
-  var off = this.brins.indexOf(asso_id)
-  if(off > -1) this.brins.splice(off, 1)
-}
-
 /**
   Méthode pour dissocier l'élément +asso+ de l'event courant
 **/
@@ -336,6 +306,52 @@ dissocier(asso){
   }
   this.modified = true
   this.updateInReader()
+}
+
+
+addDocument(doc_id){
+  if(this.documents.indexOf(doc_id) < 0){
+    this.documents.push(doc_id)
+  }
+  return true // car on peut, par exemple, vouloir mettre plusieurs balises
+              // dans le texte [plus tard: ET ALORS ???…]
+}
+supDocument(asso_id){
+  var off = this.documents.indexOf(asso_id)
+  if(off > -1) this.documents.splice(off, 1)
+}
+
+addEvent(event_id){
+  if(this.id == event_id){
+    return F.error(T('same-event-no-association'))
+  } else if (this.events.indexOf(event_id) < 0) {
+    this.events.push(event_id)
+  }
+  return true // même remarque que ci-dessus
+}
+supEvent(asso_id){
+  var off = this.events.indexOf(asso_id)
+  if(off > -1) this.events.splice(off, 1)
+}
+
+addTime(otime){
+  if(this.times.indexOf(otime.seconds) < 0){
+    this.times.push(otime.seconds)
+  }
+}
+supTime(otime){
+  var off = this.times.indexOf(otime.seconds)
+  if(off > -1) this.times.splice(off, 1)
+}
+
+addBrin(brin_id){
+  if(!this.brins || this.brins.indexOf(brin_id) < 0){
+    this.brins.push(brin_id)
+  }
+}
+supBrin(asso_id){
+  var off = this.brins.indexOf(asso_id)
+  if(off > -1) this.brins.splice(off, 1)
 }
 
 /**

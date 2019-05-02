@@ -819,7 +819,7 @@ onKeyDownOnTextFields(e){
       return stopEvent(e)
     } else if (e.key == 't') {
       // On doit inscrire le temps courant dans le champ
-      var otime = this.a.locator.getROTime()
+      var otime = this.a.locator.currentTime
       $(e.target).insertAtCaret(`{{time:${otime.seconds}|${otime.horloge_simple}}}`)
     }
     // else {

@@ -205,9 +205,11 @@ a.lkevent {
 
 span.lktime, a.lktime {
   margin-right:4px;
+  cursor:pointer;
 }
 
 /* Lien pour dissocier deux éléments */
 a.lkdiss {
   font-size:0.8em;
+  cursor:pointer;
 }

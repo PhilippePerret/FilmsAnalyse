@@ -21,26 +21,9 @@ Object.assign(FAnalyse.prototype,{
     if(undefined === dropped) throw(T('data-type-required-for-association'))
     var dropped_id = dropped.attr('data-id') // pas toujours défini
     if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
-    switch (dropped_type) {
-      case 'brin':
-        obj.addBrin(dropped_id)
-        break
-      case 'event':
-        obj.addEvent(dropped_id)
-        break
-      case 'document':
-        // Associer le document
-        // Note : soit il est défini dans le `data-id` soit c'est
-        // le document courant.
-        obj.addDocument(dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type)
-        break
-      case 'time':
-        // Associer le temps courant
-        obj.addTime(this.locator.currentTime)
-        break
-      default:
-        throw(T('unknown-associated-type', {type: dropped_type}))
-    }
+    if(dropped_type === 'time') dropped_id = this.locator.currentTime
+    else if(dropped_type === 'document') dropped_id = dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type
+    obj.associer({type: dropped_type, id: dropped_id})
   }
 
 
