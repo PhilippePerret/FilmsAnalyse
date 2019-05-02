@@ -147,7 +147,7 @@ get sceneQ(){
 
 get sceneR(){
   if(!this.tps_reponse) return
-  if(undefined === this._sceneR) this._sceneR = FAEscene.at(new OTime(this.tps_reponse).seconds)
+  if(undefined === this._sceneR) this._sceneR = FAEscene.at(this.tps_reponse)
   return this._sceneR
 }
 

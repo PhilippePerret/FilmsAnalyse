@@ -10,7 +10,17 @@
   background-color:white;
   border:1px solid transparent;
   margin-bottom:3px;
+  font-size:12.6pt;
 }
+
+/* --------------------------------------------------------------------- */
+/* --- TITRES --- */
+
+.event h3 {
+  font-size:12.9pt;
+}
+
+/* --------------------------------------------------------------------- */
 
 .event.current,
 .event.current * {
@@ -182,4 +192,12 @@ a.lkevent {
   padding:0 3px;
   font-size:11px;
   cursor:pointer;
+}
+
+/* --- AFFICHAGE DES ASSOCIÉS --- */
+
+.event div.associates,
+.event div.associates *
+{
+  font-size:11.4pt;
 }

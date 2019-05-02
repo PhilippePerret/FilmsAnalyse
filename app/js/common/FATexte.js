@@ -322,7 +322,7 @@ deEventTags(str, options){
         return `<sup class="note-indice">[${ev.indice_note}]</sup>`
       }
     } else {
-      return ev.asLink(groups.alt_text)
+      return ev.as('ref', {altText: groups.alt_text, forBook: false /* TODO : pouvoir le régler */ })
     }
   })
 

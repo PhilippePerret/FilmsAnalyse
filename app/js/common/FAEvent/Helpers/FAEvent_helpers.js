@@ -16,22 +16,23 @@ Object.assign(FAEvent.prototype,{
                           :no_warn    Si true, pas d'avertissement pour dire que
                                       c'est un modèle non personnalisé par
                                       la sous-classe.
+                          :forBook    Si true, s'est une transformation pour le
+                                      livre. Affecte les liens, pour le moment.
+                          :altText    Texte alternatif pour le spanRef.
 **/
 as(format, flag, opts){
   if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut (NON !)
-
-  // Pour le moment, on corrige par défaut
-  // Non, tout est corrigé au fur et à mesure, donc on n'a plus besoin de
-  // faire ça
-  // flag = flag | FORMATED
+  if (undefined === opts) opts = {}
 
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
 
-  if(flag & LABELLED) domEls.push(this.spanRef())
+  if(flag & LABELLED) domEls.push(this.spanRef(opts))
 
   switch (format) {
+    case 'ref':
+      domEls.push(opts.forBook?this.showLink():this.editLink())
+      break
     case 'short':
       domEls.push(...this.asShort(opts))
       break
@@ -98,8 +99,9 @@ asShort(opts){
   C'est le span utilisé quand le drapeau contient LABELLED
 **/
 , spanRef(opts){
-  let span = DCreate('SPAN', {class:'ref', inner: `${this.tinyName} #${this.id}`})
-  if(opts && opts.as === 'string') return span.outerHTML
+  if(undefined === opts) opts = {}
+  let span = DCreate('SPAN', {class:'ref', inner: `${opts.altText || this.tinyName} #${this.id}`})
+  if(opts.as === 'string') return span.outerHTML
   else return span
 }
 
@@ -114,13 +116,13 @@ asShort(opts){
 , showLink(){
   return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick:`showEvent(${this.id})`}})
 }
-,
+
 // Version livre commune
-asBook(opts){
-  var divs = []
-  divs.push(this.warnCommonMethod)
-  return divs
-}
+, asBook(opts){
+    var divs = []
+    divs.push(this.warnCommonMethod)
+    return divs
+  }
 ,
 // Version complète (reader) commune
 // C'est la version qui est ajoutée au `div` contenant les
@@ -141,7 +143,7 @@ asFull(opts){
 // qu'associé dans un autre event
 asAssociate(opts){
   var divs = []
-  divs.push(DCreate('LABEL', {class:'type', inner:`${this.htype} : `}))
+  divs.push(this.spanRef(opts /* si texte alternatif */))
   if(this.titre){
     divs.push(DCreate('SPAN', {class:'titre', inner: DFormater(this.titre)}))
   }
