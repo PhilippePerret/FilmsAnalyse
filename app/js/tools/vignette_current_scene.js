@@ -10,8 +10,8 @@ module.exports = function(ev){
     fs.mkdirSync(current_analyse.folderVignettesScenes)
   }
   var imgPath = path.resolve(path.join(current_analyse.folderVignettesScenes, imgName))
-  // var cmd = `ffmpeg -ss ${current_analyse.locator.getOTime().horloge_simple} -t 0.200 -i ${current_analyse.videoPath} -r 0.03 ${imgPath}`
-  var cmd = `ffmpeg -ss ${current_analyse.locator.getOTime().horloge_simple} -i ${current_analyse.videoPath} -frames:v 1 -r 1 ${imgPath}`
+  // var cmd = `ffmpeg -ss ${current_analyse.locator.currentTime.horloge_simple} -t 0.200 -i ${current_analyse.videoPath} -r 0.03 ${imgPath}`
+  var cmd = `ffmpeg -ss ${current_analyse.locator.currentTime.horloge_simple} -i ${current_analyse.videoPath} -frames:v 1 -r 1 ${imgPath}`
   // -r 0.5 => prendre toutes les deux secondes
   var callback = function(err, stdout, stderr){
     if(err) console.error(err)

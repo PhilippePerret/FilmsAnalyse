@@ -17,6 +17,10 @@ FAnalyse.classMethod = function(){
 Object.defineProperties(FAnalyse.prototype,{
   data:{
     get(){
+      var spoints
+      if(this.locator){
+        spoints = (this.locator.stop_points||[]).map(sp => sp.seconds)
+      } else { spoints = []}
       return {
           folder:             this.folder
         , title:              this.title
@@ -26,8 +30,8 @@ Object.defineProperties(FAnalyse.prototype,{
         , filmEndTime:        this.filmEndTime
         , filmEndGenericFin:  this.filmEndGenericFin
         , videoPath:          this.videoPath
-        , lastCurrentTime:    (this.locator ? this.locator.getRTime() : 0)
-        , stopPoints:         (this.locator ? this.locator.stop_points : [])
+        , lastCurrentTime:    this.lastCurrentTime
+        , stopPoints:         spoints
       }
     }
   , set(v){
@@ -39,7 +43,7 @@ Object.defineProperties(FAnalyse.prototype,{
       this.filmEndGenericFin    = v.filmEndGenericFin
       this._videoPath           = v.videoPath
       this.lastCurrentTime      = v.lastCurrentTime || 0
-      this.stopPoints           = v.stopPoints || []
+      this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
   }
 
@@ -88,8 +92,16 @@ Object.defineProperties(FAnalyse.prototype,{
   }
 
 , lastCurrentTime:{
-    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator.getRTime())}
-  , set(v){ this._lastCurrentTime = v }
+    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator ? this.locator.getTime().seconds: 0)}
+  , set(v){this._lastCurT = v}
+  }
+, lastCurrentOTime:{
+    get(){return this._lastCurOTime||defP(this,'_lastCurOTime',new OTime(this.lastCurrentTime))}
+  , set(v){
+      v instanceof(OTime)||raise(T('otime-arg-required'))
+      this._lastCurOTime = v
+      this._lastCurT = v.seconds
+    }
   }
 
 })

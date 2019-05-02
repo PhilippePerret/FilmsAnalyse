@@ -9,6 +9,8 @@ class Locator {
 
 constructor(analyse){
   this.analyse = this.a = analyse
+  this.stop_points = [] // pour mettre les OTime(s)
+  this.stop_points_times = [] // pour mettre les seconds
 }
 
 // Pour savoir si la vidéo est en train de jouer
@@ -32,7 +34,7 @@ init(){
 get oMainHorloge(){return this._oMainHorloge||defP(this,'_oMainHorloge', this.videoController.mainHorloge)}
 set oMainHorloge(v){
   v.dispatch({
-      time: this.getRTime() // {OTime}
+      time: this.getTime().seconds // {OTime}
     , synchroVideo: true
     , unmodifiable: true // pour ne pas la marquer modifiée
   })
@@ -111,23 +113,25 @@ stop(){
  * film)
  */
 stopAndRewind(){
-  var curTime = this.getTime() // {OTime}
+  var curOTime = this.currentTime // {OTime}
+  var newOTime = new OTime(0)
 
   // Si le film jouait, on doit l'arrêter
   if(this.playing) this.togglePlay()
 
-  if(curTime > this.lastStartTime){ // instances {OTime}
+  if(curOTime > this.lastStartTime){ // instances {OTime}
     // <= Le temps courant est supérieur au dernier temps de départ
     // => on revient au dernier temps de départ
-    this.setTime(this.lastStartTime)
-  } else if (this.hasStartTime && curTime > (this.analyse.filmStartTime + 5)){
+    newOTime.rtime = this.lastStartTime.seconds
+  } else if (this.hasStartTime && curOTime > (this.analyse.filmStartTime + 5)){
     // <= le temps courant est au-delà des 5 secondes après le début du film
     // => On revient au début du film
-    this.setTime(this.analyse.filmStartTime)
+    newOTime.rtime = 0
   } else {
     // Sinon, on revient au début de la vidéo
-    this.setTime(0)
+    newOTime.vtime = 0
   }
+  this.setTime(newOTime)
   this.actualizeHorloge()
 }
 
@@ -155,7 +159,7 @@ rewind(secs){
     if(this.timerRewind) this.stopRewind()
   }
   let ontime = new OTime(0)
-  ontime.VTime = newtime
+  ontime.vtime = newtime
   this.setTime(ontime)
 }
 
@@ -167,7 +171,7 @@ forward(secs){
     return
   }
   let ontime = new OTime(0)
-  ontime.VTime = newtime
+  ontime.vtime = newtime
   this.setTime(ontime)
 }
 stopRewind(){
@@ -206,7 +210,7 @@ stopForward(){
           Note : appeler la méthode `setTime` pour envoyer un
           temps dit "réel", c'est-à-dire par rapport au début
           défini du film.
-  @param {OTime} time Instance de temps qui permet, grâce à sa propriété VTime
+  @param {OTime} time Instance de temps qui permet, grâce à sa propriété vtime
                       de régler la vidéo.
   @param {Boolean} dontPlay   Si true, on ne met pas la vidéo en route.
  */
@@ -218,7 +222,7 @@ setTime(time, dontPlay){
   this.resetAllTimes()
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
-  this.video.currentTime = time.VTime
+  this.video.currentTime = time.vtime
 
   // Réglage de l'horloge principale.
   this.oMainHorloge.time = time
@@ -359,7 +363,7 @@ goToNextScene(){
   log.info("-> Locator#goToNextScene", (undefined === FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
   let method = () => {
     if (this.nextScene){
-      this.setTime(this.nextScene.time)
+      this.setTime(this.nextScene.otime)
       log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}, numéro scène suivante = ${this.nextScene.numero}`)
     } else if (FAEscene.current) {
       F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
@@ -377,11 +381,6 @@ stopGoToNextScene(){
 }
 // ---------------------------------------------------------------------
 //  Gestion des points d'arrêt
-get stop_points(){
-  if (undefined === this._stop_points) this._stop_points = []
-  return this._stop_points
-}
-set stop_points(v){ this._stop_points = v}
 
 goToNextStopPoint(){
   if(undefined === this._i_stop_point) this._i_stop_point = -1
@@ -393,11 +392,16 @@ goToNextStopPoint(){
     this.setTime(this.stop_points[this._i_stop_point])
   }
 }
-addStopPoint(time){
+addStopPoint(otime){
   if(current_analyse.options.get('option_lock_stop_points')) return
-  if (this.stop_points.indexOf(time) > -1) return
-  this.stop_points.length > 2 && this.stop_points.shift()
-  this.stop_points.push(time)
+  otime instanceof(OTime) || raise(T('otime-arg-required'))
+  if (this.stop_points_times.indexOf(otime.seconds) > -1) return
+  if (this.stop_points_times.length > 2) {
+    this.stop_points.shift()
+    this.stop_points_times.shift()
+  }
+  this.stop_points.push(otime)
+  this.stop_points_times.push(otime.seconds)
 }
 
 // ---------------------------------------------------------------------
@@ -406,7 +410,7 @@ addStopPoint(time){
 get startTime(){return this._startTime||defP(this,'_startTime', new OTime(0))}
 get currentTime(){
   if(undefined === this._currentTime) this._currentTime = new OTime(0)
-  this._currentTime.VTime = this.video.currentTime
+  this._currentTime.vtime = this.video.currentTime.round(2)
   return this._currentTime
 }
 
@@ -559,8 +563,14 @@ actualizeCurrentScene(curt){
   if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
   if(resat){
-    log.info(`   Donnée de scène courante et suivante : {current: <<Scène ${resat.current.id} numéro=${resat.current.numero}>>, next: <<Scène ${resat.next.id} numéro=${resat.next.numero}>>, next_time: ${resat.next_time}}`)
+    // console.log("resat:", resat)
+    if (resat.current){
+      log.info(`   Donnée de scène courante : {current: <<Scène ${resat.current.id} numéro=${resat.current.numero}>>}`)
+    }
     FAEscene.current = resat.current
+    if (resat.next){
+      log.info(`   Donnée de scène suivante : {next: <<Scène ${resat.next.id} numéro=${resat.next.numero}>>, next_time: ${resat.next_time}}`)
+    }
     this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
   }
   log.info("<- actualizeCurrentScene")

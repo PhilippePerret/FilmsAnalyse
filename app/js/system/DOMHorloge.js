@@ -199,7 +199,7 @@ class DOMDuration extends DOMHorloge {
   }
   oEndTime(){
     if(undefined === this._oendtime) this._oendtime = new OTime(this.endTime)
-    this._oendtime.RTime = this.endTime
+    this._oendtime.rtime = this.endTime
     return this._oendtime
   }
 }

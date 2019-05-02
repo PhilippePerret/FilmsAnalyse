@@ -51,7 +51,7 @@ const ERRORS = {
 , "--- TEXTES ---": ""
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 , "--- DIVERS ---":""
-, "otime-required": "Cette méthode requiert un argument temps de type OTime"
+, "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
 }
 const MESSAGES = {
   "--- UI ---":""

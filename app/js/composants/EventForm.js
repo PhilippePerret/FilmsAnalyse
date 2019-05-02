@@ -71,16 +71,15 @@ static notConfirmNewScene(){
  * FAEscene si une scène a été trouvée.
  */
 static filmHasSceneNearCurrentPos(){
-  var curtime = Math.round(this.a.locator.getRTime())
+  var curOtime = this.a.locator.currentTime
   var sceneFound = null
   FAEscene.forEachScene(function(sc){
-    if (curtime.between(sc.time - 5, sc.time + 5)){
+    if (curOtime.between(sc.time - 5, sc.time + 5)){
       sceneFound = sc
       return false // pour stopper la boucle
     }
   })
-  if (sceneFound) return [sceneFound, Math.abs(curtime - sceneFound.time)]
-  // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
+  if (sceneFound) return [sceneFound, Math.abs(curOtime - sceneFound.time)]
 }
 
 /**
@@ -145,7 +144,7 @@ constructor(foo){
       this._id    = EventForm.newId()
       this._type  = foo
       this.isNew  = true
-      this._time  = this.a.locator.getRTime() || 0
+      this._time  = this.a.locator.currentTime.seconds || 0
       break
     case 'number':
       // <= L'ID de l'évènement
@@ -246,7 +245,7 @@ afterBuilding(){
   this.jqf('type').val(typ)
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
-  this.jqf('time').html(this.a.locator.getRTime())
+  this.jqf('time').html(this.a.locator.currentTime.seconds)
   this.jqf('duree').html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)

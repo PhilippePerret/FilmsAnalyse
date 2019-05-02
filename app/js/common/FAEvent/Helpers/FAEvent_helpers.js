@@ -236,7 +236,7 @@ Object.defineProperties(FAEvent.prototype,{
     }
   }
 , link:{
-    get(){return `-&gt; <a onclick="current_analyse.locator.setTime(${this.otime.VTime})">E #${this.id}</a>`}
+    get(){return `-&gt; <a onclick="current_analyse.locator.setTime(${this.otime.vtime})">E #${this.id}</a>`}
   }
 // Méthode de warning pour indiquer que la version d'affichage courante
 // est une version commune à tous les events, pas adaptée à l'event en

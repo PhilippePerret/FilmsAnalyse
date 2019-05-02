@@ -226,9 +226,9 @@ addEvent(event_id){
   return true // même remarque que ci-dessus
 }
 
-addTime(time){
-  if(this.times.indexOf(time) < 0){
-    this.times.push(time)
+addTime(otime){
+  if(this.times.indexOf(otime.seconds) < 0){
+    this.times.push(otime.seconds)
     this.modified = true
   }
 }
@@ -301,7 +301,7 @@ onErrors(evt, errors){
 showDiffere(){
   var my = this
   this.div //pour le construire
-  var diff = ((my.time - this.analyse.locator.getRTime()) * 1000) - 300
+  var diff = ((my.time - this.analyse.locator.currentTime) * 1000) - 300
   if ( diff < 0 ){ // ne devrait jamais arriver
     this.show()
   } else {
@@ -356,7 +356,7 @@ stopWatchingTime(){
 }
 watchTime(){
   if(undefined === this.a || undefined === this.a.locator) return
-  var rtime = this.a.locator.getRTime()
+  var rtime = this.a.locator.currentTime
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){
     this.isCurrent = !!iscur

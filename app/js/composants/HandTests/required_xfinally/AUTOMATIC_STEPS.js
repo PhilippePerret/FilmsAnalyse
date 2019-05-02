@@ -32,6 +32,7 @@ Object.assign(HandTestStep, {
   WhereExpToTime(where){
     // console.log("where dans WhereExpToTime:", where)
     let dureeFilm = this.a.duree
+    let curOTime  = this.a.locator.currentTime
     switch(where){
       case 'au début' :         return 0
       case 'au quart' :         return (dureeFilm / 4).round(2)
@@ -40,8 +41,8 @@ Object.assign(HandTestStep, {
       case 'au deux tiers':     return (2*(dureeFilm/3)).round(2)
       case 'au trois quart':    return (3*(dureeFilm/4)).round(2)
       case 'à la fin':          return dureeFilm - 60
-      case 'plus loin':         return this.a.locator.getRTime() + (dureeFilm/25)
-      case 'un peu plus loin':  return this.a.locator.getRTime() + (dureeFilm/100)
+      case 'plus loin':         return curOTime + (dureeFilm/25)
+      case 'un peu plus loin':  return curOTime + (dureeFilm/100)
       default: // Une valeur comme "à <horloge>"
         return new OTime(where.substring(2,where.length).trim()).seconds
     }

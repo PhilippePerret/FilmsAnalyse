@@ -6,7 +6,7 @@
 
  Permet également de traiter un temps soit comme temps "réel" du film,
  c'est-à-dire pas comme le temps de la vidéo ou justement le temps de la vidéo
- grâce aux deux méthodes .RTime et .VTime
+ grâce aux deux méthodes .rtime et .vtime
  */
 
 class OTime {
@@ -30,17 +30,29 @@ class OTime {
         }
         break
       case 'object':
-        console.log("Le traitement par objet n'est pas encore implémenté")
+        if (v instanceof(OTime)){
+          try {pourgenereuneerreur} catch (e) {
+            console.error(e)
+            console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")
+          }
+        }
+        else {
+          console.log("Le traitement par objet n'est pas encore implémenté")
+        }
     }
   }
 
   valueOf(){return this.seconds}
-  toString(){return this._toString || defP(this,'_toString', `<<OTime VTime=${this.VTime} RTime=${this.RTime}>>`)}
+  toString(){return this._toString || defP(this,'_toString', `<<OTime vtime=${this.vtime} rtime=${this.rtime}>>`)}
 
-  get RTime(){ return this.seconds}
-  set RTime(s){ this.updateSeconds(s.round(2))}
-  get VTime(){ return this.seconds + current_analyse.filmStartTime}
-  set VTime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+  // @return TRUE si le temps est entre les seconds +av+ et +ap+
+  between(av,ap){
+    return this.seconds.between(av,ap)
+  }
+  get rtime(){ return this.seconds}
+  set rtime(s){ this.updateSeconds(s.round(2))}
+  get vtime(){ return this.seconds + current_analyse.filmStartTime}
+  set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
 
 
   set horloge(v)  { this._horloge = v }

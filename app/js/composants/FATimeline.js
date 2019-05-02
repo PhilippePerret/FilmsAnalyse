@@ -47,12 +47,12 @@ init(options){
 **/
 positionneAt(time){
   time instanceof(OTime) || raise(T('otime-arg-required'))
-  this.mainCursor.css('left', `${(time.RTime * this.coefT2P)+4}px`)
+  this.mainCursor.css('left', `${(time.rtime * this.coefT2P)+4}px`)
 }
 // Position le cursor fantôme
 positionneShadowAt(time){
   time instanceof(OTime) || raise(T('otime-arg-required'))
-  this.shadowCursor.css('left', `${(time.RTime * this.coefT2P)+4}px`)
+  this.shadowCursor.css('left', `${(time.rtime * this.coefT2P)+4}px`)
 }
 /**
 * Quand on arrive sur le slider

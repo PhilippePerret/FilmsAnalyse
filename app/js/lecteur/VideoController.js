@@ -161,7 +161,7 @@ load(vpath){
   })
   .on('loadeddata', () => {
     UI.showVideoController()
-    var lastCurTime = this.analyse.lastCurrentTime
+    var lastCurTime = this.analyse.lastCurrentOTime
     lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
     this.a.onVideoLoaded.bind(this.a)()
   })

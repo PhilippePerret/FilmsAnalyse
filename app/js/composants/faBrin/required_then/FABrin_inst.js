@@ -10,7 +10,7 @@ addEvent(ev_id){
 }
 ,
 addTime(time){
-  this.addToList('times', time)
+  this.addToList('times', otime.seconds)
 }
 ,
 addBrin(brin_id){

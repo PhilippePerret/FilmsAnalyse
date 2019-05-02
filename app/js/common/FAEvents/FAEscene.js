@@ -49,13 +49,13 @@ static reset(){
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
-  log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
+  if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
   this.a.videoController.markCurrentScene.html(s ? s.asPitch() : '...')
 }
 static getCurrent(){
   if(this.count === 0) return
-  return this.at(this.a.locator.getRTime())
+  return this.at(this.a.locator.currentTime)
 }
 
 /**
@@ -92,7 +92,7 @@ static getById(event_id){return this.byId[event_id]}
 static getByTime(time)  {return this.byTime[time]}
 
 static getByNumero(num){
-  console.log('[FAEscene] Je dois retourner la scène numéro', num)
+  // console.log('[FAEscene] Je dois retourner la scène numéro', num)
   return this.byNumero[num]
 }
 
@@ -216,8 +216,8 @@ static forEachSortedScene(fn){
  * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
                                   du film
  */
-static at(time){
-  return (this.atAndNext(time)||{}).current
+static at(otime){
+  return (this.atAndNext(otime)||{}).current
 }
 /**
   Retourne la scène se trouvant au temps +time+ et la scène suivante
@@ -225,34 +225,36 @@ static at(time){
   Note : la scène suivante sert par exemple à connaitre le temps du
   prochain changement de scène.
 
-  @param   {Float}  time  Le temps considéré, c'est un temps "réel", pas le
-                          temps exact de la vidéo.
-                          RECTIF : si, je crois que c'est un temps réel qui est
-                          envoyé
+  @param   {OTime}  otime  Le temps considéré
+
   @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
                     Noter que `next_time` est toujours défini, même lorsqu'au-
                     cune scène n'a été trouvée après. C'est alors le temps de
                     fin de la vidéo. Cela permet de ne pas rechercher la scène
                     jusqu'à la fin.
 **/
-static atAndNext(time){
-  log.info('-> FAEscene#atAndNext(time=)', time)
-  time = (time - current_analyse.filmStartTime).round(2)
+static atAndNext(otime){
+  log.info('-> FAEscene#atAndNext(otime=)', otime.toString())
   // console.log("[atAndNext] time:", time)
-  if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
-    // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
-    return
-  } else if (this.firstScene && time < this.firstScene.time){
-    return {current: null, next: this.firstScene, next_time: this.firstScene.time}
+
+  // Si le temps courant est inférieur au temps du début du film, on
+  // retour undefined
+  if (otime.vtime < this.a.filmStartTime) return
+
+  // Si la première scène existe et que ce temps est inférieur à la première
+  // scène, on doit retourner une table contenant cette première scène.
+  if (this.firstScene && otime < this.firstScene.time){
+    return {current_time: otime.rtime, current: null, next: this.firstScene, next_time: this.firstScene.time}
   }
 
+  // Sinon, il faut chercher dans quelle scène on peut se trouver.
   var founded
     , next_scene
     , last_scene
 
   this.forEachSortedScene(function(scene){
-    log.info(`   Comparaison de scene.time (${scene.time}) > ${time} ? (si oui, c'est la scène qu'on cherche)`)
-    if(scene.time > time) {
+    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime} ? (si oui, c'est la scène qu'on cherche)`)
+    if(scene.time > otime) {
       founded     = last_scene
       next_scene  = scene
       log.info(`   Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
@@ -260,7 +262,7 @@ static atAndNext(time){
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
+  return {current_time: otime.seconds, current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
 }
 
 /**
