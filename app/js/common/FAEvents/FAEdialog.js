@@ -1,32 +1,47 @@
 'use strict'
 
 class FAEdialog extends FAEvent {
-  // ---------------------------------------------------------------------
-  //  CLASSE
+// ---------------------------------------------------------------------
+//  CLASSE
 
-  // Propriétés propres au dialogue
-  static get OWN_PROPS(){return ['dialogType', ['quote', 'longtext2']]}
+// Propriétés propres au dialogue
+static get OWN_PROPS(){return ['dialogType', ['quote', 'longtext2']]}
 
-  // Pour dispatcher les données propre au type
-  // Note : la méthode est appelée en fin de fichier
-  static dispatchData(){
-    for(var prop in this.dataType) this[prop] = this.dataType[prop]
-  }
-  static get dataType(){
-    return {
-        hname: 'Dialogue'
-      , short_hname: 'Dialog'
-      , type: 'dialog'
+static get dataType(){
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'dialog'
+    , genre: 'M'
+    , article:{
+        indefini: {sing: 'un', plur: 'des'}
+      , defini: {sing: 'le', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Dialogue', plur: 'Dialogues'}
+        , min: {sing: 'dialogue', plur: 'dialogues'}
+        , maj: {sing: 'DIALOGUE', plur: 'DIALOGUES'}
+        }
+      , short:{
+          cap: {sing: 'Dial.', plur: 'Dials'}
+        , min: {sing: 'dial.', plur: 'dials'}
+        , maj: {sing: 'DIAL.', plur: 'DIALS'}
+        }
+      , tiny: {
+          cap: {sing: 'Dial.', plur: 'Dials.'}
+        , min: {sing: 'dial.', plur: 'dials.'}
+        }
+      }
     }
   }
+  return this._dataType
+}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type       = 'dialog'
 }
-
-get htype(){ return 'Dialogue' }
 
 
 get isValid(){
@@ -42,12 +57,4 @@ get isValid(){
   return errors.length == 0
 }
 
-
-  get div(){
-    var n = super.div
-
-    return n
-  }
-
 }
-FAEdialog.dispatchData()

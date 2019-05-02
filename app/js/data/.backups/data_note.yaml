@@ -2,6 +2,8 @@
 types:
   n/d:
     hname: Non défini
+  musique:
+    hname: Sur la musique
   importante:
     hname: Note importante
   note:
@@ -14,3 +16,5 @@ types:
     hname: Note sur le jeu d'acteur
   stt:
     hname: Note sur la construction
+  effet_image:
+    hname: Note sur un effet d'image

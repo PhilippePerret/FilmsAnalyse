@@ -7,37 +7,51 @@ class FAEinfo extends FAEvent {
 // Propriétés propres aux informations
 static get OWN_PROPS(){return ['infoType']}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
-  return {
-      hname: 'Info'
-    , short_hname: 'Info'
-    , type: 'info'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'info'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini: {sing: 'l’', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Information', plur: 'Informations'}
+        , min: {sing: 'information', plur: 'informations'}
+        , maj: {sing: 'INFORMATION', plur: 'INFORMATIONS'}
+        }
+      , short:{
+          cap: {sing: 'Info', plur: 'Infos'}
+        , min: {sing: 'info', plur: 'infos'}
+        , maj: {sing: 'IDÉE', plur: 'IDÉES'}
+        }
+      , tiny: {
+          cap: {sing: 'Info', plur: 'Infos'}
+        , min: {sing: 'info', plur: 'infos'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
+
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type     = 'info'
 }
 
-get htype(){ return 'Information' }
+get isValid(){
+  var errors = []
 
+  // Définir ici les validité
+  this.content || errors.push({msg: "Le contenu de l'information est requis.", prop: 'longtext1'})
 
-  get isValid(){
-    var errors = []
-
-    // Définir ici les validité
-    this.content || errors.push({msg: "Le contenu de l'information est requis.", prop: 'longtext1'})
-
-    if(errors.length){super.onErrors(this, errors)}
-    return errors.length == 0
-  }
+  if(errors.length){super.onErrors(this, errors)}
+  return errors.length == 0
+}
 
 }
-FAEinfo.dispatchData()

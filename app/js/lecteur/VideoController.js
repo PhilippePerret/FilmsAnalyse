@@ -161,8 +161,8 @@ load(vpath){
   })
   .on('loadeddata', () => {
     UI.showVideoController()
-    var lastCurTime = this.analyse.lastCurrentTime
-    lastCurTime && this.analyse.locator.setRTime(lastCurTime, true)
+    var lastCurTime = this.analyse.lastCurrentOTime
+    lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
     this.a.onVideoLoaded.bind(this.a)()
   })
   .on('ended', () => {
@@ -224,7 +224,7 @@ onClickMarkStt(mainSub, absRel, e){
     other_node = pfa.node(node.next || node.first)
   }
   // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
-  this.a.locator.setRTime(other_node[`startAt${absRel}`])
+  this.a.locator.setTime(new OTime(other_node[`startAt${absRel}`]))
 
   pfa = null
 }
@@ -288,7 +288,7 @@ observe(){
     revert: true
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
-      let otime = this.locator.getROTime()
+      let otime = this.locator.currentTime
       return DCreate('DIV', {
         inner: otime.horloge
       , class: 'dropped-time'
@@ -306,8 +306,8 @@ observe(){
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
   this.markCurrentScene.on('click', () => {
-    if (current_analyse.currentScene){
-      EventForm.editEvent.bind(EventForm)(current_analyse.currentScene)
+    if (this.locator.currentScene){
+      EventForm.editEvent.bind(EventForm)(this.locator.currentScene)
     }
   })
 
@@ -377,7 +377,7 @@ buildControllerBox(){
 
   let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
       DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps'})
-    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '0,0,0.0'})
+    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){

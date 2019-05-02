@@ -17,10 +17,17 @@ Object.assign(FAEnote.prototype,{
   @param {Object} options   Options de formatage
 **/
 asNote(options){
-  var str = ''
+  var divs = []
   if(undefined === this.indice_note) this.indice_note = FATexte.newIndiceNote()
-  str += `<div class="note"><span class="note-indice">[${this.indice_note}]</span> ${DFormater(this.content)}</div>`
-  return str
+  divs.push(DCreate('SPAN',{class:'note', append:[
+      DCreate('SPAN',{class:'note-indice',inner:`[${this.indice_note}]`})
+    , DCreate('SPAN',{class:'', inner: DFormater(this.content)})
+    ]}))
+  if (options && options.as === 'string'){
+    return divs[0].outerHTML
+  } else {
+    return divs
+  }
 }
 
 })

@@ -77,8 +77,9 @@ div + a.lkscene {
 
 /* L'indice dans le texte, renvoyant à la note — renvoi */
 sup.note-indice {
-  margin-left:2px;
+  margin-left:3.2px;
   font-size:0.85em;
+  vertical-align:24%;
 }
 
 /* DIV contenant les notes insérées dans le texte */

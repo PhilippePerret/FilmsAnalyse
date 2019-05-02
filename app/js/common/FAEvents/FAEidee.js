@@ -8,18 +8,37 @@ static get OWN_PROPS(){return ['ideeType', ['setup', 'longtext2'], ['exploit','l
 static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
+
 static get dataType(){
-  return {
-      hname:        'Idée'
-    , short_hname:  'Idée'
-    , type:         'idee'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'idee'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini: {sing: 'l’', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Idée', plur: 'Idées'}
+        , min: {sing: 'idée', plur: 'idées'}
+        , maj: {sing: 'IDÉE', plur: 'IDÉES'}
+        }
+      , short:{
+          cap: {sing: 'Action', plur: 'Idées'}
+        , min: {sing: 'idée', plur: 'idées'}
+        , maj: {sing: 'IDÉE', plur: 'IDÉES'}
+        }
+      , tiny: {
+          cap: {sing: 'Idée', plur: 'Idées'}
+        , min: {sing: 'idée', plur: 'idées'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
@@ -46,4 +65,3 @@ get div(){
   return n
 }
 }
-FAEidee.dispatchData()

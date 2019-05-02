@@ -39,8 +39,9 @@ static count(){
   defP(this,'_TEXT_PROPERTIES',FAEvent.tProps(this.OWN_TEXT_PROPS))
 **/
 static tProps(own_text_properties){
-  var arr = Object.assign([], FAEvent.TEXT_PROPERTIES)
-  Object.assign(arr, own_text_properties)
+  var arr = []
+  arr.push(...FAEvent.TEXT_PROPERTIES)
+  arr.push(...own_text_properties)
   return arr
 }
 
@@ -94,8 +95,61 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
+/**
+  Méthode qui permet de dissocier des éléments (pour le moment, des events)
+  @param {Object} datadis   Données pour effectuer la dissociation. Doit
+                            contenir : :owner_type, le type du propriétaire,
+                            par exemple 'event' ou 'doc', :owner_id, l'id du
+                            propriétaire, :type, le type de l'élément à disso-
+                            cier, par exemple 'time'
+                            :time ou :id suivant qu'il s'agit d'un temps ou
+                            d'un autre élément
+**/
+static dissocier(datadis){
+  datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
+  datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
+  let owner = ((typ, id) => {
+    switch (typ) {
+      case 'event':     return FAEvent.get(id)
+      case 'document':  return FADocument.get(id)
+      case 'brin':      return FABrin.get(id)
+      default:
+        throw(`Le type de possesseur "${typ}" n'est pas encore traité pour la dissociation`)
+    }
+  })(datadis.owner.type, datadis.owner.id)
+
+  let owned = ((typ, id) => {
+    switch (typ) {
+      case 'time':      return new OTime(id)
+      case 'event':     return FAEvent.get(id)
+      case 'document':  return FADocument.get(id)
+      case 'brin':      return FABrin.get(id)
+      default:
+      throw(`Le type de possédé "${typ}" n'est pas encore traité pour la dissociation`)
+    }
+  })(datadis.owned.type, datadis.owned.id)
+
+  owner !== undefined || raise("Le possesseur est introuvable…")
+  owned !== undefined || raise("L'élément possédé est introuvable…")
+
+  // Demande de confirmation
+  let msg = `Dois-je vraiment dissocier : ${owned} de : ${owner} ?`
+  if(!confirm(msg)) return false
+
+  // Dissociation confirmée, on peut procéder
+  if('function' === typeof(owner.dissocier)){
+    owner.dissocier(owned)
+  } else {
+    throw(`Il faut implémenter la méthode "dissocier" pour ${owner}`)
+  }
+
+}
+
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
+
+static get type(){return this._type||defP(this,'_type', this.dataType.type)}
+static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -113,12 +167,21 @@ constructor(analyse, data){
   this.id = parseInt(this.id,10)
 
   // Valeurs par défaut indispensables
+  // Les associations possibles
   this.events     = this.events     || []
   this.documents  = this.documents  || []
   this.times      = this.times      || []
   this.brins      = this.brins      || []
 
 }
+
+// Les données récupérées du static.dataType de chaque type d'event
+get type(){return this.dataType.type}
+set type(v){}// juste parce qu'elle est appelée au chargement
+get hname(){return this.dataType.name.plain.cap.sing}
+get shortName(){return this.dataType.name.short.cap.sing}
+get tinyName(){return this.dataType.name.tiny.cap.sing}
+get dataType(){return this.constructor.dataType}
 
 // Dès qu'on marque l'event modifié, ça marque l'analyse modifiée
 // On utilise aussi les sauvegardes de protection en mémorisant l'identiant
@@ -133,6 +196,7 @@ set modified(v){
 }
 
 reset(){
+  delete this._f_titre
   delete this._asLink
   delete this._endAt
   delete this._otime
@@ -144,6 +208,7 @@ reset(){
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return true}
 get isADocument(){return false}
+get isScene(){return false} // surclassé par FAEscene
 
 // ---------------------------------------------------------------------
 //  Méthodes d'helper
@@ -198,37 +263,96 @@ setParent(event_id){
   this.parent = event_id
   this.modified = true
 }
+unsetParent(){
+  delete this.parent
+  this.modified = true
+}
+
+associer(asso){
+  let res = ( (typ, id) => {
+    switch (typ) {
+      case 'brin':
+        return this.addBrin(asso.id)
+      case 'event':
+        return this.addEvent(asso.id)
+      case 'document':
+        return this.addDocument(asso.id)
+      case 'time':
+        return this.addTime(asso.id)
+      default:
+        throw(T('unknown-associated-type', {type: asso.type}))
+    }
+  })(asso.type, asso.id)
+  this.modified = true
+  this.updateInReader()
+  return res
+}
+/**
+  Méthode pour dissocier l'élément +asso+ de l'event courant
+**/
+dissocier(asso){
+  switch (asso.type) {
+    case 'document':
+      this.supDocument(asso.id)
+      break;
+    case 'brin':
+      this.supBrin(asso.id)
+      break
+    case 'time':
+      this.supTime(asso)
+      break
+    default:
+      // Un event
+      this.supEvent(asso.id)
+  }
+  this.modified = true
+  this.updateInReader()
+}
+
 
 addDocument(doc_id){
   if(this.documents.indexOf(doc_id) < 0){
     this.documents.push(doc_id)
-    this.modified = true
   }
   return true // car on peut, par exemple, vouloir mettre plusieurs balises
-              // dans le texte
+              // dans le texte [plus tard: ET ALORS ???…]
 }
+supDocument(asso_id){
+  var off = this.documents.indexOf(asso_id)
+  if(off > -1) this.documents.splice(off, 1)
+}
+
 addEvent(event_id){
   if(this.id == event_id){
     return F.error(T('same-event-no-association'))
   } else if (this.events.indexOf(event_id) < 0) {
     this.events.push(event_id)
-    this.modified = true
   }
   return true // même remarque que ci-dessus
 }
+supEvent(asso_id){
+  var off = this.events.indexOf(asso_id)
+  if(off > -1) this.events.splice(off, 1)
+}
 
-addTime(time){
-  if(this.times.indexOf(time) < 0){
-    this.times.push(time)
-    this.modified = true
+addTime(otime){
+  if(this.times.indexOf(otime.seconds) < 0){
+    this.times.push(otime.seconds)
   }
+}
+supTime(otime){
+  var off = this.times.indexOf(otime.seconds)
+  if(off > -1) this.times.splice(off, 1)
 }
 
 addBrin(brin_id){
   if(!this.brins || this.brins.indexOf(brin_id) < 0){
     this.brins.push(brin_id)
-    this.modified = true
   }
+}
+supBrin(asso_id){
+  var off = this.brins.indexOf(asso_id)
+  if(off > -1) this.brins.splice(off, 1)
 }
 
 /**
@@ -292,7 +416,7 @@ onErrors(evt, errors){
 showDiffere(){
   var my = this
   this.div //pour le construire
-  var diff = ((my.time - this.analyse.locator.getRTime()) * 1000) - 300
+  var diff = ((my.time - this.analyse.locator.currentTime) * 1000) - 300
   if ( diff < 0 ){ // ne devrait jamais arriver
     this.show()
   } else {
@@ -347,7 +471,7 @@ stopWatchingTime(){
 }
 watchTime(){
   if(undefined === this.a || undefined === this.a.locator) return
-  var rtime = this.a.locator.getRTime()
+  var rtime = this.a.locator.currentTime
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){
     this.isCurrent = !!iscur
@@ -559,9 +683,9 @@ togglePlay(){
     // On met en route
     var t = this.time
     if(current_analyse.options.get('option_start_3secs_before_event')){t -= 3}
-    this.locator.setRTime.bind(this.locator)(t)
+    this.locator.setTime.bind(this.locator)(new OTime(t))
     // On détermine la fin du jeu
-    this.locator.setEndTime(t + this.duree, this.togglePlay.bind(this))
+    this.locator.setEndTime(new OTime(t + this.duree), this.togglePlay.bind(this))
   }
 
   this.playing = !this.playing
@@ -655,10 +779,40 @@ defineDomReaderObj(){
 
 // Pour la compatibilité avec les autres types
 class FAEevent extends FAEvent {
+
+static get dataType(){
+  if(undefined === this._dataType){
+    this._dataType ={
+      type: 'event'
+    , genre: 'M'
+    , article:{
+        indefini: {sing: 'un', plur: 'des'}
+      , defini: {sing: 'l’', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Évènement', plur: 'Évènements'}
+        , min: {sing: 'évènement', plur: 'évènements'}
+        , maj: {sing: 'ÉVÈNEMENT', plur: 'ÉVÈNEMENTS'}
+        }
+      , short:{
+          cap: {sing: 'Évènement', plur: 'Évènements'}
+        , min: {sing: 'évènement', plur: 'évènements'}
+        , maj: {sing: 'ÉVÈNEMENT', plur: 'ÉVÈNEMENTS'}
+        }
+      , tiny: {
+          cap: {sing: 'Ev.', plur: 'Evs.'}
+        , min: {sing: 'ev.', plur: 'evs.'}
+        }
+      }
+    }
+  }
+  return this._dataType
+}
+
+
 constructor(analyse, data){
   super(analyse, data)
-  this.type = 'event'
 }
-get htype(){return 'Évènement'}
 
 }

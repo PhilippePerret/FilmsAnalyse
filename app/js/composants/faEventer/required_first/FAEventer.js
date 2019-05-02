@@ -326,7 +326,7 @@ peupleTypesInFilter(){
     for(var fpath of list){
       var classe = eval(path.basename(fpath,path.extname(fpath)))
       var domid = `${this.domId}-cb-type-${classe.type}`
-      my.buildCbType(ocontainer, domid, classe.short_hname, classe.type)
+      my.buildCbType(ocontainer, domid, classe.shortName, classe.type)
     }
   })
   log.info(`<- <<FAEventer #${this.id}>>#peupleTypesInFilter()`)

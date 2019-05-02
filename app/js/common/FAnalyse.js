@@ -119,27 +119,12 @@ constructor(pathFolder){
   this.events   = []
 }
 
-
-get currentScene(){ return FAEscene.current}
-set currentScene(v){ FAEscene.current = v }
-
-// Retourne la scène précédente de la scène courante
-get prevScene(){
-  if (!this.currentScene || this.currentScene.numero == 1) return
-  else return FAEscene.getByNumero(this.currentScene.numero - 1)
-}
-get nextScene(){
-  // console.log("-> nextScene")
-  if(!this.currentScene) return FAEscene.getByNumero(1)
-  else return FAEscene.getByNumero(this.currentScene.numero + 1)
-}
-
 /**
   Méthode appelée depuis le menu 'Outils' pour rejoindre la dernière
   scène définie, (quand on est en mode collecte)
 **/
 goToLastScene(){
-  this.locator.setRTime(FAEscene.lastScene.time)
+  this.locator.setTime(FAEscene.lastScene.time)
 }
 
 get PFA(){
@@ -449,9 +434,11 @@ indexOfEvent(event_id){
   c'est-à-dire de permettre ou non ses modifications.
 **/
 toggleLock(){
+  if(this.saveTimer) this.stopTimerSave()
   this.locked = !!!this.locked
   this.saveData(true /* pour forcer le verrou, seulement pour enregistrer cette valeur */)
   this.setMarkModified()
+  if(false === this.locked) this.runTimerSave()
 }
 
 /**
@@ -486,8 +473,8 @@ get PROP_PER_FILE(){
  * Appelée par le menu pour sauver l'analyse
  */
 saveIfModified(){
-  this.stopTimerSave() // ne fera rien si rien à faire
   if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  this.stopTimerSave() // ne fera rien si rien à faire
   this.modified && this.save()
   this.runTimerSave() // ne fera rien si analyse.locked
 }
@@ -557,7 +544,7 @@ saveFile(fpath, prop){
       throw("Il faut donner le nom du fichier", fpath)
   }
   iofile.code = this[prop]
-  iofile.save({after: this.setSaved.bind(this, fpath)})
+  iofile.save({ after: this.setSaved.bind(this, fpath), no_waiting_msg: true })
   return iofile.saved
 }
 
@@ -590,6 +577,20 @@ stopTimerSave(){
   }
 }
 
+/**
+  Check de la validité de toutes les données
+  La méthode checke particulièrement :
+    - les associations
+    - les numéros de scènes
+**/
+checkDataValidity(){
+  if('undefined' === typeof(AnalyseChecker)){
+    require('./js/tools/analyse_checker').bind(this)()
+  } else {
+    // Quand on le charge toujours dans la page pour l'implémenter
+    AnalyseChecker.checkAll(this)
+  }
+}
 /**
   Méthode qui s'assure de ne pas enregistrer d'event en double comme c'est le
   cas avec certains problèmes (non encore décelés)

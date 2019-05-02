@@ -9,3 +9,8 @@ Object.assign(FAProcede.prototype,{
 //  INSTANCE
 
 })
+Object.defineProperties(FAProcede.prototype,{
+// ---------------------------------------------------------------------
+//  PROPRIÉTÉS D'INSTANCE
+
+})

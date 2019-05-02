@@ -12,6 +12,14 @@ form.form-edit-event {
   resize:horizontal;
 }
 
+/* Le bouton qui permet d'associer l'event créé/modifié depuis le formulaire */
+form.form-edit-event span.event {all:unset;}
+form.form-edit-event span.event-btn-drop {
+  background:transparent;
+  float:right;
+  margin-right:0.5em;
+}
+
 form.form-edit-event select.decors,
 form.form-edit-event select.sous_decors,
 form.form-edit-event select.decors *,

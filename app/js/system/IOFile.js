@@ -89,6 +89,7 @@ constructor(p_or_owner){
  @param {Object|Undefined} options  Pour définir des options
     :no_warm_if_shorter   Si true, ne produira pas l'alerte de document 20 %
                           moins gros.
+    :no_waiting_msg       Si true, on n'affiche pas le message d'attente
  */
 save(options){
   log.info('-> IOFile#save')
@@ -99,8 +100,10 @@ save(options){
     this.saving = true
   }
   if(undefined === options) options = {}
-  UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
   this.options = options
+  if(!options.no_waiting_msg){
+    UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
+  }
   if(options.after) this.methodAfterSaving = options.after
   this.checkBackupFolder()
   try {
@@ -181,7 +184,7 @@ endSave(err){
   interrompue
 **/
 endSavingInAnyCase(){
-  UI.stopWait()
+  if(!this.options.no_waiting_msg) UI.stopWait()
   this.saving = false
 }
 

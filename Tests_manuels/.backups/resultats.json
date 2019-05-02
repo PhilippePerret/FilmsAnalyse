@@ -1,52 +1,33 @@
 {
-  "date": 1555652933236,
-  "successCount": 2,
-  "failureCount": 0,
-  "pendingCount": 8,
+  "date": 1556436918563,
+  "successCount": 0,
+  "failureCount": 2,
+  "pendingCount": 3,
   "tests": {
-    "./_test_test.yaml": {
+    "./__procedes.yaml": {
       "0": {
-        "0": 2
-      }
-    },
-    "./analyse.yaml": {
-      "open_from_scratch": {
-        "0": 2,
-        "1": 2
-      }
-    },
-    "./brins.yaml": {
-      "creation_brin": {
         "0": 2,
         "1": 2
       },
-      "associations_event": {
+      "1": {
         "0": 2,
         "1": 2
       },
-      "associations_document": {
-        "0": 2
+      "2": {
+        "0": 2,
+        "1": 2
       },
-      "associations_temps": {
-        "0": 2
-      },
-      "affichage_listing_detailled": {
-        "0": 2
-      },
-      "edition_associed": {
-        "0": 2
-      }
-    },
-    "./decors_in_event_form.yaml": {
-      "0": {
+      "3": {
         "0": 2,
         "1": 2,
         "2": 2,
         "3": 2,
-        "4": 1,
-        "5": 2,
+        "4": 2,
+        "5": 0,
         "6": 2,
-        "7": 1
+        "7": 2,
+        "8": 2,
+        "9": 0
       }
     }
   }

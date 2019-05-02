@@ -18,17 +18,34 @@ static get TYPESPARENT_PER_TYPE(){
   }
 }
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
+
 static get dataType(){
-  return {
-      hname: 'Élément dynamique'
-    , short_hname: 'Él.dyna.'
-    , type: 'dyna'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'dyna'
+    , genre: 'M'
+    , article:{
+        indefini: {sing: 'un', plur: 'des'}
+      , defini: {sing: 'l’', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Élément dynamique', plur: 'Éléments dynamiques'}
+        , min: {sing: 'élément dynamique', plur: 'éléments dynamiques'}
+        }
+      , short:{
+          cap: {sing: 'El. dynamique', plur: 'Els. dynamiques'}
+        , min: {sing: 'el. dynamique', plur: 'els. dynamiques'}
+        , maj: {sing: 'EL. DYNAMIQUE', plur: 'ELS. DYNAMIQUES'}
+        }
+      , tiny: {
+          cap: {sing: 'El.Dyn', plur: 'Els.Dyn'}
+        , min: {sing: 'el.dyn', plur: 'els.dyn'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
 
 /**
@@ -44,10 +61,7 @@ static reset(){
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
-  this.type         = 'dyna'
 }
-
-get htype(){ return 'Élément dynamique' }
 
 get isValid(){
   var errors = []
@@ -85,4 +99,3 @@ parentIsValid(){
 }
 
 }
-FAEdyna.dispatchData()

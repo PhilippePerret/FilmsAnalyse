@@ -49,7 +49,7 @@ as(format, flag, opts){
     str = str.replace(/[\n\r]/,' --- ')
   } else if ( flag & EDITABLE ){
     // Note : il exclut LINKED
-    str = this.linkedToEdit(str)
+    str = this.editLink(str).outerHTML // TODO CORRIGER TOUTE CETTE MÉTHODE COMME FAEvent
     // console.log("str:", str)
   } else if(flag & LINKED){
     str = this.linked(str)
@@ -64,9 +64,7 @@ as(format, flag, opts){
 , asFull(opts){
     return this.asBook() // pour le moment
   }
-, asAssociate(opts){
-    return `« ${this.title} » -- ${this.firstContent.substring(0,100).replace(/\n/g,' -- ').replace(/<(.*?)>/g,'')} […]`
-  }
+// asAssociate est défini ailleurs
 , linkedToEdit(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
 , linked(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
 

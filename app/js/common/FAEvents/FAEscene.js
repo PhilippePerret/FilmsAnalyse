@@ -49,20 +49,13 @@ static reset(){
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
 static set current(s){
-  // console.log("Scène courante mise à ", s)
-  // try {
-  //   pourvoirdou
-  // } catch (e) {
-  //   console.error('Pour voir qui appelle')
-  //   console.error(e)
-  // }
+  if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
-  this.a._currentScene = s
   this.a.videoController.markCurrentScene.html(s ? s.asPitch() : '...')
 }
 static getCurrent(){
   if(this.count === 0) return
-  return this.at(this.a.locator.getRTime())
+  return this.at(this.a.locator.currentTime)
 }
 
 /**
@@ -99,6 +92,7 @@ static getById(event_id){return this.byId[event_id]}
 static getByTime(time)  {return this.byTime[time]}
 
 static getByNumero(num){
+  // console.log('[FAEscene] Je dois retourner la scène numéro', num)
   return this.byNumero[num]
 }
 
@@ -222,8 +216,8 @@ static forEachSortedScene(fn){
  * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
                                   du film
  */
-static at(time){
-  return (this.atAndNext(time)||{}).current
+static at(otime){
+  return (this.atAndNext(otime)||{}).current
 }
 /**
   Retourne la scène se trouvant au temps +time+ et la scène suivante
@@ -231,36 +225,44 @@ static at(time){
   Note : la scène suivante sert par exemple à connaitre le temps du
   prochain changement de scène.
 
-  @param   {Float}  time  Le temps considéré
+  @param   {OTime}  otime  Le temps considéré
+
   @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
                     Noter que `next_time` est toujours défini, même lorsqu'au-
                     cune scène n'a été trouvée après. C'est alors le temps de
                     fin de la vidéo. Cela permet de ne pas rechercher la scène
                     jusqu'à la fin.
 **/
-static atAndNext(time){
-  time = time.round(2)
+static atAndNext(otime){
+  log.info('-> FAEscene#atAndNext(otime=)', otime.toString())
   // console.log("[atAndNext] time:", time)
-  if (current_analyse.filmStartTime && time < current_analyse.filmStartTime){
-    // console.log(`[atAndNext] le temps courant (${time}) est inférieur au début du film (${current_analyse.filmStartTime}) => je retourne indéfini`)
-    return
-  } else if (this.firstScene && time < this.firstScene.time){
-    return {current: null, next: this.firstScene, next_time: this.firstScene.time}
+
+  // Si le temps courant est inférieur au temps du début du film, on
+  // retour undefined
+  if (otime.vtime < this.a.filmStartTime) return
+
+  // Si la première scène existe et que ce temps est inférieur à la première
+  // scène, on doit retourner une table contenant cette première scène.
+  if (this.firstScene && otime < this.firstScene.time){
+    return {current_time: otime.rtime, current: null, next: this.firstScene, next_time: this.firstScene.time}
   }
 
+  // Sinon, il faut chercher dans quelle scène on peut se trouver.
   var founded
     , next_scene
     , last_scene
 
   this.forEachSortedScene(function(scene){
-    if(scene.time > time) {
+    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime} ? (si oui, c'est la scène qu'on cherche)`)
+    if(scene.time > otime) {
       founded     = last_scene
       next_scene  = scene
+      log.info(`   Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
       return false // pour interrompre
     }
     last_scene = scene
   })
-  return {current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
+  return {current_time: otime.seconds, current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
 }
 
 /**
@@ -274,17 +276,35 @@ static get lastScene(){
   return this.sortedByTime[this.count-1]
 }
 
-// Pour dispatcher les données propre au type
-// Note : la méthode est appelée en fin de fichier
-static dispatchData(){
-  for(var prop in this.dataType) this[prop] = this.dataType[prop]
-}
 static get dataType(){
-  return {
-      hname: 'Scène'
-    , short_hname: 'Scène'
-    , type: 'scene'
+  if(undefined === this._dataType){
+    this._dataType = {
+      type: 'scene'
+    , genre: 'F'
+    , article:{
+        indefini: {sing: 'une', plur: 'des'}
+      , defini:   {sing: 'la', plur: 'les'}
+      }
+    , name: {
+        plain: {
+          cap: {sing: 'Scène', plur: 'Scènes'}
+        , min: {sing: 'scène', plur: 'scènes'}
+        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
+        }
+      , short:{
+          cap: {sing: 'Scène', plur: 'Scènes'}
+        , min: {sing: 'scène', plur: 'scènes'}
+        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
+        }
+      , tiny: {
+          cap: {sing: 'Sc.', plur: 'Sc.'}
+        , min: {sing: 'sc.', plur: 'sc.'}
+        , maj: {sing: 'SC.', plur: 'SC.'}
+        }
+      }
+    }
   }
+  return this._dataType
 }
 
 // ---------------------------------------------------------------------
@@ -292,13 +312,10 @@ static get dataType(){
 
 constructor(analyse, data){
   super(analyse, data)
-  this.type       = 'scene'
 }
 
 // ---------------------------------------------------------------------
 //  HELPERS
-
-get htype(){ return 'Scène' }
 
 get hduree(){return this._hduree||defP(this,'_hduree', new OTime(this.duree).hduree)}
 
@@ -315,6 +332,9 @@ get description(){
 
 // ---------------------------------------------------------------------
 //  MÉTHODES D'ÉTAT
+
+get isScene(){return true} // surclasse la méthode de FAEvent
+
 /**
  * Méthode qui retourne true si l'évènement est valide (en fonction de son
  * type) et false dans le cas contraire.
@@ -377,5 +397,3 @@ get isRealScene(){return this.sceneType !== 'generic'}
 get isGenerique(){return this.sceneType === 'generic'}
 
 } // Fin de FAEscene
-
-FAEscene.dispatchData()

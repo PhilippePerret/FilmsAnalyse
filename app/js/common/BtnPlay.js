@@ -105,7 +105,7 @@ class BtnPlay {
     } else {
       // Dans tous les cas, si on n'est pas en train de jouer, quand on clique
       // sur le bouton, on rejoint le temps de début de l'event
-      this.locator.setRTime(this.startTime)
+      this.locator.setTime(this.startTime)
       // On définit aussi le temps de fin
       this.locator.setEndTime(this.endTime, this.togglePlay.bind(this))
       // Si les options indiquent qu'il faut jouer après le choix d'un temps,
@@ -138,8 +138,8 @@ class BtnPlay {
   // ---------------------------------------------------------------------
   //  Méthodes de DATA
 
-  get startTime(){return this._startTime || defP(this,'_startTime',this.event.time)}
-  get endTime(){return this._endTime || defP(this,'_endTime',this.startTime+this.event.duree)}
+  get startTime(){return this._startTime || defP(this,'_startTime', new OTime(this.event.time))}
+  get endTime(){return this._endTime || defP(this,'_endTime', new OTime(this.startTime + this.event.duree))}
 
   // ---------------------------------------------------------------------
   //  Méthodes DOM

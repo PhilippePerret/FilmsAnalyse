@@ -158,3 +158,11 @@ const UI = {
 , stopGoToNextScene(){this.runIfAnalyse('stopGoToNextScene')}
 
 }
+
+Object.defineProperties(UI,{
+  /**
+  La section qui affiche les procédés qui ont besoin de résolution
+  lorsqu'elle n'est pas définie.
+  **/
+  warningSection:{get(){return $('#section-qrd-pp')}}
+})

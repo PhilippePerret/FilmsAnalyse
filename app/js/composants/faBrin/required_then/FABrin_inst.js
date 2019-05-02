@@ -10,7 +10,7 @@ addEvent(ev_id){
 }
 ,
 addTime(time){
-  this.addToList('times', time)
+  this.addToList('times', otime.seconds)
 }
 ,
 addBrin(brin_id){
@@ -98,8 +98,10 @@ scenes:{
       }
       for(var ev_id of this.events){
         ev = this.a.ids[ev_id]
-        sc = ev.scene
-        if(ev) arr[sc.numero] = sc
+        if(ev){
+          qsc = ev.scene
+          arr[sc.numero] = sc
+        }
         else {
           console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
         }

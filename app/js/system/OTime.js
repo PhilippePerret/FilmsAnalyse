@@ -3,6 +3,10 @@
  * Class OTime
  * -----------
  * Permet de gérer les temps
+
+ Permet également de traiter un temps soit comme temps "réel" du film,
+ c'est-à-dire pas comme le temps de la vidéo ou justement le temps de la vidéo
+ grâce aux deux méthodes .rtime et .vtime
  */
 
 class OTime {
@@ -14,6 +18,7 @@ class OTime {
    *
    */
   constructor(v){
+    this.type = 'time'
     switch (typeof(v)) {
       case 'number':
         this.seconds = v
@@ -26,9 +31,30 @@ class OTime {
         }
         break
       case 'object':
-        console.log("Le traitement par objet n'est pas encore implémenté")
+        if (v instanceof(OTime)){
+          try {pourgenereuneerreur} catch (e) {
+            console.error(e)
+            console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")
+          }
+        }
+        else {
+          console.log("Le traitement par objet n'est pas encore implémenté")
+        }
     }
   }
+
+  valueOf(){return this.seconds}
+  toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
+
+  // @return TRUE si le temps est entre les seconds +av+ et +ap+
+  between(av,ap){
+    return this.seconds.between(av,ap)
+  }
+  get rtime(){ return this.seconds}
+  set rtime(s){ this.updateSeconds(s.round(2))}
+  get vtime(){ return this.seconds + current_analyse.filmStartTime}
+  set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+
 
   set horloge(v)  { this._horloge = v }
   get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
@@ -45,13 +71,22 @@ class OTime {
 
 /**
   Méthode qui permet de traiter les temps comme des events dans
-  les associations.
+  les associations. Pour afficher le temps courant et aussi pouvoir
+  le dissocier de son élément propriétaire
 
   @param {Object} options  Des options (inutilisé ici pour le moment)
 
 */
 asAssociate(options){
-  return `<a class="lktime" onclick="showTime(${this.seconds})">${this.horloge_simple}</a>`
+  if(undefined === options) options = {}
+  var dvs = []
+  dvs.push(DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
+  if(options.owner){
+    // Si les options définissent un owner, on ajoute un lien pour pouvoir
+    // dissocier le temps de son possesseur
+    dvs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'time', id:${this.seconds}}, owner:{type:'${options.owner.type}', id:${options.owner.id}}})`}}))
+  }
+  return DCreate('SPAN', {class:'lktime', append: dvs})
 }
 
 set duree(v) { this.duree = v }
@@ -105,7 +140,10 @@ s2h(s, format){
  * pour ne pas créer intensivement des instances à chaque millisecondes
  */
 updateSeconds(s){
+  delete this._toString
   this.seconds = s
   this.horloge = this.s2h(s)
 }
+
+
 }

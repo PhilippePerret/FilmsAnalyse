@@ -13,3 +13,6 @@ section#section-qrd-pp *
 {
   font-size:9.8pt;
 }
+section#section-qrd-pp *:not(label, span.ref){
+  color:red;
+}

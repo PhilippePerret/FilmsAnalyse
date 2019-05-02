@@ -2,9 +2,20 @@
 
 ### Traiter :
 
+  - Vérifier que les trois temps soient bien enregistrés (startFilmTime, endFilmTime et
+    endGenericFilmTime — ou similaire)
+
+* CHECK ANALYSE
+  - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
+
+* Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
+
+- Checker la résolution quand on modifie le procédé (pour le moment, ça n'est traité à la création et à l'instanciation)
+  - Si la résolution ne commence pas par une balise de temps, il faut considérer que c'est l'explication de la non résolution.
+
 
 * [BUGS]
-  cf. les bugs sur ghi
+  cf. les listes sur ghi
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.

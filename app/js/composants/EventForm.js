@@ -71,16 +71,15 @@ static notConfirmNewScene(){
  * FAEscene si une scène a été trouvée.
  */
 static filmHasSceneNearCurrentPos(){
-  var curtime = Math.round(this.a.locator.getRTime())
+  var curOtime = this.a.locator.currentTime
   var sceneFound = null
   FAEscene.forEachScene(function(sc){
-    if (curtime.between(sc.time - 5, sc.time + 5)){
+    if (curOtime.between(sc.time - 5, sc.time + 5)){
       sceneFound = sc
       return false // pour stopper la boucle
     }
   })
-  if (sceneFound) return [sceneFound, Math.abs(curtime - sceneFound.time)]
-  // console.log("sceneFound:", sceneFound, sceneFound && sceneFound.time)
+  if (sceneFound) return [sceneFound, Math.abs(curOtime - sceneFound.time)]
 }
 
 /**
@@ -145,7 +144,7 @@ constructor(foo){
       this._id    = EventForm.newId()
       this._type  = foo
       this.isNew  = true
-      this._time  = this.a.locator.getRTime() || 0
+      this._time  = this.a.locator.currentTime.seconds || 0
       break
     case 'number':
       // <= L'ID de l'évènement
@@ -158,6 +157,8 @@ constructor(foo){
       if('function'===typeof(foo.showDiffere)){ this._event = foo }
       else { this._event = this.a.getEventById(ev.id) }
       break
+    case 'undefined':
+      throw('L’objet à éditer est indéfini.')
     default:
       throw("Il faut penser à traiter les autres cas")
   }
@@ -244,7 +245,7 @@ afterBuilding(){
   this.jqf('type').val(typ)
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
-  this.jqf('time').html(this.a.locator.getRTime())
+  this.jqf('time').html(this.a.locator.currentTime.seconds)
   this.jqf('duree').html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
@@ -521,11 +522,19 @@ observe(){
   this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
   this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
 
+  // Le petit picto pour associer tout de suite l'event édité ou créé
+  // à un autre event ou document ou autre.
+  my.jqObj.find('.event-btn-drop').draggable({
+      revert:true
+    , zindex:5000
+  })
+
   let dataDrop = Object.assign({}, DATA_DROPPABLE, {
     drop: (e, ui) => {
-      var balise = this.a.getBaliseAssociation(this.event, ui.helper, e)
-      if(balise && ['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1){
-        $(e.target).insertAtCaret(balise)
+      let obj = this.event || {type:'event', id: this.id}
+      var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
+      if(balise){
+        if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1) $(e.target).insertAtCaret(balise)
       } else if(e.target.className.indexOf('event-parent') > -1){
         this.setParent(ui.helper)
       }
@@ -623,7 +632,6 @@ destroy(){
  * En cas d'annulation de l'édition
  */
 cancel(){
-  // console.log("Je renonce à l'édition de l'event")
   this.endEdition()
 }
 
@@ -704,14 +712,13 @@ setFormValues(){
     }
   }
 
-  if(this.type === 'stt') this.domField('sttID').disabled = true
+  if(this.type === 'stt') this.domField('sttType').disabled = true
 
   if(this.type === 'proc'){
     // Opérations à faire sur les valeurs du formulaire lorsqu'on édite
     // un procédé
 
     // Il faut remettre le menu des types
-    console.log("this.event.procType:", this.event.procType)
     this.implementeMenuProcedes(...FAProcede.getTruplet(this.event.procType))
 
   }
@@ -812,7 +819,7 @@ onKeyDownOnTextFields(e){
       return stopEvent(e)
     } else if (e.key == 't') {
       // On doit inscrire le temps courant dans le champ
-      var otime = this.a.locator.getROTime()
+      var otime = this.a.locator.currentTime
       $(e.target).insertAtCaret(`{{time:${otime.seconds}|${otime.horloge_simple}}}`)
     }
     // else {

@@ -256,7 +256,12 @@ FASousDecor.prototype.asStats = function(){
 
 function dureeAndPctForScenesNumeros(numeros){
   var d = 0
-  numeros.forEach(num => d += FAEscene.getByNumero(num).duree)
+  console.log("Numéros de scènes à traiter : ", numeros.join(', '))
+  numeros.forEach(num => {
+    console.log("Traitement de la scène numéro ", num[0])
+    d += FAEscene.getByNumero(num[0]).duree
+  })
+  // numeros.forEach(num => d += FAEscene.getByNumero(num).duree)
   d = new OTime(d)
   return [d, asPourcentage(current_analyse.duree, d.seconds)]
 }

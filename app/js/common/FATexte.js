@@ -318,11 +318,12 @@ deEventTags(str, options){
       if(options.notes === false){
         return ''
       } else {
-        notes_list.push(ev.asNote())
+        notes_list.push(ev.asNote({as: 'string'}))
         return `<sup class="note-indice">[${ev.indice_note}]</sup>`
       }
-    } else {
-      return ev.asLink(groups.alt_text)
+    }
+    else {
+      return ev.as('ref', LABELLED|EDITABLE, {altText: groups.alt_text, forBook: false /* TODO : pouvoir le régler */ })
     }
   })
 
