@@ -14,7 +14,8 @@ Object.assign(FAEscene.prototype,{
 **/
 asPitch(opts){
   if(undefined === this._aspitch){
-    this._aspitch = DFormater(`${this.numero}. ${this.pitch}`)
+    if(this.isRealScene) this._aspitch = DFormater(`${this.numero}. ${this.pitch}`)
+    else this._aspitch = 'GÉNÉRIQUE'
   }
   return this._aspitch
 }
@@ -61,11 +62,11 @@ asBook(opts){
   var divs = []
   var scene_content = []
   divs.push(this.f_scene_heading(opts))
-  if(this.pitch){
+  if(this.isRealScene && this.pitch){
     let re = new RegExp(`${RegExp.escape(this.pitch)}`)
     if (!(this.resume||'--non défini--').match(re)) scene_content.push(this.f_pitch)
   }
-  scene_content.push(DCreate('SPAN',{class:'resume', inner: DFormater(this.resume)}))
+  if(this.isRealScene) scene_content.push(DCreate('SPAN',{class:'resume', inner: DFormater(this.resume)}))
   divs.push(DCreate('SPAN',{class:'scene-content', append: scene_content}))
   return divs
 }
@@ -75,7 +76,7 @@ f_scene_heading(opts){
   // console.log("-> FAEscene#f_scene_heading")
   if(undefined === opts) opts = {}
   var headingElements = []
-  if(this.numero){
+  if(this.isRealScene){
     headingElements.push(DCreate('SPAN', {class:'scene-numero', inner: `${this.numero}. `}))
   } else {
     headingElements.push(DCreate('SPAN', {class: 'scene-numero', inner: 'GÉNÉRIQUE'}))
